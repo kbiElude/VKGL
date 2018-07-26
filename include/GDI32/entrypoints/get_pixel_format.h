@@ -1,0 +1,4 @@
+#ifndef VKGL_GET_PIXEL_FORMAT_H
+#define VKGL_GET_PIXEL_FORMAT_H
+
+#endif /* VKGL_GET_PIXEL_FORMAT_H */

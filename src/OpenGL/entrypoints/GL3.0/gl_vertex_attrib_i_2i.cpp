@@ -1,0 +1,9 @@
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_2i.h"
+
+VKGL_API void VKGL_APIENTRY glVertexAttribI2i(GLuint index,
+                                              GLint  x,
+                                              GLint  y)
+{
+    todo
+}
+

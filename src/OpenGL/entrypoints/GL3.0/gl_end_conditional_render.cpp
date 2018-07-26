@@ -1,0 +1,7 @@
+#include "OpenGL/entrypoints/GL3.0/gl_end_conditional_render.h"
+
+VKGL_API void VKGL_APIENTRY glEndConditionalRender(void)
+{
+    todo
+}
+

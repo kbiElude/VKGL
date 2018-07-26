@@ -1,0 +1,8 @@
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_1iv.h"
+
+VKGL_API void VKGL_APIENTRY glVertexAttribI1iv(GLuint       index,
+                                               const GLint* v)
+{
+    todo
+}
+

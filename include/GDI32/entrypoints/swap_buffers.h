@@ -1,0 +1,4 @@
+#ifndef VKGL_SWAP_BUFFERS_H
+#define VKGL_SWAP_BUFFERS_H
+
+#endif /* VKGL_SWAP_BUFFERS_H */
