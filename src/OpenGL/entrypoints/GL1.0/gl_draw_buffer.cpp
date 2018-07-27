@@ -25,5 +25,9 @@ VKGL_API void VKGL_APIENTRY glDrawBuffer(GLenum buf)
 void vkglDrawBuffer_with_validation(VKGL::Context* in_context_ptr,
                                     const GLenum&  in_buf)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_buf) )
+    {
+        todo;
+    }
 }

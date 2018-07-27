@@ -33,5 +33,11 @@ void vkglStencilOp_with_validation(VKGL::Context* in_context_ptr,
                                    const GLenum&  in_zfail,
                                    const GLenum&  in_zpass)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_fail,
+                 in_zfail,
+                 in_zpass) )
+    {
+        todo;
+    }
 }

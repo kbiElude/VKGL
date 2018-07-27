@@ -33,5 +33,11 @@ void vkglStencilFunc_with_validation(VKGL::Context* in_context_ptr,
                                      const GLint&   in_ref,
                                      const GLuint&  in_mask)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_func,
+                 in_ref,
+                 in_mask) )
+    {
+        todo;
+    }
 }

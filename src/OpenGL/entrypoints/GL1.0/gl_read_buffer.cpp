@@ -25,5 +25,9 @@ VKGL_API void VKGL_APIENTRY glReadBuffer(GLenum src)
 void vkglReadBuffer_with_validation(VKGL::Context* in_context_ptr,
                                     const GLenum&  in_src)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_src) )
+    {
+        todo;
+    }
 }

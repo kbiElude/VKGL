@@ -29,5 +29,10 @@ void vkglPixelStorei_with_validation(VKGL::Context* in_context_ptr,
                                      const GLenum&  in_pname,
                                      const GLint&   in_param)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_pname,
+                 in_param) )
+    {
+        todo;
+    }
 }

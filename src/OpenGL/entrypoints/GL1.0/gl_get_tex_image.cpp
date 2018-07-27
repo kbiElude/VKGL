@@ -41,5 +41,13 @@ void vkglGetTexImage_with_validation(VKGL::Context* in_context_ptr,
                                      const GLenum&  in_type,
                                      void*          out_pixels_ptr)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_target,
+                 in_level,
+                 in_format,
+                 in_type,
+                 out_pixels_ptr) )
+    {
+        todo;
+    }
 }

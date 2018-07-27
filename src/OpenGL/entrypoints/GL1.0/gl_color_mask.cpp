@@ -37,5 +37,12 @@ void vkglColorMask_with_validation(VKGL::Context*   in_context_ptr,
                                    const GLboolean& in_blue,
                                    const GLboolean& in_alpha)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_red,
+                 in_green,
+                 in_blue,
+                 in_alpha) )
+    {
+        todo;
+    }
 }

@@ -25,5 +25,9 @@ VKGL_API void VKGL_APIENTRY glLogicOp(GLenum opcode)
 void vkglLogicOp_with_validation(VKGL::Context* in_context_ptr,
                                  const GLenum&  in_opcode)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_opcode) )
+    {
+        todo;
+    }
 }

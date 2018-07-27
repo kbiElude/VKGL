@@ -25,5 +25,9 @@ VKGL_API void VKGL_APIENTRY glFrontFace(GLenum mode)
 void vkglFrontFace_with_validation(VKGL::Context* in_context_ptr,
                                    const GLenum&  in_mode)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_mode) )
+    {
+        todo;
+    }
 }

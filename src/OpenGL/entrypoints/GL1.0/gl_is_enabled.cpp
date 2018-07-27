@@ -25,5 +25,9 @@ VKGL_API GLboolean VKGL_APIENTRY glIsEnabled(GLenum cap)
 GLboolean vkglIsEnabled_with_validation(VKGL::Context* in_context_ptr,
                                         const GLenum&  in_cap)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_cap) )
+    {
+        todo;
+    }
 }

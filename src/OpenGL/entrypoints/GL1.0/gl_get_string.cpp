@@ -25,5 +25,9 @@ VKGL_API const GLubyte *APIENTRY glGetString(GLenum name)
 const GLubyte* vkglGetString_with_validation(VKGL::Context* in_context_ptr,
                                              const GLenum&  in_name)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_name) )
+    {
+        todo;
+    }
 }

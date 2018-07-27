@@ -25,5 +25,9 @@ VKGL_API void VKGL_APIENTRY glClearStencil(GLint s)
 void vkglClearStencil_with_validation(VKGL::Context* in_context_ptr,
                                       const GLint&   in_s)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_s) )
+    {
+        todo;
+    }
 }

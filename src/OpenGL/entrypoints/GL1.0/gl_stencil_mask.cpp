@@ -25,5 +25,9 @@ VKGL_API void VKGL_APIENTRY glStencilMask(GLuint mask)
 void vkglStencilMask_with_validation(VKGL::Context* in_context_ptr,
                                      const GLuint&  in_mask)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_mask) )
+    {
+        todo;
+    }
 }

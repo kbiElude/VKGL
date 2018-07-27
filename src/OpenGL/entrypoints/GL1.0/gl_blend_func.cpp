@@ -28,5 +28,10 @@ void vkglBlendFunc_with_validation(VKGL::Context* in_context_ptr,
                                    const GLenum&  in_sfactor,
                                    const GLenum&  in_dfactor)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_sfactor,
+                 in_dfactor) )
+    {
+        todo;
+    }
 }

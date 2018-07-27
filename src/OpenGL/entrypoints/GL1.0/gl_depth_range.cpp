@@ -29,5 +29,10 @@ void vkglDepthRange_with_validation(VKGL::Context*  in_context_ptr,
                                     const GLdouble& in_n,
                                     const GLdouble& in_f)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_n,
+                 in_f) )
+    {
+        todo;
+    }
 }

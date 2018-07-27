@@ -53,5 +53,16 @@ void vkglTexImage1D_with_validation(VKGL::Context* in_context_ptr,
                                     const GLenum&  in_type,
                                     const void*    in_pixels_ptr)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_target,
+                 in_level,
+                 in_internalformat,
+                 in_width,
+                 in_border,
+                 in_format,
+                 in_type,
+                 in_pixels_ptr) )
+    {
+        todo;
+    }
 }

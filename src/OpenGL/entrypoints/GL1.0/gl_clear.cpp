@@ -24,5 +24,9 @@ VKGL_API void VKGL_APIENTRY glClear(GLbitfield mask)
 void vkglClear_with_validation(VKGL::Context*    in_context_ptr,
                                const GLbitfield& in_mask)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_mask) )
+    {
+        todo;
+    }
 }

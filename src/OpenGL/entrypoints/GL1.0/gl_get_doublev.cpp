@@ -19,5 +19,10 @@ void vkglGetDoublev_with_validation(VKGL::Context* in_context_ptr,
                                     const GLenum&  in_pname,
                                     GLdouble*      out_data_ptr)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_pname,
+                 out_data_ptr) )
+    {
+        todo;
+    }
 }

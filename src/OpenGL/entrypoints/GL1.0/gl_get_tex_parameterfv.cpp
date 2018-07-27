@@ -33,5 +33,11 @@ void vkglGetTexParameterfv_with_validation(VKGL::Context* in_context_ptr,
                                            const GLenum&  in_pname,
                                            GLfloat*       out_params_ptr)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_target,
+                 in_pname,
+                 out_params_ptr) )
+    {
+        todo;
+    }
 }

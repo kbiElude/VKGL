@@ -25,5 +25,9 @@ VKGL_API void VKGL_APIENTRY glDepthMask(GLboolean flag)
 void vkglDepthMask_with_validation(VKGL::Context*   in_context_ptr,
                                    const GLboolean& in_flag)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_flag) )
+    {
+        todo;
+    }
 }

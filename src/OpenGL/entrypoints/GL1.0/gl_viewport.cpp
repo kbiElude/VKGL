@@ -37,5 +37,13 @@ void vkglViewport_with_validation(VKGL::Context* in_context_ptr,
                                   const GLsizei& in_width,
                                   const GLsizei& in_height)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_x,
+                 in_y,
+                 in_width,
+                 in_height) )
+    {
+        todo;
+    }
+
 }

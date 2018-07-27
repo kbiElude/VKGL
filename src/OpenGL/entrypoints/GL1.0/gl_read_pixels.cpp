@@ -49,5 +49,15 @@ void vkglReadPixels_with_validation(VKGL::Context* in_context_ptr,
                                     const GLenum&  in_type,
                                     void*          out_pixels_ptr)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_x,
+                 in_y,
+                 in_width,
+                 in_height,
+                 in_format,
+                 in_type,
+                 out_pixels_ptr) )
+    {
+        todo;
+    }
 }

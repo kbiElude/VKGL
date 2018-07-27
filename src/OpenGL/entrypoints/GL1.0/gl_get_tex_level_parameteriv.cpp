@@ -37,5 +37,12 @@ void vkglGetTexLevelParameteriv_with_validation(VKGL::Context* in_context_ptr,
                                                 const GLenum&  in_pname,
                                                 GLint*         out_params_ptr)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_target,
+                 in_level,
+                 in_pname,
+                 out_params_ptr) )
+    {
+        todo;
+    }
 }

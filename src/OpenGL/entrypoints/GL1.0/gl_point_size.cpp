@@ -25,5 +25,9 @@ VKGL_API void VKGL_APIENTRY glPointSize(GLfloat size)
 void vkglPointSize_with_validation(VKGL::Context* in_context_ptr,
                                    const GLfloat& in_size)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_size) )
+    {
+        todo;
+    }
 }

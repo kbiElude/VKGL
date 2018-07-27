@@ -29,5 +29,10 @@ void vkglHint_with_validation(VKGL::Context* in_context_ptr,
                               const GLenum&  in_target,
                               const GLenum&  in_mode)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_target,
+                 in_mode) )
+    {
+        todo;
+    }
 }

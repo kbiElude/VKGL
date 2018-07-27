@@ -25,5 +25,9 @@ VKGL_API void VKGL_APIENTRY glDepthFunc(GLenum func)
 void vkglDepthFunc_with_validation(VKGL::Context* in_context_ptr,
                                    const GLenum&  in_func)
 {
-    todo;
+    if (validate(in_context_ptr,
+                 in_func) )
+    {
+        todo;
+    }
 }
