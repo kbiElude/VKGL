@@ -6,4 +6,8 @@
 VKGL_API void VKGL_APIENTRY glGetFloatv(GLenum   pname,
                                         GLfloat* data);
 
+void vkglGetFloatv_with_validation(VKGL::Context* in_context_ptr,
+                                   const GLenum&  in_pname,
+                                   GLfloat*       out_data_ptr);
+
 #endif /* VKGL_GL_GET_FLOATV_H */

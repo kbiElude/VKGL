@@ -7,4 +7,9 @@ VKGL_API void VKGL_APIENTRY glStencilOp(GLenum fail,
                                         GLenum zfail,
                                         GLenum zpass);
 
+void vkglStencilOp_with_validation(VKGL::Context* in_context_ptr,
+                                   GLenum         in_fail,
+                                   GLenum         in_zfail,
+                                   GLenum         in_zpass);
+
 #endif /* VKGL_GL_STENCIL_OP_H */

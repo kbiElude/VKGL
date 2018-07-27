@@ -1,7 +1,19 @@
 #include "OpenGL/entrypoints/GL1.0/gl_polygon_mode.h"
+#include "OpenGL/globals.h"
 
 VKGL_API void VKGL_APIENTRY glPolygonMode(GLenum face,
                                           GLenum mode)
 {
-    todo
+    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+
+    dispatch_table_ptr->pGLPolygonMode(dispatch_table_ptr->bound_context_ptr,
+                                       face,
+                                       mode);
+}
+
+void vkglPolygonMode_with_validation(VKGL::Context* in_context_ptr,
+                                     const GLenum&  in_face,
+                                     const GLenum&  in_mode)
+{
+    todo;
 }

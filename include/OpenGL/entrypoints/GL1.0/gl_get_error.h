@@ -5,4 +5,6 @@
 
 VKGL_API GLenum VKGL_APIENTRY glGetError(void);
 
+GLenum vkglGetError_with_validadtion(VKGL::Context* in_context_ptr);
+
 #endif /* VKGL_GL_GET_ERROR_H */

@@ -5,4 +5,6 @@
 
 VKGL_API void VKGL_APIENTRY glFlush(void);
 
+void vkglFlush_with_validation(VKGL::Context* in_context_ptr);
+
 #endif /* VKGL_GL_FLUSH_H */

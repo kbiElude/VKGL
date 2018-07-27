@@ -1,6 +1,16 @@
 #include "OpenGL/entrypoints/GL1.0/gl_stencil_mask.h"
+#include "OpenGL/globals.h"
 
 VKGL_API void VKGL_APIENTRY glStencilMask(GLuint mask)
 {
-    todo
+    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+
+    dispatch_table_ptr->pGLStencilMask(dispatch_table_ptr->bound_context_ptr,
+                                       mask);
+}
+
+void vkglStencilMask_with_validation(VKGL::Context* in_context_ptr,
+                                     const GLuint&  in_mask)
+{
+    todo;
 }

@@ -7,4 +7,9 @@ VKGL_API void VKGL_APIENTRY glTexParameterf(GLenum  target,
                                             GLenum  pname,
                                             GLfloat param);
 
+void vkglTexParameterf_with_validation(VKGL::Context* in_context_ptr,
+                                       const GLenum&  in_target,
+                                       const GLenum&  in_pname,
+                                       const GLfloat& in_param);
+
 #endif /* VKGL_GL_TEX_PARAMETERF_H */

@@ -1,7 +1,16 @@
 #include "OpenGL/entrypoints/GL1.0/gl_enable.h"
+#include "OpenGL/globals.h"
 
 VKGL_API void VKGL_APIENTRY glEnable(GLenum cap)
 {
-    todo;
+    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+
+    dispatch_table_ptr->pGLEnable(dispatch_table_ptr->bound_context_ptr,
+                                  cap);
 }
 
+void vkglEnable_with_validation(VKGL::Context* in_context_ptr,
+                                const GLenum&  in_cap)
+{
+    todo;
+}
