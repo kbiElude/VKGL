@@ -1,6 +1,19 @@
 #include "OpenGL/entrypoints/GL1.0/gl_draw_buffer.h"
 #include "OpenGL/globals.h"
 
+static bool validate(VKGL::Context* in_context_ptr,
+                     const GLenum&  in_buf)
+{
+    bool result = false;
+
+    // ..
+
+    result = true;
+end:
+    return result;
+}
+
+
 VKGL_API void VKGL_APIENTRY glDrawBuffer(GLenum buf)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
@@ -10,7 +23,7 @@ VKGL_API void VKGL_APIENTRY glDrawBuffer(GLenum buf)
 }
 
 void vkglDrawBuffer_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLenum*  in_buf)
+                                    const GLenum&  in_buf)
 {
     todo;
 }

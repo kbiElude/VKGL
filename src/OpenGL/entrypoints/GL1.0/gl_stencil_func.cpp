@@ -1,6 +1,21 @@
 #include "OpenGL/entrypoints/GL1.0/gl_stencil_func.h"
 #include "OpenGL/globals.h"
 
+static bool validate(VKGL::Context* in_context_ptr,
+                     const GLenum&  in_func,
+                     const GLint&   in_ref,
+                     const GLuint&  in_mask)
+{
+    bool result = false;
+
+    // ..
+
+    result = true;
+end:
+    return result;
+}
+
+
 VKGL_API void VKGL_APIENTRY glStencilFunc(GLenum func,
                                           GLint  ref,
                                           GLuint mask)

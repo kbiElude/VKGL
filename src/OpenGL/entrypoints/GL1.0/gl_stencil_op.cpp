@@ -1,6 +1,21 @@
 #include "OpenGL/entrypoints/GL1.0/gl_stencil_op.h"
 #include "OpenGL/globals.h"
 
+static bool validate(VKGL::Context* in_context_ptr,
+                     const GLenum&  in_fail,
+                     const GLenum&  in_zfail,
+                     const GLenum&  in_zpass)
+{
+    bool result = false;
+
+    // ..
+
+    result = true;
+end:
+    return result;
+}
+
+
 VKGL_API void VKGL_APIENTRY glStencilOp(GLenum fail,
                                         GLenum zfail,
                                         GLenum zpass)
@@ -14,9 +29,9 @@ VKGL_API void VKGL_APIENTRY glStencilOp(GLenum fail,
 }
 
 void vkglStencilOp_with_validation(VKGL::Context* in_context_ptr,
-                                   GLenum         in_fail,
-                                   GLenum         in_zfail,
-                                   GLenum         in_zpass)
+                                   const GLenum&  in_fail,
+                                   const GLenum&  in_zfail,
+                                   const GLenum&  in_zpass)
 {
     todo;
 }

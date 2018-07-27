@@ -1,6 +1,20 @@
 #include "OpenGL/entrypoints/GL1.0/gl_pixel_storef.h"
 #include "OpenGL/globals.h"
 
+static bool validate(VKGL::Context* in_context_ptr,
+                     const GLenum&  in_pname,
+                     const GLfloat& in_param)
+{
+    bool result = false;
+
+    // ..
+
+    result = true;
+end:
+    return result;
+}
+
+
 GLAPI void APIENTRY glPixelStoref(GLenum  pname,
                                   GLfloat param)
 {

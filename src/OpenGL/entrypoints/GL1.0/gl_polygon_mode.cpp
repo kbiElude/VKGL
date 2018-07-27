@@ -1,6 +1,20 @@
 #include "OpenGL/entrypoints/GL1.0/gl_polygon_mode.h"
 #include "OpenGL/globals.h"
 
+static bool validate(VKGL::Context* in_context_ptr,
+                     const GLenum&  in_face,
+                     const GLenum&  in_mode)
+{
+    bool result = false;
+
+    // ..
+
+    result = true;
+end:
+    return result;
+}
+
+
 VKGL_API void VKGL_APIENTRY glPolygonMode(GLenum face,
                                           GLenum mode)
 {

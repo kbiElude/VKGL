@@ -1,6 +1,21 @@
 #include "OpenGL/entrypoints/GL1.0/gl_get_tex_parameteriv.h"
 #include "OpenGL/globals.h"
 
+static bool validate(VKGL::Context* in_context_ptr,
+                     const GLenum&  in_target,
+                     const GLenum&  in_pname,
+                     GLint*         out_params_ptr)
+{
+    bool result = false;
+
+    // ..
+
+    result = true;
+end:
+    return result;
+}
+
+
 VKGL_API void VKGL_APIENTRY glGetTexParameteriv(GLenum target,
                                                 GLenum pname,
                                                 GLint* params)

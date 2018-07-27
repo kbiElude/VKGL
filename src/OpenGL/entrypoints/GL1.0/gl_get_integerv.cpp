@@ -1,6 +1,20 @@
 #include "OpenGL/entrypoints/GL1.0/gl_get_integerv.h"
 #include "OpenGL/globals.h"
 
+static bool validate(VKGL::Context* in_context_ptr,
+                     const GLenum&  in_pname,
+                     GLint*         out_data_ptr)
+{
+    bool result = false;
+
+    // ..
+
+    result = true;
+end:
+    return result;
+}
+
+
 VKGL_API void VKGL_APIENTRY glGetIntegerv(GLenum pname,
                                           GLint* data)
 {

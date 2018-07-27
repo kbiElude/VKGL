@@ -1,6 +1,22 @@
 #include "OpenGL/entrypoints/GL1.0/gl_color_mask.h"
 #include "OpenGL/globals.h"
 
+static bool validate(VKGL::Context*   in_context_ptr,
+                     const GLboolean& in_red,
+                     const GLboolean& in_green,
+                     const GLboolean& in_blue,
+                     const GLboolean& in_alpha)
+{
+    bool result = false;
+
+    // ..
+
+    result = true;
+end:
+    return result;
+}
+
+
 VKGL_API void VKGL_APIENTRY glColorMask(GLboolean red,
                                         GLboolean green,
                                         GLboolean blue,

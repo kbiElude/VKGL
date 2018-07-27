@@ -1,6 +1,20 @@
 #include "OpenGL/entrypoints/GL1.0/gl_depth_range.h"
 #include "OpenGL/globals.h"
 
+static bool validate(VKGL::Context*  in_context_ptr,
+                     const GLdouble& in_n,
+                     const GLdouble& in_f)
+{
+    bool result = false;
+
+    // ..
+
+    result = true;
+end:
+    return result;
+}
+
+
 VKGL_API void VKGL_APIENTRY glDepthRange(GLdouble n,
                                          GLdouble f)
 {

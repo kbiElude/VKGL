@@ -1,6 +1,22 @@
 #include "OpenGL/entrypoints/GL1.0/gl_scissor.h"
 #include "OpenGL/globals.h"
 
+static bool validate(VKGL::Context* in_context_ptr,
+                     const GLint&   in_x,
+                     const GLint&   in_y,
+                     const GLsizei& in_width,
+                     const GLsizei& in_height)
+{
+    bool result = false;
+
+    // ..
+
+    result = true;
+end:
+    return result;
+}
+
+
 VKGL_API void VKGL_APIENTRY glScissor(GLint   x,
                                       GLint   y,
                                       GLsizei width,
@@ -16,7 +32,7 @@ VKGL_API void VKGL_APIENTRY glScissor(GLint   x,
 }
 
 void vkglScissor_with_validation(VKGL::Context* in_context_ptr,
-                                 const GLint&   x,
+                                 const GLint&   in_x,
                                  const GLint&   in_y,
                                  const GLsizei& in_width,
                                  const GLsizei& in_height)

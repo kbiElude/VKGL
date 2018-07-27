@@ -1,6 +1,26 @@
 #include "OpenGL/entrypoints/GL1.0/gl_tex_image_1d.h"
 #include "OpenGL/globals.h"
 
+static bool validate(VKGL::Context* in_context_ptr,
+                     const GLenum&  in_target,
+                     const GLint&   in_level,
+                     const GLint&   in_internalformat,
+                     const GLsizei& in_width,
+                     const GLint&   in_border,
+                     const GLenum&  in_format,
+                     const GLenum&  in_type,
+                     const void*    in_pixels_ptr)
+{
+    bool result = false;
+
+    // ..
+
+    result = true;
+end:
+    return result;
+}
+
+
 VKGL_API void VKGL_APIENTRY glTexImage1D(GLenum      target,
                                          GLint       level,
                                          GLint       internalformat,

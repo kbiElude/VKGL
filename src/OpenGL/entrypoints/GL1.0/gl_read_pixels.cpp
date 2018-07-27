@@ -1,6 +1,25 @@
 #include "OpenGL/entrypoints/GL1.0/gl_read_pixels.h"
 #include "OpenGL/globals.h"
 
+static bool validate(VKGL::Context* in_context_ptr,
+                     const GLint&   in_x,
+                     const GLint&   in_y,
+                     const GLsizei& in_width,
+                     const GLsizei& in_height,
+                     const GLenum&  in_format,
+                     const GLenum&  in_type,
+                     void*          out_pixels_ptr)
+{
+    bool result = false;
+
+    // ..
+
+    result = true;
+end:
+    return result;
+}
+
+
 VKGL_API void VKGL_APIENTRY glReadPixels(GLint   x,
                                          GLint   y,
                                          GLsizei width,
