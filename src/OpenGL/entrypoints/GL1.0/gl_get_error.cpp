@@ -8,7 +8,7 @@ VKGL_API GLenum VKGL_APIENTRY glGetError(void)
     return dispatch_table_ptr->pGLGetError(dispatch_table_ptr->bound_context_ptr);
 }
 
-GLenum vkglGetError_with_validadtion(VKGL::Context* in_context_ptr)
+GLenum vkglGetError_with_validation(VKGL::Context* in_context_ptr)
 {
     todo;
 }
