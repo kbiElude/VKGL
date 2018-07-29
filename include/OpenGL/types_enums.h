@@ -85,7 +85,7 @@ namespace VKGL
     enum class DepthStencilTextureMode
     {
         Depth_Component,
-        Stencil_Component,
+        Stencil_Index,
 
         Unknown
     };
@@ -202,7 +202,7 @@ namespace VKGL
     enum class LogicOpMode
     {
         And,
-        And_Invert,
+        And_Inverted,
         And_Reverse,
         Clear,
         Copy,
@@ -339,6 +339,8 @@ namespace VKGL
     {
         Linear,
         Nearest,
+
+        Unknown
     };
 
     enum class TextureMinFilter
@@ -349,6 +351,8 @@ namespace VKGL
         Nearest,
         Nearest_Mipmap_Linear,
         Nearest_Mipmap_Nearest,
+
+        Unknown
     };
 
     enum class TextureSwizzle
@@ -359,6 +363,8 @@ namespace VKGL
         One,
         Red,
         Zero,
+
+        Unknown
     };
 
     enum class TextureTarget
