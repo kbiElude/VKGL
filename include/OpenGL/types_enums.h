@@ -3,6 +3,17 @@
 
 namespace VKGL
 {
+    enum class BlendEquation
+    {
+        Function_Add,
+        Function_Reverse_Subtract,
+        Function_Subtract,
+        Max,
+        Min,
+
+        Unknown
+    };
+
     enum class BlendFunction
     {
         Constant_Alpha,
@@ -20,6 +31,30 @@ namespace VKGL
         Src_Alpha_Saturate,
         Src_Color,
         Zero,
+
+        Unknown
+    };
+
+    enum class BufferAccess
+    {
+        Read_Only,
+        Read_Write,
+        Write_Only,
+
+        Unknown
+    };
+
+    enum class BufferUsage
+    {
+        Dynamic_Copy,
+        Dynamic_Draw,
+        Dynamic_Read,
+        Static_Copy,
+        Static_Draw,
+        Static_Read,
+        Stream_Copy,
+        Stream_Draw,
+        Stream_Read,
 
         Unknown
     };
@@ -48,6 +83,14 @@ namespace VKGL
         Scissor_Test,
         Stencil_Test,
         Texture_Cube_Map_Seamless,
+
+        Unknown
+    };
+
+    enum class ClampReadColorMode
+    {
+        False,
+        Fixed_Only,
 
         Unknown
     };
@@ -90,10 +133,52 @@ namespace VKGL
         Unknown
     };
 
+    enum class FramebufferAttachmentComponentType
+    {
+        Float,
+        Int,
+        None,
+        Signed_Normalized,
+        Unsigned_Int,
+        Unsigned_Normalized,
+
+        Unknown
+    };
+
+    enum class FramebufferAttachmentObjectType
+    {
+        Framebuffer_Default,
+        None,
+        Renderbuffer,
+        Texture,
+
+        Unknown
+    };
+
     enum class FrontFaceOrientation
     {
         Clockwise,
         Counter_Clockwise,
+
+        Unknown
+    };
+
+    enum class GeometryInputType
+    {
+        Lines,
+        Lines_Adjacency,
+        Points,
+        Triangles,
+        Triangles_Adjacency,
+
+        Unknown
+    };
+
+    enum class GeometryOutputType
+    {
+        Line_Strip,
+        Points,
+        Triangle_Strip,
 
         Unknown
     };
@@ -276,11 +361,36 @@ namespace VKGL
         Unknown
     };
 
+    enum class PointSpriteCoordOrigin
+    {
+        Lower_Left,
+        Upper_Left,
+
+        Unknown
+    };
+
     enum class PolygonMode
     {
         Fill,
         Line,
         Point,
+
+        Unknown
+    };
+
+    enum class ShaderType
+    {
+        Fragment,
+        Geometry,
+        Vertex,
+
+        Unknown
+    };
+
+    enum class ProvokingVertexConvention
+    {
+        First,
+        Last,
 
         Unknown
     };
@@ -331,6 +441,19 @@ namespace VKGL
     {
         Compare_Ref_to_Texture,
         None,
+
+        Unknown
+    };
+
+    enum class TextureCubeMapFace
+    {
+        Negative_X,
+        Negative_Y,
+        Negative_Z,
+        None,
+        Positive_X,
+        Positive_Y,
+        Positive_Z,
 
         Unknown
     };
@@ -404,6 +527,95 @@ namespace VKGL
         Mirror_Clamp_to_Edge,
         Mirrored_Repeat,
         Repeat,
+
+        Unknown
+    };
+
+    enum class TransformFeedbackBufferMode
+    {
+        Interleaved_Attribs,
+        Separate_Attribs,
+
+        Unknown
+    };
+
+    enum class VariableType
+    {
+        Bool,
+        Bvec2,
+        Bvec3,
+        Bvec4,
+        Float,
+        Int,
+        Isampler1D,
+        Isampler1DArray,
+        Isampler2D,
+        Isampler2DArray,
+        Isampler2DMS,
+        Isampler2DMSArray,
+        Isampler2DRect,
+        Isampler3D,
+        IsamplerBuffer,
+        IsamplerCube,
+        Ivec2,
+        Ivec3,
+        Ivec4,
+        Mat2,
+        Mat3,
+        Mat4,
+        Mat2x3,
+        Mat2x4,
+        Mat3x2,
+        Mat3x4,
+        Mat4x2,
+        Mat4x3,
+        Sampler1D,
+        Sampler1DArray,
+        Sampler1DArrayShadow,
+        Sampler1DShadow,
+        Sampler2D,
+        Sampler2DArray,
+        Sampler2DArrayShadow,
+        Sampler2DMS,
+        Sampler2DMSArray,
+        Sampler2DRect,
+        Sampler2DRectShadow,
+        Sampler2DShadow,
+        Sampler3D,
+        SamplerBuffer,
+        SamplerCube,
+        SamplerCubeShadow,
+        Uint,
+        Usampler1D,
+        Usampler1DArray,
+        Usampler2D,
+        Usampler2DArray,
+        Usampler2DMS,
+        Usampler2DMSArray,
+        Usampler2DRect,
+        Usampler3D,
+        UsamplerBuffer,
+        UsamplerCube,
+        Uvec2,
+        Uvec3,
+        Uvec4,
+        Vec2,
+        Vec3,
+        Vec4,
+
+        Unknown
+    };
+
+    enum class VertexAttributeArrayType
+    {
+        Byte,
+        Double,
+        Float,
+        Int,
+        Short,
+        Unsigned_Byte,
+        Unsigned_Int,
+        Unsigned_Short,
 
         Unknown
     };

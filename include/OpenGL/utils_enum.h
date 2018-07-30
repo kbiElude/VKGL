@@ -7,8 +7,17 @@ namespace VKGL
 {
     namespace Utils
     {
+        VKGL::BlendEquation get_blend_equation_for_gl_enum(const GLenum&              in_enum);
+        GLenum              get_gl_enum_for_blend_equation(const VKGL::BlendEquation& in_blend_equation);
+
         VKGL::BlendFunction get_blend_function_for_gl_enum(const GLenum&              in_enum);
         GLenum              get_gl_enum_for_blend_function(const VKGL::BlendFunction& in_blend_func);
+
+        VKGL::BufferAccess get_buffer_access_for_gl_enum(const GLenum&             in_enum);
+        GLenum             get_gl_enum_for_buffer_access(const VKGL::BufferAccess& in_access);
+
+        VKGL::BufferUsage get_buffer_usage_for_gl_enum(const GLenum&            in_enum);
+        GLenum            get_gl_enum_for_buffer_usage(const VKGL::BufferUsage& in_usage);
 
         GLenum           get_gl_enum_for_indexed_capability   (const VKGL::Capability& in_capability,
                                                                const uint32_t&         in_index);
@@ -17,6 +26,9 @@ namespace VKGL
                                                                VKGL::Capability*       out_capability_ptr,
                                                                uint32_t*               out_index_ptr);
         VKGL::Capability get_nonindexed_capability_for_gl_enum(const GLenum&           in_enum);
+
+        VKGL::ClampReadColorMode get_clamp_read_color_mode_for_gl_enum(const GLenum&                   in_enum);
+        GLenum                   get_gl_enum_for_clamp_read_color_mode(const VKGL::ClampReadColorMode& in_mode);
 
         VKGL::ClearBufferBits get_clear_buffer_bits_for_gl_enum(const GLenum&                in_enum);
         GLenum                get_gl_enum_for_clear_buffer_bits(const VKGL::ClearBufferBits& in_buffers);
@@ -30,8 +42,20 @@ namespace VKGL
         VKGL::DepthStencilTextureMode get_depth_stencil_texture_mode_for_gl_enum(const GLenum&                        in_enum);
         GLenum                        get_gl_enum_for_depth_stencil_texture_mode(const VKGL::DepthStencilTextureMode& in_mode);
 
+        VKGL::FramebufferAttachmentComponentType get_framebuffer_attachment_component_type_for_gl_enum(const GLenum&                                   in_enum);
+        GLenum                                   get_gl_enum_for_framebuffer_attachment_component_type(const VKGL::FramebufferAttachmentComponentType& in_type);
+
+        VKGL::FramebufferAttachmentObjectType get_framebuffer_attachment_object_type_for_gl_enum(const GLenum&                                in_enum);
+        GLenum                                get_gl_enum_for_framebuffer_attachment_object_type(const VKGL::FramebufferAttachmentObjectType& in_type);
+
         VKGL::FrontFaceOrientation get_front_face_orientation_for_gl_enum(const GLenum&                     in_enum);
         GLenum                     get_gl_enum_for_front_face_orientation(const VKGL::FrontFaceOrientation& in_orientation);
+
+        VKGL::GeometryInputType get_geometry_input_type_for_gl_enum(const GLenum&                  in_enum);
+        GLenum                  get_gl_enum_for_geometry_input_type(const VKGL::GeometryInputType& in_type);
+
+        VKGL::GeometryOutputType get_geometry_output_type_for_gl_enum(const GLenum&                   in_enum);
+        GLenum                   get_gl_enum_for_geometry_output_type(const VKGL::GeometryOutputType& in_type);
 
         GLenum         get_gl_enum_for_hint_mode(const VKGL::HintMode& in_hint_mode);
         VKGL::HintMode get_hint_mode_for_gl_enum(const GLenum&         in_enum);
@@ -48,8 +72,17 @@ namespace VKGL
         GLenum          get_gl_enum_for_pixel_type(const VKGL::PixelType& in_pixel_type);
         VKGL::PixelType get_pixel_type_for_gl_enum(const GLenum&          in_enum);
 
+        GLenum                       get_gl_enum_for_point_sprite_coord_origin(const VKGL::PointSpriteCoordOrigin& in_origin);
+        VKGL::PointSpriteCoordOrigin get_point_sprite_coord_origin_for_gl_enum(const GLenum&                       in_enum);
+
         GLenum            get_gl_enum_for_polygon_mode(const VKGL::PolygonMode& in_polygon_mode);
         VKGL::PolygonMode get_polygon_mode_for_gl_enum(const GLenum&            in_enum);
+
+        GLenum                          get_gl_enum_for_provoking_vertex_convention(const VKGL::ProvokingVertexConvention& in_convention);
+        VKGL::ProvokingVertexConvention get_provoking_vertex_convention_for_gl_enum(const GLenum&                          in_enum);
+
+        GLenum           get_gl_enum_for_shader_type(const VKGL::ShaderType& in_shader_type);
+        VKGL::ShaderType get_shader_type_for_gl_enum(const GLenum&           in_enum);
 
         GLenum                get_gl_enum_for_stencil_function(const VKGL::StencilFunction& in_stencil_function);
         VKGL::StencilFunction get_stencil_function_for_gl_enum(const GLenum&                in_enum);
@@ -57,11 +90,14 @@ namespace VKGL
         GLenum                 get_gl_enum_for_stencil_operation(const VKGL::StencilOperation& in_operation);
         VKGL::StencilOperation get_stencil_operation_for_gl_enum(const GLenum&                 in_enum);
 
-        VKGL::TextureCompareFunction get_texture_compare_function_for_gl_enum(const GLenum&                       in_enum);
         GLenum                       get_gl_enum_for_texture_compare_function(const VKGL::TextureCompareFunction& in_compare_function);
+        VKGL::TextureCompareFunction get_texture_compare_function_for_gl_enum(const GLenum&                       in_enum);
 
         GLenum                   get_gl_enum_for_texture_compare_mode(const VKGL::TextureCompareMode& in_mode);
         VKGL::TextureCompareMode get_texture_compare_mode_for_gl_enum(const GLenum&                   in_enum);
+
+        GLenum                   get_gl_enum_for_texture_cube_map_face(const VKGL::TextureCubeMapFace& in_face);
+        VKGL::TextureCubeMapFace get_texture_cube_map_face_for_gl_enum(const GLenum&                   in_enum);
 
         GLenum                 get_gl_enum_for_texture_mag_filter(const VKGL::TextureMagFilter& in_filter);
         VKGL::TextureMagFilter get_texture_mag_filter_for_gl_enum(const GLenum&                 in_enum);
@@ -77,6 +113,15 @@ namespace VKGL
 
         GLenum                get_gl_enum_for_texture_wrap_mode(const VKGL::TextureWrapMode& in_wrap_mode);
         VKGL::TextureWrapMode get_texture_wrap_mode_for_gl_enum(const GLenum&                in_enum);
+
+        GLenum                            get_gl_enum_for_transform_feedback_buffer_mode(const VKGL::TransformFeedbackBufferMode& in_mode);
+        VKGL::TransformFeedbackBufferMode get_transform_feedback_buffer_mode_for_gl_enum(const GLenum&                            in_enum);
+
+        GLenum             get_gl_enum_for_variable_type(const VariableType& in_type);
+        VKGL::VariableType get_variable_type_for_gl_enum(const GLenum&       in_enum);
+
+        GLenum                         get_gl_enum_for_vertex_attribute_array_type(const VKGL::VertexAttributeArrayType& in_type);
+        VKGL::VertexAttributeArrayType get_vertex_attribute_array_type_for_gl_enum(const GLenum&                         in_enum);
     }
 };
 

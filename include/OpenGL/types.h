@@ -3,6 +3,7 @@
 
 #include "Khronos/GL/glcorearb.h"
 #include <stdint.h>
+#include <vector>
 
 #if defined(_WIN32)
     #define VKGL_API __declspec(dllexport)

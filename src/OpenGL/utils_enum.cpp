@@ -1,5 +1,26 @@
 #include "OpenGL/utils_enum.h"
 
+VKGL::BlendEquation VKGL::Utils::get_blend_equation_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::BlendEquation result = VKGL::BlendEquation::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_FUNC_ADD:              result = VKGL::BlendEquation::Function_Add;              break;
+        case GL_FUNC_REVERSE_SUBTRACT: result = VKGL::BlendEquation::Function_Reverse_Subtract; break;
+        case GL_FUNC_SUBTRACT:         result = VKGL::BlendEquation::Function_Subtract;         break;
+        case GL_MAX:                   result = VKGL::BlendEquation::Max;                       break;
+        case GL_MIN:                   result = VKGL::BlendEquation::Min;                       break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::BlendFunction VKGL::Utils::get_blend_function_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::BlendFunction result = VKGL::BlendFunction::Unknown;
@@ -21,6 +42,68 @@ VKGL::BlendFunction VKGL::Utils::get_blend_function_for_gl_enum(const GLenum& in
         case GL_SRC_ALPHA_SATURATE:       result = VKGL::BlendFunction::Src_Alpha_Saturate;       break;
         case GL_SRC_COLOR:                result = VKGL::BlendFunction::Src_Color;                break;
         case GL_ZERO:                     result = VKGL::BlendFunction::Zero;                     break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::BufferAccess VKGL::Utils::get_buffer_access_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::BufferAccess result = VKGL::BufferAccess::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_READ_ONLY:  result = VKGL::BufferAccess::Read_Only;  break;
+        case GL_READ_WRITE: result = VKGL::BufferAccess::Read_Write; break;
+        case GL_WRITE_ONLY: result = VKGL::BufferAccess::Write_Only; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::BufferUsage VKGL::Utils::get_buffer_usage_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::BufferUsage result = VKGL::BufferUsage::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_DYNAMIC_COPY: result = VKGL::BufferUsage::Dynamic_Copy; break;
+        case GL_DYNAMIC_DRAW: result = VKGL::BufferUsage::Dynamic_Draw; break;
+        case GL_DYNAMIC_READ: result = VKGL::BufferUsage::Dynamic_Read; break;
+        case GL_STATIC_COPY:  result = VKGL::BufferUsage::Static_Copy;  break;
+        case GL_STATIC_DRAW:  result = VKGL::BufferUsage::Static_Draw;  break;
+        case GL_STATIC_READ:  result = VKGL::BufferUsage::Static_Read;  break;
+        case GL_STREAM_COPY:  result = VKGL::BufferUsage::Stream_Copy;  break;
+        case GL_STREAM_DRAW:  result = VKGL::BufferUsage::Stream_Draw;  break;
+        case GL_STREAM_READ:  result = VKGL::BufferUsage::Stream_Read;  break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::ClampReadColorMode VKGL::Utils::get_clamp_read_color_mode_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::ClampReadColorMode result = VKGL::ClampReadColorMode::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_FALSE:      result = VKGL::ClampReadColorMode::False;      break;
+        case GL_FIXED_ONLY: result = VKGL::ClampReadColorMode::Fixed_Only; break;
 
         default:
         {
@@ -114,6 +197,48 @@ VKGL::DepthStencilTextureMode VKGL::Utils::get_depth_stencil_texture_mode_for_gl
     return result;
 }
 
+VKGL::FramebufferAttachmentComponentType VKGL::Utils::get_framebuffer_attachment_component_type_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::FramebufferAttachmentComponentType result = VKGL::FramebufferAttachmentComponentType::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_FLOAT:               result = VKGL::FramebufferAttachmentComponentType::Float;               break;
+        case GL_INT:                 result = VKGL::FramebufferAttachmentComponentType::Int;                 break;
+        case GL_NONE:                result = VKGL::FramebufferAttachmentComponentType::None;                break;
+        case GL_SIGNED_NORMALIZED:   result = VKGL::FramebufferAttachmentComponentType::Signed_Normalized;   break;
+        case GL_UNSIGNED_INT:        result = VKGL::FramebufferAttachmentComponentType::Unsigned_Int;        break;
+        case GL_UNSIGNED_NORMALIZED: result = VKGL::FramebufferAttachmentComponentType::Unsigned_Normalized; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::FramebufferAttachmentObjectType VKGL::Utils::get_framebuffer_attachment_object_type_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::FramebufferAttachmentObjectType result = VKGL::FramebufferAttachmentObjectType::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_FRAMEBUFFER_DEFAULT: result = VKGL::FramebufferAttachmentObjectType::Framebuffer_Default; break;
+        case GL_NONE:                result = VKGL::FramebufferAttachmentObjectType::None;                break;
+        case GL_RENDERBUFFER:        result = VKGL::FramebufferAttachmentObjectType::Renderbuffer;        break;
+        case GL_TEXTURE:             result = VKGL::FramebufferAttachmentObjectType::Texture;             break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::FrontFaceOrientation VKGL::Utils::get_front_face_orientation_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::FrontFaceOrientation result = VKGL::FrontFaceOrientation::Unknown;
@@ -122,6 +247,107 @@ VKGL::FrontFaceOrientation VKGL::Utils::get_front_face_orientation_for_gl_enum(c
     {
         case GL_CW:  result = VKGL::FrontFaceOrientation::Clockwise;         break;
         case GL_CCW: result = VKGL::FrontFaceOrientation::Counter_Clockwise; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::GeometryInputType VKGL::Utils::get_geometry_input_type_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::GeometryInputType result = VKGL::GeometryInputType::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_LINES:               result = VKGL::GeometryInputType::Lines;               break;
+        case GL_LINES_ADJACENCY:     result = VKGL::GeometryInputType::Lines_Adjacency;     break;
+        case GL_POINTS:              result = VKGL::GeometryInputType::Points;              break;
+        case GL_TRIANGLES:           result = VKGL::GeometryInputType::Triangles;           break;
+        case GL_TRIANGLES_ADJACENCY: result = VKGL::GeometryInputType::Triangles_Adjacency; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::GeometryOutputType VKGL::Utils::get_geometry_output_type_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::GeometryOutputType result = VKGL::GeometryOutputType::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_LINE_STRIP:     result = VKGL::GeometryOutputType::Line_Strip;     break;
+        case GL_POINTS:         result = VKGL::GeometryOutputType::Points;         break;
+        case GL_TRIANGLE_STRIP: result = VKGL::GeometryOutputType::Triangle_Strip; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_geometry_input_type(const VKGL::GeometryInputType& in_type)
+{
+    GLenum result = 0;
+
+    switch (in_type)
+    {
+        case VKGL::GeometryInputType::Lines:               result = GL_LINES;               break;
+        case VKGL::GeometryInputType::Lines_Adjacency:     result = GL_LINES_ADJACENCY;     break;
+        case VKGL::GeometryInputType::Points:              result = GL_POINTS;              break;
+        case VKGL::GeometryInputType::Triangles:           result = GL_TRIANGLES;           break;
+        case VKGL::GeometryInputType::Triangles_Adjacency: result = GL_TRIANGLES_ADJACENCY; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_geometry_output_type(const VKGL::GeometryOutputType& in_type)
+{
+    GLenum result = 0;
+
+    switch (in_type)
+    {
+        case VKGL::GeometryOutputType::Line_Strip:     result = GL_LINE_STRIP;     break;
+        case VKGL::GeometryOutputType::Points:         result = GL_POINTS;         break;
+        case VKGL::GeometryOutputType::Triangle_Strip: result = GL_TRIANGLE_STRIP; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_blend_equation(const VKGL::BlendEquation& in_blend_equation)
+{
+    GLenum result = 0;
+
+    switch (in_blend_equation)
+    {
+        case VKGL::BlendEquation::Function_Add:              result = GL_FUNC_ADD;              break;
+        case VKGL::BlendEquation::Function_Reverse_Subtract: result = GL_FUNC_REVERSE_SUBTRACT; break;
+        case VKGL::BlendEquation::Function_Subtract:         result = GL_FUNC_SUBTRACT;         break;
+        case VKGL::BlendEquation::Max:                       result = GL_MAX;                   break;
+        case VKGL::BlendEquation::Min:                       result = GL_MIN;                   break;
 
         default:
         {
@@ -153,6 +379,68 @@ GLenum VKGL::Utils::get_gl_enum_for_blend_function(const VKGL::BlendFunction& in
         case VKGL::BlendFunction::Src_Alpha_Saturate:       result = GL_SRC_ALPHA_SATURATE;       break;
         case VKGL::BlendFunction::Src_Color:                result = GL_SRC_COLOR;                break;
         case VKGL::BlendFunction::Zero:                     result = GL_ZERO;                     break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_buffer_access(const VKGL::BufferAccess& in_access)
+{
+    GLenum result = 0;
+
+    switch (in_access)
+    {
+        case VKGL::BufferAccess::Read_Only:  result = GL_READ_ONLY;  break;
+        case VKGL::BufferAccess::Read_Write: result = GL_READ_WRITE; break;
+        case VKGL::BufferAccess::Write_Only: result = GL_WRITE_ONLY; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_buffer_usage(const VKGL::BufferUsage& in_usage)
+{
+    GLenum result = 0;
+
+    switch (in_usage)
+    {
+        case VKGL::BufferUsage::Dynamic_Copy: result = GL_DYNAMIC_COPY; break;
+        case VKGL::BufferUsage::Dynamic_Draw: result = GL_DYNAMIC_DRAW; break;
+        case VKGL::BufferUsage::Dynamic_Read: result = GL_DYNAMIC_READ; break;
+        case VKGL::BufferUsage::Static_Copy:  result = GL_STATIC_COPY;  break;
+        case VKGL::BufferUsage::Static_Draw:  result = GL_STATIC_DRAW;  break;
+        case VKGL::BufferUsage::Static_Read:  result = GL_STATIC_READ;  break;
+        case VKGL::BufferUsage::Stream_Copy:  result = GL_STREAM_COPY;  break;
+        case VKGL::BufferUsage::Stream_Draw:  result = GL_STREAM_DRAW;  break;
+        case VKGL::BufferUsage::Stream_Read:  result = GL_STREAM_READ;  break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_clamp_read_color_mode(const VKGL::ClampReadColorMode& in_mode)
+{
+    GLenum result = 0;
+
+    switch (in_mode)
+    {
+        case VKGL::ClampReadColorMode::False:      result = GL_FALSE;      break;
+        case VKGL::ClampReadColorMode::Fixed_Only: result = GL_FIXED_ONLY; break;
 
         default:
         {
@@ -236,6 +524,48 @@ GLenum VKGL::Utils::get_gl_enum_for_depth_stencil_texture_mode(const VKGL::Depth
     {
         case VKGL::DepthStencilTextureMode::Depth_Component: result = GL_DEPTH_COMPONENT; break;
         case VKGL::DepthStencilTextureMode::Stencil_Index:   result = GL_STENCIL_INDEX;   break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_framebuffer_attachment_component_type(const VKGL::FramebufferAttachmentComponentType& in_type)
+{
+    GLenum result = 0;
+
+    switch (in_type)
+    {
+        case VKGL::FramebufferAttachmentComponentType::Float:               result = GL_FLOAT;               break;
+        case VKGL::FramebufferAttachmentComponentType::Int:                 result = GL_INT;                 break;
+        case VKGL::FramebufferAttachmentComponentType::None:                result = GL_NONE;                break;
+        case VKGL::FramebufferAttachmentComponentType::Signed_Normalized:   result = GL_SIGNED_NORMALIZED;   break;
+        case VKGL::FramebufferAttachmentComponentType::Unsigned_Int:        result = GL_UNSIGNED_INT;        break;
+        case VKGL::FramebufferAttachmentComponentType::Unsigned_Normalized: result = GL_UNSIGNED_NORMALIZED; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_framebuffer_attachment_object_type(const VKGL::FramebufferAttachmentObjectType& in_type)
+{
+    GLenum result = 0;
+
+    switch (in_type)
+    {
+        case VKGL::FramebufferAttachmentObjectType::Framebuffer_Default: result = GL_FRAMEBUFFER_DEFAULT; break;
+        case VKGL::FramebufferAttachmentObjectType::None:                result = GL_NONE;                break;
+        case VKGL::FramebufferAttachmentObjectType::Renderbuffer:        result = GL_RENDERBUFFER;        break;
+        case VKGL::FramebufferAttachmentObjectType::Texture:             result = GL_TEXTURE;             break;
 
         default:
         {
@@ -513,6 +843,24 @@ GLenum VKGL::Utils::get_gl_enum_for_pixel_format(const VKGL::PixelFormat& in_pix
     return result;
 }
 
+GLenum VKGL::Utils::get_gl_enum_for_point_sprite_coord_origin(const VKGL::PointSpriteCoordOrigin& in_origin)
+{
+    GLenum result = 0;
+
+    switch (in_origin)
+    {
+        case VKGL::PointSpriteCoordOrigin::Lower_Left: result = GL_LOWER_LEFT; break;
+        case VKGL::PointSpriteCoordOrigin::Upper_Left: result = GL_UPPER_LEFT; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 GLenum VKGL::Utils::get_gl_enum_for_polygon_mode(const VKGL::PolygonMode& in_polygon_mode)
 {
     GLenum result = 0;
@@ -561,6 +909,43 @@ GLenum VKGL::Utils::get_gl_enum_for_pixel_type(const VKGL::PixelType& in_pixel_t
         case VKGL::PixelType::Unsigned_Short_5_5_5_1:         result = GL_UNSIGNED_SHORT_5_5_5_1;         break;
         case VKGL::PixelType::Unsigned_Short_5_6_5:           result = GL_UNSIGNED_SHORT_5_6_5;           break;
         case VKGL::PixelType::Unsigned_Short_5_6_5_Rev:       result = GL_UNSIGNED_SHORT_5_6_5_REV;       break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_provoking_vertex_convention(const VKGL::ProvokingVertexConvention& in_convention)
+{
+    GLenum result = 0;
+
+    switch (in_convention)
+    {
+        case VKGL::ProvokingVertexConvention::First: result = GL_FIRST_VERTEX_CONVENTION; break;
+        case VKGL::ProvokingVertexConvention::Last:  result = GL_LAST_VERTEX_CONVENTION;  break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_shader_type(const VKGL::ShaderType& in_shader_type)
+{
+    GLenum result = 0;
+
+    switch (in_shader_type)
+    {
+        case VKGL::ShaderType::Fragment: result = GL_FRAGMENT_SHADER; break;
+        case VKGL::ShaderType::Geometry: result = GL_GEOMETRY_SHADER; break;
+        case VKGL::ShaderType::Vertex:   result = GL_VERTEX_SHADER;   break;
 
         default:
         {
@@ -651,6 +1036,29 @@ GLenum VKGL::Utils::get_gl_enum_for_texture_compare_mode(const VKGL::TextureComp
     {
         case VKGL::TextureCompareMode::Compare_Ref_to_Texture: result = GL_COMPARE_REF_TO_TEXTURE; break;
         case VKGL::TextureCompareMode::None:                   result = GL_NONE;                   break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_texture_cube_map_face(const VKGL::TextureCubeMapFace& in_face)
+{
+    GLenum result = 0;
+
+    switch (in_face)
+    {
+        case VKGL::TextureCubeMapFace::Negative_X: result = GL_TEXTURE_CUBE_MAP_NEGATIVE_X; break;
+        case VKGL::TextureCubeMapFace::Negative_Y: result = GL_TEXTURE_CUBE_MAP_NEGATIVE_Y; break;
+        case VKGL::TextureCubeMapFace::Negative_Z: result = GL_TEXTURE_CUBE_MAP_NEGATIVE_Z; break;
+        case VKGL::TextureCubeMapFace::None:       result = GL_NONE;                        break;
+        case VKGL::TextureCubeMapFace::Positive_X: result = GL_TEXTURE_CUBE_MAP_POSITIVE_X; break;
+        case VKGL::TextureCubeMapFace::Positive_Y: result = GL_TEXTURE_CUBE_MAP_POSITIVE_Y; break;
+        case VKGL::TextureCubeMapFace::Positive_Z: result = GL_TEXTURE_CUBE_MAP_POSITIVE_Z; break;
 
         default:
         {
@@ -774,6 +1182,125 @@ GLenum VKGL::Utils::get_gl_enum_for_texture_wrap_mode(const VKGL::TextureWrapMod
         case VKGL::TextureWrapMode::Mirror_Clamp_to_Edge: result = GL_MIRROR_CLAMP_TO_EDGE; break;
         case VKGL::TextureWrapMode::Mirrored_Repeat:      result = GL_MIRRORED_REPEAT;      break;
         case VKGL::TextureWrapMode::Repeat:               result = GL_REPEAT;               break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_transform_feedback_buffer_mode(const VKGL::TransformFeedbackBufferMode& in_mode)
+{
+    GLenum result = 0;
+
+    switch (in_mode)
+    {
+        case VKGL::TransformFeedbackBufferMode::Interleaved_Attribs: result = GL_INTERLEAVED_ATTRIBS; break;
+        case VKGL::TransformFeedbackBufferMode::Separate_Attribs:    result = GL_SEPARATE_ATTRIBS;    break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_variable_type(const VariableType& in_type)
+{
+    GLenum result = 0;
+
+    switch (in_type)
+    {
+        case VKGL::VariableType::Bool:                 result = GL_BOOL;                                      break;
+        case VKGL::VariableType::Bvec2:                result = GL_BOOL_VEC2;                                 break;
+        case VKGL::VariableType::Bvec3:                result = GL_BOOL_VEC3;                                 break;
+        case VKGL::VariableType::Bvec4:                result = GL_BOOL_VEC4;                                 break;
+        case VKGL::VariableType::Float:                result = GL_FLOAT;                                     break;
+        case VKGL::VariableType::Int:                  result = GL_INT;                                       break;
+        case VKGL::VariableType::Isampler1D:           result = GL_INT_SAMPLER_1D;                            break;
+        case VKGL::VariableType::Isampler1DArray:      result = GL_INT_SAMPLER_1D_ARRAY;                      break;
+        case VKGL::VariableType::Isampler2D:           result = GL_INT_SAMPLER_2D;                            break;
+        case VKGL::VariableType::Isampler2DArray:      result = GL_INT_SAMPLER_2D_ARRAY;                      break;
+        case VKGL::VariableType::Isampler2DMS:         result = GL_INT_SAMPLER_2D_MULTISAMPLE;                break;
+        case VKGL::VariableType::Isampler2DMSArray:    result = GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY;          break;
+        case VKGL::VariableType::Isampler2DRect:       result = GL_INT_SAMPLER_2D_RECT;                       break;
+        case VKGL::VariableType::Isampler3D:           result = GL_INT_SAMPLER_3D;                            break;
+        case VKGL::VariableType::IsamplerBuffer:       result = GL_INT_SAMPLER_BUFFER;                        break;
+        case VKGL::VariableType::IsamplerCube:         result = GL_INT_SAMPLER_CUBE;                          break;
+        case VKGL::VariableType::Ivec2:                result = GL_INT_VEC2;                                  break;
+        case VKGL::VariableType::Ivec3:                result = GL_INT_VEC3;                                  break;
+        case VKGL::VariableType::Ivec4:                result = GL_INT_VEC4;                                  break;
+        case VKGL::VariableType::Mat2:                 result = GL_FLOAT_MAT2;                                break;
+        case VKGL::VariableType::Mat3:                 result = GL_FLOAT_MAT3;                                break;
+        case VKGL::VariableType::Mat4:                 result = GL_FLOAT_MAT4;                                break;
+        case VKGL::VariableType::Mat2x3:               result = GL_FLOAT_MAT2x3;                              break;
+        case VKGL::VariableType::Mat2x4:               result = GL_FLOAT_MAT2x4;                              break;
+        case VKGL::VariableType::Mat3x2:               result = GL_FLOAT_MAT3x2;                              break;
+        case VKGL::VariableType::Mat3x4:               result = GL_FLOAT_MAT3x4;                              break;
+        case VKGL::VariableType::Mat4x2:               result = GL_FLOAT_MAT4x2;                              break;
+        case VKGL::VariableType::Mat4x3:               result = GL_FLOAT_MAT4x3;                              break;
+        case VKGL::VariableType::Sampler1D:            result = GL_SAMPLER_1D;                                break;
+        case VKGL::VariableType::Sampler1DArray:       result = GL_SAMPLER_1D_ARRAY;                          break;
+        case VKGL::VariableType::Sampler1DArrayShadow: result = GL_SAMPLER_1D_ARRAY_SHADOW;                   break;
+        case VKGL::VariableType::Sampler1DShadow:      result = GL_SAMPLER_1D_SHADOW;                         break;
+        case VKGL::VariableType::Sampler2D:            result = GL_SAMPLER_2D;                                break;
+        case VKGL::VariableType::Sampler2DArray:       result = GL_SAMPLER_2D_ARRAY;                          break;
+        case VKGL::VariableType::Sampler2DArrayShadow: result = GL_SAMPLER_2D_ARRAY_SHADOW;                   break;
+        case VKGL::VariableType::Sampler2DMS:          result = GL_SAMPLER_2D_MULTISAMPLE;                    break;
+        case VKGL::VariableType::Sampler2DMSArray:     result = GL_SAMPLER_2D_MULTISAMPLE_ARRAY;              break;
+        case VKGL::VariableType::Sampler2DRect:        result = GL_SAMPLER_2D_RECT;                           break;
+        case VKGL::VariableType::Sampler2DRectShadow:  result = GL_SAMPLER_2D_RECT_SHADOW;                    break;
+        case VKGL::VariableType::Sampler2DShadow:      result = GL_SAMPLER_2D_SHADOW;                         break;
+        case VKGL::VariableType::Sampler3D:            result = GL_SAMPLER_3D;                                break;
+        case VKGL::VariableType::SamplerBuffer:        result = GL_SAMPLER_BUFFER;                            break;
+        case VKGL::VariableType::SamplerCube:          result = GL_SAMPLER_CUBE;                              break;
+        case VKGL::VariableType::SamplerCubeShadow:    result = GL_SAMPLER_CUBE_SHADOW;                       break;
+        case VKGL::VariableType::Uint:                 result = GL_UNSIGNED_INT;                              break;
+        case VKGL::VariableType::Usampler1D:           result = GL_UNSIGNED_INT_SAMPLER_1D;                   break;
+        case VKGL::VariableType::Usampler1DArray:      result = GL_UNSIGNED_INT_SAMPLER_1D_ARRAY;             break;
+        case VKGL::VariableType::Usampler2D:           result = GL_UNSIGNED_INT_SAMPLER_2D;                   break;
+        case VKGL::VariableType::Usampler2DArray:      result = GL_UNSIGNED_INT_SAMPLER_2D_ARRAY;             break;
+        case VKGL::VariableType::Usampler2DMS:         result = GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE;       break;
+        case VKGL::VariableType::Usampler2DMSArray:    result = GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY; break;
+        case VKGL::VariableType::Usampler2DRect:       result = GL_UNSIGNED_INT_SAMPLER_2D_RECT;              break;
+        case VKGL::VariableType::Usampler3D:           result = GL_UNSIGNED_INT_SAMPLER_3D;                   break;
+        case VKGL::VariableType::UsamplerBuffer:       result = GL_UNSIGNED_INT_SAMPLER_BUFFER;               break;
+        case VKGL::VariableType::UsamplerCube:         result = GL_UNSIGNED_INT_SAMPLER_CUBE;                 break;
+        case VKGL::VariableType::Uvec2:                result = GL_UNSIGNED_INT_VEC2;                         break;
+        case VKGL::VariableType::Uvec3:                result = GL_UNSIGNED_INT_VEC3;                         break;
+        case VKGL::VariableType::Uvec4:                result = GL_UNSIGNED_INT_VEC4;                         break;
+        case VKGL::VariableType::Vec2:                 result = GL_FLOAT_VEC2;                                break;
+        case VKGL::VariableType::Vec3:                 result = GL_FLOAT_VEC3;                                break;
+        case VKGL::VariableType::Vec4:                 result = GL_FLOAT_VEC4;                                break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_vertex_attribute_array_type(const VKGL::VertexAttributeArrayType& in_type)
+{
+    GLenum result = 0;
+
+    switch (in_type)
+    {
+        case VKGL::VertexAttributeArrayType::Byte:           result = GL_BYTE;           break;
+        case VKGL::VertexAttributeArrayType::Double:         result = GL_DOUBLE;         break;
+        case VKGL::VertexAttributeArrayType::Float:          result = GL_FLOAT;          break;
+        case VKGL::VertexAttributeArrayType::Int:            result = GL_INT;            break;
+        case VKGL::VertexAttributeArrayType::Short:          result = GL_SHORT;          break;
+        case VKGL::VertexAttributeArrayType::Unsigned_Byte:  result = GL_UNSIGNED_BYTE;  break;
+        case VKGL::VertexAttributeArrayType::Unsigned_Int:   result = GL_UNSIGNED_INT;   break;
+        case VKGL::VertexAttributeArrayType::Unsigned_Short: result = GL_UNSIGNED_SHORT; break;
 
         default:
         {
@@ -1066,6 +1593,24 @@ VKGL::PixelType VKGL::Utils::get_pixel_type_for_gl_enum(const GLenum& in_enum)
     return result;
 }
 
+VKGL::PointSpriteCoordOrigin VKGL::Utils::get_point_sprite_coord_origin_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::PointSpriteCoordOrigin result = VKGL::PointSpriteCoordOrigin::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_LOWER_LEFT: result = VKGL::PointSpriteCoordOrigin::Lower_Left; break;
+        case GL_UPPER_LEFT: result = VKGL::PointSpriteCoordOrigin::Upper_Left; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::PolygonMode VKGL::Utils::get_polygon_mode_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::PolygonMode result = VKGL::PolygonMode::Unknown;
@@ -1075,6 +1620,43 @@ VKGL::PolygonMode VKGL::Utils::get_polygon_mode_for_gl_enum(const GLenum& in_enu
         case GL_FILL:  result = VKGL::PolygonMode::Fill;  break;
         case GL_LINE:  result = VKGL::PolygonMode::Line;  break;
         case GL_POINT: result = VKGL::PolygonMode::Point; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::ProvokingVertexConvention VKGL::Utils::get_provoking_vertex_convention_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::ProvokingVertexConvention result = VKGL::ProvokingVertexConvention::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_FIRST_VERTEX_CONVENTION: result = VKGL::ProvokingVertexConvention::First; break;
+        case GL_LAST_VERTEX_CONVENTION:  result = VKGL::ProvokingVertexConvention::Last;  break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::ShaderType VKGL::Utils::get_shader_type_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::ShaderType result = VKGL::ShaderType::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_FRAGMENT_SHADER: result = VKGL::ShaderType::Fragment; break;
+        case GL_GEOMETRY_SHADER: result = VKGL::ShaderType::Geometry; break;
+        case GL_VERTEX_SHADER:   result = VKGL::ShaderType::Vertex;   break;
 
         default:
         {
@@ -1165,6 +1747,29 @@ VKGL::TextureCompareMode VKGL::Utils::get_texture_compare_mode_for_gl_enum(const
     {
         case GL_COMPARE_REF_TO_TEXTURE: result = VKGL::TextureCompareMode::Compare_Ref_to_Texture; break;
         case GL_NONE:                   result = VKGL::TextureCompareMode::None;                   break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::TextureCubeMapFace VKGL::Utils::get_texture_cube_map_face_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::TextureCubeMapFace result = VKGL::TextureCubeMapFace::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_TEXTURE_CUBE_MAP_NEGATIVE_X: result = VKGL::TextureCubeMapFace::Negative_X; break;
+        case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y: result = VKGL::TextureCubeMapFace::Negative_Y; break;
+        case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z: result = VKGL::TextureCubeMapFace::Negative_Z; break;
+        case GL_NONE:                        result = VKGL::TextureCubeMapFace::None;       break;
+        case GL_TEXTURE_CUBE_MAP_POSITIVE_X: result = VKGL::TextureCubeMapFace::Positive_X; break;
+        case GL_TEXTURE_CUBE_MAP_POSITIVE_Y: result = VKGL::TextureCubeMapFace::Positive_Y; break;
+        case GL_TEXTURE_CUBE_MAP_POSITIVE_Z: result = VKGL::TextureCubeMapFace::Positive_Z; break;
 
         default:
         {
@@ -1288,6 +1893,126 @@ VKGL::TextureWrapMode VKGL::Utils::get_texture_wrap_mode_for_gl_enum(const GLenu
         case GL_MIRROR_CLAMP_TO_EDGE: result = VKGL::TextureWrapMode::Mirror_Clamp_to_Edge; break;
         case GL_MIRRORED_REPEAT:      result = VKGL::TextureWrapMode::Mirrored_Repeat;      break;
         case GL_REPEAT:               result = VKGL::TextureWrapMode::Repeat;               break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+
+VKGL::VariableType get_variable_type_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::VariableType result = VKGL::VariableType::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_BOOL:                                      result = VKGL::VariableType::Bool;                 break;
+        case GL_BOOL_VEC2:                                 result = VKGL::VariableType::Bvec2;                break;
+        case GL_BOOL_VEC3:                                 result = VKGL::VariableType::Bvec3;                break;
+        case GL_BOOL_VEC4:                                 result = VKGL::VariableType::Bvec4;                break;
+        case GL_FLOAT:                                     result = VKGL::VariableType::Float;                break;
+        case GL_FLOAT_MAT2:                                result = VKGL::VariableType::Mat2;                 break;
+        case GL_FLOAT_MAT3:                                result = VKGL::VariableType::Mat3;                 break;
+        case GL_FLOAT_MAT4:                                result = VKGL::VariableType::Mat4;                 break;
+        case GL_FLOAT_MAT2x3:                              result = VKGL::VariableType::Mat2x3;               break;
+        case GL_FLOAT_MAT2x4:                              result = VKGL::VariableType::Mat2x4;               break;
+        case GL_FLOAT_MAT3x2:                              result = VKGL::VariableType::Mat3x2;               break;
+        case GL_FLOAT_MAT3x4:                              result = VKGL::VariableType::Mat3x4;               break;
+        case GL_FLOAT_MAT4x2:                              result = VKGL::VariableType::Mat4x2;               break;
+        case GL_FLOAT_MAT4x3:                              result = VKGL::VariableType::Mat4x3;               break;
+        case GL_FLOAT_VEC2:                                result = VKGL::VariableType::Vec2;                 break;
+        case GL_FLOAT_VEC3:                                result = VKGL::VariableType::Vec3;                 break;
+        case GL_FLOAT_VEC4:                                result = VKGL::VariableType::Vec4;                 break;
+        case GL_INT:                                       result = VKGL::VariableType::Int;                  break;
+        case GL_INT_SAMPLER_1D:                            result = VKGL::VariableType::Isampler1D;           break;
+        case GL_INT_SAMPLER_1D_ARRAY:                      result = VKGL::VariableType::Isampler1DArray;      break;
+        case GL_INT_SAMPLER_2D:                            result = VKGL::VariableType::Isampler2D;           break;
+        case GL_INT_SAMPLER_2D_ARRAY:                      result = VKGL::VariableType::Isampler2DArray;      break;
+        case GL_INT_SAMPLER_2D_MULTISAMPLE:                result = VKGL::VariableType::Isampler2DMS;         break;
+        case GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY:          result = VKGL::VariableType::Isampler2DMSArray;    break;
+        case GL_INT_SAMPLER_2D_RECT:                       result = VKGL::VariableType::Isampler2DRect;       break;
+        case GL_INT_SAMPLER_3D:                            result = VKGL::VariableType::Isampler3D;           break;
+        case GL_INT_SAMPLER_BUFFER:                        result = VKGL::VariableType::IsamplerBuffer;       break;
+        case GL_INT_SAMPLER_CUBE:                          result = VKGL::VariableType::IsamplerCube;         break;
+        case GL_INT_VEC2:                                  result = VKGL::VariableType::Ivec2;                break;
+        case GL_INT_VEC3:                                  result = VKGL::VariableType::Ivec3;                break;
+        case GL_INT_VEC4:                                  result = VKGL::VariableType::Ivec4;                break;
+        case GL_SAMPLER_1D:                                result = VKGL::VariableType::Sampler1D;            break;
+        case GL_SAMPLER_1D_ARRAY:                          result = VKGL::VariableType::Sampler1DArray;       break;
+        case GL_SAMPLER_1D_ARRAY_SHADOW:                   result = VKGL::VariableType::Sampler1DArrayShadow; break;
+        case GL_SAMPLER_1D_SHADOW:                         result = VKGL::VariableType::Sampler1DShadow;      break;
+        case GL_SAMPLER_2D:                                result = VKGL::VariableType::Sampler2D;            break;
+        case GL_SAMPLER_2D_ARRAY:                          result = VKGL::VariableType::Sampler2DArray;       break;
+        case GL_SAMPLER_2D_ARRAY_SHADOW:                   result = VKGL::VariableType::Sampler2DArrayShadow; break;
+        case GL_SAMPLER_2D_MULTISAMPLE:                    result = VKGL::VariableType::Sampler2DMS;          break;
+        case GL_SAMPLER_2D_MULTISAMPLE_ARRAY:              result = VKGL::VariableType::Sampler2DMSArray;     break;
+        case GL_SAMPLER_2D_RECT:                           result = VKGL::VariableType::Sampler2DRect;        break;
+        case GL_SAMPLER_2D_RECT_SHADOW:                    result = VKGL::VariableType::Sampler2DRectShadow;  break;
+        case GL_SAMPLER_2D_SHADOW:                         result = VKGL::VariableType::Sampler2DShadow;      break;
+        case GL_SAMPLER_3D:                                result = VKGL::VariableType::Sampler3D;            break;
+        case GL_SAMPLER_BUFFER:                            result = VKGL::VariableType::SamplerBuffer;        break;
+        case GL_SAMPLER_CUBE:                              result = VKGL::VariableType::SamplerCube;          break;
+        case GL_SAMPLER_CUBE_SHADOW:                       result = VKGL::VariableType::SamplerCubeShadow;    break;
+        case GL_UNSIGNED_INT:                              result = VKGL::VariableType::Uint;                 break;
+        case GL_UNSIGNED_INT_SAMPLER_1D:                   result = VKGL::VariableType::Usampler1D;           break;
+        case GL_UNSIGNED_INT_SAMPLER_1D_ARRAY:             result = VKGL::VariableType::Usampler1DArray;      break;
+        case GL_UNSIGNED_INT_SAMPLER_2D:                   result = VKGL::VariableType::Usampler2D;           break;
+        case GL_UNSIGNED_INT_SAMPLER_2D_ARRAY:             result = VKGL::VariableType::Usampler2DArray;      break;
+        case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE:       result = VKGL::VariableType::Usampler2DMS;         break;
+        case GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY: result = VKGL::VariableType::Usampler2DMSArray;    break;
+        case GL_UNSIGNED_INT_SAMPLER_2D_RECT:              result = VKGL::VariableType::Usampler2DRect;       break;
+        case GL_UNSIGNED_INT_SAMPLER_3D:                   result = VKGL::VariableType::Usampler3D;           break;
+        case GL_UNSIGNED_INT_SAMPLER_BUFFER:               result = VKGL::VariableType::UsamplerBuffer;       break;
+        case GL_UNSIGNED_INT_SAMPLER_CUBE:                 result = VKGL::VariableType::UsamplerCube;         break;
+        case GL_UNSIGNED_INT_VEC2:                         result = VKGL::VariableType::Uvec2;                break;
+        case GL_UNSIGNED_INT_VEC3:                         result = VKGL::VariableType::Uvec3;                break;
+        case GL_UNSIGNED_INT_VEC4:                         result = VKGL::VariableType::Uvec4;                break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::TransformFeedbackBufferMode VKGL::Utils::get_transform_feedback_buffer_mode_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::TransformFeedbackBufferMode result = VKGL::TransformFeedbackBufferMode::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_INTERLEAVED_ATTRIBS: result = VKGL::TransformFeedbackBufferMode::Interleaved_Attribs; break;
+        case GL_SEPARATE_ATTRIBS:    result = VKGL::TransformFeedbackBufferMode::Separate_Attribs;    break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::VertexAttributeArrayType VKGL::Utils::get_vertex_attribute_array_type_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::VertexAttributeArrayType result = VKGL::VertexAttributeArrayType::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_BYTE:           result = VKGL::VertexAttributeArrayType::Byte;           break;
+        case GL_DOUBLE:         result = VKGL::VertexAttributeArrayType::Double;         break;
+        case GL_FLOAT:          result = VKGL::VertexAttributeArrayType::Float;          break;
+        case GL_INT:            result = VKGL::VertexAttributeArrayType::Int;            break;
+        case GL_SHORT:          result = VKGL::VertexAttributeArrayType::Short;          break;
+        case GL_UNSIGNED_BYTE:  result = VKGL::VertexAttributeArrayType::Unsigned_Byte;  break;
+        case GL_UNSIGNED_INT:   result = VKGL::VertexAttributeArrayType::Unsigned_Int;   break;
+        case GL_UNSIGNED_SHORT: result = VKGL::VertexAttributeArrayType::Unsigned_Short; break;
 
         default:
         {
