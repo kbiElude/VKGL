@@ -1,4 +1,5 @@
 #include "OpenGL/entrypoints/GL1.0/gl_clear_stencil.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
@@ -9,7 +10,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -22,12 +22,19 @@ VKGL_API void VKGL_APIENTRY glClearStencil(GLint s)
                                         s);
 }
 
+void vkglClearStencil_execute(VKGL::Context* in_context_ptr,
+                              const GLint&   in_s)
+{
+    in_context_ptr->set_clear_stencil_value(in_s);
+}
+
 void vkglClearStencil_with_validation(VKGL::Context* in_context_ptr,
                                       const GLint&   in_s)
 {
     if (validate(in_context_ptr,
                  in_s) )
     {
-        todo;
+        vkglClearStencil_execute(in_context_ptr,
+                                 in_s);
     }
 }

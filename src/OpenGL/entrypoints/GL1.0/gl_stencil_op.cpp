@@ -1,5 +1,7 @@
 #include "OpenGL/entrypoints/GL1.0/gl_stencil_op.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
+#include "OpenGL/utils_enum.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
                      const GLenum&  in_fail,
@@ -11,7 +13,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -28,6 +29,20 @@ VKGL_API void VKGL_APIENTRY glStencilOp(GLenum fail,
                                      zpass);
 }
 
+void vkglStencilOp_execute(VKGL::Context* in_context_ptr,
+                           const GLenum&  in_fail,
+                           const GLenum&  in_zfail,
+                           const GLenum&  in_zpass)
+{
+    const auto fail_vkgl  = VKGL::Utils::get_stencil_operation_for_gl_enum(in_fail);
+    const auto zfail_vkgl = VKGL::Utils::get_stencil_operation_for_gl_enum(in_zfail);
+    const auto zpass_vkgl = VKGL::Utils::get_stencil_operation_for_gl_enum(in_zpass);
+
+    in_context_ptr->set_stencil_operations(fail_vkgl,
+                                           zfail_vkgl,
+                                           zpass_vkgl);
+}
+
 void vkglStencilOp_with_validation(VKGL::Context* in_context_ptr,
                                    const GLenum&  in_fail,
                                    const GLenum&  in_zfail,
@@ -38,6 +53,9 @@ void vkglStencilOp_with_validation(VKGL::Context* in_context_ptr,
                  in_zfail,
                  in_zpass) )
     {
-        todo;
+        vkglStencilOp_execute(in_context_ptr,
+                              in_fail,
+                              in_zfail,
+                              in_zpass);
     }
 }

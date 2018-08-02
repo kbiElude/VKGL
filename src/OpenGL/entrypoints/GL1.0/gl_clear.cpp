@@ -1,5 +1,7 @@
 #include "OpenGL/entrypoints/GL1.0/gl_clear.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
+#include "OpenGL/utils_enum.h"
 
 static bool validate(VKGL::Context*    in_context_ptr,
                      const GLbitfield& in_mask)
@@ -9,7 +11,6 @@ static bool validate(VKGL::Context*    in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -21,12 +22,21 @@ VKGL_API void VKGL_APIENTRY glClear(GLbitfield mask)
                                  mask);
 }
 
+void vkglClear_execute(VKGL::Context*    in_context_ptr,
+                       const GLbitfield& in_mask)
+{
+    const auto clear_buffer_bits = VKGL::Utils::get_clear_buffer_bits_for_gl_enum(in_mask);
+
+    in_context_ptr->clear(clear_buffer_bits);
+}
+
 void vkglClear_with_validation(VKGL::Context*    in_context_ptr,
                                const GLbitfield& in_mask)
 {
     if (validate(in_context_ptr,
                  in_mask) )
     {
-        todo;
+        vkglClear_execute(in_context_ptr,
+                          in_mask);
     }
 }

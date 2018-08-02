@@ -136,6 +136,422 @@ VKGL::ClearBufferBits VKGL::Utils::get_clear_buffer_bits_for_gl_enum(const GLenu
     return result;
 }
 
+VKGL::ContextProperty VKGL::Utils::get_context_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::ContextProperty result = VKGL::ContextProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_ACTIVE_TEXTURE:                           result = VKGL::ContextProperty::Active_Texture;                           break;
+        case GL_ALIASED_LINE_WIDTH_RANGE:                 result = VKGL::ContextProperty::Aliased_Line_Width_Range;                 break;
+        case GL_ARRAY_BUFFER_BINDING:                     result = VKGL::ContextProperty::Array_Buffer_Binding;                     break;
+        case GL_BLEND:                                    result = VKGL::ContextProperty::Blend;                                    break;
+        case GL_BLEND_COLOR:                              result = VKGL::ContextProperty::Blend_Color;                              break;
+        case GL_BLEND_DST_ALPHA:                          result = VKGL::ContextProperty::Blend_Dst_Alpha;                          break;
+        case GL_BLEND_DST_RGB:                            result = VKGL::ContextProperty::Blend_Dst_RGB;                            break;
+        case GL_BLEND_EQUATION_ALPHA:                     result = VKGL::ContextProperty::Blend_Equation_Alpha;                     break;
+        case GL_BLEND_EQUATION_RGB:                       result = VKGL::ContextProperty::Blend_Equation_RGB;                       break;
+        case GL_BLEND_SRC_ALPHA:                          result = VKGL::ContextProperty::Blend_Src_Alpha;                          break;
+        case GL_BLEND_SRC_RGB:                            result = VKGL::ContextProperty::Blend_Src_RGB;                            break;
+        case GL_COLOR_CLEAR_VALUE:                        result = VKGL::ContextProperty::Color_Clear_Value;                        break;
+        case GL_COLOR_LOGIC_OP:                           result = VKGL::ContextProperty::Color_Logic_Op;                           break;
+        case GL_COLOR_WRITEMASK:                          result = VKGL::ContextProperty::Color_Writemask;                          break;
+        case GL_COMPRESSED_TEXTURE_FORMATS:               result = VKGL::ContextProperty::Compressed_Texture_Formats;               break;
+        case GL_CONTEXT_FLAGS:                            result = VKGL::ContextProperty::Context_Flags;                            break;
+        case GL_CULL_FACE:                                result = VKGL::ContextProperty::Cull_Face;                                break;
+        case GL_CURRENT_PROGRAM:                          result = VKGL::ContextProperty::Current_Program;                          break;
+        case GL_DEPTH_CLEAR_VALUE:                        result = VKGL::ContextProperty::Depth_Clear_Value;                        break;
+        case GL_DEPTH_FUNC:                               result = VKGL::ContextProperty::Depth_Func;                               break;
+        case GL_DEPTH_RANGE:                              result = VKGL::ContextProperty::Depth_Range;                              break;
+        case GL_DEPTH_TEST:                               result = VKGL::ContextProperty::Depth_Test;                               break;
+        case GL_DEPTH_WRITEMASK:                          result = VKGL::ContextProperty::Depth_Writemask;                          break;
+        case GL_DITHER:                                   result = VKGL::ContextProperty::Dither;                                   break;
+        case GL_DOUBLEBUFFER:                             result = VKGL::ContextProperty::Doublebuffer;                             break;
+        case GL_DRAW_BUFFER:                              result = VKGL::ContextProperty::Draw_Buffer;                              break;
+        case GL_DRAW_BUFFER0:                             result = VKGL::ContextProperty::Draw_Buffer0;                             break;
+        case GL_DRAW_BUFFER1:                             result = VKGL::ContextProperty::Draw_Buffer1;                             break;
+        case GL_DRAW_BUFFER2:                             result = VKGL::ContextProperty::Draw_Buffer2;                             break;
+        case GL_DRAW_BUFFER3:                             result = VKGL::ContextProperty::Draw_Buffer3;                             break;
+        case GL_DRAW_BUFFER4:                             result = VKGL::ContextProperty::Draw_Buffer4;                             break;
+        case GL_DRAW_BUFFER5:                             result = VKGL::ContextProperty::Draw_Buffer5;                             break;
+        case GL_DRAW_BUFFER6:                             result = VKGL::ContextProperty::Draw_Buffer6;                             break;
+        case GL_DRAW_BUFFER7:                             result = VKGL::ContextProperty::Draw_Buffer7;                             break;
+        case GL_DRAW_FRAMEBUFFER_BINDING:                 result = VKGL::ContextProperty::Draw_Framebuffer_Binding;                 break;
+        case GL_ELEMENT_ARRAY_BUFFER_BINDING:             result = VKGL::ContextProperty::Element_Array_Buffer_Binding;             break;
+        case GL_FRAGMENT_SHADER_DERIVATIVE_HINT:          result = VKGL::ContextProperty::Fragment_Shader_Derivative_Hint;          break;
+        case GL_LINE_SMOOTH:                              result = VKGL::ContextProperty::Line_Smooth;                              break;
+        case GL_LINE_SMOOTH_HINT:                         result = VKGL::ContextProperty::Line_Smooth_Hint;                         break;
+        case GL_LINE_WIDTH:                               result = VKGL::ContextProperty::Line_Width;                               break;
+        case GL_LOGIC_OP_MODE:                            result = VKGL::ContextProperty::Logic_Op_Mode;                            break;
+        case GL_MAJOR_VERSION:                            result = VKGL::ContextProperty::Major_Version;                            break;
+        case GL_MAX_3D_TEXTURE_SIZE:                      result = VKGL::ContextProperty::Max_3D_Texture_Size;                      break;
+        case GL_MAX_ARRAY_TEXTURE_LAYERS:                 result = VKGL::ContextProperty::Max_Array_Texture_Layers;                 break;
+        case GL_MAX_CLIP_DISTANCES:                       result = VKGL::ContextProperty::Max_Clip_Distances;                       break;
+        case GL_MAX_COLOR_TEXTURE_SAMPLES:                result = VKGL::ContextProperty::Max_Color_Texture_Samples;                break;
+        case GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS: result = VKGL::ContextProperty::Max_Combined_Fragment_Uniform_Components; break;
+        case GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS: result = VKGL::ContextProperty::Max_Combined_Geometry_Uniform_Components; break;
+        case GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS:         result = VKGL::ContextProperty::Max_Combined_Texture_Image_Units;         break;
+        case GL_MAX_COMBINED_UNIFORM_BLOCKS:              result = VKGL::ContextProperty::Max_Combined_Uniform_Blocks;              break;
+        case GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS:   result = VKGL::ContextProperty::Max_Combined_Vertex_Uniform_Components;   break;
+        case GL_MAX_CUBE_MAP_TEXTURE_SIZE:                result = VKGL::ContextProperty::Max_Cube_Map_Texture_Size;                break;
+        case GL_MAX_DEPTH_TEXTURE_SAMPLES:                result = VKGL::ContextProperty::Max_Depth_Texture_Samples;                break;
+        case GL_MAX_DRAW_BUFFERS:                         result = VKGL::ContextProperty::Max_Draw_Buffers;                         break;
+        case GL_MAX_DUAL_SOURCE_DRAW_BUFFERS:             result = VKGL::ContextProperty::Max_Dual_Source_Draw_Buffers;             break;
+        case GL_MAX_ELEMENTS_INDICES:                     result = VKGL::ContextProperty::Max_Elements_Indices;                     break;
+        case GL_MAX_ELEMENTS_VERTICES:                    result = VKGL::ContextProperty::Max_Elements_Vertices;                    break;
+        case GL_MAX_FRAGMENT_INPUT_COMPONENTS:            result = VKGL::ContextProperty::Max_Fragment_Input_Components;            break;
+        case GL_MAX_FRAGMENT_UNIFORM_BLOCKS:              result = VKGL::ContextProperty::Max_Fragment_Uniform_Blocks;              break;
+        case GL_MAX_FRAGMENT_UNIFORM_COMPONENTS:          result = VKGL::ContextProperty::Max_Fragment_Uniform_Components;          break;
+        case GL_MAX_GEOMETRY_INPUT_COMPONENTS:            result = VKGL::ContextProperty::Max_Geometry_Input_Components;            break;
+        case GL_MAX_GEOMETRY_OUTPUT_COMPONENTS:           result = VKGL::ContextProperty::Max_Geometry_Output_Components;           break;
+        case GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS:         result = VKGL::ContextProperty::Max_Geometry_Texture_Image_Units;         break;
+        case GL_MAX_GEOMETRY_UNIFORM_BLOCKS:              result = VKGL::ContextProperty::Max_Geometry_Uniform_Blocks;              break;
+        case GL_MAX_GEOMETRY_UNIFORM_COMPONENTS:          result = VKGL::ContextProperty::Max_Geometry_Uniform_Components;          break;
+        case GL_MAX_INTEGER_SAMPLES:                      result = VKGL::ContextProperty::Max_Integer_Samples;                      break;
+        case GL_MAX_PROGRAM_TEXEL_OFFSET:                 result = VKGL::ContextProperty::Max_Program_Texel_Offset;                 break;
+        case GL_MAX_RECTANGLE_TEXTURE_SIZE:               result = VKGL::ContextProperty::Max_Rectangle_Texture_Size;               break;
+        case GL_MAX_RENDERBUFFER_SIZE:                    result = VKGL::ContextProperty::Max_Renderbuffer_Size;                    break;
+        case GL_MAX_SAMPLE_MASK_WORDS:                    result = VKGL::ContextProperty::Max_Sample_Mask_Words;                    break;
+        case GL_MAX_SERVER_WAIT_TIMEOUT:                  result = VKGL::ContextProperty::Max_Server_Wait_Timeout;                  break;
+        case GL_MAX_TEXTURE_BUFFER_SIZE:                  result = VKGL::ContextProperty::Max_Texture_Buffer_Size;                  break;
+        case GL_MAX_TEXTURE_IMAGE_UNITS:                  result = VKGL::ContextProperty::Max_Texture_Image_Units;                  break;
+        case GL_MAX_TEXTURE_LOD_BIAS:                     result = VKGL::ContextProperty::Max_Texture_LOD_Bias;                     break;
+        case GL_MAX_TEXTURE_SIZE:                         result = VKGL::ContextProperty::Max_Texture_Size;                         break;
+        case GL_MAX_UNIFORM_BLOCK_SIZE:                   result = VKGL::ContextProperty::Max_Uniform_Block_Size;                   break;
+        case GL_MAX_UNIFORM_BUFFER_BINDINGS:              result = VKGL::ContextProperty::Max_Uniform_Buffer_Bindings;              break;
+        case GL_MAX_VARYING_COMPONENTS:                   result = VKGL::ContextProperty::Max_Varying_Components;                   break;
+        case GL_MAX_VERTEX_ATTRIBS:                       result = VKGL::ContextProperty::Max_Vertex_Attribs;                       break;
+        case GL_MAX_VERTEX_OUTPUT_COMPONENTS:             result = VKGL::ContextProperty::Max_Vertex_Output_Components;             break;
+        case GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS:           result = VKGL::ContextProperty::Max_Vertex_Texture_Image_Units;           break;
+        case GL_MAX_VERTEX_UNIFORM_BLOCKS:                result = VKGL::ContextProperty::Max_Vertex_Uniform_Blocks;                break;
+        case GL_MAX_VERTEX_UNIFORM_COMPONENTS:            result = VKGL::ContextProperty::Max_Vertex_Uniform_Components;            break;
+        case GL_MAX_VIEWPORT_DIMS:                        result = VKGL::ContextProperty::Max_Viewport_Dims;                        break;
+        case GL_MINOR_VERSION:                            result = VKGL::ContextProperty::Minor_Version;                            break;
+        case GL_MIN_PROGRAM_TEXEL_OFFSET:                 result = VKGL::ContextProperty::Min_Program_Texel_Offset;                 break;
+        case GL_NUM_COMPRESSED_TEXTURE_FORMATS:           result = VKGL::ContextProperty::Num_Compressed_Texture_Formats;           break;
+        case GL_NUM_EXTENSIONS:                           result = VKGL::ContextProperty::Num_Extensions;                           break;
+        case GL_PACK_ALIGNMENT:                           result = VKGL::ContextProperty::Pack_Alignment;                           break;
+        case GL_PACK_IMAGE_HEIGHT:                        result = VKGL::ContextProperty::Pack_Image_Height;                        break;
+        case GL_PACK_LSB_FIRST:                           result = VKGL::ContextProperty::Pack_LSB_First;                           break;
+        case GL_PACK_ROW_LENGTH:                          result = VKGL::ContextProperty::Pack_Row_Length;                          break;
+        case GL_PACK_SKIP_IMAGES:                         result = VKGL::ContextProperty::Pack_Skip_Images;                         break;
+        case GL_PACK_SKIP_PIXELS:                         result = VKGL::ContextProperty::Pack_Skip_Pixels;                         break;
+        case GL_PACK_SKIP_ROWS:                           result = VKGL::ContextProperty::Pack_Skip_Rows;                           break;
+        case GL_PACK_SWAP_BYTES:                          result = VKGL::ContextProperty::Pack_Swap_Bytes;                          break;
+        case GL_PIXEL_PACK_BUFFER_BINDING:                result = VKGL::ContextProperty::Pixel_Pack_Buffer_Binding;                break;
+        case GL_PIXEL_UNPACK_BUFFER_BINDING:              result = VKGL::ContextProperty::Pixel_Unpack_Buffer_Binding;              break;
+        case GL_POINT_FADE_THRESHOLD_SIZE:                result = VKGL::ContextProperty::Point_Fade_Threshold_Size;                break;
+        case GL_POINT_SIZE:                               result = VKGL::ContextProperty::Point_Size;                               break;
+        case GL_POINT_SIZE_GRANULARITY:                   result = VKGL::ContextProperty::Point_Size_Granularity;                   break;
+        case GL_POINT_SIZE_RANGE:                         result = VKGL::ContextProperty::Point_Size_Range;                         break;
+        case GL_POLYGON_OFFSET_FACTOR:                    result = VKGL::ContextProperty::Polygon_Offset_Factor;                    break;
+        case GL_POLYGON_OFFSET_FILL:                      result = VKGL::ContextProperty::Polygon_Offset_Fill;                      break;
+        case GL_POLYGON_OFFSET_LINE:                      result = VKGL::ContextProperty::Polygon_Offset_Line;                      break;
+        case GL_POLYGON_OFFSET_POINT:                     result = VKGL::ContextProperty::Polygon_Offset_Point;                     break;
+        case GL_POLYGON_OFFSET_UNITS:                     result = VKGL::ContextProperty::Polygon_Offset_Units;                     break;
+        case GL_POLYGON_SMOOTH:                           result = VKGL::ContextProperty::Polygon_Smooth;                           break;
+        case GL_POLYGON_SMOOTH_HINT:                      result = VKGL::ContextProperty::Polygon_Smooth_Hint;                      break;
+        case GL_PRIMITIVE_RESTART_INDEX:                  result = VKGL::ContextProperty::Primitive_Restart_Index;                  break;
+        case GL_PROGRAM_POINT_SIZE:                       result = VKGL::ContextProperty::Program_Point_Size;                       break;
+        case GL_PROVOKING_VERTEX:                         result = VKGL::ContextProperty::Provoking_Vertex;                         break;
+        case GL_READ_BUFFER:                              result = VKGL::ContextProperty::Read_Buffer;                              break;
+        case GL_READ_FRAMEBUFFER_BINDING:                 result = VKGL::ContextProperty::Read_Framebuffer_Binding;                 break;
+        case GL_RENDERBUFFER_BINDING:                     result = VKGL::ContextProperty::Renderbuffer_Binding;                     break;
+        case GL_SAMPLER_BINDING:                          result = VKGL::ContextProperty::Sampler_Binding;                          break;
+        case GL_SAMPLES:                                  result = VKGL::ContextProperty::Samples;                                  break;
+        case GL_SAMPLE_BUFFERS:                           result = VKGL::ContextProperty::Sample_Buffers;                           break;
+        case GL_SAMPLE_COVERAGE_INVERT:                   result = VKGL::ContextProperty::Sample_Coverage_Invert;                   break;
+        case GL_SAMPLE_COVERAGE_VALUE:                    result = VKGL::ContextProperty::Sample_Coverage_Value;                    break;
+        case GL_SCISSOR_BOX:                              result = VKGL::ContextProperty::Scissor_Box;                              break;
+        case GL_SCISSOR_TEST:                             result = VKGL::ContextProperty::Scissor_Test;                             break;
+        case GL_SMOOTH_LINE_WIDTH_GRANULARITY:            result = VKGL::ContextProperty::Smooth_Line_Width_Granularity;            break;
+        case GL_SMOOTH_LINE_WIDTH_RANGE:                  result = VKGL::ContextProperty::Smooth_Line_Width_Range;                  break;
+        case GL_STENCIL_BACK_FAIL:                        result = VKGL::ContextProperty::Stencil_Back_Fail;                        break;
+        case GL_STENCIL_BACK_FUNC:                        result = VKGL::ContextProperty::Stencil_Back_Func;                        break;
+        case GL_STENCIL_BACK_PASS_DEPTH_FAIL:             result = VKGL::ContextProperty::Stencil_Back_Pass_Depth_Fail;             break;
+        case GL_STENCIL_BACK_PASS_DEPTH_PASS:             result = VKGL::ContextProperty::Stencil_Back_Pass_Depth_Pass;             break;
+        case GL_STENCIL_BACK_REF:                         result = VKGL::ContextProperty::Stencil_Back_Ref;                         break;
+        case GL_STENCIL_BACK_VALUE_MASK:                  result = VKGL::ContextProperty::Stencil_Back_Value_Mask;                  break;
+        case GL_STENCIL_BACK_WRITEMASK:                   result = VKGL::ContextProperty::Stencil_Back_Writemask;                   break;
+        case GL_STENCIL_CLEAR_VALUE:                      result = VKGL::ContextProperty::Stencil_Clear_Value;                      break;
+        case GL_STENCIL_FAIL:                             result = VKGL::ContextProperty::Stencil_Fail;                             break;
+        case GL_STENCIL_FUNC:                             result = VKGL::ContextProperty::Stencil_Func;                             break;
+        case GL_STENCIL_PASS_DEPTH_FAIL:                  result = VKGL::ContextProperty::Stencil_Pass_Depth_Fail;                  break;
+        case GL_STENCIL_PASS_DEPTH_PASS:                  result = VKGL::ContextProperty::Stencil_Pass_Depth_Pass;                  break;
+        case GL_STENCIL_REF:                              result = VKGL::ContextProperty::Stencil_Ref;                              break;
+        case GL_STENCIL_TEST:                             result = VKGL::ContextProperty::Stencil_Test;                             break;
+        case GL_STENCIL_VALUE_MASK:                       result = VKGL::ContextProperty::Stencil_Value_Mask;                       break;
+        case GL_STENCIL_WRITEMASK:                        result = VKGL::ContextProperty::Stencil_Writemask;                        break;
+        case GL_STEREO:                                   result = VKGL::ContextProperty::Stereo;                                   break;
+        case GL_SUBPIXEL_BITS:                            result = VKGL::ContextProperty::Subpixel_Bits;                            break;
+        case GL_TEXTURE_BINDING_1D:                       result = VKGL::ContextProperty::Texture_Binding_1D;                       break;
+        case GL_TEXTURE_BINDING_1D_ARRAY:                 result = VKGL::ContextProperty::Texture_Binding_1D_Array;                 break;
+        case GL_TEXTURE_BINDING_2D:                       result = VKGL::ContextProperty::Texture_Binding_2D;                       break;
+        case GL_TEXTURE_BINDING_2D_ARRAY:                 result = VKGL::ContextProperty::Texture_Binding_2D_Array;                 break;
+        case GL_TEXTURE_BINDING_2D_MULTISAMPLE:           result = VKGL::ContextProperty::Texture_Binding_2D_Multisample;           break;
+        case GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY:     result = VKGL::ContextProperty::Texture_Binding_2D_Multisample_Array;     break;
+        case GL_TEXTURE_BINDING_3D:                       result = VKGL::ContextProperty::Texture_Binding_3D;                       break;
+        case GL_TEXTURE_BINDING_BUFFER:                   result = VKGL::ContextProperty::Texture_Binding_Buffer;                   break;
+        case GL_TEXTURE_BINDING_CUBE_MAP:                 result = VKGL::ContextProperty::Texture_Binding_Cube_Map;                 break;
+        case GL_TEXTURE_BINDING_RECTANGLE:                result = VKGL::ContextProperty::Texture_Binding_Rectangle;                break;
+        case GL_TEXTURE_COMPRESSION_HINT:                 result = VKGL::ContextProperty::Texture_Compression_Hint;                 break;
+        case GL_TIMESTAMP:                                result = VKGL::ContextProperty::Timestamp;                                break;
+        case GL_TRANSFORM_FEEDBACK_BUFFER_BINDING:        result = VKGL::ContextProperty::Transform_Feedback_Buffer_Binding;        break;
+        case GL_TRANSFORM_FEEDBACK_BUFFER_SIZE:           result = VKGL::ContextProperty::Transform_Feedback_Buffer_Size;           break;
+        case GL_TRANSFORM_FEEDBACK_BUFFER_START:          result = VKGL::ContextProperty::Transform_Feedback_Buffer_Start;          break;
+        case GL_UNIFORM_BUFFER_BINDING:                   result = VKGL::ContextProperty::Uniform_Buffer_Binding;                   break;
+        case GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT:          result = VKGL::ContextProperty::Uniform_Buffer_Offset_Alignment;          break;
+        case GL_UNIFORM_BUFFER_SIZE:                      result = VKGL::ContextProperty::Uniform_Buffer_Size;                      break;
+        case GL_UNIFORM_BUFFER_START:                     result = VKGL::ContextProperty::Uniform_Buffer_Start;                     break;
+        case GL_UNPACK_ALIGNMENT:                         result = VKGL::ContextProperty::Unpack_Alignment;                         break;
+        case GL_UNPACK_IMAGE_HEIGHT:                      result = VKGL::ContextProperty::Unpack_Image_Height;                      break;
+        case GL_UNPACK_LSB_FIRST:                         result = VKGL::ContextProperty::Unpack_LSB_First;                         break;
+        case GL_UNPACK_ROW_LENGTH:                        result = VKGL::ContextProperty::Unpack_Row_Length;                        break;
+        case GL_UNPACK_SKIP_IMAGES:                       result = VKGL::ContextProperty::Unpack_Skip_Images;                       break;
+        case GL_UNPACK_SKIP_PIXELS:                       result = VKGL::ContextProperty::Unpack_Skip_Pixels;                       break;
+        case GL_UNPACK_SKIP_ROWS:                         result = VKGL::ContextProperty::Unpack_Skip_Rows;                         break;
+        case GL_UNPACK_SWAP_BYTES:                        result = VKGL::ContextProperty::Unpack_Swap_Bytes;                        break;
+        case GL_VIEWPORT:                                 result = VKGL::ContextProperty::Viewport;                                 break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::ErrorCode VKGL::Utils::get_error_code_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::ErrorCode result = VKGL::ErrorCode::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_INVALID_ENUM:                  result = VKGL::ErrorCode::Invalid_Enum;                  break;
+        case GL_INVALID_FRAMEBUFFER_OPERATION: result = VKGL::ErrorCode::Invalid_Framebuffer_Operation; break;
+        case GL_INVALID_OPERATION:             result = VKGL::ErrorCode::Invalid_Operation;             break;
+        case GL_INVALID_VALUE:                 result = VKGL::ErrorCode::Invalid_Value;                 break;
+        case GL_NO_ERROR:                      result = VKGL::ErrorCode::No_Error;                      break;
+        case GL_OUT_OF_MEMORY:                 result = VKGL::ErrorCode::Out_Of_Memory;                 break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_context_property(const VKGL::ContextProperty& in_property)
+{
+    GLenum result = 0;
+
+    switch (in_property)
+    {
+        case VKGL::ContextProperty::Active_Texture:                           result = GL_ACTIVE_TEXTURE;                           break;
+        case VKGL::ContextProperty::Aliased_Line_Width_Range:                 result = GL_ALIASED_LINE_WIDTH_RANGE;                 break;
+        case VKGL::ContextProperty::Array_Buffer_Binding:                     result = GL_ARRAY_BUFFER_BINDING;                     break;
+        case VKGL::ContextProperty::Blend:                                    result = GL_BLEND;                                    break;
+        case VKGL::ContextProperty::Blend_Color:                              result = GL_BLEND_COLOR;                              break;
+        case VKGL::ContextProperty::Blend_Dst_Alpha:                          result = GL_BLEND_DST_ALPHA;                          break;
+        case VKGL::ContextProperty::Blend_Dst_RGB:                            result = GL_BLEND_DST_RGB;                            break;
+        case VKGL::ContextProperty::Blend_Equation_Alpha:                     result = GL_BLEND_EQUATION_ALPHA;                     break;
+        case VKGL::ContextProperty::Blend_Equation_RGB:                       result = GL_BLEND_EQUATION_RGB;                       break;
+        case VKGL::ContextProperty::Blend_Src_Alpha:                          result = GL_BLEND_SRC_ALPHA;                          break;
+        case VKGL::ContextProperty::Blend_Src_RGB:                            result = GL_BLEND_SRC_RGB;                            break;
+        case VKGL::ContextProperty::Color_Clear_Value:                        result = GL_COLOR_CLEAR_VALUE;                        break;
+        case VKGL::ContextProperty::Color_Logic_Op:                           result = GL_COLOR_LOGIC_OP;                           break;
+        case VKGL::ContextProperty::Color_Writemask:                          result = GL_COLOR_WRITEMASK;                          break;
+        case VKGL::ContextProperty::Compressed_Texture_Formats:               result = GL_COMPRESSED_TEXTURE_FORMATS;               break;
+        case VKGL::ContextProperty::Context_Flags:                            result = GL_CONTEXT_FLAGS;                            break;
+        case VKGL::ContextProperty::Cull_Face:                                result = GL_CULL_FACE;                                break;
+        case VKGL::ContextProperty::Current_Program:                          result = GL_CURRENT_PROGRAM;                          break;
+        case VKGL::ContextProperty::Depth_Clear_Value:                        result = GL_DEPTH_CLEAR_VALUE;                        break;
+        case VKGL::ContextProperty::Depth_Func:                               result = GL_DEPTH_FUNC;                               break;
+        case VKGL::ContextProperty::Depth_Range:                              result = GL_DEPTH_RANGE;                              break;
+        case VKGL::ContextProperty::Depth_Test:                               result = GL_DEPTH_TEST;                               break;
+        case VKGL::ContextProperty::Depth_Writemask:                          result = GL_DEPTH_WRITEMASK;                          break;
+        case VKGL::ContextProperty::Dither:                                   result = GL_DITHER;                                   break;
+        case VKGL::ContextProperty::Doublebuffer:                             result = GL_DOUBLEBUFFER;                             break;
+        case VKGL::ContextProperty::Draw_Buffer:                              result = GL_DRAW_BUFFER;                              break;
+        case VKGL::ContextProperty::Draw_Buffer0:                             result = GL_DRAW_BUFFER0;                             break;
+        case VKGL::ContextProperty::Draw_Buffer1:                             result = GL_DRAW_BUFFER1;                             break;
+        case VKGL::ContextProperty::Draw_Buffer2:                             result = GL_DRAW_BUFFER2;                             break;
+        case VKGL::ContextProperty::Draw_Buffer3:                             result = GL_DRAW_BUFFER3;                             break;
+        case VKGL::ContextProperty::Draw_Buffer4:                             result = GL_DRAW_BUFFER4;                             break;
+        case VKGL::ContextProperty::Draw_Buffer5:                             result = GL_DRAW_BUFFER5;                             break;
+        case VKGL::ContextProperty::Draw_Buffer6:                             result = GL_DRAW_BUFFER6;                             break;
+        case VKGL::ContextProperty::Draw_Buffer7:                             result = GL_DRAW_BUFFER7;                             break;
+        case VKGL::ContextProperty::Draw_Framebuffer_Binding:                 result = GL_DRAW_FRAMEBUFFER_BINDING;                 break;
+        case VKGL::ContextProperty::Element_Array_Buffer_Binding:             result = GL_ELEMENT_ARRAY_BUFFER_BINDING;             break;
+        case VKGL::ContextProperty::Fragment_Shader_Derivative_Hint:          result = GL_FRAGMENT_SHADER_DERIVATIVE_HINT;          break;
+        case VKGL::ContextProperty::Line_Smooth:                              result = GL_LINE_SMOOTH;                              break;
+        case VKGL::ContextProperty::Line_Smooth_Hint:                         result = GL_LINE_SMOOTH_HINT;                         break;
+        case VKGL::ContextProperty::Line_Width:                               result = GL_LINE_WIDTH;                               break;
+        case VKGL::ContextProperty::Logic_Op_Mode:                            result = GL_LOGIC_OP_MODE;                            break;
+        case VKGL::ContextProperty::Major_Version:                            result = GL_MAJOR_VERSION;                            break;
+        case VKGL::ContextProperty::Max_3D_Texture_Size:                      result = GL_MAX_3D_TEXTURE_SIZE;                      break;
+        case VKGL::ContextProperty::Max_Array_Texture_Layers:                 result = GL_MAX_ARRAY_TEXTURE_LAYERS;                 break;
+        case VKGL::ContextProperty::Max_Clip_Distances:                       result = GL_MAX_CLIP_DISTANCES;                       break;
+        case VKGL::ContextProperty::Max_Color_Texture_Samples:                result = GL_MAX_COLOR_TEXTURE_SAMPLES;                break;
+        case VKGL::ContextProperty::Max_Combined_Fragment_Uniform_Components: result = GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS; break;
+        case VKGL::ContextProperty::Max_Combined_Geometry_Uniform_Components: result = GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS; break;
+        case VKGL::ContextProperty::Max_Combined_Texture_Image_Units:         result = GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS;         break;
+        case VKGL::ContextProperty::Max_Combined_Uniform_Blocks:              result = GL_MAX_COMBINED_UNIFORM_BLOCKS;              break;
+        case VKGL::ContextProperty::Max_Combined_Vertex_Uniform_Components:   result = GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS;   break;
+        case VKGL::ContextProperty::Max_Cube_Map_Texture_Size:                result = GL_MAX_CUBE_MAP_TEXTURE_SIZE;                break;
+        case VKGL::ContextProperty::Max_Depth_Texture_Samples:                result = GL_MAX_DEPTH_TEXTURE_SAMPLES;                break;
+        case VKGL::ContextProperty::Max_Draw_Buffers:                         result = GL_MAX_DRAW_BUFFERS;                         break;
+        case VKGL::ContextProperty::Max_Dual_Source_Draw_Buffers:             result = GL_MAX_DUAL_SOURCE_DRAW_BUFFERS;             break;
+        case VKGL::ContextProperty::Max_Elements_Indices:                     result = GL_MAX_ELEMENTS_INDICES;                     break;
+        case VKGL::ContextProperty::Max_Elements_Vertices:                    result = GL_MAX_ELEMENTS_VERTICES;                    break;
+        case VKGL::ContextProperty::Max_Fragment_Input_Components:            result = GL_MAX_FRAGMENT_INPUT_COMPONENTS;            break;
+        case VKGL::ContextProperty::Max_Fragment_Uniform_Blocks:              result = GL_MAX_FRAGMENT_UNIFORM_BLOCKS;              break;
+        case VKGL::ContextProperty::Max_Fragment_Uniform_Components:          result = GL_MAX_FRAGMENT_UNIFORM_COMPONENTS;          break;
+        case VKGL::ContextProperty::Max_Geometry_Input_Components:            result = GL_MAX_GEOMETRY_INPUT_COMPONENTS;            break;
+        case VKGL::ContextProperty::Max_Geometry_Output_Components:           result = GL_MAX_GEOMETRY_OUTPUT_COMPONENTS;           break;
+        case VKGL::ContextProperty::Max_Geometry_Texture_Image_Units:         result = GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS;         break;
+        case VKGL::ContextProperty::Max_Geometry_Uniform_Blocks:              result = GL_MAX_GEOMETRY_UNIFORM_BLOCKS;              break;
+        case VKGL::ContextProperty::Max_Geometry_Uniform_Components:          result = GL_MAX_GEOMETRY_UNIFORM_COMPONENTS;          break;
+        case VKGL::ContextProperty::Max_Integer_Samples:                      result = GL_MAX_INTEGER_SAMPLES;                      break;
+        case VKGL::ContextProperty::Max_Program_Texel_Offset:                 result = GL_MAX_PROGRAM_TEXEL_OFFSET;                 break;
+        case VKGL::ContextProperty::Max_Rectangle_Texture_Size:               result = GL_MAX_RECTANGLE_TEXTURE_SIZE;               break;
+        case VKGL::ContextProperty::Max_Renderbuffer_Size:                    result = GL_MAX_RENDERBUFFER_SIZE;                    break;
+        case VKGL::ContextProperty::Max_Sample_Mask_Words:                    result = GL_MAX_SAMPLE_MASK_WORDS;                    break;
+        case VKGL::ContextProperty::Max_Server_Wait_Timeout:                  result = GL_MAX_SERVER_WAIT_TIMEOUT;                  break;
+        case VKGL::ContextProperty::Max_Texture_Buffer_Size:                  result = GL_MAX_TEXTURE_BUFFER_SIZE;                  break;
+        case VKGL::ContextProperty::Max_Texture_Image_Units:                  result = GL_MAX_TEXTURE_IMAGE_UNITS;                  break;
+        case VKGL::ContextProperty::Max_Texture_LOD_Bias:                     result = GL_MAX_TEXTURE_LOD_BIAS;                     break;
+        case VKGL::ContextProperty::Max_Texture_Size:                         result = GL_MAX_TEXTURE_SIZE;                         break;
+        case VKGL::ContextProperty::Max_Uniform_Block_Size:                   result = GL_MAX_UNIFORM_BLOCK_SIZE;                   break;
+        case VKGL::ContextProperty::Max_Uniform_Buffer_Bindings:              result = GL_MAX_UNIFORM_BUFFER_BINDINGS;              break;
+        case VKGL::ContextProperty::Max_Varying_Components:                   result = GL_MAX_VARYING_COMPONENTS;                   break;
+        case VKGL::ContextProperty::Max_Vertex_Attribs:                       result = GL_MAX_VERTEX_ATTRIBS;                       break;
+        case VKGL::ContextProperty::Max_Vertex_Output_Components:             result = GL_MAX_VERTEX_OUTPUT_COMPONENTS;             break;
+        case VKGL::ContextProperty::Max_Vertex_Texture_Image_Units:           result = GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS;           break;
+        case VKGL::ContextProperty::Max_Vertex_Uniform_Blocks:                result = GL_MAX_VERTEX_UNIFORM_BLOCKS;                break;
+        case VKGL::ContextProperty::Max_Vertex_Uniform_Components:            result = GL_MAX_VERTEX_UNIFORM_COMPONENTS;            break;
+        case VKGL::ContextProperty::Max_Viewport_Dims:                        result = GL_MAX_VIEWPORT_DIMS;                        break;
+        case VKGL::ContextProperty::Minor_Version:                            result = GL_MINOR_VERSION;                            break;
+        case VKGL::ContextProperty::Min_Program_Texel_Offset:                 result = GL_MIN_PROGRAM_TEXEL_OFFSET;                 break;
+        case VKGL::ContextProperty::Num_Compressed_Texture_Formats:           result = GL_NUM_COMPRESSED_TEXTURE_FORMATS;           break;
+        case VKGL::ContextProperty::Num_Extensions:                           result = GL_NUM_EXTENSIONS;                           break;
+        case VKGL::ContextProperty::Pack_Alignment:                           result = GL_PACK_ALIGNMENT;                           break;
+        case VKGL::ContextProperty::Pack_Image_Height:                        result = GL_PACK_IMAGE_HEIGHT;                        break;
+        case VKGL::ContextProperty::Pack_LSB_First:                           result = GL_PACK_LSB_FIRST;                           break;
+        case VKGL::ContextProperty::Pack_Row_Length:                          result = GL_PACK_ROW_LENGTH;                          break;
+        case VKGL::ContextProperty::Pack_Skip_Images:                         result = GL_PACK_SKIP_IMAGES;                         break;
+        case VKGL::ContextProperty::Pack_Skip_Pixels:                         result = GL_PACK_SKIP_PIXELS;                         break;
+        case VKGL::ContextProperty::Pack_Skip_Rows:                           result = GL_PACK_SKIP_ROWS;                           break;
+        case VKGL::ContextProperty::Pack_Swap_Bytes:                          result = GL_PACK_SWAP_BYTES;                          break;
+        case VKGL::ContextProperty::Pixel_Pack_Buffer_Binding:                result = GL_PIXEL_PACK_BUFFER_BINDING;                break;
+        case VKGL::ContextProperty::Pixel_Unpack_Buffer_Binding:              result = GL_PIXEL_UNPACK_BUFFER_BINDING;              break;
+        case VKGL::ContextProperty::Point_Fade_Threshold_Size:                result = GL_POINT_FADE_THRESHOLD_SIZE;                break;
+        case VKGL::ContextProperty::Point_Size:                               result = GL_POINT_SIZE;                               break;
+        case VKGL::ContextProperty::Point_Size_Granularity:                   result = GL_POINT_SIZE_GRANULARITY;                   break;
+        case VKGL::ContextProperty::Point_Size_Range:                         result = GL_POINT_SIZE_RANGE;                         break;
+        case VKGL::ContextProperty::Polygon_Offset_Factor:                    result = GL_POLYGON_OFFSET_FACTOR;                    break;
+        case VKGL::ContextProperty::Polygon_Offset_Fill:                      result = GL_POLYGON_OFFSET_FILL;                      break;
+        case VKGL::ContextProperty::Polygon_Offset_Line:                      result = GL_POLYGON_OFFSET_LINE;                      break;
+        case VKGL::ContextProperty::Polygon_Offset_Point:                     result = GL_POLYGON_OFFSET_POINT;                     break;
+        case VKGL::ContextProperty::Polygon_Offset_Units:                     result = GL_POLYGON_OFFSET_UNITS;                     break;
+        case VKGL::ContextProperty::Polygon_Smooth:                           result = GL_POLYGON_SMOOTH;                           break;
+        case VKGL::ContextProperty::Polygon_Smooth_Hint:                      result = GL_POLYGON_SMOOTH_HINT;                      break;
+        case VKGL::ContextProperty::Primitive_Restart_Index:                  result = GL_PRIMITIVE_RESTART_INDEX;                  break;
+        case VKGL::ContextProperty::Program_Point_Size:                       result = GL_PROGRAM_POINT_SIZE;                       break;
+        case VKGL::ContextProperty::Provoking_Vertex:                         result = GL_PROVOKING_VERTEX;                         break;
+        case VKGL::ContextProperty::Read_Buffer:                              result = GL_READ_BUFFER;                              break;
+        case VKGL::ContextProperty::Read_Framebuffer_Binding:                 result = GL_READ_FRAMEBUFFER_BINDING;                 break;
+        case VKGL::ContextProperty::Renderbuffer_Binding:                     result = GL_RENDERBUFFER_BINDING;                     break;
+        case VKGL::ContextProperty::Sampler_Binding:                          result = GL_SAMPLER_BINDING;                          break;
+        case VKGL::ContextProperty::Samples:                                  result = GL_SAMPLES;                                  break;
+        case VKGL::ContextProperty::Sample_Buffers:                           result = GL_SAMPLE_BUFFERS;                           break;
+        case VKGL::ContextProperty::Sample_Coverage_Invert:                   result = GL_SAMPLE_COVERAGE_INVERT;                   break;
+        case VKGL::ContextProperty::Sample_Coverage_Value:                    result = GL_SAMPLE_COVERAGE_VALUE;                    break;
+        case VKGL::ContextProperty::Scissor_Box:                              result = GL_SCISSOR_BOX;                              break;
+        case VKGL::ContextProperty::Scissor_Test:                             result = GL_SCISSOR_TEST;                             break;
+        case VKGL::ContextProperty::Smooth_Line_Width_Granularity:            result = GL_SMOOTH_LINE_WIDTH_GRANULARITY;            break;
+        case VKGL::ContextProperty::Smooth_Line_Width_Range:                  result = GL_SMOOTH_LINE_WIDTH_RANGE;                  break;
+        case VKGL::ContextProperty::Stencil_Back_Fail:                        result = GL_STENCIL_BACK_FAIL;                        break;
+        case VKGL::ContextProperty::Stencil_Back_Func:                        result = GL_STENCIL_BACK_FUNC;                        break;
+        case VKGL::ContextProperty::Stencil_Back_Pass_Depth_Fail:             result = GL_STENCIL_BACK_PASS_DEPTH_FAIL;             break;
+        case VKGL::ContextProperty::Stencil_Back_Pass_Depth_Pass:             result = GL_STENCIL_BACK_PASS_DEPTH_PASS;             break;
+        case VKGL::ContextProperty::Stencil_Back_Ref:                         result = GL_STENCIL_BACK_REF;                         break;
+        case VKGL::ContextProperty::Stencil_Back_Value_Mask:                  result = GL_STENCIL_BACK_VALUE_MASK;                  break;
+        case VKGL::ContextProperty::Stencil_Back_Writemask:                   result = GL_STENCIL_BACK_WRITEMASK;                   break;
+        case VKGL::ContextProperty::Stencil_Clear_Value:                      result = GL_STENCIL_CLEAR_VALUE;                      break;
+        case VKGL::ContextProperty::Stencil_Fail:                             result = GL_STENCIL_FAIL;                             break;
+        case VKGL::ContextProperty::Stencil_Func:                             result = GL_STENCIL_FUNC;                             break;
+        case VKGL::ContextProperty::Stencil_Pass_Depth_Fail:                  result = GL_STENCIL_PASS_DEPTH_FAIL;                  break;
+        case VKGL::ContextProperty::Stencil_Pass_Depth_Pass:                  result = GL_STENCIL_PASS_DEPTH_PASS;                  break;
+        case VKGL::ContextProperty::Stencil_Ref:                              result = GL_STENCIL_REF;                              break;
+        case VKGL::ContextProperty::Stencil_Test:                             result = GL_STENCIL_TEST;                             break;
+        case VKGL::ContextProperty::Stencil_Value_Mask:                       result = GL_STENCIL_VALUE_MASK;                       break;
+        case VKGL::ContextProperty::Stencil_Writemask:                        result = GL_STENCIL_WRITEMASK;                        break;
+        case VKGL::ContextProperty::Stereo:                                   result = GL_STEREO;                                   break;
+        case VKGL::ContextProperty::Subpixel_Bits:                            result = GL_SUBPIXEL_BITS;                            break;
+        case VKGL::ContextProperty::Texture_Binding_1D:                       result = GL_TEXTURE_BINDING_1D;                       break;
+        case VKGL::ContextProperty::Texture_Binding_1D_Array:                 result = GL_TEXTURE_BINDING_1D_ARRAY;                 break;
+        case VKGL::ContextProperty::Texture_Binding_2D:                       result = GL_TEXTURE_BINDING_2D;                       break;
+        case VKGL::ContextProperty::Texture_Binding_2D_Array:                 result = GL_TEXTURE_BINDING_2D_ARRAY;                 break;
+        case VKGL::ContextProperty::Texture_Binding_2D_Multisample:           result = GL_TEXTURE_BINDING_2D_MULTISAMPLE;           break;
+        case VKGL::ContextProperty::Texture_Binding_2D_Multisample_Array:     result = GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY;     break;
+        case VKGL::ContextProperty::Texture_Binding_3D:                       result = GL_TEXTURE_BINDING_3D;                       break;
+        case VKGL::ContextProperty::Texture_Binding_Buffer:                   result = GL_TEXTURE_BINDING_BUFFER;                   break;
+        case VKGL::ContextProperty::Texture_Binding_Cube_Map:                 result = GL_TEXTURE_BINDING_CUBE_MAP;                 break;
+        case VKGL::ContextProperty::Texture_Binding_Rectangle:                result = GL_TEXTURE_BINDING_RECTANGLE;                break;
+        case VKGL::ContextProperty::Texture_Compression_Hint:                 result = GL_TEXTURE_COMPRESSION_HINT;                 break;
+        case VKGL::ContextProperty::Timestamp:                                result = GL_TIMESTAMP;                                break;
+        case VKGL::ContextProperty::Transform_Feedback_Buffer_Binding:        result = GL_TRANSFORM_FEEDBACK_BUFFER_BINDING;        break;
+        case VKGL::ContextProperty::Transform_Feedback_Buffer_Size:           result = GL_TRANSFORM_FEEDBACK_BUFFER_SIZE;           break;
+        case VKGL::ContextProperty::Transform_Feedback_Buffer_Start:          result = GL_TRANSFORM_FEEDBACK_BUFFER_START;          break;
+        case VKGL::ContextProperty::Uniform_Buffer_Binding:                   result = GL_UNIFORM_BUFFER_BINDING;                   break;
+        case VKGL::ContextProperty::Uniform_Buffer_Offset_Alignment:          result = GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT;          break;
+        case VKGL::ContextProperty::Uniform_Buffer_Size:                      result = GL_UNIFORM_BUFFER_SIZE;                      break;
+        case VKGL::ContextProperty::Uniform_Buffer_Start:                     result = GL_UNIFORM_BUFFER_START;                     break;
+        case VKGL::ContextProperty::Unpack_Alignment:                         result = GL_UNPACK_ALIGNMENT;                         break;
+        case VKGL::ContextProperty::Unpack_Image_Height:                      result = GL_UNPACK_IMAGE_HEIGHT;                      break;
+        case VKGL::ContextProperty::Unpack_LSB_First:                         result = GL_UNPACK_LSB_FIRST;                         break;
+        case VKGL::ContextProperty::Unpack_Row_Length:                        result = GL_UNPACK_ROW_LENGTH;                        break;
+        case VKGL::ContextProperty::Unpack_Skip_Images:                       result = GL_UNPACK_SKIP_IMAGES;                       break;
+        case VKGL::ContextProperty::Unpack_Skip_Pixels:                       result = GL_UNPACK_SKIP_PIXELS;                       break;
+        case VKGL::ContextProperty::Unpack_Skip_Rows:                         result = GL_UNPACK_SKIP_ROWS;                         break;
+        case VKGL::ContextProperty::Unpack_Swap_Bytes:                        result = GL_UNPACK_SWAP_BYTES;                        break;
+        case VKGL::ContextProperty::Viewport:                                 result = GL_VIEWPORT;                                 break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_error_code(const VKGL::ErrorCode& in_error)
+{
+    GLenum result = 0;
+
+    switch (in_error)
+    {
+        case VKGL::ErrorCode::Invalid_Enum:                  result = GL_INVALID_ENUM;                  break;
+        case VKGL::ErrorCode::Invalid_Framebuffer_Operation: result = GL_INVALID_FRAMEBUFFER_OPERATION; break;
+        case VKGL::ErrorCode::Invalid_Operation:             result = GL_INVALID_OPERATION;             break;
+        case VKGL::ErrorCode::Invalid_Value:                 result = GL_INVALID_VALUE;                 break;
+        case VKGL::ErrorCode::No_Error:                      result = GL_NO_ERROR;                      break;
+        case VKGL::ErrorCode::Out_Of_Memory:                 result = GL_OUT_OF_MEMORY;                 break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::CullMode VKGL::Utils::get_cull_mode_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::CullMode result = VKGL::CullMode::Unknown;
@@ -187,6 +603,39 @@ VKGL::DepthStencilTextureMode VKGL::Utils::get_depth_stencil_texture_mode_for_gl
     {
         case GL_DEPTH_COMPONENT: result = VKGL::DepthStencilTextureMode::Depth_Component; break;
         case GL_STENCIL_INDEX:   result = VKGL::DepthStencilTextureMode::Stencil_Index;   break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::DrawBuffer VKGL::Utils::get_draw_buffer_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::DrawBuffer result = VKGL::DrawBuffer::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_BACK:              result = VKGL::DrawBuffer::Back;              break;
+        case GL_BACK_LEFT:         result = VKGL::DrawBuffer::Back_Left;         break;
+        case GL_BACK_RIGHT:        result = VKGL::DrawBuffer::Back_Right;        break;
+        case GL_COLOR_ATTACHMENT0: result = VKGL::DrawBuffer::Color_Attachment0; break;
+        case GL_COLOR_ATTACHMENT1: result = VKGL::DrawBuffer::Color_Attachment1; break;
+        case GL_COLOR_ATTACHMENT2: result = VKGL::DrawBuffer::Color_Attachment2; break;
+        case GL_COLOR_ATTACHMENT3: result = VKGL::DrawBuffer::Color_Attachment3; break;
+        case GL_COLOR_ATTACHMENT4: result = VKGL::DrawBuffer::Color_Attachment4; break;
+        case GL_COLOR_ATTACHMENT5: result = VKGL::DrawBuffer::Color_Attachment5; break;
+        case GL_COLOR_ATTACHMENT6: result = VKGL::DrawBuffer::Color_Attachment6; break;
+        case GL_COLOR_ATTACHMENT7: result = VKGL::DrawBuffer::Color_Attachment7; break;
+        case GL_FRONT:             result = VKGL::DrawBuffer::Front;             break;
+        case GL_FRONT_AND_BACK:    result = VKGL::DrawBuffer::Front_And_Back;    break;
+        case GL_FRONT_LEFT:        result = VKGL::DrawBuffer::Front_Left;        break;
+        case GL_FRONT_RIGHT:       result = VKGL::DrawBuffer::Front_Right;       break;
+        case GL_LEFT:              result = VKGL::DrawBuffer::Left;              break;
+        case GL_RIGHT:             result = VKGL::DrawBuffer::Right;             break;
 
         default:
         {
@@ -534,6 +983,39 @@ GLenum VKGL::Utils::get_gl_enum_for_depth_stencil_texture_mode(const VKGL::Depth
     return result;
 }
 
+GLenum VKGL::Utils::get_gl_enum_for_draw_buffer(const VKGL::DrawBuffer& in_draw_buffer)
+{
+    GLenum result = 0;
+
+    switch (in_draw_buffer)
+    {
+        case VKGL::DrawBuffer::Back:              result = GL_BACK;              break;
+        case VKGL::DrawBuffer::Back_Left:         result = GL_BACK_LEFT;         break;
+        case VKGL::DrawBuffer::Back_Right:        result = GL_BACK_RIGHT;        break;
+        case VKGL::DrawBuffer::Color_Attachment0: result = GL_COLOR_ATTACHMENT0; break;
+        case VKGL::DrawBuffer::Color_Attachment1: result = GL_COLOR_ATTACHMENT1; break;
+        case VKGL::DrawBuffer::Color_Attachment2: result = GL_COLOR_ATTACHMENT2; break;
+        case VKGL::DrawBuffer::Color_Attachment3: result = GL_COLOR_ATTACHMENT3; break;
+        case VKGL::DrawBuffer::Color_Attachment4: result = GL_COLOR_ATTACHMENT4; break;
+        case VKGL::DrawBuffer::Color_Attachment5: result = GL_COLOR_ATTACHMENT5; break;
+        case VKGL::DrawBuffer::Color_Attachment6: result = GL_COLOR_ATTACHMENT6; break;
+        case VKGL::DrawBuffer::Color_Attachment7: result = GL_COLOR_ATTACHMENT7; break;
+        case VKGL::DrawBuffer::Front:             result = GL_FRONT;             break;
+        case VKGL::DrawBuffer::Front_And_Back:    result = GL_FRONT_AND_BACK;    break;
+        case VKGL::DrawBuffer::Front_Left:        result = GL_FRONT_LEFT;        break;
+        case VKGL::DrawBuffer::Front_Right:       result = GL_FRONT_RIGHT;       break;
+        case VKGL::DrawBuffer::Left:              result = GL_LEFT;              break;
+        case VKGL::DrawBuffer::Right:             result = GL_RIGHT;             break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 GLenum VKGL::Utils::get_gl_enum_for_framebuffer_attachment_component_type(const VKGL::FramebufferAttachmentComponentType& in_type)
 {
     GLenum result = 0;
@@ -603,6 +1085,26 @@ GLenum VKGL::Utils::get_gl_enum_for_hint_mode(const VKGL::HintMode& in_hint_mode
         case VKGL::HintMode::Dont_Care: result = GL_DONT_CARE; break;
         case VKGL::HintMode::Fastest:   result = GL_FASTEST;   break;
         case VKGL::HintMode::Nicest:    result = GL_NICEST;    break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_hint_target(const VKGL::HintTarget& in_hint_target)
+{
+    GLenum result = 0;
+
+    switch (in_hint_target)
+    {
+        case VKGL::HintTarget::Fragment_Shader_Derivative: result = GL_FRAGMENT_SHADER_DERIVATIVE_HINT; break;
+        case VKGL::HintTarget::Line_Smooth:                result = GL_LINE_SMOOTH_HINT;               break;
+        case VKGL::HintTarget::Polygon_Smooth:             result = GL_POLYGON_SMOOTH_HINT;            break;
+        case VKGL::HintTarget::Texture_Compression:        result = GL_TEXTURE_COMPRESSION_HINT;       break;
 
         default:
         {
@@ -843,6 +1345,38 @@ GLenum VKGL::Utils::get_gl_enum_for_pixel_format(const VKGL::PixelFormat& in_pix
     return result;
 }
 
+GLenum VKGL::Utils::get_gl_enum_for_pixel_store_property(const VKGL::PixelStoreProperty& in_property)
+{
+    GLenum result = 0;
+
+    switch (in_property)
+    {
+        case VKGL::PixelStoreProperty::Pack_Alignment:      result = GL_PACK_ALIGNMENT;      break;
+        case VKGL::PixelStoreProperty::Pack_Image_Height:   result = GL_PACK_IMAGE_HEIGHT;   break;
+        case VKGL::PixelStoreProperty::Pack_LSB_First:      result = GL_PACK_LSB_FIRST;      break;
+        case VKGL::PixelStoreProperty::Pack_Row_Length:     result = GL_PACK_ROW_LENGTH;     break;
+        case VKGL::PixelStoreProperty::Pack_Skip_Images:    result = GL_PACK_SKIP_IMAGES;    break;
+        case VKGL::PixelStoreProperty::Pack_Skip_Pixels:    result = GL_PACK_SKIP_PIXELS;    break;
+        case VKGL::PixelStoreProperty::Pack_Skip_Rows:      result = GL_PACK_SKIP_ROWS;      break;
+        case VKGL::PixelStoreProperty::Pack_Swap_Bytes:     result = GL_PACK_SWAP_BYTES;     break;
+        case VKGL::PixelStoreProperty::Unpack_Alignment:    result = GL_UNPACK_ALIGNMENT;    break;
+        case VKGL::PixelStoreProperty::Unpack_Image_Height: result = GL_UNPACK_IMAGE_HEIGHT; break;
+        case VKGL::PixelStoreProperty::Unpack_LSB_First:    result = GL_UNPACK_LSB_FIRST;    break;
+        case VKGL::PixelStoreProperty::Unpack_Row_Length:   result = GL_UNPACK_ROW_LENGTH;   break;
+        case VKGL::PixelStoreProperty::Unpack_Skip_Images:  result = GL_UNPACK_SKIP_IMAGES;  break;
+        case VKGL::PixelStoreProperty::Unpack_Skip_Pixels:  result = GL_UNPACK_SKIP_PIXELS;  break;
+        case VKGL::PixelStoreProperty::Unpack_Skip_Rows:    result = GL_UNPACK_SKIP_ROWS;    break;
+        case VKGL::PixelStoreProperty::Unpack_Swap_Bytes:   result = GL_UNPACK_SWAP_BYTES;   break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 GLenum VKGL::Utils::get_gl_enum_for_point_sprite_coord_origin(const VKGL::PointSpriteCoordOrigin& in_origin)
 {
     GLenum result = 0;
@@ -927,6 +1461,39 @@ GLenum VKGL::Utils::get_gl_enum_for_provoking_vertex_convention(const VKGL::Prov
     {
         case VKGL::ProvokingVertexConvention::First: result = GL_FIRST_VERTEX_CONVENTION; break;
         case VKGL::ProvokingVertexConvention::Last:  result = GL_LAST_VERTEX_CONVENTION;  break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_read_buffer(const VKGL::ReadBuffer& in_read_buffer)
+{
+    GLenum result = 0;
+
+    switch (in_read_buffer)
+    {
+        case VKGL::ReadBuffer::Back:              result = GL_BACK;              break;
+        case VKGL::ReadBuffer::Back_Left:         result = GL_BACK_LEFT;         break;
+        case VKGL::ReadBuffer::Back_Right:        result = GL_BACK_RIGHT;        break;
+        case VKGL::ReadBuffer::Color_Attachment0: result = GL_COLOR_ATTACHMENT0; break;
+        case VKGL::ReadBuffer::Color_Attachment1: result = GL_COLOR_ATTACHMENT1; break;
+        case VKGL::ReadBuffer::Color_Attachment2: result = GL_COLOR_ATTACHMENT2; break;
+        case VKGL::ReadBuffer::Color_Attachment3: result = GL_COLOR_ATTACHMENT3; break;
+        case VKGL::ReadBuffer::Color_Attachment4: result = GL_COLOR_ATTACHMENT4; break;
+        case VKGL::ReadBuffer::Color_Attachment5: result = GL_COLOR_ATTACHMENT5; break;
+        case VKGL::ReadBuffer::Color_Attachment6: result = GL_COLOR_ATTACHMENT6; break;
+        case VKGL::ReadBuffer::Color_Attachment7: result = GL_COLOR_ATTACHMENT7; break;
+        case VKGL::ReadBuffer::Front:             result = GL_FRONT;             break;
+        case VKGL::ReadBuffer::Front_And_Back:    result = GL_FRONT_AND_BACK;    break;
+        case VKGL::ReadBuffer::Front_Left:        result = GL_FRONT_LEFT;        break;
+        case VKGL::ReadBuffer::Front_Right:       result = GL_FRONT_RIGHT;       break;
+        case VKGL::ReadBuffer::Left:              result = GL_LEFT;              break;
+        case VKGL::ReadBuffer::Right:             result = GL_RIGHT;             break;
 
         default:
         {
@@ -1069,6 +1636,34 @@ GLenum VKGL::Utils::get_gl_enum_for_texture_cube_map_face(const VKGL::TextureCub
     return result;
 }
 
+GLenum VKGL::Utils::get_gl_enum_for_texture_level_property(const VKGL::TextureLevelProperty& in_property)
+{
+    GLenum result = 0;
+
+    switch (in_property)
+    {
+        case VKGL::TextureLevelProperty::Texture_Alpha_Size:            result = GL_TEXTURE_ALPHA_SIZE;            break;
+        case VKGL::TextureLevelProperty::Texture_Blue_Size:             result = GL_TEXTURE_BLUE_SIZE;             break;
+        case VKGL::TextureLevelProperty::Texture_Buffer_Offset:         result = GL_TEXTURE_BUFFER_OFFSET;         break;
+        case VKGL::TextureLevelProperty::Texture_Compressed:            result = GL_TEXTURE_COMPRESSED;            break;
+        case VKGL::TextureLevelProperty::Texture_Compressed_Image_Size: result = GL_TEXTURE_COMPRESSED_IMAGE_SIZE; break;
+        case VKGL::TextureLevelProperty::Texture_Depth:                 result = GL_TEXTURE_DEPTH;                 break;
+        case VKGL::TextureLevelProperty::Texture_Depth_Size:            result = GL_TEXTURE_DEPTH_SIZE;            break;
+        case VKGL::TextureLevelProperty::Texture_Green_Size:            result = GL_TEXTURE_GREEN_SIZE;            break;
+        case VKGL::TextureLevelProperty::Texture_Height:                result = GL_TEXTURE_HEIGHT;                break;
+        case VKGL::TextureLevelProperty::Texture_Internal_Format:       result = GL_TEXTURE_INTERNAL_FORMAT;       break;
+        case VKGL::TextureLevelProperty::Texture_Red_Size:              result = GL_TEXTURE_RED_SIZE;              break;
+        case VKGL::TextureLevelProperty::Texture_Width:                 result = GL_TEXTURE_WIDTH;                 break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 GLenum VKGL::Utils::get_gl_enum_for_texture_mag_filter(const VKGL::TextureMagFilter& in_filter)
 {
     GLenum result = 0;
@@ -1099,6 +1694,39 @@ GLenum VKGL::Utils::get_gl_enum_for_texture_min_filter(const VKGL::TextureMinFil
         case VKGL::TextureMinFilter::Nearest:                result = GL_NEAREST;                break;
         case VKGL::TextureMinFilter::Nearest_Mipmap_Linear:  result = GL_NEAREST_MIPMAP_LINEAR;  break;
         case VKGL::TextureMinFilter::Nearest_Mipmap_Nearest: result = GL_NEAREST_MIPMAP_NEAREST; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_texture_property(const VKGL::TextureProperty& in_property)
+{
+    GLenum result = 0;
+
+    switch (in_property)
+    {
+        case VKGL::TextureProperty::Depth_Stencil_Texture_Mode: result = GL_DEPTH_STENCIL_TEXTURE_MODE; break;
+        case VKGL::TextureProperty::Texture_Base_Level:         result = GL_TEXTURE_BASE_LEVEL;         break;
+        case VKGL::TextureProperty::Texture_Compare_Func:       result = GL_TEXTURE_COMPARE_FUNC;       break;
+        case VKGL::TextureProperty::Texture_Compare_Mode:       result = GL_TEXTURE_COMPARE_MODE;       break;
+        case VKGL::TextureProperty::Texture_Lod_Bias:           result = GL_TEXTURE_LOD_BIAS;           break;
+        case VKGL::TextureProperty::Texture_Mag_Filter:         result = GL_TEXTURE_MAG_FILTER;         break;
+        case VKGL::TextureProperty::Texture_Max_Level:          result = GL_TEXTURE_MAX_LEVEL;          break;
+        case VKGL::TextureProperty::Texture_Max_Lod:            result = GL_TEXTURE_MAX_LOD;            break;
+        case VKGL::TextureProperty::Texture_Min_Filter:         result = GL_TEXTURE_MIN_FILTER;         break;
+        case VKGL::TextureProperty::Texture_Min_Lod:            result = GL_TEXTURE_MIN_LOD;            break;
+        case VKGL::TextureProperty::Texture_Swizzle_A:          result = GL_TEXTURE_SWIZZLE_A;          break;
+        case VKGL::TextureProperty::Texture_Swizzle_B:          result = GL_TEXTURE_SWIZZLE_B;          break;
+        case VKGL::TextureProperty::Texture_Swizzle_G:          result = GL_TEXTURE_SWIZZLE_G;          break;
+        case VKGL::TextureProperty::Texture_Swizzle_R:          result = GL_TEXTURE_SWIZZLE_R;          break;
+        case VKGL::TextureProperty::Texture_Wrap_R:             result = GL_TEXTURE_WRAP_R;             break;
+        case VKGL::TextureProperty::Texture_Wrap_S:             result = GL_TEXTURE_WRAP_S;             break;
+        case VKGL::TextureProperty::Texture_Wrap_T:             result = GL_TEXTURE_WRAP_T;             break;
 
         default:
         {
@@ -1348,6 +1976,26 @@ void VKGL::Utils::get_indexed_capability_for_gl_enum(const GLenum&    in_enum,
     }
 }
 
+VKGL::HintTarget VKGL::Utils::get_hint_target_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::HintTarget result = VKGL::HintTarget::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_FRAGMENT_SHADER_DERIVATIVE_HINT: result = VKGL::HintTarget::Fragment_Shader_Derivative; break;
+        case GL_LINE_SMOOTH_HINT:                result = VKGL::HintTarget::Line_Smooth;                break;
+        case GL_POLYGON_SMOOTH_HINT:             result = VKGL::HintTarget::Polygon_Smooth;             break;
+        case GL_TEXTURE_COMPRESSION_HINT:        result = VKGL::HintTarget::Texture_Compression;        break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::InternalFormat VKGL::Utils::get_internal_format_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::InternalFormat result = VKGL::InternalFormat::Unknown;
@@ -1554,6 +2202,38 @@ VKGL::PixelFormat VKGL::Utils::get_pixel_format_for_gl_enum(const GLenum& in_enu
     return result;
 }
 
+VKGL::PixelStoreProperty VKGL::Utils::get_pixel_store_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::PixelStoreProperty result = VKGL::PixelStoreProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_PACK_ALIGNMENT:      result = VKGL::PixelStoreProperty::Pack_Alignment;      break;
+        case GL_PACK_IMAGE_HEIGHT:   result = VKGL::PixelStoreProperty::Pack_Image_Height;   break;
+        case GL_PACK_LSB_FIRST:      result = VKGL::PixelStoreProperty::Pack_LSB_First;      break;
+        case GL_PACK_ROW_LENGTH:     result = VKGL::PixelStoreProperty::Pack_Row_Length;     break;
+        case GL_PACK_SKIP_IMAGES:    result = VKGL::PixelStoreProperty::Pack_Skip_Images;    break;
+        case GL_PACK_SKIP_PIXELS:    result = VKGL::PixelStoreProperty::Pack_Skip_Pixels;    break;
+        case GL_PACK_SKIP_ROWS:      result = VKGL::PixelStoreProperty::Pack_Skip_Rows;      break;
+        case GL_PACK_SWAP_BYTES:     result = VKGL::PixelStoreProperty::Pack_Swap_Bytes;     break;
+        case GL_UNPACK_ALIGNMENT:    result = VKGL::PixelStoreProperty::Unpack_Alignment;    break;
+        case GL_UNPACK_IMAGE_HEIGHT: result = VKGL::PixelStoreProperty::Unpack_Image_Height; break;
+        case GL_UNPACK_LSB_FIRST:    result = VKGL::PixelStoreProperty::Unpack_LSB_First;    break;
+        case GL_UNPACK_ROW_LENGTH:   result = VKGL::PixelStoreProperty::Unpack_Row_Length;   break;
+        case GL_UNPACK_SKIP_IMAGES:  result = VKGL::PixelStoreProperty::Unpack_Skip_Images;  break;
+        case GL_UNPACK_SKIP_PIXELS:  result = VKGL::PixelStoreProperty::Unpack_Skip_Pixels;  break;
+        case GL_UNPACK_SKIP_ROWS:    result = VKGL::PixelStoreProperty::Unpack_Skip_Rows;    break;
+        case GL_UNPACK_SWAP_BYTES:   result = VKGL::PixelStoreProperty::Unpack_Swap_Bytes;   break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::PixelType VKGL::Utils::get_pixel_type_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::PixelType result = VKGL::PixelType::Unknown;
@@ -1638,6 +2318,39 @@ VKGL::ProvokingVertexConvention VKGL::Utils::get_provoking_vertex_convention_for
     {
         case GL_FIRST_VERTEX_CONVENTION: result = VKGL::ProvokingVertexConvention::First; break;
         case GL_LAST_VERTEX_CONVENTION:  result = VKGL::ProvokingVertexConvention::Last;  break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::ReadBuffer VKGL::Utils::get_read_buffer_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::ReadBuffer result = VKGL::ReadBuffer::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_BACK:              result = VKGL::ReadBuffer::Back;              break;
+        case GL_BACK_LEFT:         result = VKGL::ReadBuffer::Back_Left;         break;
+        case GL_BACK_RIGHT:        result = VKGL::ReadBuffer::Back_Right;        break;
+        case GL_COLOR_ATTACHMENT0: result = VKGL::ReadBuffer::Color_Attachment0; break;
+        case GL_COLOR_ATTACHMENT1: result = VKGL::ReadBuffer::Color_Attachment1; break;
+        case GL_COLOR_ATTACHMENT2: result = VKGL::ReadBuffer::Color_Attachment2; break;
+        case GL_COLOR_ATTACHMENT3: result = VKGL::ReadBuffer::Color_Attachment3; break;
+        case GL_COLOR_ATTACHMENT4: result = VKGL::ReadBuffer::Color_Attachment4; break;
+        case GL_COLOR_ATTACHMENT5: result = VKGL::ReadBuffer::Color_Attachment5; break;
+        case GL_COLOR_ATTACHMENT6: result = VKGL::ReadBuffer::Color_Attachment6; break;
+        case GL_COLOR_ATTACHMENT7: result = VKGL::ReadBuffer::Color_Attachment7; break;
+        case GL_FRONT:             result = VKGL::ReadBuffer::Front;             break;
+        case GL_FRONT_AND_BACK:    result = VKGL::ReadBuffer::Front_And_Back;    break;
+        case GL_FRONT_LEFT:        result = VKGL::ReadBuffer::Front_Left;        break;
+        case GL_FRONT_RIGHT:       result = VKGL::ReadBuffer::Front_Right;       break;
+        case GL_LEFT:              result = VKGL::ReadBuffer::Left;              break;
+        case GL_RIGHT:             result = VKGL::ReadBuffer::Right;             break;
 
         default:
         {
@@ -1780,6 +2493,34 @@ VKGL::TextureCubeMapFace VKGL::Utils::get_texture_cube_map_face_for_gl_enum(cons
     return result;
 }
 
+VKGL::TextureLevelProperty VKGL::Utils::get_texture_level_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::TextureLevelProperty result = VKGL::TextureLevelProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_TEXTURE_ALPHA_SIZE:            result = VKGL::TextureLevelProperty::Texture_Alpha_Size;            break;
+        case GL_TEXTURE_BLUE_SIZE:             result = VKGL::TextureLevelProperty::Texture_Blue_Size;             break;
+        case GL_TEXTURE_BUFFER_OFFSET:         result = VKGL::TextureLevelProperty::Texture_Buffer_Offset;         break;
+        case GL_TEXTURE_COMPRESSED:            result = VKGL::TextureLevelProperty::Texture_Compressed;            break;
+        case GL_TEXTURE_COMPRESSED_IMAGE_SIZE: result = VKGL::TextureLevelProperty::Texture_Compressed_Image_Size; break;
+        case GL_TEXTURE_DEPTH:                 result = VKGL::TextureLevelProperty::Texture_Depth;                 break;
+        case GL_TEXTURE_DEPTH_SIZE:            result = VKGL::TextureLevelProperty::Texture_Depth_Size;            break;
+        case GL_TEXTURE_GREEN_SIZE:            result = VKGL::TextureLevelProperty::Texture_Green_Size;            break;
+        case GL_TEXTURE_HEIGHT:                result = VKGL::TextureLevelProperty::Texture_Height;                break;
+        case GL_TEXTURE_INTERNAL_FORMAT:       result = VKGL::TextureLevelProperty::Texture_Internal_Format;       break;
+        case GL_TEXTURE_RED_SIZE:              result = VKGL::TextureLevelProperty::Texture_Red_Size;              break;
+        case GL_TEXTURE_WIDTH:                 result = VKGL::TextureLevelProperty::Texture_Width;                 break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::TextureMagFilter VKGL::Utils::get_texture_mag_filter_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::TextureMagFilter result = VKGL::TextureMagFilter::Unknown;
@@ -1810,6 +2551,39 @@ VKGL::TextureMinFilter VKGL::Utils::get_texture_min_filter_for_gl_enum(const GLe
         case GL_NEAREST:                result = VKGL::TextureMinFilter::Nearest;                break;
         case GL_NEAREST_MIPMAP_LINEAR:  result = VKGL::TextureMinFilter::Nearest_Mipmap_Linear;  break;
         case GL_NEAREST_MIPMAP_NEAREST: result = VKGL::TextureMinFilter::Nearest_Mipmap_Nearest; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::TextureProperty VKGL::Utils::get_texture_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::TextureProperty result = VKGL::TextureProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_DEPTH_STENCIL_TEXTURE_MODE: result = VKGL::TextureProperty::Depth_Stencil_Texture_Mode; break;
+        case GL_TEXTURE_BASE_LEVEL:         result = VKGL::TextureProperty::Texture_Base_Level;         break;
+        case GL_TEXTURE_COMPARE_FUNC:       result = VKGL::TextureProperty::Texture_Compare_Func;       break;
+        case GL_TEXTURE_COMPARE_MODE:       result = VKGL::TextureProperty::Texture_Compare_Mode;       break;
+        case GL_TEXTURE_LOD_BIAS:           result = VKGL::TextureProperty::Texture_Lod_Bias;           break;
+        case GL_TEXTURE_MAG_FILTER:         result = VKGL::TextureProperty::Texture_Mag_Filter;         break;
+        case GL_TEXTURE_MAX_LEVEL:          result = VKGL::TextureProperty::Texture_Max_Level;          break;
+        case GL_TEXTURE_MAX_LOD:            result = VKGL::TextureProperty::Texture_Max_Lod;            break;
+        case GL_TEXTURE_MIN_FILTER:         result = VKGL::TextureProperty::Texture_Min_Filter;         break;
+        case GL_TEXTURE_MIN_LOD:            result = VKGL::TextureProperty::Texture_Min_Lod;            break;
+        case GL_TEXTURE_SWIZZLE_A:          result = VKGL::TextureProperty::Texture_Swizzle_A;          break;
+        case GL_TEXTURE_SWIZZLE_B:          result = VKGL::TextureProperty::Texture_Swizzle_B;          break;
+        case GL_TEXTURE_SWIZZLE_G:          result = VKGL::TextureProperty::Texture_Swizzle_G;          break;
+        case GL_TEXTURE_SWIZZLE_R:          result = VKGL::TextureProperty::Texture_Swizzle_R;          break;
+        case GL_TEXTURE_WRAP_R:             result = VKGL::TextureProperty::Texture_Wrap_R;             break;
+        case GL_TEXTURE_WRAP_S:             result = VKGL::TextureProperty::Texture_Wrap_S;             break;
+        case GL_TEXTURE_WRAP_T:             result = VKGL::TextureProperty::Texture_Wrap_T;             break;
 
         default:
         {
@@ -1902,7 +2676,6 @@ VKGL::TextureWrapMode VKGL::Utils::get_texture_wrap_mode_for_gl_enum(const GLenu
 
     return result;
 }
-
 
 VKGL::VariableType get_variable_type_for_gl_enum(const GLenum& in_enum)
 {

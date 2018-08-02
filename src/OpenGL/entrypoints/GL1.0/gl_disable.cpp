@@ -1,5 +1,7 @@
 #include "OpenGL/entrypoints/GL1.0/gl_disable.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
+#include "OpenGL/utils_enum.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
                      const GLenum&  in_cap)
@@ -9,7 +11,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -22,12 +23,21 @@ VKGL_API void VKGL_APIENTRY glDisable(GLenum cap)
                                    cap);
 }
 
+void vkglDisable_execute(VKGL::Context* in_context_ptr,
+                         const GLenum&  in_cap)
+{
+    const auto cap_vkgl = VKGL::Utils::get_nonindexed_capability_for_gl_enum(in_cap);
+
+    in_context_ptr->disable(cap_vkgl);
+}
+
 void vkglDisable_with_validation(VKGL::Context* in_context_ptr,
                                  const GLenum&  in_cap)
 {
     if (validate(in_context_ptr,
                  in_cap) )
     {
-        todo;
+        vkglDisable_execute(in_context_ptr,
+                            in_cap);
     }
 }

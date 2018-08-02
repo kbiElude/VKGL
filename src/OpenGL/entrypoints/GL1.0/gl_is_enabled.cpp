@@ -1,5 +1,7 @@
 #include "OpenGL/entrypoints/GL1.0/gl_is_enabled.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
+#include "OpenGL/utils_enum.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
                      const GLenum&  in_cap)
@@ -9,7 +11,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -22,12 +23,26 @@ VKGL_API GLboolean VKGL_APIENTRY glIsEnabled(GLenum cap)
                                             cap);
 }
 
+GLboolean vkglIsEnabled_execute(VKGL::Context* in_context_ptr,
+                                const GLenum&  in_cap)
+{
+    const auto cap_vkgl = VKGL::Utils::get_nonindexed_capability_for_gl_enum(in_cap);
+
+    return (in_context_ptr->is_enabled(cap_vkgl) ) ? GL_TRUE
+                                                   : GL_FALSE;
+}
+
 GLboolean vkglIsEnabled_with_validation(VKGL::Context* in_context_ptr,
                                         const GLenum&  in_cap)
 {
+    GLboolean result = GL_FALSE;
+
     if (validate(in_context_ptr,
                  in_cap) )
     {
-        todo;
+        result = vkglIsEnabled_execute(in_context_ptr,
+                                       in_cap);
     }
+
+    return result;
 }

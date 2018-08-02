@@ -1,5 +1,7 @@
 #include "OpenGL/entrypoints/GL1.0/gl_depth_func.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
+#include "OpenGL/utils_enum.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
                      const GLenum&  in_func)
@@ -9,7 +11,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -22,12 +23,21 @@ VKGL_API void VKGL_APIENTRY glDepthFunc(GLenum func)
                                      func);
 }
 
+void vkglDepthFunc_execute(VKGL::Context* in_context_ptr,
+                           const GLenum&  in_func)
+{
+    const auto depth_func_vkgl = VKGL::Utils::get_depth_function_for_gl_enum(in_func);
+
+    in_context_ptr->set_depth_function(depth_func_vkgl);
+}
+
 void vkglDepthFunc_with_validation(VKGL::Context* in_context_ptr,
                                    const GLenum&  in_func)
 {
     if (validate(in_context_ptr,
                  in_func) )
     {
-        todo;
+        vkglDepthFunc_execute(in_context_ptr,
+                              in_func);
     }
 }

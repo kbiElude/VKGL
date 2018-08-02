@@ -1,5 +1,7 @@
 #include "OpenGL/entrypoints/GL1.0/gl_read_pixels.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
+#include "OpenGL/utils_enum.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
                      const GLint&   in_x,
@@ -15,7 +17,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -40,6 +41,27 @@ VKGL_API void VKGL_APIENTRY glReadPixels(GLint   x,
                                       pixels);
 }
 
+void vkglReadPixels_execute(VKGL::Context* in_context_ptr,
+                            const GLint&   in_x,
+                            const GLint&   in_y,
+                            const GLsizei& in_width,
+                            const GLsizei& in_height,
+                            const GLenum&  in_format,
+                            const GLenum&  in_type,
+                            void*          out_pixels_ptr)
+{
+    const auto format_vkgl = VKGL::Utils::get_pixel_format_for_gl_enum(in_format);
+    const auto type_vkgl   = VKGL::Utils::get_pixel_type_for_gl_enum  (in_type);
+
+    in_context_ptr->read_pixels(in_x,
+                                in_y,
+                                in_width,
+                                in_height,
+                                format_vkgl,
+                                type_vkgl,
+                                out_pixels_ptr);
+}
+
 void vkglReadPixels_with_validation(VKGL::Context* in_context_ptr,
                                     const GLint&   in_x,
                                     const GLint&   in_y,
@@ -58,6 +80,13 @@ void vkglReadPixels_with_validation(VKGL::Context* in_context_ptr,
                  in_type,
                  out_pixels_ptr) )
     {
-        todo;
+        vkglReadPixels_execute(in_context_ptr,
+                               in_x,
+                               in_y,
+                               in_width,
+                               in_height,
+                               in_format,
+                               in_type,
+                               out_pixels_ptr);
     }
 }

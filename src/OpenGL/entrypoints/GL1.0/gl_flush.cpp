@@ -1,4 +1,5 @@
 #include "OpenGL/entrypoints/GL1.0/gl_flush.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
 VKGL_API void VKGL_APIENTRY glFlush(void)
@@ -10,5 +11,5 @@ VKGL_API void VKGL_APIENTRY glFlush(void)
 
 void vkglFlush_with_validation(VKGL::Context* in_context_ptr)
 {
-    todo;
+    in_context_ptr->flush();
 }

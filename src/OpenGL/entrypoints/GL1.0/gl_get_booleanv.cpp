@@ -1,5 +1,7 @@
 #include "OpenGL/entrypoints/GL1.0/gl_get_booleanv.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
+#include "OpenGL/utils_enum.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
                      const GLenum&  in_pname,
@@ -10,7 +12,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -25,6 +26,17 @@ VKGL_API void VKGL_APIENTRY glGetBooleanv(GLenum     pname,
                                        data);
 }
 
+void vkglGetBooleanv_execute(VKGL::Context* in_context_ptr,
+                             const GLenum&  in_pname,
+                             GLboolean*     out_data_ptr)
+{
+    const VKGL::ContextProperty pname_vkgl = VKGL::Utils::get_context_property_for_gl_enum(in_pname);
+
+    in_context_ptr->get_parameter(pname_vkgl,
+                                  VKGL::GetSetArgumentType::Boolean,
+                                  out_data_ptr);
+}
+
 void vkglGetBooleanv_with_validation(VKGL::Context* in_context_ptr,
                                      const GLenum&  in_pname,
                                      GLboolean*     out_data_ptr)
@@ -33,6 +45,8 @@ void vkglGetBooleanv_with_validation(VKGL::Context* in_context_ptr,
                  in_pname,
                  out_data_ptr) )
     {
-        todo;
+        vkglGetBooleanv_execute(in_context_ptr,
+                                in_pname,
+                                out_data_ptr);
     }
 }

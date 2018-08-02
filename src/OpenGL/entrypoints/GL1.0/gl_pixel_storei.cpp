@@ -1,5 +1,7 @@
 #include "OpenGL/entrypoints/GL1.0/gl_pixel_storei.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
+#include "OpenGL/utils_enum.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
                      const GLenum&  in_pname,
@@ -10,7 +12,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -25,6 +26,17 @@ VKGL_API void VKGL_APIENTRY glPixelStorei(GLenum pname,
                                        param);
 }
 
+void vkglPixelStorei_execute(VKGL::Context* in_context_ptr,
+                             const GLenum&  in_pname,
+                             const GLint&   in_param)
+{
+    const auto pname_vkgl = VKGL::Utils::get_pixel_store_property_for_gl_enum(in_pname);
+
+    in_context_ptr->set_pixel_store_property(pname_vkgl,
+                                             VKGL::GetSetArgumentType::Int,
+                                            &in_param);
+}
+
 void vkglPixelStorei_with_validation(VKGL::Context* in_context_ptr,
                                      const GLenum&  in_pname,
                                      const GLint&   in_param)
@@ -33,6 +45,8 @@ void vkglPixelStorei_with_validation(VKGL::Context* in_context_ptr,
                  in_pname,
                  in_param) )
     {
-        todo;
+        vkglPixelStorei_execute(in_context_ptr,
+                                in_pname,
+                                in_param);
     }
 }

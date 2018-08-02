@@ -1,5 +1,7 @@
 #include "OpenGL/entrypoints/GL1.0/gl_blend_func.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
+#include "OpenGL/utils_enum.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
                      const GLenum&  in_sfactor,
@@ -10,7 +12,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -24,6 +25,17 @@ VKGL_API void VKGL_APIENTRY glBlendFunc(GLenum sfactor,
                                      dfactor);
 }
 
+void vkglBlendFunc_execute(VKGL::Context* in_context_ptr,
+                           const GLenum&  in_sfactor,
+                           const GLenum&  in_dfactor)
+{
+    const auto sfactor_vkgl = VKGL::Utils::get_blend_function_for_gl_enum(in_sfactor);
+    const auto dfactor_vkgl = VKGL::Utils::get_blend_function_for_gl_enum(in_dfactor);
+
+    in_context_ptr->set_blend_functions(sfactor_vkgl,
+                                        dfactor_vkgl);
+}
+
 void vkglBlendFunc_with_validation(VKGL::Context* in_context_ptr,
                                    const GLenum&  in_sfactor,
                                    const GLenum&  in_dfactor)
@@ -32,6 +44,8 @@ void vkglBlendFunc_with_validation(VKGL::Context* in_context_ptr,
                  in_sfactor,
                  in_dfactor) )
     {
-        todo;
+        vkglBlendFunc_execute(in_context_ptr,
+                              in_sfactor,
+                              in_dfactor);
     }
 }

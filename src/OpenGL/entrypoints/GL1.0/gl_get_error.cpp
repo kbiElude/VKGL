@@ -1,5 +1,7 @@
 #include "OpenGL/entrypoints/GL1.0/gl_get_error.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
+#include "OpenGL/utils_enum.h"
 
 VKGL_API GLenum VKGL_APIENTRY glGetError(void)
 {
@@ -10,5 +12,7 @@ VKGL_API GLenum VKGL_APIENTRY glGetError(void)
 
 GLenum vkglGetError_with_validation(VKGL::Context* in_context_ptr)
 {
-    todo;
+    const auto error_vkgl = in_context_ptr->get_error();
+
+    return VKGL::Utils::get_gl_enum_for_error_code(error_vkgl);
 }

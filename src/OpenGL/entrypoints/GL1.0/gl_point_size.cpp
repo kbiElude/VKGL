@@ -1,4 +1,5 @@
 #include "OpenGL/entrypoints/GL1.0/gl_point_size.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
@@ -9,7 +10,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -22,12 +22,19 @@ VKGL_API void VKGL_APIENTRY glPointSize(GLfloat size)
                                      size);
 }
 
+void vkglPointSize_execute(VKGL::Context* in_context_ptr,
+                           const GLfloat& in_size)
+{
+    in_context_ptr->set_point_size(in_size);
+}
+
 void vkglPointSize_with_validation(VKGL::Context* in_context_ptr,
                                    const GLfloat& in_size)
 {
     if (validate(in_context_ptr,
                  in_size) )
     {
-        todo;
+        vkglPointSize_execute(in_context_ptr,
+                              in_size);
     }
 }

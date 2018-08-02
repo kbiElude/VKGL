@@ -1,4 +1,5 @@
 #include "OpenGL/entrypoints/GL1.0/gl_stencil_mask.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
@@ -9,7 +10,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -22,12 +22,19 @@ VKGL_API void VKGL_APIENTRY glStencilMask(GLuint mask)
                                        mask);
 }
 
+void vkglStencilMask_execute(VKGL::Context* in_context_ptr,
+                             const GLuint&  in_mask)
+{
+    in_context_ptr->set_stencil_mask(in_mask);
+}
+
 void vkglStencilMask_with_validation(VKGL::Context* in_context_ptr,
                                      const GLuint&  in_mask)
 {
     if (validate(in_context_ptr,
                  in_mask) )
     {
-        todo;
+        vkglStencilMask_execute(in_context_ptr,
+                                in_mask);
     }
 }

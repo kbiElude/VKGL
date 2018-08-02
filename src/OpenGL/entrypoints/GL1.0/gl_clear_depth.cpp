@@ -1,4 +1,5 @@
 #include "OpenGL/entrypoints/GL1.0/gl_clear_depth.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
 static bool validate(VKGL::Context*  in_context_ptr,
@@ -9,7 +10,6 @@ static bool validate(VKGL::Context*  in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -22,12 +22,19 @@ VKGL_API void VKGL_APIENTRY glClearDepth(GLdouble depth)
                                       depth);
 }
 
+void vkglClearDepth_execute(VKGL::Context*  in_context_ptr,
+                            const GLdouble& in_depth)
+{
+    in_context_ptr->set_clear_depth_value(in_depth);
+}
+
 void vkglClearDepth_with_validation(VKGL::Context*  in_context_ptr,
                                     const GLdouble& in_depth)
 {
     if (validate(in_context_ptr,
                  in_depth) )
     {
-        todo;
+        vkglClearDepth_execute(in_context_ptr,
+                               in_depth);
     }
 }

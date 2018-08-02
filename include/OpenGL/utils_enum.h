@@ -33,6 +33,9 @@ namespace VKGL
         VKGL::ClearBufferBits get_clear_buffer_bits_for_gl_enum(const GLenum&                in_enum);
         GLenum                get_gl_enum_for_clear_buffer_bits(const VKGL::ClearBufferBits& in_buffers);
 
+        VKGL::ContextProperty get_context_property_for_gl_enum(const GLenum&                in_enum);
+        GLenum                get_gl_enum_for_context_property(const VKGL::ContextProperty& in_property);
+
         VKGL::CullMode get_cull_mode_for_gl_enum(const GLenum&         in_enum);
         GLenum         get_gl_enum_for_cull_mode(const VKGL::CullMode& in_cull_mode);
 
@@ -41,6 +44,12 @@ namespace VKGL
 
         VKGL::DepthStencilTextureMode get_depth_stencil_texture_mode_for_gl_enum(const GLenum&                        in_enum);
         GLenum                        get_gl_enum_for_depth_stencil_texture_mode(const VKGL::DepthStencilTextureMode& in_mode);
+
+        VKGL::DrawBuffer get_draw_buffer_for_gl_enum(const GLenum&     in_enum);
+        GLenum           get_gl_enum_for_draw_buffer(const DrawBuffer& in_draw_buffer);
+
+        VKGL::ErrorCode get_error_code_for_gl_enum(const GLenum&          in_enum);
+        GLenum          get_gl_enum_for_error_code(const VKGL::ErrorCode& in_error);
 
         VKGL::FramebufferAttachmentComponentType get_framebuffer_attachment_component_type_for_gl_enum(const GLenum&                                   in_enum);
         GLenum                                   get_gl_enum_for_framebuffer_attachment_component_type(const VKGL::FramebufferAttachmentComponentType& in_type);
@@ -60,6 +69,9 @@ namespace VKGL
         GLenum         get_gl_enum_for_hint_mode(const VKGL::HintMode& in_hint_mode);
         VKGL::HintMode get_hint_mode_for_gl_enum(const GLenum&         in_enum);
 
+        GLenum           get_gl_enum_for_hint_target(const VKGL::HintTarget& in_hint_target);
+        VKGL::HintTarget get_hint_target_for_gl_enum(const GLenum&           in_enum);
+
         GLenum               get_gl_enum_for_internal_format(const VKGL::InternalFormat& in_internal_format);
         VKGL::InternalFormat get_internal_format_for_gl_enum(const GLenum&               in_enum);
 
@@ -68,6 +80,9 @@ namespace VKGL
 
         GLenum            get_gl_enum_for_pixel_format(const VKGL::PixelFormat& in_pixel_format);
         VKGL::PixelFormat get_pixel_format_for_gl_enum(const GLenum&            in_enum);
+
+        GLenum                   get_gl_enum_for_pixel_store_property(const VKGL::PixelStoreProperty& in_property);
+        VKGL::PixelStoreProperty get_pixel_store_property_for_gl_enum(const GLenum&                   in_enum);
 
         GLenum          get_gl_enum_for_pixel_type(const VKGL::PixelType& in_pixel_type);
         VKGL::PixelType get_pixel_type_for_gl_enum(const GLenum&          in_enum);
@@ -80,6 +95,9 @@ namespace VKGL
 
         GLenum                          get_gl_enum_for_provoking_vertex_convention(const VKGL::ProvokingVertexConvention& in_convention);
         VKGL::ProvokingVertexConvention get_provoking_vertex_convention_for_gl_enum(const GLenum&                          in_enum);
+
+        VKGL::ReadBuffer get_read_buffer_for_gl_enum(const GLenum&           in_enum);
+        GLenum           get_gl_enum_for_read_buffer(const VKGL::ReadBuffer& in_read_buffer);
 
         GLenum           get_gl_enum_for_shader_type(const VKGL::ShaderType& in_shader_type);
         VKGL::ShaderType get_shader_type_for_gl_enum(const GLenum&           in_enum);
@@ -104,6 +122,12 @@ namespace VKGL
 
         GLenum                 get_gl_enum_for_texture_min_filter(const VKGL::TextureMinFilter& in_filter);
         VKGL::TextureMinFilter get_texture_min_filter_for_gl_enum(const GLenum&                 in_enum);
+
+        GLenum                get_gl_enum_for_texture_property(const VKGL::TextureProperty& in_property);
+        VKGL::TextureProperty get_texture_property_for_gl_enum(const GLenum&                in_enum);
+
+        GLenum                     get_gl_enum_for_texture_level_property(const VKGL::TextureLevelProperty& in_property);
+        VKGL::TextureLevelProperty get_texture_level_property_for_gl_enum(const GLenum&                     in_enum);
 
         GLenum               get_gl_enum_for_texture_swizzle(const VKGL::TextureSwizzle& in_swizzle);
         VKGL::TextureSwizzle get_texture_swizzle_for_gl_enum(const GLenum&               in_enum);

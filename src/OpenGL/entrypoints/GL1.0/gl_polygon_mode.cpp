@@ -1,5 +1,7 @@
 #include "OpenGL/entrypoints/GL1.0/gl_polygon_mode.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
+#include "OpenGL/utils_enum.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
                      const GLenum&  in_face,
@@ -10,7 +12,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -25,6 +26,17 @@ VKGL_API void VKGL_APIENTRY glPolygonMode(GLenum face,
                                        mode);
 }
 
+void vkglPolygonMode_execute(VKGL::Context* in_context_ptr,
+                            const GLenum&   in_face,
+                            const GLenum&   in_mode)
+{
+    const auto mode_vkgl = VKGL::Utils::get_polygon_mode_for_gl_enum(in_mode);
+
+    vkgl_assert(in_face == GL_FRONT_AND_BACK);
+
+    in_context_ptr->set_polygon_mode(mode_vkgl);
+}
+
 void vkglPolygonMode_with_validation(VKGL::Context* in_context_ptr,
                                      const GLenum&  in_face,
                                      const GLenum&  in_mode)
@@ -33,6 +45,8 @@ void vkglPolygonMode_with_validation(VKGL::Context* in_context_ptr,
                  in_face,
                  in_mode) )
     {
-        todo;
+        vkglPolygonMode_execute(in_context_ptr,
+                                in_face,
+                                in_mode);
     }
 }

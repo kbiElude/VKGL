@@ -1,4 +1,5 @@
 #include "OpenGL/entrypoints/GL1.0/gl_scissor.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
@@ -12,7 +13,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -31,6 +31,18 @@ VKGL_API void VKGL_APIENTRY glScissor(GLint   x,
                                    height);
 }
 
+void vkglScissor_execute(VKGL::Context* in_context_ptr,
+                         const GLint&   in_x,
+                         const GLint&   in_y,
+                         const GLsizei& in_width,
+                         const GLsizei& in_height)
+{
+    in_context_ptr->set_scissor(in_x,
+                                in_y,
+                                in_width,
+                                in_height);
+}
+
 void vkglScissor_with_validation(VKGL::Context* in_context_ptr,
                                  const GLint&   in_x,
                                  const GLint&   in_y,
@@ -43,6 +55,10 @@ void vkglScissor_with_validation(VKGL::Context* in_context_ptr,
                  in_width,
                  in_height) )
     {
-        todo;
+        vkglScissor_execute(in_context_ptr,
+                            in_x,
+                            in_y,
+                            in_width,
+                            in_height);
     }
 }

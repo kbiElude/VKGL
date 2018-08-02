@@ -1,4 +1,5 @@
 #include "OpenGL/entrypoints/GL1.0/gl_line_width.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
@@ -9,7 +10,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -22,12 +22,19 @@ VKGL_API void VKGL_APIENTRY glLineWidth(GLfloat width)
                                      width);
 }
 
+void vkglLineWidth_execute(VKGL::Context* in_context_ptr,
+                           const GLfloat& in_width)
+{
+    in_context_ptr->set_line_width(in_width);
+}
+
 void vkglLineWidth_with_validation(VKGL::Context* in_context_ptr,
                                    const GLfloat& in_width)
 {
     if (validate(in_context_ptr,
                  in_width) )
     {
-        todo;
+        vkglLineWidth_execute(in_context_ptr,
+                              in_width);
     }
 }

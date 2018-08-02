@@ -1,5 +1,7 @@
 #include "OpenGL/entrypoints/GL1.0/gl_get_tex_level_parameteriv.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
+#include "OpenGL/utils_enum.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
                      const GLenum&  in_target,
@@ -12,7 +14,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -31,6 +32,22 @@ VKGL_API void VKGL_APIENTRY glGetTexLevelParameteriv(GLenum target,
                                                   params);
 }
 
+void vkglGetTexLevelParameteriv_execute(VKGL::Context* in_context_ptr,
+                                        const GLenum&  in_target,
+                                        const GLint&   in_level,
+                                        const GLenum&  in_pname,
+                                        GLint*         out_params_ptr)
+{
+    const auto pname_vkgl  = VKGL::Utils::get_texture_level_property_for_gl_enum(in_pname);
+    const auto target_vkgl = VKGL::Utils::get_texture_target_for_gl_enum        (in_target);
+
+    in_context_ptr->get_texture_level_parameter(target_vkgl,
+                                                in_level,
+                                                pname_vkgl,
+                                                VKGL::GetSetArgumentType::Int,
+                                                out_params_ptr);
+}
+
 void vkglGetTexLevelParameteriv_with_validation(VKGL::Context* in_context_ptr,
                                                 const GLenum&  in_target,
                                                 const GLint&   in_level,
@@ -43,6 +60,10 @@ void vkglGetTexLevelParameteriv_with_validation(VKGL::Context* in_context_ptr,
                  in_pname,
                  out_params_ptr) )
     {
-        todo;
+        vkglGetTexLevelParameteriv_execute(in_context_ptr,
+                                           in_target,
+                                           in_level,
+                                           in_pname,
+                                           out_params_ptr);
     }
 }

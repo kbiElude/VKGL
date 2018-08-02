@@ -1,5 +1,7 @@
 #include "OpenGL/entrypoints/GL1.0/gl_get_doublev.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
+#include "OpenGL/utils_enum.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
                      const GLenum&  in_pname,
@@ -10,10 +12,19 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
+void vkglGetDoublev_execute(VKGL::Context* in_context_ptr,
+                            const GLenum&  in_pname,
+                            GLdouble*      out_data_ptr)
+{
+    const auto pname_vkgl = VKGL::Utils::get_context_property_for_gl_enum(in_pname);
+
+    in_context_ptr->get_parameter(pname_vkgl,
+                                  VKGL::GetSetArgumentType::Double,
+                                  out_data_ptr);
+}
 
 void vkglGetDoublev_with_validation(VKGL::Context* in_context_ptr,
                                     const GLenum&  in_pname,
@@ -23,6 +34,8 @@ void vkglGetDoublev_with_validation(VKGL::Context* in_context_ptr,
                  in_pname,
                  out_data_ptr) )
     {
-        todo;
+        vkglGetDoublev_execute(in_context_ptr,
+                               in_pname,
+                               out_data_ptr);
     }
 }

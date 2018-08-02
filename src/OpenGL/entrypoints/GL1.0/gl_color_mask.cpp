@@ -1,4 +1,5 @@
 #include "OpenGL/entrypoints/GL1.0/gl_color_mask.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
 static bool validate(VKGL::Context*   in_context_ptr,
@@ -12,7 +13,6 @@ static bool validate(VKGL::Context*   in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -31,6 +31,18 @@ VKGL_API void VKGL_APIENTRY glColorMask(GLboolean red,
                                      alpha);
 }
 
+void vkglColorMask_execute(VKGL::Context*   in_context_ptr,
+                           const GLboolean& in_red,
+                           const GLboolean& in_green,
+                           const GLboolean& in_blue,
+                           const GLboolean& in_alpha)
+{
+    in_context_ptr->set_color_mask( (in_red   == GL_TRUE),
+                                    (in_green == GL_TRUE),
+                                    (in_blue  == GL_TRUE),
+                                    (in_alpha == GL_TRUE) );
+}
+
 void vkglColorMask_with_validation(VKGL::Context*   in_context_ptr,
                                    const GLboolean& in_red,
                                    const GLboolean& in_green,
@@ -43,6 +55,10 @@ void vkglColorMask_with_validation(VKGL::Context*   in_context_ptr,
                  in_blue,
                  in_alpha) )
     {
-        todo;
+        vkglColorMask_execute(in_context_ptr,
+                              in_red,
+                              in_green,
+                              in_blue,
+                              in_alpha);
     }
 }

@@ -1,5 +1,7 @@
 #include "OpenGL/entrypoints/GL1.0/gl_logic_op.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
+#include "OpenGL/utils_enum.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
                      const GLenum&  in_opcode)
@@ -9,7 +11,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -22,12 +23,21 @@ VKGL_API void VKGL_APIENTRY glLogicOp(GLenum opcode)
                                    opcode);
 }
 
+void vkglLogicOp_execute(VKGL::Context* in_context_ptr,
+                         const GLenum&  in_opcode)
+{
+    const auto opcode_vkgl = VKGL::Utils::get_logic_op_mode_for_gl_enum(in_opcode);
+
+    in_context_ptr->set_logic_op(opcode_vkgl);
+}
+
 void vkglLogicOp_with_validation(VKGL::Context* in_context_ptr,
                                  const GLenum&  in_opcode)
 {
     if (validate(in_context_ptr,
                  in_opcode) )
     {
-        todo;
+        vkglLogicOp_execute(in_context_ptr,
+                            in_opcode);
     }
 }

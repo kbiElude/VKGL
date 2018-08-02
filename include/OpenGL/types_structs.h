@@ -64,6 +64,15 @@ namespace VKGL
         BufferState();
     } BufferState;
 
+    typedef struct RangedBufferBinding
+    {
+        GLuint   buffer_id;
+        uint64_t size;
+        uint64_t start_offset;
+
+        RangedBufferBinding();
+    } RangedBufferBinding;
+
     typedef struct SamplePosition
     {
         float x;
@@ -204,15 +213,6 @@ namespace VKGL
 
         ProgramState(const uint32_t& in_n_max_indexed_uniform_buffer_bindings);
     } ProgramState;
-
-    typedef struct RangedBufferBinding
-    {
-        GLuint   buffer_id;
-        uint64_t size;
-        uint64_t start_offset;
-
-        RangedBufferBinding();
-    } RangedBufferBinding;
 
     typedef struct RenderbufferState
     {

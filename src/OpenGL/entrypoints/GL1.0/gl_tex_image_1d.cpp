@@ -1,5 +1,7 @@
 #include "OpenGL/entrypoints/GL1.0/gl_tex_image_1d.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
+#include "OpenGL/utils_enum.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
                      const GLenum&  in_target,
@@ -16,7 +18,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -43,6 +44,31 @@ VKGL_API void VKGL_APIENTRY glTexImage1D(GLenum      target,
                                       pixels);
 }
 
+void vkglTexImage1D_execute(VKGL::Context* in_context_ptr,
+                            const GLenum&  in_target,
+                            const GLint&   in_level,
+                            const GLint&   in_internalformat,
+                            const GLsizei& in_width,
+                            const GLint&   in_border,
+                            const GLenum&  in_format,
+                            const GLenum&  in_type,
+                            const void*    in_pixels_ptr)
+{
+    const auto format_vkgl         = VKGL::Utils::get_pixel_format_for_gl_enum   (in_format);
+    const auto internalformat_vkgl = VKGL::Utils::get_internal_format_for_gl_enum(in_internalformat);
+    const auto target_vkgl         = VKGL::Utils::get_texture_target_for_gl_enum (in_target);
+    const auto type_vkgl           = VKGL::Utils::get_pixel_type_for_gl_enum     (in_type);
+
+    in_context_ptr->tex_image_1d(target_vkgl,
+                                 in_level,
+                                 internalformat_vkgl,
+                                 in_width,
+                                 in_border,
+                                 format_vkgl,
+                                 type_vkgl,
+                                 in_pixels_ptr);
+}
+
 void vkglTexImage1D_with_validation(VKGL::Context* in_context_ptr,
                                     const GLenum&  in_target,
                                     const GLint&   in_level,
@@ -63,6 +89,14 @@ void vkglTexImage1D_with_validation(VKGL::Context* in_context_ptr,
                  in_type,
                  in_pixels_ptr) )
     {
-        todo;
+        vkglTexImage1D_execute(in_context_ptr,
+                               in_target,
+                               in_level,
+                               in_internalformat,
+                               in_width,
+                               in_border,
+                               in_format,
+                               in_type,
+                               in_pixels_ptr);
     }
 }

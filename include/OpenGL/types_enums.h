@@ -3,6 +3,15 @@
 
 namespace VKGL
 {
+    enum class GetSetArgumentType
+    {
+        Boolean,
+        Double,
+        Float,
+        Int,
+        String,
+    };
+
     enum class BlendEquation
     {
         Function_Add,
@@ -102,6 +111,183 @@ namespace VKGL
         CLEAR_BUFFER_BIT_STENCIL = 1 << 2
     };
 
+    enum class ContextProperty
+    {
+        Active_Texture,
+        Aliased_Line_Width_Range,
+        Array_Buffer_Binding,
+        Blend,
+        Blend_Color,
+        Blend_Dst_Alpha,
+        Blend_Dst_RGB,
+        Blend_Equation_Alpha,
+        Blend_Equation_RGB,
+        Blend_Src_Alpha,
+        Blend_Src_RGB,
+        Color_Clear_Value,
+        Color_Logic_Op,
+        Color_Writemask,
+        Compressed_Texture_Formats,
+        Context_Flags,
+        Cull_Face,
+        Current_Program,
+        Depth_Clear_Value,
+        Depth_Func,
+        Depth_Range,
+        Depth_Test,
+        Depth_Writemask,
+        Dither,
+        Doublebuffer,
+        Draw_Buffer,
+        Draw_Buffer0,
+        Draw_Buffer1,
+        Draw_Buffer2,
+        Draw_Buffer3,
+        Draw_Buffer4,
+        Draw_Buffer5,
+        Draw_Buffer6,
+        Draw_Buffer7,
+        Draw_Framebuffer_Binding,
+        Element_Array_Buffer_Binding,
+        Fragment_Shader_Derivative_Hint,
+        Line_Smooth,
+        Line_Smooth_Hint,
+        Line_Width,
+        Logic_Op_Mode,
+        Major_Version,
+        Max_3D_Texture_Size,
+        Max_Array_Texture_Layers,
+        Max_Clip_Distances,
+        Max_Color_Texture_Samples,
+        Max_Combined_Fragment_Uniform_Components,
+        Max_Combined_Geometry_Uniform_Components,
+        Max_Combined_Texture_Image_Units,
+        Max_Combined_Uniform_Blocks,
+        Max_Combined_Vertex_Uniform_Components,
+        Max_Cube_Map_Texture_Size,
+        Max_Depth_Texture_Samples,
+        Max_Draw_Buffers,
+        Max_Dual_Source_Draw_Buffers,
+        Max_Elements_Indices,
+        Max_Elements_Vertices,
+        Max_Fragment_Input_Components,
+        Max_Fragment_Uniform_Blocks,
+        Max_Fragment_Uniform_Components,
+        Max_Geometry_Input_Components,
+        Max_Geometry_Output_Components,
+        Max_Geometry_Texture_Image_Units,
+        Max_Geometry_Uniform_Blocks,
+        Max_Geometry_Uniform_Components,
+        Max_Integer_Samples,
+        Max_Program_Texel_Offset,
+        Max_Rectangle_Texture_Size,
+        Max_Renderbuffer_Size,
+        Max_Sample_Mask_Words,
+        Max_Server_Wait_Timeout,
+        Max_Texture_Buffer_Size,
+        Max_Texture_Image_Units,
+        Max_Texture_LOD_Bias,
+        Max_Texture_Size,
+        Max_Uniform_Block_Size,
+        Max_Uniform_Buffer_Bindings,
+        Max_Varying_Components,
+        Max_Varying_Floats = Max_Varying_Components,
+        Max_Vertex_Attribs,
+        Max_Vertex_Output_Components,
+        Max_Vertex_Texture_Image_Units,
+        Max_Vertex_Uniform_Blocks,
+        Max_Vertex_Uniform_Components,
+        Max_Viewport_Dims,
+        Minor_Version,
+        Min_Program_Texel_Offset,
+        Num_Compressed_Texture_Formats,
+        Num_Extensions,
+        Pack_Alignment,
+        Pack_Image_Height,
+        Pack_LSB_First,
+        Pack_Row_Length,
+        Pack_Skip_Images,
+        Pack_Skip_Pixels,
+        Pack_Skip_Rows,
+        Pack_Swap_Bytes,
+        Pixel_Pack_Buffer_Binding,
+        Pixel_Unpack_Buffer_Binding,
+        Point_Fade_Threshold_Size,
+        Point_Size,
+        Point_Size_Granularity,
+        Point_Size_Range,
+        Polygon_Offset_Factor,
+        Polygon_Offset_Fill,
+        Polygon_Offset_Line,
+        Polygon_Offset_Point,
+        Polygon_Offset_Units,
+        Polygon_Smooth,
+        Polygon_Smooth_Hint,
+        Primitive_Restart_Index,
+        Program_Point_Size,
+        Provoking_Vertex,
+        Read_Buffer,
+        Read_Framebuffer_Binding,
+        Renderbuffer_Binding,
+        Sampler_Binding,
+        Samples,
+        Sample_Buffers,
+        Sample_Coverage_Invert,
+        Sample_Coverage_Value,
+        Scissor_Box,
+        Scissor_Test,
+        Smooth_Line_Width_Granularity,
+        Smooth_Line_Width_Range,
+        Stencil_Back_Fail,
+        Stencil_Back_Func,
+        Stencil_Back_Pass_Depth_Fail,
+        Stencil_Back_Pass_Depth_Pass,
+        Stencil_Back_Ref,
+        Stencil_Back_Value_Mask,
+        Stencil_Back_Writemask,
+        Stencil_Clear_Value,
+        Stencil_Fail,
+        Stencil_Func,
+        Stencil_Pass_Depth_Fail,
+        Stencil_Pass_Depth_Pass,
+        Stencil_Ref,
+        Stencil_Test,
+        Stencil_Value_Mask,
+        Stencil_Writemask,
+        Stereo,
+        Subpixel_Bits,
+        Texture_Binding_1D,
+        Texture_Binding_1D_Array,
+        Texture_Binding_2D,
+        Texture_Binding_2D_Array,
+        Texture_Binding_2D_Multisample,
+        Texture_Binding_2D_Multisample_Array,
+        Texture_Binding_3D,
+        Texture_Binding_Buffer,
+        Texture_Binding_Cube_Map,
+        Texture_Binding_Rectangle,
+        Texture_Compression_Hint,
+        Timestamp,
+        Transform_Feedback_Buffer_Binding,
+        Transform_Feedback_Buffer_Size,
+        Transform_Feedback_Buffer_Start,
+        Uniform_Buffer_Binding,
+        Uniform_Buffer_Offset_Alignment,
+        Uniform_Buffer_Size,
+        Uniform_Buffer_Start,
+        Unpack_Alignment,
+        Unpack_Image_Height,
+        Unpack_LSB_First,
+        Unpack_Row_Length,
+        Unpack_Skip_Images,
+        Unpack_Skip_Pixels,
+        Unpack_Skip_Rows,
+        Unpack_Swap_Bytes,
+        Viewport,
+
+        Unknown
+    };
+
     enum class CullMode
     {
         Back,
@@ -129,6 +315,43 @@ namespace VKGL
     {
         Depth_Component,
         Stencil_Index,
+
+        Unknown
+    };
+
+    enum class DrawBuffer
+    {
+        None,
+        Back,
+        Back_Left,
+        Back_Right,
+        Front,
+        Front_And_Back,
+        Front_Left,
+        Front_Right,
+        Left,
+        Right,
+
+        Color_Attachment0,
+        Color_Attachment1,
+        Color_Attachment2,
+        Color_Attachment3,
+        Color_Attachment4,
+        Color_Attachment5,
+        Color_Attachment6,
+        Color_Attachment7,
+
+        Unknown
+    };
+
+    enum class ErrorCode
+    {
+        Invalid_Enum,
+        Invalid_Framebuffer_Operation,
+        Invalid_Operation,
+        Invalid_Value,
+        No_Error,
+        Out_Of_Memory,
 
         Unknown
     };
@@ -188,6 +411,16 @@ namespace VKGL
         Dont_Care,
         Nicest,
         Fastest,
+
+        Unknown
+    };
+
+    enum class HintTarget
+    {
+        Fragment_Shader_Derivative,
+        Line_Smooth,
+        Polygon_Smooth,
+        Texture_Compression,
 
         Unknown
     };
@@ -331,6 +564,29 @@ namespace VKGL
         Unknown
     };
 
+    enum class PixelStoreProperty
+    {
+        Pack_Alignment,
+        Pack_Image_Height,
+        Pack_LSB_First,
+        Pack_Row_Length,
+        Pack_Skip_Images,
+        Pack_Skip_Pixels,
+        Pack_Skip_Rows,
+        Pack_Swap_Bytes,
+
+        Unpack_Alignment,
+        Unpack_Image_Height,
+        Unpack_LSB_First,
+        Unpack_Row_Length,
+        Unpack_Skip_Images,
+        Unpack_Skip_Pixels,
+        Unpack_Skip_Rows,
+        Unpack_Swap_Bytes,
+
+        Unknown
+    };
+
     enum class PixelType
     {
         Byte,
@@ -374,6 +630,31 @@ namespace VKGL
         Fill,
         Line,
         Point,
+
+        Unknown
+    };
+
+    enum class ReadBuffer
+    {
+        None,
+        Back,
+        Back_Left,
+        Back_Right,
+        Front,
+        Front_And_Back,
+        Front_Left,
+        Front_Right,
+        Left,
+        Right,
+
+        Color_Attachment0,
+        Color_Attachment1,
+        Color_Attachment2,
+        Color_Attachment3,
+        Color_Attachment4,
+        Color_Attachment5,
+        Color_Attachment6,
+        Color_Attachment7,
 
         Unknown
     };
@@ -458,6 +739,24 @@ namespace VKGL
         Unknown
     };
 
+    enum class TextureLevelProperty
+    {
+        Texture_Alpha_Size,
+        Texture_Blue_Size,
+        Texture_Buffer_Offset,
+        Texture_Compressed,
+        Texture_Compressed_Image_Size,
+        Texture_Depth,
+        Texture_Depth_Size,
+        Texture_Green_Size,
+        Texture_Height,
+        Texture_Internal_Format,
+        Texture_Red_Size,
+        Texture_Width,
+
+        Unknown
+    };
+
     enum class TextureMagFilter
     {
         Linear,
@@ -474,6 +773,29 @@ namespace VKGL
         Nearest,
         Nearest_Mipmap_Linear,
         Nearest_Mipmap_Nearest,
+
+        Unknown
+    };
+
+    enum class TextureProperty
+    {
+        Depth_Stencil_Texture_Mode,
+        Texture_Base_Level,
+        Texture_Compare_Func,
+        Texture_Compare_Mode,
+        Texture_Lod_Bias,
+        Texture_Mag_Filter,
+        Texture_Max_Level,
+        Texture_Max_Lod,
+        Texture_Min_Filter,
+        Texture_Min_Lod,
+        Texture_Swizzle_A,
+        Texture_Swizzle_B,
+        Texture_Swizzle_G,
+        Texture_Swizzle_R,
+        Texture_Wrap_R,
+        Texture_Wrap_S,
+        Texture_Wrap_T,
 
         Unknown
     };

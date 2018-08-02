@@ -1,5 +1,7 @@
 #include "OpenGL/entrypoints/GL1.0/gl_draw_buffer.h"
+#include "OpenGL/context.h"
 #include "OpenGL/globals.h"
+#include "OpenGL/utils_enum.h"
 
 static bool validate(VKGL::Context* in_context_ptr,
                      const GLenum&  in_buf)
@@ -9,7 +11,6 @@ static bool validate(VKGL::Context* in_context_ptr,
     // ..
 
     result = true;
-end:
     return result;
 }
 
@@ -22,12 +23,21 @@ VKGL_API void VKGL_APIENTRY glDrawBuffer(GLenum buf)
                                       buf);
 }
 
+void vkglDrawBuffer_execute(VKGL::Context* in_context_ptr,
+                            const GLenum&  in_buf)
+{
+    const auto buffer_vkgl = VKGL::Utils::get_draw_buffer_for_gl_enum(in_buf);
+
+    in_context_ptr->set_draw_buffer(buffer_vkgl);
+}
+
 void vkglDrawBuffer_with_validation(VKGL::Context* in_context_ptr,
                                     const GLenum&  in_buf)
 {
     if (validate(in_context_ptr,
                  in_buf) )
     {
-        todo;
+        vkglDrawBuffer_execute(in_context_ptr,
+                               in_buf);
     }
 }
