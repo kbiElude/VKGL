@@ -2795,3 +2795,79 @@ VKGL::VertexAttributeArrayType VKGL::Utils::get_vertex_attribute_array_type_for_
 
     return result;
 }
+
+bool VKGL::Utils::is_context_property_gl_limit(const VKGL::ContextProperty& in_pname)
+{
+    bool result = false;
+
+    switch (in_pname)
+    {
+        case VKGL::ContextProperty::Aliased_Line_Width_Range:
+        case VKGL::ContextProperty::Compressed_Texture_Formats:
+        case VKGL::ContextProperty::Major_Version:
+        case VKGL::ContextProperty::Max_3D_Texture_Size:
+        case VKGL::ContextProperty::Max_Array_Texture_Layers:
+        case VKGL::ContextProperty::Max_Clip_Distances:
+        case VKGL::ContextProperty::Max_Color_Texture_Samples:
+        case VKGL::ContextProperty::Max_Combined_Fragment_Uniform_Components:
+        case VKGL::ContextProperty::Max_Combined_Geometry_Uniform_Components:
+        case VKGL::ContextProperty::Max_Combined_Texture_Image_Units:
+        case VKGL::ContextProperty::Max_Combined_Uniform_Blocks:
+        case VKGL::ContextProperty::Max_Combined_Vertex_Uniform_Components:
+        case VKGL::ContextProperty::Max_Cube_Map_Texture_Size:
+        case VKGL::ContextProperty::Max_Depth_Texture_Samples:
+        case VKGL::ContextProperty::Max_Draw_Buffers:
+        case VKGL::ContextProperty::Max_Dual_Source_Draw_Buffers:
+        case VKGL::ContextProperty::Max_Elements_Indices:
+        case VKGL::ContextProperty::Max_Elements_Vertices:
+        case VKGL::ContextProperty::Max_Fragment_Input_Components:
+        case VKGL::ContextProperty::Max_Fragment_Uniform_Blocks:
+        case VKGL::ContextProperty::Max_Fragment_Uniform_Components:
+        case VKGL::ContextProperty::Max_Geometry_Input_Components:
+        case VKGL::ContextProperty::Max_Geometry_Output_Components:
+        case VKGL::ContextProperty::Max_Geometry_Texture_Image_Units:
+        case VKGL::ContextProperty::Max_Geometry_Uniform_Blocks:
+        case VKGL::ContextProperty::Max_Geometry_Uniform_Components:
+        case VKGL::ContextProperty::Max_Integer_Samples:
+        case VKGL::ContextProperty::Max_Program_Texel_Offset:
+        case VKGL::ContextProperty::Max_Rectangle_Texture_Size:
+        case VKGL::ContextProperty::Max_Renderbuffer_Size:
+        case VKGL::ContextProperty::Max_Sample_Mask_Words:
+        case VKGL::ContextProperty::Max_Server_Wait_Timeout:
+        case VKGL::ContextProperty::Max_Texture_Buffer_Size:
+        case VKGL::ContextProperty::Max_Texture_Image_Units:
+        case VKGL::ContextProperty::Max_Texture_LOD_Bias:
+        case VKGL::ContextProperty::Max_Texture_Size:
+        case VKGL::ContextProperty::Max_Uniform_Block_Size:
+        case VKGL::ContextProperty::Max_Uniform_Buffer_Bindings:
+        case VKGL::ContextProperty::Max_Varying_Components:
+        case VKGL::ContextProperty::Max_Vertex_Attribs:
+        case VKGL::ContextProperty::Max_Vertex_Output_Components:
+        case VKGL::ContextProperty::Max_Vertex_Texture_Image_Units:
+        case VKGL::ContextProperty::Max_Vertex_Uniform_Blocks:
+        case VKGL::ContextProperty::Max_Vertex_Uniform_Components:
+        case VKGL::ContextProperty::Max_Viewport_Dims:
+        case VKGL::ContextProperty::Minor_Version:
+        case VKGL::ContextProperty::Min_Program_Texel_Offset:
+        case VKGL::ContextProperty::Num_Compressed_Texture_Formats:
+        case VKGL::ContextProperty::Num_Extensions:
+        case VKGL::ContextProperty::Point_Fade_Threshold_Size:
+        case VKGL::ContextProperty::Point_Size_Granularity:
+        case VKGL::ContextProperty::Point_Size_Range:
+        case VKGL::ContextProperty::Smooth_Line_Width_Granularity:
+        case VKGL::ContextProperty::Smooth_Line_Width_Range:
+        case VKGL::ContextProperty::Subpixel_Bits:
+        case VKGL::ContextProperty::Uniform_Buffer_Offset_Alignment:
+        {
+            result = true;
+        }
+
+        default:
+        {
+            result = false;
+        }
+    }
+
+    return result;
+}
+

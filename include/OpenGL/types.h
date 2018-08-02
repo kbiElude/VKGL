@@ -3,6 +3,7 @@
 
 #include "Khronos/GL/glcorearb.h"
 #include <stdint.h>
+#include <memory>
 #include <vector>
 
 #if defined(_WIN32)
@@ -23,11 +24,16 @@ namespace VKGL
 {
     /* Forward declarations */
     class Context;
+    class GLLimits;
+    class GLStateManager;
+    class IGLLimits;
+    class Scheduler;
 }
 
 #include "OpenGL/types_enums.h"
 #include "OpenGL/types_macros.h"
 #include "OpenGL/types_typedefs.h"
 #include "OpenGL/types_structs.h"
+#include "OpenGL/types_interfaces.h"
 
 #endif /* VKGL_TYPES_H */

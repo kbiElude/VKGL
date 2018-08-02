@@ -445,15 +445,13 @@ namespace VKGL
         GLuint active_timestamp_query_id;
         GLuint active_transform_feedback_primitives_written_query_id;
 
-        explicit ContextState(const uint32_t& in_n_user_clip_planes,
-                              const int32_t*  in_viewport_ivec4_ptr,
-                              const uint32_t& in_n_max_ms_samples,
-                              const uint32_t& in_n_texture_units,
-                              const int32_t*  in_scissor_box_ivec4_ptr,
-                              const uint32_t& in_n_max_stencil_bits_supported,
-                              const uint32_t& in_n_max_draw_buffers,
-                              const uint32_t& in_n_max_transform_feedback_buffer_bindings);
+        explicit ContextState(const IGLLimits* in_limits_ptr,
+                              const int32_t*   in_viewport_ivec4_ptr,
+                              const int32_t*   in_scissor_box_ivec4_ptr);
+
     } ContextState;
+
+    typedef std::unique_ptr<ContextState> ContextStateUniquePtr;
 };
 
 #endif /* VKGL_TYPES_STRUCTS_H */

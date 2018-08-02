@@ -146,6 +146,8 @@ namespace VKGL
 
         GLenum                         get_gl_enum_for_vertex_attribute_array_type(const VKGL::VertexAttributeArrayType& in_type);
         VKGL::VertexAttributeArrayType get_vertex_attribute_array_type_for_gl_enum(const GLenum&                         in_enum);
+
+        bool is_context_property_gl_limit(const VKGL::ContextProperty& in_pname);
     }
 };
 

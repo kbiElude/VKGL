@@ -1,41 +1,30 @@
-#ifndef VKGL_CONTEXT_H
-#define VKGL_CONTEXT_H
+#ifndef VKGL_GL_STATE_MANAGER_H
+#define VKGL_GL_STATE_MANAGER_H
 
-#include "OpenGL/gl_limits.h"
-#include "OpenGL/gl_state_manager.h"
-#include "OpenGL/scheduler.h"
+#include "OpenGL/types.h"
+
 
 namespace VKGL
 {
-    typedef std::unique_ptr<VKGL::Context> ContextUniquePtr;
-
-    class Context
+    class GLStateManager
     {
     public:
-        /* Public functions */
-
-        static ContextUniquePtr create();
-
-        ~Context();
+        GLStateManager(const IGLLimits* in_limits_ptr);
+       ~GLStateManager();
 
         VKGL::ErrorCode get_error                  ();
-        void            get_parameter              (const VKGL::ContextProperty&      in_pname,
-                                                    const VKGL::GetSetArgumentType&   in_arg_type,
-                                                    void*                             out_arg_value_ptr) const;
-        void            get_texture_image          (const VKGL::TextureTarget&        in_target,
-                                                    const uint32_t&                   in_level,
-                                                    const VKGL::PixelFormat&          in_format,
-                                                    const VKGL::PixelType&            in_type,
-                                                    void*                             out_pixels_ptr);
-        void            get_texture_level_parameter(const VKGL::TextureTarget&        in_target,
-                                                    const int32_t&                    in_level,
-                                                    const VKGL::TextureLevelProperty& in_pname,
-                                                    const VKGL::GetSetArgumentType&   in_arg_type,
-                                                    void*                             out_params_ptr) const;
-        void            get_texture_parameter      (const VKGL::TextureTarget&        in_target,
-                                                    const VKGL::TextureProperty&      in_property,
-                                                    const VKGL::GetSetArgumentType&   in_arg_type,
-                                                    void*                             out_arg_value_ptr) const;
+        void            get_parameter              (const VKGL::ContextProperty&       in_pname,
+                                                    const VKGL::GetSetArgumentType&    in_arg_type,
+                                                    void*                              out_arg_value_ptr) const;
+        void            get_texture_level_parameter(const VKGL::TextureTarget&         in_target,
+                                                     const int32_t&                    in_level,
+                                                     const VKGL::TextureLevelProperty& in_pname,
+                                                     const VKGL::GetSetArgumentType&   in_arg_type,
+                                                     void*                             out_params_ptr) const;
+        void            get_texture_parameter      (const VKGL::TextureTarget&         in_target,
+                                                    const VKGL::TextureProperty&       in_property,
+                                                    const VKGL::GetSetArgumentType&    in_arg_type,
+                                                    void*                              out_arg_value_ptr) const;
 
         void set_blend_functions       (const VKGL::BlendFunction&        in_src_rgba_function,
                                         const VKGL::BlendFunction&        in_dst_rgba_function);
@@ -88,48 +77,16 @@ namespace VKGL
 
         bool is_enabled(const VKGL::Capability& in_capability) const;
 
-        void clear       (const VKGL::ClearBufferBits& in_buffers_to_clear);
-        void disable     (const VKGL::Capability&      in_capability);
-        void enable      (const VKGL::Capability&      in_capability);
-        void finish      ();
-        void flush       ();
-        void read_pixels (const int32_t&               in_x,
-                          const int32_t&               in_y,
-                          const size_t&                in_width,
-                          const size_t&                in_height,
-                          const VKGL::PixelFormat&     in_format,
-                          const VKGL::PixelType&       in_type,
-                          void*                        out_pixels_ptr);
-        void tex_image_1d(const VKGL::TextureTarget&   in_target,
-                          const int32_t&               in_level,
-                          const VKGL::InternalFormat&  in_internalformat,
-                          const int32_t&               in_width,
-                          const int32_t&               in_border,
-                          const VKGL::PixelFormat&     in_format,
-                          const VKGL::PixelType&       in_type,
-                          const void*                  in_pixels_ptr);
-        void tex_image_2d(const VKGL::TextureTarget&   in_target,
-                          const GLint&                 in_level,
-                          const VKGL::InternalFormat&  in_internalformat,
-                          const GLsizei&               in_width,
-                          const GLsizei&               in_height,
-                          const GLint&                 in_border,
-                          const VKGL::PixelFormat&     in_format,
-                          const VKGL::PixelType&       in_type,
-                          const void*                  in_pixels_ptr);
+        void disable(const VKGL::Capability& in_capability);
+        void enable (const VKGL::Capability& in_capability);
 
     private:
-        /* Private functions */
-
-        Context();
-
-        bool init();
-
         /* Private variables */
-        GLLimitsUniquePtr       m_gl_limits_ptr;
-        GLStateManagerUniquePtr m_gl_state_manager_ptr;
-        SchedulerUniquePtr      m_scheduler_ptr;
+
+        ContextStateUniquePtr m_state_ptr;
     };
+
+    typedef std::unique_ptr<GLStateManager> GLStateManagerUniquePtr;
 }
 
-#endif /* VKGL_CONTEXT_H */
+#endif /* VKGL_GL_STATE_MANAGER_H */
