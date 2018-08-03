@@ -1,3 +1,7 @@
+/* VKGL (c) 2018 Dominik Witczak
+ *
+ * This code is licensed under MIT license (see LICENSE.txt for details)
+ */
 #include "OpenGL/utils_enum.h"
 
 VKGL::BlendEquation VKGL::Utils::get_blend_equation_for_gl_enum(const GLenum& in_enum)
