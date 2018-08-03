@@ -16,17 +16,8 @@ namespace VKGL
         GLStateManager(const IGLLimits* in_limits_ptr);
        ~GLStateManager();
 
-        VKGL::ErrorCode get_error                  ();
+        VKGL::ErrorCode get_error                  (const bool&                        in_reset_error_code = true);
         void            get_parameter              (const VKGL::ContextProperty&       in_pname,
-                                                    const VKGL::GetSetArgumentType&    in_arg_type,
-                                                    void*                              out_arg_value_ptr) const;
-        void            get_texture_level_parameter(const VKGL::TextureTarget&         in_target,
-                                                     const int32_t&                    in_level,
-                                                     const VKGL::TextureLevelProperty& in_pname,
-                                                     const VKGL::GetSetArgumentType&   in_arg_type,
-                                                     void*                             out_params_ptr) const;
-        void            get_texture_parameter      (const VKGL::TextureTarget&         in_target,
-                                                    const VKGL::TextureProperty&       in_property,
                                                     const VKGL::GetSetArgumentType&    in_arg_type,
                                                     void*                              out_arg_value_ptr) const;
 
@@ -70,10 +61,6 @@ namespace VKGL
         void set_stencil_operations    (const VKGL::StencilOperation&     in_fail,
                                         const VKGL::StencilOperation&     in_zfail,
                                         const VKGL::StencilOperation&     in_zpass);
-        void set_texture_parameter     (const VKGL::TextureTarget&        in_target,
-                                        const VKGL::TextureProperty&      in_property,
-                                        const VKGL::GetSetArgumentType&   in_arg_type,
-                                        const void*                       in_arg_value_ptr);
         void set_viewport              (const int32_t&                    in_x,
                                         const int32_t&                    in_y,
                                         const size_t&                     in_width,
@@ -87,6 +74,7 @@ namespace VKGL
     private:
         /* Private variables */
 
+        VKGL::ErrorCode       m_current_error_code;
         ContextStateUniquePtr m_state_ptr;
     };
 

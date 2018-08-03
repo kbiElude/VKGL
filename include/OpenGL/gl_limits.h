@@ -206,6 +206,11 @@ namespace VKGL
             return m_max_texture_size;
         }
 
+        uint32_t get_max_transform_feedback_buffers() const final
+        {
+            return m_max_transform_feedback_buffers;
+        }
+
         uint32_t get_max_transform_feedback_interleaved_components() const final
         {
             return m_max_transform_feedback_interleaved_components;
@@ -347,6 +352,7 @@ namespace VKGL
         uint32_t                          m_max_texture_image_units;
         float                             m_max_texture_lod_bias;
         uint32_t                          m_max_texture_size;
+        uint32_t                          m_max_transform_feedback_buffers;
         uint32_t                          m_max_transform_feedback_interleaved_components;
         uint32_t                          m_max_transform_feedback_separate_attribs;
         uint32_t                          m_max_transform_feedback_separate_components;

@@ -323,11 +323,9 @@ namespace VKGL
     /* Rendering context state */
     typedef struct ContextState
     {
-        /* Bindings  */
         uint32_t binding_array_buffer;
         uint32_t binding_vertex_array_buffer;
 
-        /* State */
         bool    is_primitive_restart_enabled;
         int32_t primitive_restart_index;
 
@@ -365,7 +363,7 @@ namespace VKGL
         uint32_t sample_mask;
 
         uint32_t                      active_texture_unit;
-        std::vector<TextureUnitState> texture_units;
+        std::vector<TextureUnitState> texture_image_units;
 
         bool                   is_scissor_test_enabled;
         bool                   is_stencil_test_enabled;
@@ -448,6 +446,9 @@ namespace VKGL
         GLuint active_time_elapsed_query_id;
         GLuint active_timestamp_query_id;
         GLuint active_transform_feedback_primitives_written_query_id;
+
+        bool        is_program_point_size_enabled;
+        PolygonMode polygon_mode;
 
         explicit ContextState(const IGLLimits* in_limits_ptr,
                               const int32_t*   in_viewport_ivec4_ptr,

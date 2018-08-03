@@ -41,19 +41,16 @@ VKGL::BufferState::BufferState()
     usage            = VKGL::BufferUsage::Static_Draw;
 }
 
-VKGL::ContextState::ContextState(const uint32_t& in_n_user_clip_planes,
-                                 const int32_t*  in_viewport_ivec4_ptr,
-                                 const uint32_t& in_n_max_ms_samples,
-                                 const uint32_t& in_n_texture_units,
-                                 const int32_t*  in_scissor_box_ivec4_ptr,
-                                 const uint32_t& in_n_max_stencil_bits_supported,
-                                 const uint32_t& in_n_max_draw_buffers,
-                                 const uint32_t& in_n_max_transform_feedback_buffer_bindings)
-    :bindings_transform_feedback_buffer_indexed(in_n_max_transform_feedback_buffer_bindings),
-     texture_units                             (in_n_texture_units),
-     user_clip_planes_enabled                  (in_n_user_clip_planes, false)
+VKGL::ContextState::ContextState(const IGLLimits* in_limits_ptr,
+                                 const int32_t*   in_viewport_ivec4_ptr,
+                                 const int32_t*   in_scissor_box_ivec4_ptr)
+    :bindings_transform_feedback_buffer_indexed(in_limits_ptr->get_max_transform_feedback_buffers() ),
+     texture_image_units                       (in_limits_ptr->get_max_texture_image_units       () ),
+     user_clip_planes_enabled                  (in_limits_ptr->get_max_clip_distances            (), false)
 {
-    vkgl_assert(in_n_max_draw_buffers <= 8);
+    constexpr uint32_t n_max_stencil_bits = 8; /* todo: extract this info from vk backend */
+
+    vkgl_assert(in_limits_ptr->get_max_draw_buffers() <= 8);
 
     binding_array_buffer        = 0;
     binding_vertex_array_buffer = 0;
@@ -88,7 +85,7 @@ VKGL::ContextState::ContextState(const uint32_t& in_n_user_clip_planes,
     polygon_offset_factor           = 0;
     polygon_offset_units            = 0;
 
-    vkgl_assert(in_n_max_ms_samples <= 32);
+    vkgl_assert(in_limits_ptr->get_max_samples() <= 32);
 
     is_multisample_enabled              = true;
     is_sample_alpha_to_coverage_enabled = false;
@@ -97,7 +94,7 @@ VKGL::ContextState::ContextState(const uint32_t& in_n_user_clip_planes,
     is_sample_coverage_invert_enabled   = false;
     is_sample_mask_enabled              = false;
     sample_coverage_value               = 1.0f;
-    sample_mask                         = (~0) & ((1 << in_n_max_ms_samples) - 1);
+    sample_mask                         = (~0) & ((1 << in_limits_ptr->get_max_samples() ) - 1);
 
     active_texture_unit = 0;
 
@@ -117,8 +114,8 @@ VKGL::ContextState::ContextState(const uint32_t& in_n_user_clip_planes,
     stencil_op_pass_depth_pass_front = VKGL::StencilOperation::Keep;
     stencil_reference_value_back     = 0;
     stencil_reference_value_front    = 0;
-    stencil_value_mask_back          = (1 << in_n_max_stencil_bits_supported) - 1;
-    stencil_value_mask_front         = (1 << in_n_max_stencil_bits_supported) - 1;
+    stencil_value_mask_back          = (1 << n_max_stencil_bits) - 1;
+    stencil_value_mask_front         = (1 << n_max_stencil_bits) - 1;
 
     blend_equation_alpha              = VKGL::BlendEquation::Function_Add;
     blend_equation_rgb                = VKGL::BlendEquation::Function_Add;
@@ -187,6 +184,9 @@ VKGL::ContextState::ContextState(const uint32_t& in_n_user_clip_planes,
     active_time_elapsed_query_id                          = 0;
     active_timestamp_query_id                             = 0;
     active_transform_feedback_primitives_written_query_id = 0;
+
+    is_program_point_size_enabled = false;
+    polygon_mode                  = PolygonMode::Fill;
 }
 
 VKGL::DispatchTable::DispatchTable()

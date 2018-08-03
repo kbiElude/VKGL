@@ -54,6 +54,7 @@ namespace VKGL
         virtual uint32_t                                 get_max_texture_image_units                      () const = 0;
         virtual float                                    get_max_texture_lod_bias                         () const = 0;
         virtual uint32_t                                 get_max_texture_size                             () const = 0;
+        virtual uint32_t                                 get_max_transform_feedback_buffers               () const = 0;
         virtual uint32_t                                 get_max_transform_feedback_interleaved_components() const = 0;
         virtual uint32_t                                 get_max_transform_feedback_separate_attribs      () const = 0;
         virtual uint32_t                                 get_max_transform_feedback_separate_components   () const = 0;
