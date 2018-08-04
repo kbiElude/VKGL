@@ -2,7 +2,9 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+#include "OpenGL/converters.h"
 #include "OpenGL/gl_state_manager.h"
+#include "OpenGL/utils_enum.h"
 
 VKGL::GLStateManager::GLStateManager(const IGLLimits* in_limits_ptr)
     :m_current_error_code(VKGL::ErrorCode::No_Error)
@@ -16,6 +18,8 @@ VKGL::GLStateManager::GLStateManager(const IGLLimits* in_limits_ptr)
                                scissor)
     );
     vkgl_assert(m_state_ptr != nullptr);
+
+    init_prop_maps();
 }
 
 VKGL::GLStateManager::~GLStateManager()
@@ -107,7 +111,138 @@ void VKGL::GLStateManager::get_parameter(const VKGL::ContextProperty&    in_pnam
                                          const VKGL::GetSetArgumentType& in_arg_type,
                                          void*                           out_arg_value_ptr) const
 {
-    todo;
+    const auto pixel_property_pname = VKGL::Utils::get_pixel_store_property_from_context_property(in_pname);
+
+    if (pixel_property_pname != VKGL::PixelStoreProperty::Unknown)
+    {
+        VKGL::GLStateManager::get_pixel_store_parameter(pixel_property_pname,
+                                                        in_arg_type,
+                                                        out_arg_value_ptr);
+    }
+    else
+    {
+        const auto prop_map_iterator = m_context_prop_map.find(in_pname);
+
+        vkgl_assert(prop_map_iterator != m_context_prop_map.end() );
+        if (prop_map_iterator != m_context_prop_map.end() )
+        {
+            const auto& prop_props = prop_map_iterator->second;
+
+            VKGL::Converters::convert(prop_props.getter_value_type,
+                                      prop_props.value_ptr,
+                                      prop_props.n_value_components,
+                                      in_arg_type,
+                                      out_arg_value_ptr);
+        }
+    }
+}
+
+void VKGL::GLStateManager::get_pixel_store_parameter(const VKGL::PixelStoreProperty& in_pname,
+                                                     const VKGL::GetSetArgumentType& in_arg_type,
+                                                     void*                           out_arg_value_ptr) const
+{
+    const auto prop_map_iterator = m_pixel_store_prop_map.find(in_pname);
+
+    vkgl_assert(prop_map_iterator != m_pixel_store_prop_map.end() );
+    if (prop_map_iterator != m_pixel_store_prop_map.end() )
+    {
+        const auto& prop_props = prop_map_iterator->second;
+
+        VKGL::Converters::convert(prop_props.getter_value_type,
+                                  prop_props.value_ptr,
+                                  prop_props.n_value_components,
+                                  in_arg_type,
+                                  out_arg_value_ptr);
+    }
+}
+
+void VKGL::GLStateManager::init_prop_maps()
+{
+    m_context_prop_map =
+    {
+        {VKGL::ContextProperty::Active_Texture,                             {VKGL::GetSetArgumentType::Int,                           1, &m_state_ptr->active_texture_unit}  },
+        {VKGL::ContextProperty::Blend,                                      {VKGL::GetSetArgumentType::BooleanFromInt32_Bit0,         1, &m_state_ptr->is_blend_enabled_for_draw_buffers} },
+        {VKGL::ContextProperty::Blend_Color,                                {VKGL::GetSetArgumentType::Float,                         4,  m_state_ptr->blend_color} },
+        {VKGL::ContextProperty::Blend_Dst_Alpha,                            {VKGL::GetSetArgumentType::BlendFunctionVKGL,             1, &m_state_ptr->blend_func_dst_alpha} },
+        {VKGL::ContextProperty::Blend_Dst_RGB,                              {VKGL::GetSetArgumentType::BlendFunctionVKGL,             1, &m_state_ptr->blend_func_dst_rgb} },
+        {VKGL::ContextProperty::Blend_Equation_Alpha,                       {VKGL::GetSetArgumentType::BlendEquationVKGL,             1, &m_state_ptr->blend_equation_alpha} },
+        {VKGL::ContextProperty::Blend_Equation_RGB,                         {VKGL::GetSetArgumentType::BlendEquationVKGL,             1, &m_state_ptr->blend_equation_rgb} },
+        {VKGL::ContextProperty::Blend_Src_Alpha,                            {VKGL::GetSetArgumentType::BlendFunctionVKGL,             1, &m_state_ptr->blend_func_src_alpha} },
+        {VKGL::ContextProperty::Blend_Src_RGB,                              {VKGL::GetSetArgumentType::BlendFunctionVKGL,             1, &m_state_ptr->blend_func_src_rgb} },
+        {VKGL::ContextProperty::Color_Clear_Value,                          {VKGL::GetSetArgumentType::Float,                         4,  m_state_ptr->color_clear_value} },
+        {VKGL::ContextProperty::Color_Logic_Op,                             {VKGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->is_color_logic_op_enabled} },
+        {VKGL::ContextProperty::Color_Writemask,                            {VKGL::GetSetArgumentType::BooleanFromInt32_Bit0,         1, &m_state_ptr->color_writemask_for_draw_buffers} },
+        // TODO: {VKGL::ContextProperty::Context_Flags,                              {VKGL::GetSetArgumentType::, 1, &m_state_ptr->} },
+        {VKGL::ContextProperty::Cull_Face,                                  {VKGL::GetSetArgumentType::CullFaceVKGL,                  1, &m_state_ptr->cull_face_mode} },
+        {VKGL::ContextProperty::Current_Program,                            {VKGL::GetSetArgumentType::Int,                           1, &m_state_ptr->current_program_id} },
+        {VKGL::ContextProperty::Depth_Clear_Value,                          {VKGL::GetSetArgumentType::Float,                         1, &m_state_ptr->depth_clear_value} },
+        {VKGL::ContextProperty::Depth_Func,                                 {VKGL::GetSetArgumentType::DepthFunctionVKGL,             1, &m_state_ptr->depth_function} },
+        {VKGL::ContextProperty::Depth_Range,                                {VKGL::GetSetArgumentType::Float,                         2,  m_state_ptr->depth_range} },
+        {VKGL::ContextProperty::Depth_Test,                                 {VKGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->is_depth_test_enabled} },
+        {VKGL::ContextProperty::Depth_Writemask,                            {VKGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->depth_writemask} },
+        {VKGL::ContextProperty::Dither,                                     {VKGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->is_dither_enabled} },
+        {VKGL::ContextProperty::Draw_Framebuffer_Binding,                   {VKGL::GetSetArgumentType::Int,                           1, &m_state_ptr->binding_draw_framebuffer} },
+        {VKGL::ContextProperty::Fragment_Shader_Derivative_Hint,            {VKGL::GetSetArgumentType::HintModeVKGL,                  1, &m_state_ptr->hint_fragment_shader_derivative} },
+        {VKGL::ContextProperty::Line_Smooth,                                {VKGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->is_line_smooth_enabled} },
+        {VKGL::ContextProperty::Line_Smooth_Hint,                           {VKGL::GetSetArgumentType::HintModeVKGL,                  1, &m_state_ptr->hint_line_smooth} },
+        {VKGL::ContextProperty::Line_Width,                                 {VKGL::GetSetArgumentType::Float,                         1, &m_state_ptr->line_width} },
+        {VKGL::ContextProperty::Logic_Op_Mode,                              {VKGL::GetSetArgumentType::LogicOpModeVKGL,               1, &m_state_ptr->logic_op_mode} },
+        {VKGL::ContextProperty::Point_Fade_Threshold_Size,                  {VKGL::GetSetArgumentType::Float,                         1, &m_state_ptr->point_fade_threshold_size} },
+        {VKGL::ContextProperty::Point_Size,                                 {VKGL::GetSetArgumentType::Float,                         1, &m_state_ptr->point_size} },
+        {VKGL::ContextProperty::Polygon_Offset_Factor,                      {VKGL::GetSetArgumentType::Float,                         1, &m_state_ptr->polygon_offset_factor} },
+        {VKGL::ContextProperty::Polygon_Offset_Fill,                        {VKGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->is_polygon_offset_fill_enabled} },
+        {VKGL::ContextProperty::Polygon_Offset_Line,                        {VKGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->is_polygon_offset_line_enabled} },
+        {VKGL::ContextProperty::Polygon_Offset_Point,                       {VKGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->is_polygon_offset_point_enabled} },
+        {VKGL::ContextProperty::Polygon_Offset_Units,                       {VKGL::GetSetArgumentType::Float,                         1, &m_state_ptr->polygon_offset_units} },
+        {VKGL::ContextProperty::Polygon_Smooth,                             {VKGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->is_polygon_smooth_enabled} },
+        {VKGL::ContextProperty::Polygon_Smooth_Hint,                        {VKGL::GetSetArgumentType::HintModeVKGL,                  1, &m_state_ptr->hint_polygon_smooth} },
+        {VKGL::ContextProperty::Primitive_Restart_Index,                    {VKGL::GetSetArgumentType::Int,                           1, &m_state_ptr->primitive_restart_index} },
+        {VKGL::ContextProperty::Program_Point_Size,                         {VKGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->is_program_point_size_enabled} },
+        {VKGL::ContextProperty::Provoking_Vertex,                           {VKGL::GetSetArgumentType::ProvokingVertexConventionVKGL, 1, &m_state_ptr->provoking_vertex} },
+        {VKGL::ContextProperty::Read_Framebuffer_Binding,                   {VKGL::GetSetArgumentType::Int,                           1, &m_state_ptr->binding_read_framebuffer} },
+        // todo {VKGL::ContextProperty::Sampler_Binding,                            {VKGL::GetSetArgumentType::, 1, &m_state_ptr->} },
+        {VKGL::ContextProperty::Sample_Coverage_Invert,                     {VKGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->is_sample_coverage_invert_enabled} },
+        {VKGL::ContextProperty::Sample_Coverage_Value,                      {VKGL::GetSetArgumentType::Float,                         1, &m_state_ptr->sample_coverage_value} },
+        {VKGL::ContextProperty::Scissor_Box,                                {VKGL::GetSetArgumentType::Int,                           4, &m_state_ptr->scissor_box} },
+        {VKGL::ContextProperty::Scissor_Test,                               {VKGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->is_scissor_test_enabled} },
+        {VKGL::ContextProperty::Stencil_Back_Fail,                          {VKGL::GetSetArgumentType::StencilOperationVKGL,          1, &m_state_ptr->stencil_op_fail_back} },
+        {VKGL::ContextProperty::Stencil_Back_Func,                          {VKGL::GetSetArgumentType::StencilFunctionVKGL,           1, &m_state_ptr->stencil_function_back} },
+        {VKGL::ContextProperty::Stencil_Back_Pass_Depth_Fail,               {VKGL::GetSetArgumentType::StencilOperationVKGL,          1, &m_state_ptr->stencil_op_pass_depth_fail_back} },
+        {VKGL::ContextProperty::Stencil_Back_Pass_Depth_Pass,               {VKGL::GetSetArgumentType::StencilOperationVKGL,          1, &m_state_ptr->stencil_op_pass_depth_pass_back} },
+        {VKGL::ContextProperty::Stencil_Back_Ref,                           {VKGL::GetSetArgumentType::Int,                           1, &m_state_ptr->stencil_reference_value_back} },
+        {VKGL::ContextProperty::Stencil_Back_Value_Mask,                    {VKGL::GetSetArgumentType::Int,                           1, &m_state_ptr->stencil_value_mask_back} },
+        {VKGL::ContextProperty::Stencil_Back_Writemask,                     {VKGL::GetSetArgumentType::Int,                           1, &m_state_ptr->stencil_writemask_back} },
+        {VKGL::ContextProperty::Stencil_Clear_Value,                        {VKGL::GetSetArgumentType::Int,                           1, &m_state_ptr->stencil_clear_value} },
+        {VKGL::ContextProperty::Stencil_Fail,                               {VKGL::GetSetArgumentType::StencilOperationVKGL,          1, &m_state_ptr->stencil_op_fail_front} },
+        {VKGL::ContextProperty::Stencil_Func,                               {VKGL::GetSetArgumentType::StencilFunctionVKGL,           1, &m_state_ptr->stencil_function_front} },
+        {VKGL::ContextProperty::Stencil_Pass_Depth_Fail,                    {VKGL::GetSetArgumentType::StencilOperationVKGL,          1, &m_state_ptr->stencil_op_pass_depth_fail_front} },
+        {VKGL::ContextProperty::Stencil_Pass_Depth_Pass,                    {VKGL::GetSetArgumentType::StencilOperationVKGL,          1, &m_state_ptr->stencil_op_pass_depth_pass_front} },
+        {VKGL::ContextProperty::Stencil_Ref,                                {VKGL::GetSetArgumentType::Int,                           1, &m_state_ptr->stencil_reference_value_front} },
+        {VKGL::ContextProperty::Stencil_Test,                               {VKGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->is_stencil_test_enabled} },
+        {VKGL::ContextProperty::Stencil_Value_Mask,                         {VKGL::GetSetArgumentType::Int,                           1, &m_state_ptr->stencil_value_mask_front} },
+        {VKGL::ContextProperty::Stencil_Writemask,                          {VKGL::GetSetArgumentType::Int,                           1, &m_state_ptr->stencil_writemask_front} },
+        {VKGL::ContextProperty::Texture_Compression_Hint,                   {VKGL::GetSetArgumentType::HintModeVKGL,                  1, &m_state_ptr->hint_texture_compression} },
+        {VKGL::ContextProperty::Viewport,                                   {VKGL::GetSetArgumentType::Float,                         1, &m_state_ptr->viewport} },
+    };
+
+    m_pixel_store_prop_map =
+    {
+        {VKGL::PixelStoreProperty::Pack_Alignment,      {VKGL::GetSetArgumentType::Int,     1, &m_state_ptr->pack_alignment}    },
+        {VKGL::PixelStoreProperty::Pack_Image_Height,   {VKGL::GetSetArgumentType::Int,     1, &m_state_ptr->pack_image_height} },
+        {VKGL::PixelStoreProperty::Pack_LSB_First,      {VKGL::GetSetArgumentType::Boolean, 1, &m_state_ptr->pack_lsb_first}    },
+        {VKGL::PixelStoreProperty::Pack_Row_Length,     {VKGL::GetSetArgumentType::Int,     1, &m_state_ptr->pack_row_length}   },
+        {VKGL::PixelStoreProperty::Pack_Skip_Images,    {VKGL::GetSetArgumentType::Int,     1, &m_state_ptr->pack_skip_images}  },
+        {VKGL::PixelStoreProperty::Pack_Skip_Rows,      {VKGL::GetSetArgumentType::Int,     1, &m_state_ptr->pack_skip_rows}    },
+        {VKGL::PixelStoreProperty::Pack_Swap_Bytes,     {VKGL::GetSetArgumentType::Boolean, 1, &m_state_ptr->pack_swap_bytes}   },
+
+        {VKGL::PixelStoreProperty::Unpack_Alignment,    {VKGL::GetSetArgumentType::Int,     1, &m_state_ptr->unpack_alignment}    },
+        {VKGL::PixelStoreProperty::Unpack_Image_Height, {VKGL::GetSetArgumentType::Int,     1, &m_state_ptr->unpack_image_height} },
+        {VKGL::PixelStoreProperty::Unpack_LSB_First,    {VKGL::GetSetArgumentType::Boolean, 1, &m_state_ptr->unpack_lsb_first}    },
+        {VKGL::PixelStoreProperty::Unpack_Row_Length,   {VKGL::GetSetArgumentType::Int,     1, &m_state_ptr->unpack_row_length}   },
+        {VKGL::PixelStoreProperty::Unpack_Skip_Images,  {VKGL::GetSetArgumentType::Int,     1, &m_state_ptr->unpack_skip_images}  },
+        {VKGL::PixelStoreProperty::Unpack_Skip_Rows,    {VKGL::GetSetArgumentType::Int,     1, &m_state_ptr->unpack_skip_rows}    },
+        {VKGL::PixelStoreProperty::Unpack_Swap_Bytes,   {VKGL::GetSetArgumentType::Boolean, 1, &m_state_ptr->unpack_swap_bytes}   },
+    };
 }
 
 void VKGL::GLStateManager::set_blend_functions(const VKGL::BlendFunction& in_src_rgba_function,
@@ -217,7 +352,19 @@ void VKGL::GLStateManager::set_pixel_store_property(const VKGL::PixelStoreProper
                                                     const VKGL::GetSetArgumentType& in_arg_type,
                                                     const void*                     in_arg_value_ptr)
 {
-    todo;
+    const auto prop_map_iterator = m_pixel_store_prop_map.find(in_property);
+
+    vkgl_assert(prop_map_iterator != m_pixel_store_prop_map.end() );
+    if (prop_map_iterator != m_pixel_store_prop_map.end() )
+    {
+        const auto& prop_props = prop_map_iterator->second;
+
+        VKGL::Converters::convert(in_arg_type,
+                                  in_arg_value_ptr,
+                                  prop_props.n_value_components,
+                                  prop_props.getter_value_type,
+                                  prop_map_iterator->second.value_ptr);
+    }
 }
 
 void VKGL::GLStateManager::set_point_size(const float& in_size)

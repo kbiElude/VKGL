@@ -78,6 +78,22 @@ void VKGL::Context::get_parameter(const VKGL::ContextProperty&    in_pname,
                                               out_arg_value_ptr);
     }
     else
+    if (VKGL::Utils::is_framebuffer_pname(in_pname) ) // todo: gl_doublebuffer, _drawbuffer, _drawbufferN, _readbuffer, samples, sample_buffers, stereo
+    {
+        todo;
+    }
+    else
+    if (VKGL::Utils::is_texture_binding_pname(in_pname) ) // todo + renderbuffers
+    {
+        todo;
+    }
+    else
+    if (VKGL::Utils::is_buffer_binding_pname(in_pname) ) // todo: buffer bindings
+    {
+        todo;
+    }
+    else
+    if (VKGL::Utils:is_gl_constant(in_pname) ) // todo: gl_major_version, gl_minor_version, 
     {
         vkgl_assert(m_gl_state_manager_ptr != nullptr);
 

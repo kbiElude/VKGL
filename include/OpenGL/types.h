@@ -8,6 +8,7 @@
 #include "Khronos/GL/glcorearb.h"
 #include <stdint.h>
 #include <memory>
+#include <unordered_map>
 #include <vector>
 
 #if defined(_WIN32)

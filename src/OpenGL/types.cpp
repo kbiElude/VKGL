@@ -44,16 +44,12 @@ VKGL::BufferState::BufferState()
 VKGL::ContextState::ContextState(const IGLLimits* in_limits_ptr,
                                  const int32_t*   in_viewport_ivec4_ptr,
                                  const int32_t*   in_scissor_box_ivec4_ptr)
-    :bindings_transform_feedback_buffer_indexed(in_limits_ptr->get_max_transform_feedback_buffers() ),
-     texture_image_units                       (in_limits_ptr->get_max_texture_image_units       () ),
-     user_clip_planes_enabled                  (in_limits_ptr->get_max_clip_distances            (), false)
+    :texture_image_units                       (in_limits_ptr->get_max_texture_image_units() ),
+     user_clip_planes_enabled                  (in_limits_ptr->get_max_clip_distances     (), false)
 {
     constexpr uint32_t n_max_stencil_bits = 8; /* todo: extract this info from vk backend */
 
     vkgl_assert(in_limits_ptr->get_max_draw_buffers() <= 8);
-
-    binding_array_buffer        = 0;
-    binding_vertex_array_buffer = 0;
 
     is_primitive_restart_enabled = false;
     primitive_restart_index      = 0;
@@ -117,6 +113,10 @@ VKGL::ContextState::ContextState(const IGLLimits* in_limits_ptr,
     stencil_value_mask_back          = (1 << n_max_stencil_bits) - 1;
     stencil_value_mask_front         = (1 << n_max_stencil_bits) - 1;
 
+    blend_color[0]                    = 0;
+    blend_color[1]                    = 0;
+    blend_color[2]                    = 0;
+    blend_color[3]                    = 0;
     blend_equation_alpha              = VKGL::BlendEquation::Function_Add;
     blend_equation_rgb                = VKGL::BlendEquation::Function_Add;
     blend_func_dst_alpha              = VKGL::BlendFunction::Zero;
@@ -146,36 +146,30 @@ VKGL::ContextState::ContextState(const IGLLimits* in_limits_ptr,
     binding_read_framebuffer = 0;
     binding_renderbuffer     = 0;
 
-    binding_pixel_pack_buffer   = 0;
-    binding_pixel_unpack_buffer = 0;
-    pack_alignment              = 4;
-    pack_image_height           = 0;
-    pack_lsb_first              = false;
-    pack_row_length             = 0;
-    pack_skip_images            = 0;
-    pack_skip_pixels            = 0;
-    pack_skip_rows              = 0;
-    pack_swap_bytes             = false;
-    unpack_alignment            = 4;
-    unpack_image_height         = 0;
-    unpack_lsb_first            = false;
-    unpack_row_length           = 0;
-    unpack_skip_images          = 0;
-    unpack_skip_pixels          = 0;
-    unpack_skip_rows            = 0;
-    unpack_swap_bytes           = false;
+    pack_alignment      = 4;
+    pack_image_height   = 0;
+    pack_lsb_first      = false;
+    pack_row_length     = 0;
+    pack_skip_images    = 0;
+    pack_skip_pixels    = 0;
+    pack_skip_rows      = 0;
+    pack_swap_bytes     = false;
+    unpack_alignment    = 4;
+    unpack_image_height = 0;
+    unpack_lsb_first    = false;
+    unpack_row_length   = 0;
+    unpack_skip_images  = 0;
+    unpack_skip_pixels  = 0;
+    unpack_skip_rows    = 0;
+    unpack_swap_bytes   = false;
 
     current_program_id = 0;
-
-    binding_transform_feedback_buffer_generic = 0;
 
     hint_fragment_shader_derivative = VKGL::HintMode::Dont_Care;
     hint_line_smooth                = VKGL::HintMode::Dont_Care;
     hint_polygon_smooth             = VKGL::HintMode::Dont_Care;
     hint_texture_compression        = VKGL::HintMode::Dont_Care;
 
-    binding_copy_read                    = 0;
-    binding_copy_write                   = 0;
     is_texture_cube_map_seamless_enabled = false;
 
     active_any_samples_passed_query_id                    = 0;

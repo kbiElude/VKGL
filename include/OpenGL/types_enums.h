@@ -9,11 +9,23 @@ namespace VKGL
 {
     enum class GetSetArgumentType
     {
+        BlendEquationVKGL,
+        BlendFunctionVKGL,
         Boolean,
+        BooleanFromInt32_Bit0,
+        CullFaceVKGL,
+        DepthFunctionVKGL,
         Double,
         Float,
+        HintModeVKGL,
         Int,
+        LogicOpModeVKGL,
+        ProvokingVertexConventionVKGL,
+        StencilFunctionVKGL,
+        StencilOperationVKGL,
         String,
+
+        Unknown,
     };
 
     enum class BlendEquation

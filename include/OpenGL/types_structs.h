@@ -323,9 +323,6 @@ namespace VKGL
     /* Rendering context state */
     typedef struct ContextState
     {
-        uint32_t binding_array_buffer;
-        uint32_t binding_vertex_array_buffer;
-
         bool    is_primitive_restart_enabled;
         int32_t primitive_restart_index;
 
@@ -381,6 +378,7 @@ namespace VKGL
         int32_t                stencil_value_mask_back;
         int32_t                stencil_value_mask_front;
 
+        float               blend_color[4];
         VKGL::BlendEquation blend_equation_alpha;
         VKGL::BlendEquation blend_equation_rgb;
         VKGL::BlendFunction blend_func_dst_alpha;
@@ -407,8 +405,6 @@ namespace VKGL
         uint32_t binding_read_framebuffer;
         uint32_t binding_renderbuffer;
 
-        uint32_t binding_pixel_pack_buffer;
-        uint32_t binding_pixel_unpack_buffer;
         uint32_t pack_alignment;
         uint32_t pack_image_height;
         bool     pack_lsb_first;
@@ -428,16 +424,11 @@ namespace VKGL
 
         GLuint current_program_id;
 
-        uint32_t                         binding_transform_feedback_buffer_generic;
-        std::vector<RangedBufferBinding> bindings_transform_feedback_buffer_indexed;
-
         VKGL::HintMode hint_fragment_shader_derivative;
         VKGL::HintMode hint_line_smooth;
         VKGL::HintMode hint_polygon_smooth;
         VKGL::HintMode hint_texture_compression;
 
-        uint32_t binding_copy_read;
-        uint32_t binding_copy_write;
         bool     is_texture_cube_map_seamless_enabled;
 
         GLuint active_any_samples_passed_query_id;

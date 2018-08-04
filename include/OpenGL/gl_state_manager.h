@@ -16,10 +16,13 @@ namespace VKGL
         GLStateManager(const IGLLimits* in_limits_ptr);
        ~GLStateManager();
 
-        VKGL::ErrorCode get_error                  (const bool&                        in_reset_error_code = true);
-        void            get_parameter              (const VKGL::ContextProperty&       in_pname,
-                                                    const VKGL::GetSetArgumentType&    in_arg_type,
-                                                    void*                              out_arg_value_ptr) const;
+        VKGL::ErrorCode get_error                (const bool&                        in_reset_error_code = true);
+        void            get_parameter            (const VKGL::ContextProperty&       in_pname,
+                                                  const VKGL::GetSetArgumentType&    in_arg_type,
+                                                  void*                              out_arg_value_ptr) const;
+        void            get_pixel_store_parameter(const VKGL::PixelStoreProperty&    in_pname,
+                                                  const VKGL::GetSetArgumentType&    in_arg_type,
+                                                  void*                              out_arg_value_ptr) const;
 
         void set_blend_functions       (const VKGL::BlendFunction&        in_src_rgba_function,
                                         const VKGL::BlendFunction&        in_dst_rgba_function);
@@ -72,10 +75,27 @@ namespace VKGL
         void enable (const VKGL::Capability& in_capability);
 
     private:
+        /* Private type definitions */
+
+        typedef struct PropertyData
+        {
+            VKGL::GetSetArgumentType getter_value_type;
+            uint32_t                 n_value_components;
+            void*                    value_ptr;
+        }
+        PropertyData;
+
+        /* Private functions */
+
+        void init_prop_maps();
+
         /* Private variables */
 
         VKGL::ErrorCode       m_current_error_code;
         ContextStateUniquePtr m_state_ptr;
+
+        std::unordered_map<VKGL::ContextProperty,    PropertyData> m_context_prop_map;
+        std::unordered_map<VKGL::PixelStoreProperty, PropertyData> m_pixel_store_prop_map;
     };
 
     typedef std::unique_ptr<GLStateManager> GLStateManagerUniquePtr;

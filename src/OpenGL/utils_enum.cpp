@@ -2238,6 +2238,33 @@ VKGL::PixelStoreProperty VKGL::Utils::get_pixel_store_property_for_gl_enum(const
     return result;
 }
 
+VKGL::PixelStoreProperty VKGL::Utils::get_pixel_store_property_from_context_property(const VKGL::ContextProperty& in_context_property)
+{
+    VKGL::PixelStoreProperty result = VKGL::PixelStoreProperty::Unknown;
+
+    switch (in_context_property)
+    {
+        case VKGL::ContextProperty::Pack_Alignment:      result = VKGL::PixelStoreProperty::Pack_Alignment;      break;
+        case VKGL::ContextProperty::Pack_Image_Height:   result = VKGL::PixelStoreProperty::Pack_Image_Height;   break;
+        case VKGL::ContextProperty::Pack_LSB_First:      result = VKGL::PixelStoreProperty::Pack_LSB_First;      break;
+        case VKGL::ContextProperty::Pack_Row_Length:     result = VKGL::PixelStoreProperty::Pack_Row_Length;     break;
+        case VKGL::ContextProperty::Pack_Skip_Images:    result = VKGL::PixelStoreProperty::Pack_Skip_Images;    break;
+        case VKGL::ContextProperty::Pack_Skip_Pixels:    result = VKGL::PixelStoreProperty::Pack_Skip_Pixels;    break;
+        case VKGL::ContextProperty::Pack_Skip_Rows:      result = VKGL::PixelStoreProperty::Pack_Skip_Rows;      break;
+        case VKGL::ContextProperty::Pack_Swap_Bytes:     result = VKGL::PixelStoreProperty::Pack_Swap_Bytes;     break;
+        case VKGL::ContextProperty::Unpack_Alignment:    result = VKGL::PixelStoreProperty::Unpack_Alignment;    break;
+        case VKGL::ContextProperty::Unpack_Image_Height: result = VKGL::PixelStoreProperty::Unpack_Image_Height; break;
+        case VKGL::ContextProperty::Unpack_LSB_First:    result = VKGL::PixelStoreProperty::Unpack_LSB_First;    break;
+        case VKGL::ContextProperty::Unpack_Row_Length:   result = VKGL::PixelStoreProperty::Unpack_Row_Length;   break;
+        case VKGL::ContextProperty::Unpack_Skip_Images:  result = VKGL::PixelStoreProperty::Unpack_Skip_Images;  break;
+        case VKGL::ContextProperty::Unpack_Skip_Pixels:  result = VKGL::PixelStoreProperty::Unpack_Skip_Pixels;  break;
+        case VKGL::ContextProperty::Unpack_Skip_Rows:    result = VKGL::PixelStoreProperty::Unpack_Skip_Rows;    break;
+        case VKGL::ContextProperty::Unpack_Swap_Bytes:   result = VKGL::PixelStoreProperty::Unpack_Swap_Bytes;   break;
+    }
+
+    return result;
+}
+
 VKGL::PixelType VKGL::Utils::get_pixel_type_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::PixelType result = VKGL::PixelType::Unknown;

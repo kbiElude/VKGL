@@ -85,8 +85,9 @@ namespace VKGL
         GLenum            get_gl_enum_for_pixel_format(const VKGL::PixelFormat& in_pixel_format);
         VKGL::PixelFormat get_pixel_format_for_gl_enum(const GLenum&            in_enum);
 
-        GLenum                   get_gl_enum_for_pixel_store_property(const VKGL::PixelStoreProperty& in_property);
-        VKGL::PixelStoreProperty get_pixel_store_property_for_gl_enum(const GLenum&                   in_enum);
+        GLenum                   get_gl_enum_for_pixel_store_property          (const VKGL::PixelStoreProperty& in_property);
+        PixelStoreProperty       get_pixel_store_property_from_context_property(const VKGL::ContextProperty&    in_context_property);
+        VKGL::PixelStoreProperty get_pixel_store_property_for_gl_enum          (const GLenum&                   in_enum);
 
         GLenum          get_gl_enum_for_pixel_type(const VKGL::PixelType& in_pixel_type);
         VKGL::PixelType get_pixel_type_for_gl_enum(const GLenum&          in_enum);
