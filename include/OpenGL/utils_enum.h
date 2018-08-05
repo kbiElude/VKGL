@@ -52,6 +52,12 @@ namespace VKGL
         VKGL::DrawBuffer get_draw_buffer_for_gl_enum(const GLenum&     in_enum);
         GLenum           get_gl_enum_for_draw_buffer(const DrawBuffer& in_draw_buffer);
 
+        VKGL::DrawCallIndexType get_draw_call_index_type_for_gl_enum(const GLenum&                  in_enum);
+        GLenum                  get_gl_enum_for_draw_call_index_type(const VKGL::DrawCallIndexType& in_type);
+
+        VKGL::DrawCallMode get_draw_call_mode_for_gl_enum(const GLenum&             in_enum);
+        GLenum             get_gl_enum_for_draw_call_mode(const VKGL::DrawCallMode& in_mode);
+
         VKGL::ErrorCode get_error_code_for_gl_enum(const GLenum&          in_enum);
         GLenum          get_gl_enum_for_error_code(const VKGL::ErrorCode& in_error);
 

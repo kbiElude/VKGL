@@ -10,7 +10,7 @@ namespace VKGL
     /* Bitfield type definitions */
     typedef uint32_t ClearBufferBits;
 
-    /* VKGL GL entrypoints. */
+    /* VKGL GL entrypoints : GL 1.0 */
     typedef void           (*PFNVKGLBLENDFUNCPROC)              (Context* context_ptr, const GLenum& in_sfactor, const GLenum& in_dfactor);
     typedef void           (*PFNVKGLCLEARPROC)                  (Context* context_ptr, const GLbitfield& in_mask);
     typedef void           (*PFNVKGLCLEARCOLORPROC)             (Context* context_ptr, const GLfloat& in_red, const GLfloat& in_green, const GLfloat& in_blue, const GLfloat& in_alpha);
@@ -59,6 +59,22 @@ namespace VKGL
     typedef void           (*PFNVKGLTEXPARAMETERIPROC)          (Context* context_ptr, const GLenum& in_target, const GLenum& in_pname, const GLint& in_param);
     typedef void           (*PFNVKGLTEXPARAMETERIVPROC)         (Context* context_ptr, const GLenum& in_target, const GLenum& in_pname, const GLint* in_params_ptr);
     typedef void           (*PFNVKGLVIEWPORTPROC)               (Context* context_ptr, const GLint& in_x, const GLint& in_y, const GLsizei& in_width, const GLsizei& in_height);
+
+    /* VKGL GL entrypoints : GL 1.1 */
+    typedef void      (*PFNVKGLBINDTEXTUREPROC)      (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLuint& in_texture);
+    typedef void      (*PFNVKGLCOPYTEXIMAGE1DPROC)   (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, const GLenum&  in_internalformat, const GLint& in_x, const GLint& in_y, const GLsizei& in_width, const GLint& in_border);
+    typedef void      (*PFNVKGLCOPYTEXIMAGE2DPROC)   (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, const GLenum&  in_internalformat, const GLint& in_x, const GLint& in_y, const GLsizei& in_width, const GLsizei& in_height, const GLint& in_border);
+    typedef void      (*PFNVKGLCOPYTEXSUBIMAGE1DPROC)(VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, const GLint& in_xoffset, const GLint& in_x, const GLint& in_y, const GLsizei& in_width);
+    typedef void      (*PFNVKGLCOPYTEXSUBIMAGE2DPROC)(VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, const GLint& in_xoffset, const GLint& in_yoffset, const GLint& in_x, const GLint& in_y, const GLsizei& in_width, const GLsizei& in_height);
+    typedef void      (*PFNVKGLDELETETEXTURESPROC)   (VKGL::Context* in_context_ptr, const GLsizei& in_n, const GLuint* in_textures);
+    typedef void      (*PFNVKGLDRAWARRAYSPROC)       (VKGL::Context* in_context_ptr, const GLenum& in_mode, const GLint&  in_first, const GLsizei& in_count);
+    typedef void      (*PFNVKGLDRAWELEMENTSPROC)     (VKGL::Context* in_context_ptr, const GLenum& in_mode, const GLsizei& in_count, const GLenum& in_type, const void* in_indices);
+    typedef void      (*PFNVKGLGENTEXTURESPROC)      (VKGL::Context* in_context_ptr, const GLsizei& in_n, GLuint* in_textures);
+    typedef void      (*PFNVKGLGETPOINTERVPROC)      (VKGL::Context* in_context_ptr, const GLenum& in_pname, void** in_params);
+    typedef GLboolean (*PFNVKGLISTEXTUREPROC)        (VKGL::Context* in_context_ptr, const GLuint& in_texture);
+    typedef void      (*PFNVKGLPOLYGONOFFSETPROC)    (VKGL::Context* in_context_ptr, const GLfloat& in_factor, const GLfloat& in_units);
+    typedef void      (*PFNVKGLTEXSUBIMAGE1DPROC)    (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, const GLint& in_xoffset, const GLsizei& in_width, const GLenum& in_format, const GLenum& in_type, const void* in_pixels);
+    typedef void      (*PFNVKGLTEXSUBIMAGE2DPROC)    (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, const GLint& in_xoffset, const GLint& in_yoffset, const GLsizei& in_width, const GLsizei& in_height, const GLenum& in_format, const GLenum& in_type, const void* in_pixels);
 }
 
 #endif /* VKGL_TYPES_TYPEDEFS_H */

@@ -1,3 +1,7 @@
+/* VKGL (c) 2018 Dominik Witczak
+ *
+ * This code is licensed under MIT license (see LICENSE.txt for details)
+ */
 #ifndef VKGL_GL_TEX_SUB_IMAGE_1D_H
 #define VKGL_GL_TEX_SUB_IMAGE_1D_H
 
@@ -10,5 +14,14 @@ VKGL_API void VKGL_APIENTRY glTexSubImage1D(GLenum      target,
                                             GLenum      format,
                                             GLenum      type,
                                             const void* pixels);
+
+void vkglTexSubImage1D_with_validation(VKGL::Context* in_context_ptr,
+                                       const GLenum&  in_target,
+                                       const GLint&   in_level,
+                                       const GLint&   in_xoffset,
+                                       const GLsizei& in_width,
+                                       const GLenum&  in_format,
+                                       const GLenum&  in_type,
+                                       const void*    in_pixels);
 
 #endif /* VKGL_GL_TEX_SUB_IMAGE_1D_H */

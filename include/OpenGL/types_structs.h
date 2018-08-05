@@ -152,6 +152,22 @@ namespace VKGL
         PFNVKGLTEXPARAMETERIVPROC         pGLTexParameteriv;
         PFNVKGLVIEWPORTPROC               pGLViewport;
 
+        /* GL 1.1 */
+        PFNVKGLBINDTEXTUREPROC       pGLBindTexture;
+        PFNVKGLCOPYTEXIMAGE1DPROC    pGLCopyTexImage1D;
+        PFNVKGLCOPYTEXIMAGE2DPROC    pGLCopyTexImage2D;
+        PFNVKGLCOPYTEXSUBIMAGE1DPROC pGLCopyTexSubImage1D;
+        PFNVKGLCOPYTEXSUBIMAGE2DPROC pGLCopyTexSubImage2D;
+        PFNVKGLDELETETEXTURESPROC    pGLDeleteTextures;
+        PFNVKGLDRAWARRAYSPROC        pGLDrawArrays;
+        PFNVKGLDRAWELEMENTSPROC      pGLDrawElements;
+        PFNVKGLGENTEXTURESPROC       pGLGenTextures;
+        PFNVKGLGETPOINTERVPROC       pGLGetPointerv;
+        PFNVKGLISTEXTUREPROC         pGLIsTexture;
+        PFNVKGLPOLYGONOFFSETPROC     pGLPolygonOffset;
+        PFNVKGLTEXSUBIMAGE1DPROC     pGLTexSubImage1D;
+        PFNVKGLTEXSUBIMAGE2DPROC     pGLTexSubImage2D;
+
         DispatchTable();
     };
 

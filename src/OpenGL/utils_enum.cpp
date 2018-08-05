@@ -326,6 +326,53 @@ VKGL::ContextProperty VKGL::Utils::get_context_property_for_gl_enum(const GLenum
     return result;
 }
 
+VKGL::DrawCallIndexType VKGL::Utils::get_draw_call_index_type_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::DrawCallIndexType result = VKGL::DrawCallIndexType::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_UNSIGNED_BYTE:  result = VKGL::DrawCallIndexType::Unsigned_Byte;  break;
+        case GL_UNSIGNED_SHORT: result = VKGL::DrawCallIndexType::Unsigned_Short; break;
+        case GL_UNSIGNED_INT:   result = VKGL::DrawCallIndexType::Unsigned_Int;   break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::DrawCallMode VKGL::Utils::get_draw_call_mode_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::DrawCallMode result = VKGL::DrawCallMode::Unknown;
+
+    switch (in_enum)
+    {
+        default:
+        {
+            case GL_LINES:                    result = VKGL::DrawCallMode::Lines;                    break;
+            case GL_LINES_ADJACENCY:          result = VKGL::DrawCallMode::Lines_Adjacency;          break;
+            case GL_LINE_LOOP:                result = VKGL::DrawCallMode::Line_Loop;                break;
+            case GL_LINE_STRIP:               result = VKGL::DrawCallMode::Line_Strip;               break;
+            case GL_LINE_STRIP_ADJACENCY:     result = VKGL::DrawCallMode::Line_Strip_Adjacency;     break;
+            case GL_PATCHES:                  result = VKGL::DrawCallMode::Patches;                  break;
+            case GL_POINTS:                   result = VKGL::DrawCallMode::Points;                   break;
+            case GL_TRIANGLE_FAN:             result = VKGL::DrawCallMode::Triangle_Fan;             break;
+            case GL_TRIANGLE_STRIP:           result = VKGL::DrawCallMode::Triangle_Strip;           break;
+            case GL_TRIANGLE_STRIP_ADJACENCY: result = VKGL::DrawCallMode::Triangle_Strip_Adjacency; break;
+            case GL_TRIANGLES:                result = VKGL::DrawCallMode::Triangles;                break;
+            case GL_TRIANGLES_ADJACENCY:      result = VKGL::DrawCallMode::Triangles_Adjacency;      break;
+
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::ErrorCode VKGL::Utils::get_error_code_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::ErrorCode result = VKGL::ErrorCode::Unknown;
@@ -1013,6 +1060,53 @@ GLenum VKGL::Utils::get_gl_enum_for_draw_buffer(const VKGL::DrawBuffer& in_draw_
 
         default:
         {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_draw_call_index_type(const VKGL::DrawCallIndexType& in_type)
+{
+    GLenum result = 0;
+
+    switch (in_type)
+    {
+        case VKGL::DrawCallIndexType::Unsigned_Byte:  result = GL_UNSIGNED_BYTE;  break;
+        case VKGL::DrawCallIndexType::Unsigned_Short: result = GL_UNSIGNED_SHORT; break;
+        case VKGL::DrawCallIndexType::Unsigned_Int:   result = GL_UNSIGNED_INT;   break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_draw_call_mode(const VKGL::DrawCallMode& in_mode)
+{
+    GLenum result = 0;
+
+    switch (in_mode)
+    {
+        default:
+        {
+            case VKGL::DrawCallMode::Lines:                    result = GL_LINES;                    break;
+            case VKGL::DrawCallMode::Lines_Adjacency:          result = GL_LINES_ADJACENCY;          break;
+            case VKGL::DrawCallMode::Line_Loop:                result = GL_LINE_LOOP;                break;
+            case VKGL::DrawCallMode::Line_Strip:               result = GL_LINE_STRIP;               break;
+            case VKGL::DrawCallMode::Line_Strip_Adjacency:     result = GL_LINE_STRIP_ADJACENCY;     break;
+            case VKGL::DrawCallMode::Patches:                  result = GL_PATCHES;                  break;
+            case VKGL::DrawCallMode::Points:                   result = GL_POINTS;                   break;
+            case VKGL::DrawCallMode::Triangle_Fan:             result = GL_TRIANGLE_FAN;             break;
+            case VKGL::DrawCallMode::Triangle_Strip:           result = GL_TRIANGLE_STRIP;           break;
+            case VKGL::DrawCallMode::Triangle_Strip_Adjacency: result = GL_TRIANGLE_STRIP_ADJACENCY; break;
+            case VKGL::DrawCallMode::Triangles:                result = GL_TRIANGLES;                break;
+            case VKGL::DrawCallMode::Triangles_Adjacency:      result = GL_TRIANGLES_ADJACENCY;      break;
+
             vkgl_assert_fail();
         }
     }

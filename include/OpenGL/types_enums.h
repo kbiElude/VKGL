@@ -7,27 +7,6 @@
 
 namespace VKGL
 {
-    enum class GetSetArgumentType
-    {
-        BlendEquationVKGL,
-        BlendFunctionVKGL,
-        Boolean,
-        BooleanFromInt32_Bit0,
-        CullFaceVKGL,
-        DepthFunctionVKGL,
-        Double,
-        Float,
-        HintModeVKGL,
-        Int,
-        LogicOpModeVKGL,
-        ProvokingVertexConventionVKGL,
-        StencilFunctionVKGL,
-        StencilOperationVKGL,
-        String,
-
-        Unknown,
-    };
-
     enum class BlendEquation
     {
         Function_Add,
@@ -360,6 +339,33 @@ namespace VKGL
         Unknown
     };
 
+    enum class DrawCallMode
+    {
+        Lines,
+        Lines_Adjacency,
+        Line_Loop,
+        Line_Strip,
+        Line_Strip_Adjacency,
+        Patches,
+        Points,
+        Triangle_Fan,
+        Triangle_Strip,
+        Triangle_Strip_Adjacency,
+        Triangles,
+        Triangles_Adjacency,
+
+        Unknown
+    };
+
+    enum class DrawCallIndexType
+    {
+        Unsigned_Byte,
+        Unsigned_Short,
+        Unsigned_Int,
+
+        Unknown
+    };
+
     enum class ErrorCode
     {
         Invalid_Enum,
@@ -420,6 +426,27 @@ namespace VKGL
         Triangle_Strip,
 
         Unknown
+    };
+
+    enum class GetSetArgumentType
+    {
+        BlendEquationVKGL,
+        BlendFunctionVKGL,
+        Boolean,
+        BooleanFromInt32_Bit0,
+        CullFaceVKGL,
+        DepthFunctionVKGL,
+        Double,
+        Float,
+        HintModeVKGL,
+        Int,
+        LogicOpModeVKGL,
+        ProvokingVertexConventionVKGL,
+        StencilFunctionVKGL,
+        StencilOperationVKGL,
+        String,
+
+        Unknown,
     };
 
     enum class HintMode
