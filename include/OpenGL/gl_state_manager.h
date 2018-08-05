@@ -52,6 +52,8 @@ namespace VKGL
                                         const void*                       in_arg_value_ptr);
         void set_point_size            (const float&                      in_size);
         void set_polygon_mode          (const VKGL::PolygonMode&          in_mode);
+        void set_polygon_offset        (const float&                      in_factor,
+                                        const float&                      in_units);
         void set_read_buffer           (const VKGL::ReadBuffer&           in_read_buffer);
         void set_scissor               (const int32_t&                    in_x,
                                         const int32_t&                    in_y,

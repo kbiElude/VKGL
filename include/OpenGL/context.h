@@ -69,6 +69,8 @@ namespace VKGL
                                         const void*                       in_arg_value_ptr);
         void set_point_size            (const float&                      in_size);
         void set_polygon_mode          (const VKGL::PolygonMode&          in_mode);
+        void set_polygon_offset        (const GLfloat&                    in_factor,
+                                        const GLfloat&                    in_units);
         void set_read_buffer           (const VKGL::ReadBuffer&           in_read_buffer);
         void set_scissor               (const int32_t&                    in_x,
                                         const int32_t&                    in_y,
@@ -92,35 +94,96 @@ namespace VKGL
 
         bool is_enabled(const VKGL::Capability& in_capability) const;
 
-        void clear       (const VKGL::ClearBufferBits& in_buffers_to_clear);
-        void disable     (const VKGL::Capability&      in_capability);
-        void enable      (const VKGL::Capability&      in_capability);
-        void finish      ();
-        void flush       ();
-        void read_pixels (const int32_t&               in_x,
-                          const int32_t&               in_y,
-                          const size_t&                in_width,
-                          const size_t&                in_height,
-                          const VKGL::PixelFormat&     in_format,
-                          const VKGL::PixelType&       in_type,
-                          void*                        out_pixels_ptr);
-        void tex_image_1d(const VKGL::TextureTarget&   in_target,
-                          const int32_t&               in_level,
-                          const VKGL::InternalFormat&  in_internalformat,
-                          const int32_t&               in_width,
-                          const int32_t&               in_border,
-                          const VKGL::PixelFormat&     in_format,
-                          const VKGL::PixelType&       in_type,
-                          const void*                  in_pixels_ptr);
-        void tex_image_2d(const VKGL::TextureTarget&   in_target,
-                          const GLint&                 in_level,
-                          const VKGL::InternalFormat&  in_internalformat,
-                          const GLsizei&               in_width,
-                          const GLsizei&               in_height,
-                          const GLint&                 in_border,
-                          const VKGL::PixelFormat&     in_format,
-                          const VKGL::PixelType&       in_type,
-                          const void*                  in_pixels_ptr);
+        void bind_texture         (const VKGL::TextureTarget&   in_target,
+                                   const GLuint&                in_texture);
+        void clear                (const VKGL::ClearBufferBits& in_buffers_to_clear);
+        void copy_tex_image_1d    (const VKGL::TextureTarget&   in_target,
+                                   const GLint                  in_level,
+                                   const VKGL::InternalFormat&  in_internalformat,
+                                   const GLint&                 in_x,
+                                   const GLint&                 in_y,
+                                   const GLsizei&               in_width,
+                                   const GLint&                 in_border);
+        void copy_tex_image_2d    (const VKGL::TextureTarget&   in_target,
+                                   const GLint&                 in_level,
+                                   const VKGL::InternalFormat&  in_internalformat,
+                                   const GLint&                 in_x,
+                                   const GLint&                 in_y,
+                                   const GLsizei&               in_width,
+                                   const GLsizei&               in_height,
+                                   const GLint&                 in_border);
+        void copy_tex_sub_image_1d(const VKGL::TextureTarget&   in_target,
+                                   const GLint&                 in_level,
+                                   const GLint&                 in_xoffset,
+                                   const GLint&                 in_x,
+                                   const GLint&                 in_y,
+                                   const GLsizei&               in_width);
+        void copy_tex_sub_image_2d(const VKGL::TextureTarget&   in_target,
+                                   const GLint&                 in_level,
+                                   const GLint&                 in_xoffset,
+                                   const GLint&                 in_yoffset,
+                                   const GLint&                 in_x,
+                                   const GLint&                 in_y,
+                                   const GLsizei&               in_width,
+                                   const GLsizei&               in_height);
+        void delete_textures      (const GLsizei&               in_n,
+                                   const GLuint*                in_textures);
+        void disable              (const VKGL::Capability&      in_capability);
+        void draw_arrays          (const VKGL::DrawCallMode&    in_mode,
+                                   const GLint&                 in_first,
+                                   const GLsizei&               in_count);
+        void draw_elements        (const VKGL::DrawCallMode&    in_mode,
+                                   const GLsizei&               in_count,
+                                   const GLenum&                in_type,
+                                   const void*                  in_indices);
+        void enable               (const VKGL::Capability&      in_capability);
+        void finish               ();
+        void flush                ();
+        void gen_textures         (const GLsizei&               in_n,
+                                   GLuint*                      in_textures);
+        void get_pointerv         (const VKGL::ContextProperty& in_pname,
+                                   void**                       in_params);
+        bool is_texture           (const GLuint&                in_texture);
+        void read_pixels          (const int32_t&               in_x,
+                                   const int32_t&               in_y,
+                                   const size_t&                in_width,
+                                   const size_t&                in_height,
+                                   const VKGL::PixelFormat&     in_format,
+                                   const VKGL::PixelType&       in_type,
+                                   void*                        out_pixels_ptr);
+        void tex_image_1d         (const VKGL::TextureTarget&   in_target,
+                                   const int32_t&               in_level,
+                                   const VKGL::InternalFormat&  in_internalformat,
+                                   const int32_t&               in_width,
+                                   const int32_t&               in_border,
+                                   const VKGL::PixelFormat&     in_format,
+                                   const VKGL::PixelType&       in_type,
+                                   const void*                  in_pixels_ptr);
+        void tex_image_2d         (const VKGL::TextureTarget&   in_target,
+                                   const GLint&                 in_level,
+                                   const VKGL::InternalFormat&  in_internalformat,
+                                   const GLsizei&               in_width,
+                                   const GLsizei&               in_height,
+                                   const GLint&                 in_border,
+                                   const VKGL::PixelFormat&     in_format,
+                                   const VKGL::PixelType&       in_type,
+                                   const void*                  in_pixels_ptr);
+        void tex_sub_image_1d     (const VKGL::TextureTarget&   in_target,
+                                   const GLint&                 in_level,
+                                   const GLint&                 in_xoffset,
+                                   const GLsizei&               in_width,
+                                   const VKGL::PixelFormat&     in_format,
+                                   const VKGL::PixelType&       in_type,
+                                   const void*                  in_pixels);
+        void tex_sub_image_2d     (const VKGL::TextureTarget&   in_target,
+                                   const GLint&                 in_level,
+                                   const GLint&                 in_xoffset,
+                                   const GLint&                 in_yoffset,
+                                   const GLsizei&               in_width,
+                                   const GLsizei&               in_height,
+                                   const VKGL::PixelFormat&     in_format,
+                                   const VKGL::PixelType&       in_type,
+                                   const void*                  in_pixels);
 
     private:
         /* Private functions */

@@ -16,9 +16,60 @@ VKGL::Context::~Context()
     /* Stub */
 }
 
+void VKGL::Context::bind_texture(const VKGL::TextureTarget& in_target,
+                                 const GLuint&              in_texture)
+{
+    todo;
+}
+
 void VKGL::Context::clear(const VKGL::ClearBufferBits& in_buffers_to_clear)
 {
     m_scheduler_ptr->clear(in_buffers_to_clear);
+}
+
+void VKGL::Context::copy_tex_image_1d(const VKGL::TextureTarget&  in_target,
+                                      const GLint                 in_level,
+                                      const VKGL::InternalFormat& in_internalformat,
+                                      const GLint&                in_x,
+                                      const GLint&                in_y,
+                                      const GLsizei&              in_width,
+                                      const GLint&                in_border)
+{
+    todo;
+}
+
+void VKGL::Context::copy_tex_image_2d(const VKGL::TextureTarget&  in_target,
+                                      const GLint&                in_level,
+                                      const VKGL::InternalFormat& in_internalformat,
+                                      const GLint&                in_x,
+                                      const GLint&                in_y,
+                                      const GLsizei&              in_width,
+                                      const GLsizei&              in_height,
+                                      const GLint&                in_border)
+{
+    todo;
+}
+
+void VKGL::Context::copy_tex_sub_image_1d(const VKGL::TextureTarget& in_target,
+                                          const GLint&               in_level,
+                                          const GLint&               in_xoffset,
+                                          const GLint&               in_x,
+                                          const GLint&               in_y,
+                                          const GLsizei&             in_width)
+{
+    todo;
+}
+
+void VKGL::Context::copy_tex_sub_image_2d(const VKGL::TextureTarget& in_target,
+                                          const GLint&               in_level,
+                                          const GLint&               in_xoffset,
+                                          const GLint&               in_yoffset,
+                                          const GLint&               in_x,
+                                          const GLint&               in_y,
+                                          const GLsizei&             in_width,
+                                          const GLsizei&             in_height)
+{
+    todo;
 }
 
 VKGL::ContextUniquePtr VKGL::Context::create()
@@ -40,9 +91,30 @@ VKGL::ContextUniquePtr VKGL::Context::create()
     return result_ptr;
 }
 
+void VKGL::Context::delete_textures(const GLsizei& in_n,
+                                    const GLuint*  in_textures)
+{
+    todo;
+}
+
 void VKGL::Context::disable(const VKGL::Capability& in_capability)
 {
     m_gl_state_manager_ptr->disable(in_capability);
+}
+
+void VKGL::Context::draw_arrays(const VKGL::DrawCallMode& in_mode,
+                                const GLint&              in_first,
+                                const GLsizei&            in_count)
+{
+    todo;
+}
+
+void VKGL::Context::draw_elements(const VKGL::DrawCallMode& in_mode,
+                                  const GLsizei&            in_count,
+                                  const GLenum&             in_type,
+                                  const void*               in_indices)
+{
+    todo;
 }
 
 void VKGL::Context::enable(const VKGL::Capability& in_capability)
@@ -58,6 +130,12 @@ void VKGL::Context::finish()
 void VKGL::Context::flush()
 {
     m_scheduler_ptr->flush();
+}
+
+void VKGL::Context::gen_textures(const GLsizei& in_n,
+                                 GLuint*        in_textures)
+{
+    todo;
 }
 
 VKGL::ErrorCode VKGL::Context::get_error()
@@ -189,6 +267,11 @@ bool VKGL::Context::is_enabled(const VKGL::Capability& in_capability) const
     return m_gl_state_manager_ptr->is_enabled(in_capability);
 }
 
+bool VKGL::Context::is_texture(const GLuint& in_texture)
+{
+    todo;
+}
+
 void VKGL::Context::read_pixels(const int32_t&           in_x,
                                 const int32_t&           in_y,
                                 const size_t&            in_width,
@@ -313,6 +396,13 @@ void VKGL::Context::set_polygon_mode(const VKGL::PolygonMode& in_mode)
     m_gl_state_manager_ptr->set_polygon_mode(in_mode);
 }
 
+void VKGL::Context::set_polygon_offset(const GLfloat& in_factor,
+                                       const GLfloat& in_units)
+{
+    m_gl_state_manager_ptr->set_polygon_offset(in_factor,
+                                               in_units);
+}
+
 void VKGL::Context::set_read_buffer(const VKGL::ReadBuffer& in_read_buffer)
 {
     m_gl_state_manager_ptr->set_read_buffer(in_read_buffer);
@@ -395,6 +485,30 @@ void VKGL::Context::tex_image_2d(const VKGL::TextureTarget&  in_target,
                                  const VKGL::PixelFormat&    in_format,
                                  const VKGL::PixelType&      in_type,
                                  const void*                 in_pixels_ptr)
+{
+    todo;
+}
+
+void VKGL::Context::tex_sub_image_1d(const VKGL::TextureTarget& in_target,
+                                     const GLint&               in_level,
+                                     const GLint&               in_xoffset,
+                                     const GLsizei&             in_width,
+                                     const VKGL::PixelFormat&   in_format,
+                                     const VKGL::PixelType&     in_type,
+                                     const void*                in_pixels)
+{
+    todo;
+}
+
+void VKGL::Context::tex_sub_image_2d(const VKGL::TextureTarget& in_target,
+                                     const GLint&               in_level,
+                                     const GLint&               in_xoffset,
+                                     const GLint&               in_yoffset,
+                                     const GLsizei&             in_width,
+                                     const GLsizei&             in_height,
+                                     const VKGL::PixelFormat&   in_format,
+                                     const VKGL::PixelType&     in_type,
+                                     const void*                in_pixels)
 {
     todo;
 }
