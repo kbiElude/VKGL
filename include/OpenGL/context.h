@@ -7,6 +7,7 @@
 
 #include "OpenGL/gl_limits.h"
 #include "OpenGL/gl_state_manager.h"
+#include "OpenGL/gl_texture_manager.h"
 #include "OpenGL/scheduler.h"
 
 namespace VKGL
@@ -141,8 +142,6 @@ namespace VKGL
         void flush                ();
         void gen_textures         (const GLsizei&               in_n,
                                    GLuint*                      in_textures);
-        void get_pointerv         (const VKGL::ContextProperty& in_pname,
-                                   void**                       in_params);
         bool is_texture           (const GLuint&                in_texture);
         void read_pixels          (const int32_t&               in_x,
                                    const int32_t&               in_y,
@@ -193,9 +192,10 @@ namespace VKGL
         bool init();
 
         /* Private variables */
-        GLLimitsUniquePtr       m_gl_limits_ptr;
-        GLStateManagerUniquePtr m_gl_state_manager_ptr;
-        SchedulerUniquePtr      m_scheduler_ptr;
+        GLLimitsUniquePtr         m_gl_limits_ptr;
+        GLStateManagerUniquePtr   m_gl_state_manager_ptr;
+        GLTextureManagerUniquePtr m_gl_texture_manager_ptr;
+        SchedulerUniquePtr        m_scheduler_ptr;
     };
 }
 

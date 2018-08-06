@@ -7,7 +7,8 @@
 #include "OpenGL/utils_enum.h"
 
 VKGL::GLStateManager::GLStateManager(const IGLLimits* in_limits_ptr)
-    :m_current_error_code(VKGL::ErrorCode::No_Error)
+    :m_current_error_code(VKGL::ErrorCode::No_Error),
+     m_limits_ptr        (in_limits_ptr)
 {
     const int32_t scissor [4] = {0, 0, 0, 0}; /* TODO */
     const int32_t viewport[4] = {0, 0, 0, 0}; /* TODO */
@@ -19,7 +20,8 @@ VKGL::GLStateManager::GLStateManager(const IGLLimits* in_limits_ptr)
     );
     vkgl_assert(m_state_ptr != nullptr);
 
-    init_prop_maps();
+    init_prop_maps    ();
+    init_texture_units();
 }
 
 VKGL::GLStateManager::~GLStateManager()
@@ -111,28 +113,39 @@ void VKGL::GLStateManager::get_parameter(const VKGL::ContextProperty&    in_pnam
                                          const VKGL::GetSetArgumentType& in_arg_type,
                                          void*                           out_arg_value_ptr) const
 {
-    const auto pixel_property_pname = VKGL::Utils::get_pixel_store_property_from_context_property(in_pname);
+    const auto texture_binding_pname = VKGL::Utils::get_texture_binding_property_for_context_property(in_pname);
 
-    if (pixel_property_pname != VKGL::PixelStoreProperty::Unknown)
+    if (texture_binding_pname != VKGL::TextureBindingProperty::Unknown)
     {
-        VKGL::GLStateManager::get_pixel_store_parameter(pixel_property_pname,
-                                                        in_arg_type,
-                                                        out_arg_value_ptr);
+        get_texture_binding_parameter(texture_binding_pname,
+                                      in_arg_type,
+                                      out_arg_value_ptr);
     }
     else
     {
-        const auto prop_map_iterator = m_context_prop_map.find(in_pname);
+        const auto pixel_property_pname = VKGL::Utils::get_pixel_store_property_from_context_property(in_pname);
 
-        vkgl_assert(prop_map_iterator != m_context_prop_map.end() );
-        if (prop_map_iterator != m_context_prop_map.end() )
+        if (pixel_property_pname != VKGL::PixelStoreProperty::Unknown)
         {
-            const auto& prop_props = prop_map_iterator->second;
-
-            VKGL::Converters::convert(prop_props.getter_value_type,
-                                      prop_props.value_ptr,
-                                      prop_props.n_value_components,
+            get_pixel_store_parameter(pixel_property_pname,
                                       in_arg_type,
                                       out_arg_value_ptr);
+        }
+        else
+        {
+            const auto prop_map_iterator = m_context_prop_map.find(in_pname);
+
+            vkgl_assert(prop_map_iterator != m_context_prop_map.end() );
+            if (prop_map_iterator != m_context_prop_map.end() )
+            {
+                const auto& prop_props = prop_map_iterator->second;
+
+                VKGL::Converters::convert(prop_props.getter_value_type,
+                                          prop_props.value_ptr,
+                                          prop_props.n_value_components,
+                                          in_arg_type,
+                                          out_arg_value_ptr);
+            }
         }
     }
 }
@@ -154,6 +167,44 @@ void VKGL::GLStateManager::get_pixel_store_parameter(const VKGL::PixelStorePrope
                                   in_arg_type,
                                   out_arg_value_ptr);
     }
+}
+
+const VKGL::ContextState* VKGL::GLStateManager::get_state() const
+{
+    return m_state_ptr.get();
+}
+
+void VKGL::GLStateManager::get_texture_binding_parameter(const VKGL::TextureBindingProperty& in_pname,
+                                                         const VKGL::GetSetArgumentType&     in_arg_type,
+                                                         void*                               out_arg_value_ptr) const
+{
+    GLuint      result                = 0;
+    const auto& texture_unit_data_ptr = m_texture_unit_to_state_ptr_map.at(m_state_ptr->active_texture_unit).get();;
+
+    switch (in_pname)
+    {
+        case VKGL::TextureBindingProperty::_1D:                   result = texture_unit_data_ptr->binding_1d;                   break;
+        case VKGL::TextureBindingProperty::_1D_Array:             result = texture_unit_data_ptr->binding_1d_array;             break;
+        case VKGL::TextureBindingProperty::_2D:                   result = texture_unit_data_ptr->binding_2d;                   break;
+        case VKGL::TextureBindingProperty::_2D_Array:             result = texture_unit_data_ptr->binding_2d_array;             break;
+        case VKGL::TextureBindingProperty::_2D_Multisample:       result = texture_unit_data_ptr->binding_2d_multisample;       break;
+        case VKGL::TextureBindingProperty::_2D_Multisample_Array: result = texture_unit_data_ptr->binding_2d_multisample_array; break;
+        case VKGL::TextureBindingProperty::_3D:                   result = texture_unit_data_ptr->binding_3d;                   break;
+        case VKGL::TextureBindingProperty::Buffer:                result = texture_unit_data_ptr->binding_texture_buffer;       break;
+        case VKGL::TextureBindingProperty::Cube_Map:              result = texture_unit_data_ptr->binding_cube_map;             break;
+        case VKGL::TextureBindingProperty::Rectangle:             result = texture_unit_data_ptr->binding_rectangle;            break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    VKGL::Converters::convert(VKGL::GetSetArgumentType::Int,
+                             &result,
+                              1, /* in_n_vals */
+                              in_arg_type,
+                              out_arg_value_ptr);
 }
 
 void VKGL::GLStateManager::init_prop_maps()
@@ -243,6 +294,25 @@ void VKGL::GLStateManager::init_prop_maps()
         {VKGL::PixelStoreProperty::Unpack_Skip_Rows,    {VKGL::GetSetArgumentType::Int,     1, &m_state_ptr->unpack_skip_rows}    },
         {VKGL::PixelStoreProperty::Unpack_Swap_Bytes,   {VKGL::GetSetArgumentType::Boolean, 1, &m_state_ptr->unpack_swap_bytes}   },
     };
+}
+
+void VKGL::GLStateManager::init_texture_units()
+{
+    const uint32_t n_texture_units = m_limits_ptr->get_max_texture_image_units();
+
+    for (uint32_t n_texture_unit = 0;
+                  n_texture_unit < n_texture_units;
+                ++n_texture_unit)
+    {
+        m_texture_unit_to_state_ptr_map[n_texture_unit].reset(
+            new TextureUnitState()
+        );
+
+        if (m_texture_unit_to_state_ptr_map[n_texture_unit] == nullptr)
+        {
+            vkgl_assert(m_texture_unit_to_state_ptr_map[n_texture_unit] != nullptr);
+        }
+    }
 }
 
 void VKGL::GLStateManager::set_blend_functions(const VKGL::BlendFunction& in_src_rgba_function,
@@ -421,6 +491,36 @@ void VKGL::GLStateManager::set_stencil_operations(const VKGL::StencilOperation& 
     m_state_ptr->stencil_op_pass_depth_fail_front = in_zfail;
     m_state_ptr->stencil_op_pass_depth_pass_back  = in_zpass;
     m_state_ptr->stencil_op_pass_depth_pass_front = in_zpass;
+}
+
+void VKGL::GLStateManager::set_texture_binding(const uint32_t&            in_n_texture_unit,
+                                               const VKGL::TextureTarget& in_texture_target,
+                                               const GLuint&              in_texture_id)
+{
+    auto texture_unit_state_ptr = m_texture_unit_to_state_ptr_map.at(in_n_texture_unit).get();
+
+    vkgl_assert(texture_unit_state_ptr != nullptr);
+    if (texture_unit_state_ptr != nullptr)
+    {
+        switch (in_texture_target)
+        {
+            case VKGL::TextureTarget::_1D:                   texture_unit_state_ptr->binding_1d                   = in_texture_id; break;
+            case VKGL::TextureTarget::_1D_Array:             texture_unit_state_ptr->binding_1d_array             = in_texture_id; break;
+            case VKGL::TextureTarget::_2D:                   texture_unit_state_ptr->binding_2d                   = in_texture_id; break;
+            case VKGL::TextureTarget::_2D_Array:             texture_unit_state_ptr->binding_2d_array             = in_texture_id; break;
+            case VKGL::TextureTarget::_2D_Multisample:       texture_unit_state_ptr->binding_2d_multisample       = in_texture_id; break;
+            case VKGL::TextureTarget::_2D_Multisample_Array: texture_unit_state_ptr->binding_2d_multisample_array = in_texture_id; break;
+            case VKGL::TextureTarget::_3D:                   texture_unit_state_ptr->binding_3d                   = in_texture_id; break;
+            case VKGL::TextureTarget::Cube_Map:              texture_unit_state_ptr->binding_cube_map             = in_texture_id; break;
+            case VKGL::TextureTarget::Rectangle:             texture_unit_state_ptr->binding_rectangle            = in_texture_id; break;
+            case VKGL::TextureTarget::Texture_Buffer:        texture_unit_state_ptr->binding_texture_buffer       = in_texture_id; break;
+
+            default:
+            {
+                vkgl_assert_fail();
+            }
+        }
+    }
 }
 
 void VKGL::GLStateManager::set_viewport(const int32_t& in_x,

@@ -31,6 +31,7 @@ namespace VKGL
     class Context;
     class GLLimits;
     class GLStateManager;
+    class GLTextureManager;
     class IGLLimits;
     class Scheduler;
 }

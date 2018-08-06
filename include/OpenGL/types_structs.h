@@ -162,7 +162,6 @@ namespace VKGL
         PFNVKGLDRAWARRAYSPROC        pGLDrawArrays;
         PFNVKGLDRAWELEMENTSPROC      pGLDrawElements;
         PFNVKGLGENTEXTURESPROC       pGLGenTextures;
-        PFNVKGLGETPOINTERVPROC       pGLGetPointerv;
         PFNVKGLISTEXTUREPROC         pGLIsTexture;
         PFNVKGLPOLYGONOFFSETPROC     pGLPolygonOffset;
         PFNVKGLTEXSUBIMAGE1DPROC     pGLTexSubImage1D;
@@ -275,6 +274,8 @@ namespace VKGL
         explicit TextureImageState(const VKGL::InternalFormat& in_internal_format);
     } TextureImageState;
 
+    typedef std::unique_ptr<TextureImageState> TextureImageStateUniquePtr;
+
     typedef struct TextureState
     {
         int32_t                      base_level;
@@ -297,6 +298,8 @@ namespace VKGL
                               const VKGL::TextureWrapMode&  in_wrap_r);
     } TextureState;
 
+    typedef std::unique_ptr<TextureState> TextureStateUniquePtr;
+
     typedef struct TextureUnitState
     {
         GLuint binding_1d;
@@ -312,6 +315,8 @@ namespace VKGL
 
         TextureUnitState();
     } TextureUnitState;
+
+    typedef std::unique_ptr<TextureUnitState> TextureUnitStateUniquePtr;
 
     typedef struct VertexArrayObjectState
     {

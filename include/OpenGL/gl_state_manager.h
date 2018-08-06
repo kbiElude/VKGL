@@ -16,13 +16,17 @@ namespace VKGL
         GLStateManager(const IGLLimits* in_limits_ptr);
        ~GLStateManager();
 
-        VKGL::ErrorCode get_error                (const bool&                        in_reset_error_code = true);
-        void            get_parameter            (const VKGL::ContextProperty&       in_pname,
-                                                  const VKGL::GetSetArgumentType&    in_arg_type,
-                                                  void*                              out_arg_value_ptr) const;
-        void            get_pixel_store_parameter(const VKGL::PixelStoreProperty&    in_pname,
-                                                  const VKGL::GetSetArgumentType&    in_arg_type,
-                                                  void*                              out_arg_value_ptr) const;
+        VKGL::ErrorCode     get_error                    (const bool&                         in_reset_error_code = true);
+        void                get_parameter                (const VKGL::ContextProperty&        in_pname,
+                                                          const VKGL::GetSetArgumentType&     in_arg_type,
+                                                          void*                               out_arg_value_ptr) const;
+        void                get_pixel_store_parameter    (const VKGL::PixelStoreProperty&     in_pname,
+                                                          const VKGL::GetSetArgumentType&     in_arg_type,
+                                                          void*                               out_arg_value_ptr) const;
+        const ContextState* get_state                    ()                                                      const;
+        void                get_texture_binding_parameter(const VKGL::TextureBindingProperty& in_pname,
+                                                          const VKGL::GetSetArgumentType&     in_arg_type,
+                                                          void*                               out_arg_value_ptr) const;
 
         void set_blend_functions       (const VKGL::BlendFunction&        in_src_rgba_function,
                                         const VKGL::BlendFunction&        in_dst_rgba_function);
@@ -76,6 +80,12 @@ namespace VKGL
         void disable(const VKGL::Capability& in_capability);
         void enable (const VKGL::Capability& in_capability);
 
+        GLuint get_texture_binding(const uint32_t&            in_n_texture_unit,
+                                   const VKGL::TextureTarget& in_texture_target) const;
+        void   set_texture_binding(const uint32_t&            in_n_texture_unit,
+                                   const VKGL::TextureTarget& in_texture_target,
+                                   const GLuint&              in_texture_id);
+
     private:
         /* Private type definitions */
 
@@ -87,14 +97,19 @@ namespace VKGL
         }
         PropertyData;
 
+        typedef uint32_t TextureUnit;
+
         /* Private functions */
 
-        void init_prop_maps();
+        void init_prop_maps    ();
+        void init_texture_units();
 
         /* Private variables */
 
-        VKGL::ErrorCode       m_current_error_code;
-        ContextStateUniquePtr m_state_ptr;
+        VKGL::ErrorCode                                                  m_current_error_code;
+        const IGLLimits* const                                           m_limits_ptr;
+        ContextStateUniquePtr                                            m_state_ptr;
+        std::unordered_map<TextureUnit, VKGL::TextureUnitStateUniquePtr> m_texture_unit_to_state_ptr_map;
 
         std::unordered_map<VKGL::ContextProperty,    PropertyData> m_context_prop_map;
         std::unordered_map<VKGL::PixelStoreProperty, PropertyData> m_pixel_store_prop_map;

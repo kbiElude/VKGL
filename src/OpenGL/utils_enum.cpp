@@ -2553,6 +2553,27 @@ VKGL::StencilOperation VKGL::Utils::get_stencil_operation_for_gl_enum(const GLen
     return result;
 }
 
+VKGL::TextureBindingProperty VKGL::Utils::get_texture_binding_property_for_context_property(const VKGL::ContextProperty& in_pname)
+{
+    VKGL::TextureBindingProperty result = VKGL::TextureBindingProperty::Unknown;
+
+    switch (in_pname)
+    {
+        case VKGL::ContextProperty::Texture_Binding_1D:                   result = VKGL::TextureBindingProperty::_1D;                   break;
+        case VKGL::ContextProperty::Texture_Binding_1D_Array:             result = VKGL::TextureBindingProperty::_1D_Array;             break;
+        case VKGL::ContextProperty::Texture_Binding_2D:                   result = VKGL::TextureBindingProperty::_2D;                   break;
+        case VKGL::ContextProperty::Texture_Binding_2D_Array:             result = VKGL::TextureBindingProperty::_2D_Array;             break;
+        case VKGL::ContextProperty::Texture_Binding_2D_Multisample:       result = VKGL::TextureBindingProperty::_2D_Multisample;       break;
+        case VKGL::ContextProperty::Texture_Binding_2D_Multisample_Array: result = VKGL::TextureBindingProperty::_2D_Multisample_Array; break;
+        case VKGL::ContextProperty::Texture_Binding_3D:                   result = VKGL::TextureBindingProperty::_3D;                   break;
+        case VKGL::ContextProperty::Texture_Binding_Buffer:               result = VKGL::TextureBindingProperty::Buffer;                break;
+        case VKGL::ContextProperty::Texture_Binding_Cube_Map:             result = VKGL::TextureBindingProperty::Cube_Map;              break;
+        case VKGL::ContextProperty::Texture_Binding_Rectangle:            result = VKGL::TextureBindingProperty::Rectangle;             break;
+    }
+
+    return result;
+}
+
 VKGL::TextureCompareFunction VKGL::Utils::get_texture_compare_function_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::TextureCompareFunction result = VKGL::TextureCompareFunction::Unknown;
@@ -2996,3 +3017,16 @@ bool VKGL::Utils::is_context_property_gl_limit(const VKGL::ContextProperty& in_p
     return result;
 }
 
+bool VKGL::Utils::is_texture_binding_pname(const VKGL::ContextProperty& in_pname)
+{
+    return (in_pname == VKGL::ContextProperty::Texture_Binding_1D                   ||
+            in_pname == VKGL::ContextProperty::Texture_Binding_1D_Array             ||
+            in_pname == VKGL::ContextProperty::Texture_Binding_2D                   ||
+            in_pname == VKGL::ContextProperty::Texture_Binding_2D_Array             ||
+            in_pname == VKGL::ContextProperty::Texture_Binding_2D_Multisample       ||
+            in_pname == VKGL::ContextProperty::Texture_Binding_2D_Multisample_Array ||
+            in_pname == VKGL::ContextProperty::Texture_Binding_3D                   ||
+            in_pname == VKGL::ContextProperty::Texture_Binding_Buffer               ||
+            in_pname == VKGL::ContextProperty::Texture_Binding_Cube_Map             ||
+            in_pname == VKGL::ContextProperty::Texture_Binding_Rectangle)
+}

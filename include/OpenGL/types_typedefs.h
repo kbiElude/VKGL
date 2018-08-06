@@ -70,7 +70,6 @@ namespace VKGL
     typedef void      (*PFNVKGLDRAWARRAYSPROC)       (VKGL::Context* in_context_ptr, const GLenum& in_mode, const GLint&  in_first, const GLsizei& in_count);
     typedef void      (*PFNVKGLDRAWELEMENTSPROC)     (VKGL::Context* in_context_ptr, const GLenum& in_mode, const GLsizei& in_count, const GLenum& in_type, const void* in_indices);
     typedef void      (*PFNVKGLGENTEXTURESPROC)      (VKGL::Context* in_context_ptr, const GLsizei& in_n, GLuint* in_textures);
-    typedef void      (*PFNVKGLGETPOINTERVPROC)      (VKGL::Context* in_context_ptr, const GLenum& in_pname, void** in_params);
     typedef GLboolean (*PFNVKGLISTEXTUREPROC)        (VKGL::Context* in_context_ptr, const GLuint& in_texture);
     typedef void      (*PFNVKGLPOLYGONOFFSETPROC)    (VKGL::Context* in_context_ptr, const GLfloat& in_factor, const GLfloat& in_units);
     typedef void      (*PFNVKGLTEXSUBIMAGE1DPROC)    (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, const GLint& in_xoffset, const GLsizei& in_width, const GLenum& in_format, const GLenum& in_type, const void* in_pixels);

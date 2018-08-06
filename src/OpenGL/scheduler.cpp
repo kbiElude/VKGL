@@ -19,6 +19,51 @@ void VKGL::Scheduler::clear(const VKGL::ClearBufferBits& in_buffers_to_clear)
     todo;
 }
 
+void VKGL::Scheduler::copy_tex_image_1d(const GLuint&               in_id,
+                                        const GLint                 in_level,
+                                        const VKGL::InternalFormat& in_internalformat,
+                                        const GLint&                in_x,
+                                        const GLint&                in_y,
+                                        const GLsizei&              in_width,
+                                        const GLint&                in_border)
+{
+    todo;
+}
+
+void VKGL::Scheduler::copy_tex_image_2d(const GLuint&               in_id,
+                                        const GLint&                in_level,
+                                        const VKGL::InternalFormat& in_internalformat,
+                                        const GLint&                in_x,
+                                        const GLint&                in_y,
+                                        const GLsizei&              in_width,
+                                        const GLsizei&              in_height,
+                                        const GLint&                in_border)
+{
+    todo;
+}
+
+void VKGL::Scheduler::copy_tex_sub_image_1d(const GLuint&  in_id,
+                                            const GLint&   in_level,
+                                            const GLint&   in_xoffset,
+                                            const GLint&   in_x,
+                                            const GLint&   in_y,
+                                            const GLsizei& in_width)
+{
+    todo;
+}
+
+void VKGL::Scheduler::copy_tex_sub_image_2d(const GLuint&  in_id,
+                                            const GLint&   in_level,
+                                            const GLint&   in_xoffset,
+                                            const GLint&   in_yoffset,
+                                            const GLint&   in_x,
+                                            const GLint&   in_y,
+                                            const GLsizei& in_width,
+                                            const GLsizei& in_height)
+{
+    todo;
+}
+
 VKGL::SchedulerUniquePtr VKGL::Scheduler::create()
 {
     VKGL::SchedulerUniquePtr result_ptr;
@@ -57,6 +102,16 @@ void VKGL::Scheduler::get_texture_image(const VKGL::TextureTarget& in_target,
     todo;
 }
 
+bool VKGL::Scheduler::init()
+{
+    bool result = false;
+
+    // ..
+
+    result = true;
+    return result;
+}
+
 void VKGL::Scheduler::read_pixels(const int32_t&           in_x,
                                   const int32_t&           in_y,
                                   const size_t&            in_width,
@@ -68,12 +123,51 @@ void VKGL::Scheduler::read_pixels(const int32_t&           in_x,
     todo;
 }
 
-bool VKGL::Scheduler::init()
+void VKGL::Scheduler::tex_image_1d(const GLuint&               in_id,
+                                   const int32_t&              in_level,
+                                   const VKGL::InternalFormat& in_internalformat,
+                                   const int32_t&              in_width,
+                                   const int32_t&              in_border,
+                                   const VKGL::PixelFormat&    in_format,
+                                   const VKGL::PixelType&      in_type,
+                                   const void*                 in_pixels_ptr)
 {
-    bool result = false;
+    todo;
+}
 
-    // ..
+void VKGL::Scheduler::tex_image_2d(const GLuint&               in_id,
+                                   const GLint&                in_level,
+                                   const VKGL::InternalFormat& in_internalformat,
+                                   const GLsizei&              in_width,
+                                   const GLsizei&              in_height,
+                                   const GLint&                in_border,
+                                   const VKGL::PixelFormat&    in_format,
+                                   const VKGL::PixelType&      in_type,
+                                   const void*                 in_pixels_ptr)
+{
+    todo;
+}
 
-    result = true;
-    return result;
+void VKGL::Scheduler::tex_sub_image_1d(const GLuint&               in_id,
+                                       const GLint&                in_level,
+                                       const GLint&                in_xoffset,
+                                       const GLsizei&              in_width,
+                                       const VKGL::PixelFormat&    in_format,
+                                       const VKGL::PixelType&      in_type,
+                                       const void*                 in_pixels)
+{
+    todo;
+}
+
+void VKGL::Scheduler::tex_sub_image_2d(const GLuint&               in_id,
+                                       const GLint&                in_level,
+                                       const GLint&                in_xoffset,
+                                       const GLint&                in_yoffset,
+                                       const GLsizei&              in_width,
+                                       const GLsizei&              in_height,
+                                       const VKGL::PixelFormat&    in_format,
+                                       const VKGL::PixelType&      in_type,
+                                       const void*                 in_pixels)
+{
+    todo;
 }

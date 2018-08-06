@@ -747,6 +747,22 @@ namespace VKGL
         Unknown
     };
 
+    enum class TextureBindingProperty
+    {
+        _1D,
+        _1D_Array,
+        _2D,
+        _2D_Array,
+        _2D_Multisample,
+        _2D_Multisample_Array,
+        _3D,
+        Buffer,
+        Cube_Map,
+        Rectangle,
+
+        Unknown
+    };
+
     enum class TextureCompareFunction
     {
         Always,
@@ -864,6 +880,7 @@ namespace VKGL
         _2D_Multisample,
         _2D_Multisample_Array,
         _3D,
+        Cube_Map,
         Cube_Map_Negative_X,
         Cube_Map_Negative_Y,
         Cube_Map_Negative_Z,

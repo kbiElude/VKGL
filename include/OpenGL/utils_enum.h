@@ -119,6 +119,9 @@ namespace VKGL
         GLenum                 get_gl_enum_for_stencil_operation(const VKGL::StencilOperation& in_operation);
         VKGL::StencilOperation get_stencil_operation_for_gl_enum(const GLenum&                 in_enum);
 
+        VKGL::TextureBindingProperty get_texture_binding_property_for_context_property(const VKGL::ContextProperty& in_pname);
+        bool                         is_texture_binding_pname                         (const VKGL::ContextProperty& in_pname);
+
         GLenum                       get_gl_enum_for_texture_compare_function(const VKGL::TextureCompareFunction& in_compare_function);
         VKGL::TextureCompareFunction get_texture_compare_function_for_gl_enum(const GLenum&                       in_enum);
 
