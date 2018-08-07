@@ -64,6 +64,19 @@ void VKGL::Scheduler::copy_tex_sub_image_2d(const GLuint&  in_id,
     todo;
 }
 
+void VKGL::Scheduler::copy_tex_sub_image_3d(const GLuint&  in_id,
+                                            const GLint&   in_level,
+                                            const GLint&   in_xoffset,
+                                            const GLint&   in_yoffset,
+                                            const GLint&   in_zoffset,
+                                            const GLint&   in_x,
+                                            const GLint&   in_y,
+                                            const GLsizei& in_width,
+                                            const GLsizei& in_height)
+{
+    todo;
+}
+
 VKGL::SchedulerUniquePtr VKGL::Scheduler::create()
 {
     VKGL::SchedulerUniquePtr result_ptr;
@@ -148,26 +161,41 @@ void VKGL::Scheduler::tex_image_2d(const GLuint&               in_id,
     todo;
 }
 
-void VKGL::Scheduler::tex_sub_image_1d(const GLuint&               in_id,
-                                       const GLint&                in_level,
-                                       const GLint&                in_xoffset,
-                                       const GLsizei&              in_width,
-                                       const VKGL::PixelFormat&    in_format,
-                                       const VKGL::PixelType&      in_type,
-                                       const void*                 in_pixels)
+void VKGL::Scheduler::tex_sub_image_1d(const GLuint&            in_id,
+                                       const GLint&             in_level,
+                                       const GLint&             in_xoffset,
+                                       const GLsizei&           in_width,
+                                       const VKGL::PixelFormat& in_format,
+                                       const VKGL::PixelType&   in_type,
+                                       const void*              in_pixels)
 {
     todo;
 }
 
-void VKGL::Scheduler::tex_sub_image_2d(const GLuint&               in_id,
-                                       const GLint&                in_level,
-                                       const GLint&                in_xoffset,
-                                       const GLint&                in_yoffset,
-                                       const GLsizei&              in_width,
-                                       const GLsizei&              in_height,
-                                       const VKGL::PixelFormat&    in_format,
-                                       const VKGL::PixelType&      in_type,
-                                       const void*                 in_pixels)
+void VKGL::Scheduler::tex_sub_image_2d(const GLuint&            in_id,
+                                       const GLint&             in_level,
+                                       const GLint&             in_xoffset,
+                                       const GLint&             in_yoffset,
+                                       const GLsizei&           in_width,
+                                       const GLsizei&           in_height,
+                                       const VKGL::PixelFormat& in_format,
+                                       const VKGL::PixelType&   in_type,
+                                       const void*              in_pixels)
+{
+    todo;
+}
+
+void VKGL::Scheduler::tex_sub_image_3d(const GLuint&            in_id,
+                                       const GLint&             in_level,
+                                       const GLint&             in_xoffset,
+                                       const GLint&             in_yoffset,
+                                       const GLint&             in_zoffset,
+                                       const GLsizei&           in_width,
+                                       const GLsizei&           in_height,
+                                       const GLsizei&           in_depth,
+                                       const VKGL::PixelFormat& in_format,
+                                       const VKGL::PixelType&   in_type,
+                                       const void*              in_pixels)
 {
     todo;
 }

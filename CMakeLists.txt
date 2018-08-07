@@ -25,7 +25,7 @@ FILE(GLOB KhronosInclude              "${VK_GL_SOURCE_DIR}/include/Khronos/GL/*.
                                       "${VK_GL_SOURCE_DIR}/include/Khronos/KHR/*.h")
 FILE(GLOB OpenGL32EntrypointsIncludes "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL1.0/*.h"
                                       "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL1.1/*.h"
-                               #TODO: "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL1.2/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL1.2/*.h"
                                #TODO: "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL1.3/*.h"
                                #TODO: "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL1.4/*.h"
                                #TODO: "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL1.5/*.h"
@@ -37,7 +37,7 @@ FILE(GLOB OpenGL32EntrypointsIncludes "${VK_GL_SOURCE_DIR}/include/OpenGL/entryp
                                                                                                 )
 FILE(GLOB OpenGL32EntrypointsSources  "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoints/GL1.0/*.cpp"
                                       "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoints/GL1.1/*.cpp"
-                               #TODO: "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoints/GL1.2/*.cpp"
+                                      "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoints/GL1.2/*.cpp"
                                #TODO: "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoints/GL1.3/*.cpp"
                                #TODO: "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoints/GL1.4/*.cpp"
                                #TODO: "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoints/GL1.5/*.cpp"

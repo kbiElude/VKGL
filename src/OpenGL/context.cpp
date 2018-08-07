@@ -131,6 +131,34 @@ void VKGL::Context::copy_tex_sub_image_2d(const VKGL::TextureTarget& in_target,
                                            in_height);
 }
 
+void VKGL::Context::copy_tex_sub_image_3d(const VKGL::TextureTarget& in_target,
+                                          const GLint&               in_level,
+                                          const GLint&               in_xoffset,
+                                          const GLint&               in_yoffset,
+                                          const GLint&               in_zoffset,
+                                          const GLint&               in_x,
+                                          const GLint&               in_y,
+                                          const GLsizei&             in_width,
+                                          const GLsizei&             in_height)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_scheduler_ptr        != nullptr);
+
+    const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
+    const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
+                                                                                 in_target);
+
+    m_scheduler_ptr->copy_tex_sub_image_3d(texture_id,
+                                           in_level,
+                                           in_xoffset,
+                                           in_yoffset,
+                                           in_zoffset,
+                                           in_x,
+                                           in_y,
+                                           in_width,
+                                           in_height);
+}
+
 VKGL::ContextUniquePtr VKGL::Context::create()
 {
     VKGL::ContextUniquePtr result_ptr;
@@ -184,10 +212,10 @@ void VKGL::Context::draw_arrays(const VKGL::DrawCallMode& in_mode,
                                  in_count);
 }
 
-void VKGL::Context::draw_elements(const VKGL::DrawCallMode& in_mode,
-                                  const GLsizei&            in_count,
-                                  const GLenum&             in_type,
-                                  const void*               in_indices)
+void VKGL::Context::draw_elements(const VKGL::DrawCallMode&      in_mode,
+                                  const GLsizei&                 in_count,
+                                  const VKGL::DrawCallIndexType& in_type,
+                                  const void*                    in_indices)
 {
     vkgl_assert(m_scheduler_ptr != nullptr);
 
@@ -195,6 +223,23 @@ void VKGL::Context::draw_elements(const VKGL::DrawCallMode& in_mode,
                                    in_count,
                                    in_type,
                                    in_indices);
+}
+
+void VKGL::Context::draw_range_elements(const VKGL::DrawCallMode&      in_mode,
+                                        const GLuint&                  in_start,
+                                        const GLuint&                  in_end,
+                                        const GLsizei&                 in_count,
+                                        const VKGL::DrawCallIndexType& in_type,
+                                        const void*                    in_indices)
+{
+    vkgl_assert(m_scheduler_ptr != nullptr);
+
+    m_scheduler_ptr->draw_range_elements(in_mode,
+                                         in_start,
+                                         in_end,
+                                         in_count,
+                                         in_type,
+                                         in_indices);
 }
 
 void VKGL::Context::enable(const VKGL::Capability& in_capability)
@@ -714,6 +759,36 @@ void VKGL::Context::tex_image_2d(const VKGL::TextureTarget&  in_target,
                                   in_pixels_ptr);
 }
 
+void VKGL::Context::tex_image_3d(const VKGL::TextureTarget&     in_target,
+                                 const GLint&                   in_level,
+                                 const VKGL::InternalFormat&    in_internalformat,
+                                 const GLsizei&                 in_width,
+                                 const GLsizei&                 in_height,
+                                 const GLsizei&                 in_depth,
+                                 const GLint&                   in_border,
+                                 const VKGL::PixelFormat&       in_format,
+                                 const VKGL::PixelType&         in_type,
+                                 const void*                    in_pixels_ptr)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_scheduler_ptr        != nullptr);
+
+    const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
+    const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
+                                                                                 in_target);
+
+    m_scheduler_ptr->tex_image_3d(texture_id,
+                                  in_level,
+                                  in_internalformat,
+                                  in_width,
+                                  in_height,
+                                  in_depth,
+                                  in_border,
+                                  in_format,
+                                  in_type,
+                                  in_pixels_ptr);
+}
+
 void VKGL::Context::tex_sub_image_1d(const VKGL::TextureTarget& in_target,
                                      const GLint&               in_level,
                                      const GLint&               in_xoffset,
@@ -761,6 +836,38 @@ void VKGL::Context::tex_sub_image_2d(const VKGL::TextureTarget& in_target,
                                       in_yoffset,
                                       in_width,
                                       in_height,
+                                      in_format,
+                                      in_type,
+                                      in_pixels);
+}
+
+void VKGL::Context::tex_sub_image_3d(const VKGL::TextureTarget& in_target,
+                                     const GLint&               in_level,
+                                     const GLint&               in_xoffset,
+                                     const GLint&               in_yoffset,
+                                     const GLint&               in_zoffset,
+                                     const GLsizei&             in_width,
+                                     const GLsizei&             in_height,
+                                     const GLsizei&             in_depth,
+                                     const VKGL::PixelFormat&   in_format,
+                                     const VKGL::PixelType&     in_type,
+                                     const void*                in_pixels)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_scheduler_ptr        != nullptr);
+
+    const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
+    const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
+                                                                                 in_target);
+
+    m_scheduler_ptr->tex_sub_image_3d(texture_id,
+                                      in_level,
+                                      in_xoffset,
+                                      in_yoffset,
+                                      in_zoffset,
+                                      in_width,
+                                      in_height,
+                                      in_depth,
                                       in_format,
                                       in_type,
                                       in_pixels);

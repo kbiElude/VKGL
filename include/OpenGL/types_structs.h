@@ -167,6 +167,12 @@ namespace VKGL
         PFNVKGLTEXSUBIMAGE1DPROC     pGLTexSubImage1D;
         PFNVKGLTEXSUBIMAGE2DPROC     pGLTexSubImage2D;
 
+        /* GL 1.2 */
+        PFNVKGLCOPYTEXSUBIMAGE3DPROC pGLCopyTexSubImage3D;
+        PFNVKGLDRAWRANGEELEMENTSPROC pGLDrawRangeElements;
+        PFNVKGLTEXIMAGE3DPROC        pGLTexImage3D;
+        PFNVKGLTEXSUBIMAGE3DPROC     pGLTexSubImage3D;
+
         DispatchTable();
     };
 
