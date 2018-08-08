@@ -33,6 +33,168 @@ void VKGL::Context::clear(const VKGL::ClearBufferBits& in_buffers_to_clear)
     m_scheduler_ptr->clear(in_buffers_to_clear);
 }
 
+void VKGL::Context::compressed_tex_image_1d(const VKGL::TextureTarget&  in_target,
+                                            const GLint&                in_level,
+                                            const VKGL::InternalFormat& in_internalformat,
+                                            const GLsizei               in_width,
+                                            const GLint                 in_border,
+                                            const GLsizei               in_image_size,
+                                            const void*                 in_data)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_scheduler_ptr        != nullptr);
+
+    const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
+    const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
+                                                                                 in_target);
+
+    m_scheduler_ptr->compressed_tex_image_1d(texture_id,
+                                             in_level,
+                                             in_internalformat,
+                                             in_width,
+                                             in_border,
+                                             in_image_size,
+                                             in_data);
+}
+
+void VKGL::Context::compressed_tex_image_2d(const VKGL::TextureTarget&  in_target,
+                                            const GLint&                in_level,
+                                            const VKGL::InternalFormat& in_internalformat,
+                                            const GLsizei&              in_width,
+                                            const GLsizei&              in_height,
+                                            const GLint&                in_border,
+                                            const GLsizei&              in_image_size,
+                                            const void*                 in_data)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_scheduler_ptr        != nullptr);
+
+    const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
+    const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
+                                                                                 in_target);
+
+    m_scheduler_ptr->compressed_tex_image_2d(texture_id,
+                                             in_level,
+                                             in_internalformat,
+                                             in_width,
+                                             in_height,
+                                             in_border,
+                                             in_image_size,
+                                             in_data);
+}
+
+void VKGL::Context::compressed_tex_image_3d(const VKGL::TextureTarget&  in_target,
+                                            const GLint&                in_level,
+                                            const VKGL::InternalFormat& in_internalformat,
+                                            const GLsizei&              in_width,
+                                            const GLsizei&              in_height,
+                                            const GLsizei&              in_depth,
+                                            const GLint&                in_border,
+                                            const GLsizei&              in_image_size,
+                                            const void*                 in_data)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_scheduler_ptr        != nullptr);
+
+    const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
+    const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
+                                                                                 in_target);
+
+    m_scheduler_ptr->compressed_tex_image_3d(texture_id,
+                                             in_level,
+                                             in_internalformat,
+                                             in_width,
+                                             in_height,
+                                             in_depth,
+                                             in_border,
+                                             in_image_size,
+                                             in_data);
+}
+
+void VKGL::Context::compressed_tex_sub_image_1d(const VKGL::TextureTarget& in_target,
+                                                const GLint&               in_level,
+                                                const GLint&               in_xoffset,
+                                                const GLsizei&             in_width,
+                                                const VKGL::PixelFormat&   in_format,
+                                                const GLsizei&             in_image_size,
+                                                const void*                in_data)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_scheduler_ptr        != nullptr);
+
+    const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
+    const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
+                                                                                 in_target);
+
+    m_scheduler_ptr->compressed_tex_sub_image_1d(texture_id,
+                                                 in_level,
+                                                 in_xoffset,
+                                                 in_width,
+                                                 in_format,
+                                                 in_image_size,
+                                                 in_data);
+}
+
+void VKGL::Context::compressed_tex_sub_image_2d(const VKGL::TextureTarget& in_target,
+                                                const GLint&               in_level,
+                                                const GLint&               in_xoffset,
+                                                const GLint&               in_yoffset,
+                                                const GLsizei&             in_width,
+                                                const GLsizei&             in_height,
+                                                const VKGL::PixelFormat&   in_format,
+                                                const GLsizei&             in_image_size,
+                                                const void*                in_data)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_scheduler_ptr        != nullptr);
+
+    const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
+    const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
+                                                                                 in_target);
+
+    m_scheduler_ptr->compressed_tex_sub_image_2d(texture_id,
+                                                 in_level,
+                                                 in_xoffset,
+                                                 in_yoffset,
+                                                 in_width,
+                                                 in_height,
+                                                 in_format,
+                                                 in_image_size,
+                                                 in_data);
+}
+
+void VKGL::Context::compressed_tex_sub_image_3d(const VKGL::TextureTarget& in_target,
+                                                const GLint&               in_level,
+                                                const GLint&               in_xoffset,
+                                                const GLint&               in_yoffset,
+                                                const GLint&               in_zoffset,
+                                                const GLsizei&             in_width,
+                                                const GLsizei&             in_height,
+                                                const GLsizei&             in_depth,
+                                                const VKGL::PixelFormat&   in_format,
+                                                const GLsizei&             in_image_size,
+                                                const void*                in_data)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_scheduler_ptr        != nullptr);
+
+    const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
+    const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
+                                                                                 in_target);
+
+    m_scheduler_ptr->compressed_tex_sub_image_3d(texture_id,
+                                                 in_level,
+                                                 in_xoffset,
+                                                 in_yoffset,
+                                                 in_zoffset,
+                                                 in_width,
+                                                 in_height,
+                                                 in_depth,
+                                                 in_format,
+                                                 in_image_size,
+                                                 in_data);
+}
+
 void VKGL::Context::copy_tex_image_1d(const VKGL::TextureTarget&  in_target,
                                       const GLint                 in_level,
                                       const VKGL::InternalFormat& in_internalformat,
@@ -275,6 +437,23 @@ void VKGL::Context::gen_textures(const GLsizei& in_n,
     }
 }
 
+void VKGL::Context::get_compressed_tex_image(const VKGL::TextureTarget& in_target,
+                                             const GLint&               in_level,
+                                             void*                      in_img)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_scheduler_ptr        != nullptr);
+
+    const auto& context_state_ptr   = m_gl_state_manager_ptr->get_state();
+    const auto  active_texture_unit = context_state_ptr->active_texture_unit;
+    const auto  texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
+                                                                                  in_target);
+
+    m_scheduler_ptr->get_compressed_tex_image(texture_id,
+                                              in_level,
+                                              in_img);
+}
+
 VKGL::ErrorCode VKGL::Context::get_error()
 {
     vkgl_assert(m_gl_state_manager_ptr != nullptr);
@@ -330,9 +509,15 @@ void VKGL::Context::get_texture_image(const VKGL::TextureTarget& in_target,
                                       const VKGL::PixelType&     in_type,
                                       void*                      out_pixels_ptr)
 {
-    vkgl_assert(m_scheduler_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_scheduler_ptr        != nullptr);
 
-    m_scheduler_ptr->get_texture_image(in_target,
+    const auto& context_state_ptr   = m_gl_state_manager_ptr->get_state();
+    const auto  active_texture_unit = context_state_ptr->active_texture_unit;
+    const auto  texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
+                                                                                  in_target);
+
+    m_scheduler_ptr->get_texture_image(texture_id,
                                        in_level,
                                        in_format,
                                        in_type,
@@ -466,6 +651,15 @@ void VKGL::Context::read_pixels(const int32_t&           in_x,
                                  in_format,
                                  in_type,
                                  out_pixels_ptr);
+}
+
+void VKGL::Context::sample_coverage(const GLfloat&   in_value,
+                                    const GLboolean& in_invert)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+
+    m_gl_state_manager_ptr->set_sample_coverage(in_value,
+                                                (in_invert == GL_TRUE) );
 }
 
 void VKGL::Context::set_blend_functions(const VKGL::BlendFunction& in_src_rgba_function,

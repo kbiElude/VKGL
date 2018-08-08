@@ -36,19 +36,22 @@ namespace VKGL
         void finish           ();
         void flush            ();
 
-        void clear            (const VKGL::ClearBufferBits& in_buffers_to_clear);
-        void get_texture_image(const VKGL::TextureTarget&   in_target,
-                               const uint32_t&              in_level,
-                               const VKGL::PixelFormat&     in_format,
-                               const VKGL::PixelType&       in_type,
-                               void*                        out_pixels_ptr);
-        void read_pixels      (const int32_t&               in_x,
-                               const int32_t&               in_y,
-                               const size_t&                in_width,
-                               const size_t&                in_height,
-                               const VKGL::PixelFormat&     in_format,
-                               const VKGL::PixelType&       in_type,
-                               void*                        out_pixels_ptr);
+        void clear                   (const VKGL::ClearBufferBits& in_buffers_to_clear);
+        void get_compressed_tex_image(const GLuint&                in_id,
+                                      const GLint&                 in_level,
+                                      void*                        in_img);
+        void get_texture_image       (const GLuint&                in_id,
+                                      const uint32_t&              in_level,
+                                      const VKGL::PixelFormat&     in_format,
+                                      const VKGL::PixelType&       in_type,
+                                      void*                        out_pixels_ptr);
+        void read_pixels             (const int32_t&               in_x,
+                                      const int32_t&               in_y,
+                                      const size_t&                in_width,
+                                      const size_t&                in_height,
+                                      const VKGL::PixelFormat&     in_format,
+                                      const VKGL::PixelType&       in_type,
+                                      void*                        out_pixels_ptr);
 
         void copy_tex_image_1d(const GLuint&               in_id,
                                const GLint                 in_level,
@@ -89,6 +92,59 @@ namespace VKGL
                                    const GLint&   in_y,
                                    const GLsizei& in_width,
                                    const GLsizei& in_height);
+
+        void compressed_tex_image_1d(const GLuint&                in_id,
+                                     const GLint&                 in_level,
+                                     const VKGL::InternalFormat&  in_internalformat,
+                                     const GLsizei                in_width,
+                                     const GLint                  in_border,
+                                     const GLsizei                in_image_size,
+                                     const void*                  in_data);
+        void compressed_tex_image_2d(const GLuint&                in_id,
+                                     const GLint&                 in_level,
+                                     const VKGL::InternalFormat&  in_internalformat,
+                                     const GLsizei&               in_width,
+                                     const GLsizei&               in_height,
+                                     const GLint&                 in_border,
+                                     const GLsizei&               in_image_size,
+                                     const void*                  in_data);
+        void compressed_tex_image_3d(const GLuint&                in_id,
+                                     const GLint&                 in_level,
+                                     const VKGL::InternalFormat&  in_internalformat,
+                                     const GLsizei&               in_width,
+                                     const GLsizei&               in_height,
+                                     const GLsizei&               in_depth,
+                                     const GLint&                 in_border,
+                                     const GLsizei&               in_image_size,
+                                     const void*                  in_data);
+
+        void compressed_tex_sub_image_1d(const GLuint&                in_id,
+                                         const GLint&                 in_level,
+                                         const GLint&                 in_xoffset,
+                                         const GLsizei&               in_width,
+                                         const VKGL::PixelFormat&     in_format,
+                                         const GLsizei&               in_image_size,
+                                         const void*                  in_data);
+        void compressed_tex_sub_image_2d(const GLuint&                in_id,
+                                         const GLint&                 in_level,
+                                         const GLint&                 in_xoffset,
+                                         const GLint&                 in_yoffset,
+                                         const GLsizei&               in_width,
+                                         const GLsizei&               in_height,
+                                         const VKGL::PixelFormat&     in_format,
+                                         const GLsizei&               in_image_size,
+                                         const void*                  in_data);
+        void compressed_tex_sub_image_3d(const GLuint&                in_id,
+                                         const GLint&                 in_level,
+                                         const GLint&                 in_xoffset,
+                                         const GLint&                 in_yoffset,
+                                         const GLint&                 in_zoffset,
+                                         const GLsizei&               in_width,
+                                         const GLsizei&               in_height,
+                                         const GLsizei&               in_depth,
+                                         const VKGL::PixelFormat&     in_format,
+                                         const GLsizei&               in_image_size,
+                                         const void*                  in_data);
 
         void tex_image_1d(const GLuint&               in_id,
                           const int32_t&              in_level,

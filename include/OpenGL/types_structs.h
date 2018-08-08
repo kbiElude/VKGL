@@ -173,6 +173,17 @@ namespace VKGL
         PFNVKGLTEXIMAGE3DPROC        pGLTexImage3D;
         PFNVKGLTEXSUBIMAGE3DPROC     pGLTexSubImage3D;
 
+        /* GL 1.3 */
+        PFNVKGLACTIVETEXTUREPROC           pGLActiveTexture;
+        PFNVKGLCOMPRESSEDTEXIMAGE1DPROC    pGLCompressedTexImage1D;
+        PFNVKGLCOMPRESSEDTEXIMAGE2DPROC    pGLCompressedTexImage2D;
+        PFNVKGLCOMPRESSEDTEXIMAGE3DPROC    pGLCompressedTexImage3D;
+        PFNVKGLCOMPRESSEDTEXSUBIMAGE1DPROC pGLCompressedTexSubImage1D;
+        PFNVKGLCOMPRESSEDTEXSUBIMAGE2DPROC pGLCompressedTexSubImage2D;
+        PFNVKGLCOMPRESSEDTEXSUBIMAGE3DPROC pGLCompressedTexSubImage3D;
+        PFNVKGLGETCOMPRESSEDTEXIMAGEPROC   pGLGetCompressedTexImage;
+        PFNVKGLSAMPLECOVERAGEPROC          pGLSampleCoverage;
+
         DispatchTable();
     };
 

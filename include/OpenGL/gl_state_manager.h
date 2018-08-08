@@ -59,6 +59,8 @@ namespace VKGL
         void set_polygon_offset        (const float&                      in_factor,
                                         const float&                      in_units);
         void set_read_buffer           (const VKGL::ReadBuffer&           in_read_buffer);
+        void set_sample_coverage       (const float&                      in_value,
+                                        const bool&                       in_invert);
         void set_scissor               (const int32_t&                    in_x,
                                         const int32_t&                    in_y,
                                         const size_t&                     in_width,

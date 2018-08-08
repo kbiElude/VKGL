@@ -42,6 +42,7 @@ namespace VKGL
                                                     const VKGL::GetSetArgumentType&   in_arg_type,
                                                     void*                             out_arg_value_ptr) const;
 
+        void set_active_texture        (const uint32_t&                   in_n_texture_unit);
         void set_blend_functions       (const VKGL::BlendFunction&        in_src_rgba_function,
                                         const VKGL::BlendFunction&        in_dst_rgba_function);
         void set_clear_color_value     (const float&                      in_red,
@@ -95,47 +96,103 @@ namespace VKGL
 
         bool is_enabled(const VKGL::Capability& in_capability) const;
 
-        void bind_texture         (const VKGL::TextureTarget&   in_target,
-                                   const GLuint&                in_texture);
-        void clear                (const VKGL::ClearBufferBits& in_buffers_to_clear);
-        void copy_tex_image_1d    (const VKGL::TextureTarget&   in_target,
-                                   const GLint                  in_level,
-                                   const VKGL::InternalFormat&  in_internalformat,
-                                   const GLint&                 in_x,
-                                   const GLint&                 in_y,
-                                   const GLsizei&               in_width,
-                                   const GLint&                 in_border);
-        void copy_tex_image_2d    (const VKGL::TextureTarget&   in_target,
-                                   const GLint&                 in_level,
-                                   const VKGL::InternalFormat&  in_internalformat,
-                                   const GLint&                 in_x,
-                                   const GLint&                 in_y,
-                                   const GLsizei&               in_width,
-                                   const GLsizei&               in_height,
-                                   const GLint&                 in_border);
-        void copy_tex_sub_image_1d(const VKGL::TextureTarget&   in_target,
-                                   const GLint&                 in_level,
-                                   const GLint&                 in_xoffset,
-                                   const GLint&                 in_x,
-                                   const GLint&                 in_y,
-                                   const GLsizei&               in_width);
-        void copy_tex_sub_image_2d(const VKGL::TextureTarget&   in_target,
-                                   const GLint&                 in_level,
-                                   const GLint&                 in_xoffset,
-                                   const GLint&                 in_yoffset,
-                                   const GLint&                 in_x,
-                                   const GLint&                 in_y,
-                                   const GLsizei&               in_width,
-                                   const GLsizei&               in_height);
-        void copy_tex_sub_image_3d(const VKGL::TextureTarget&   in_target,
-                                   const GLint&                 in_level,
-                                   const GLint&                 in_xoffset,
-                                   const GLint&                 in_yoffset,
-                                   const GLint&                 in_zoffset,
-                                   const GLint&                 in_x,
-                                   const GLint&                 in_y,
-                                   const GLsizei&               in_width,
-                                   const GLsizei&               in_height);
+        void bind_texture               (const VKGL::TextureTarget&   in_target,
+                                         const GLuint&                in_texture);
+        void clear                      (const VKGL::ClearBufferBits& in_buffers_to_clear);
+        void compressed_tex_image_1d    (const VKGL::TextureTarget&   in_target,
+                                         const GLint&                 in_level,
+                                         const VKGL::InternalFormat&  in_internalformat,
+                                         const GLsizei                in_width,
+                                         const GLint                  in_border,
+                                         const GLsizei                in_image_size,
+                                         const void*                  in_data);
+        void compressed_tex_image_2d    (const VKGL::TextureTarget&   in_target,
+                                         const GLint&                 in_level,
+                                         const VKGL::InternalFormat&  in_internalformat,
+                                         const GLsizei&               in_width,
+                                         const GLsizei&               in_height,
+                                         const GLint&                 in_border,
+                                         const GLsizei&               in_image_size,
+                                         const void*                  in_data);
+        void compressed_tex_image_3d    (const VKGL::TextureTarget&   in_target,
+                                         const GLint&                 in_level,
+                                         const VKGL::InternalFormat&  in_internalformat,
+                                         const GLsizei&               in_width,
+                                         const GLsizei&               in_height,
+                                         const GLsizei&               in_depth,
+                                         const GLint&                 in_border,
+                                         const GLsizei&               in_image_size,
+                                         const void*                  in_data);
+        void compressed_tex_sub_image_1d(const VKGL::TextureTarget&   in_target,
+                                         const GLint&                 in_level,
+                                         const GLint&                 in_xoffset,
+                                         const GLsizei&               in_width,
+                                         const VKGL::PixelFormat&     in_format,
+                                         const GLsizei&               in_image_size,
+                                         const void*                  in_data);
+        void compressed_tex_sub_image_2d(const VKGL::TextureTarget&   in_target,
+                                         const GLint&                 in_level,
+                                         const GLint&                 in_xoffset,
+                                         const GLint&                 in_yoffset,
+                                         const GLsizei&               in_width,
+                                         const GLsizei&               in_height,
+                                         const VKGL::PixelFormat&     in_format,
+                                         const GLsizei&               in_image_size,
+                                         const void*                  in_data);
+        void compressed_tex_sub_image_3d(const VKGL::TextureTarget&   in_target,
+                                         const GLint&                 in_level,
+                                         const GLint&                 in_xoffset,
+                                         const GLint&                 in_yoffset,
+                                         const GLint&                 in_zoffset,
+                                         const GLsizei&               in_width,
+                                         const GLsizei&               in_height,
+                                         const GLsizei&               in_depth,
+                                         const VKGL::PixelFormat&     in_format,
+                                         const GLsizei&               in_image_size,
+                                         const void*                  in_data);
+        void copy_tex_image_1d          (const VKGL::TextureTarget&   in_target,
+                                         const GLint                  in_level,
+                                         const VKGL::InternalFormat&  in_internalformat,
+                                         const GLint&                 in_x,
+                                         const GLint&                 in_y,
+                                         const GLsizei&               in_width,
+                                         const GLint&                 in_border);
+        void copy_tex_image_2d          (const VKGL::TextureTarget&   in_target,
+                                         const GLint&                 in_level,
+                                         const VKGL::InternalFormat&  in_internalformat,
+                                         const GLint&                 in_x,
+                                         const GLint&                 in_y,
+                                         const GLsizei&               in_width,
+                                         const GLsizei&               in_height,
+                                         const GLint&                 in_border);
+        void copy_tex_sub_image_1d      (const VKGL::TextureTarget&   in_target,
+                                         const GLint&                 in_level,
+                                         const GLint&                 in_xoffset,
+                                         const GLint&                 in_x,
+                                         const GLint&                 in_y,
+                                         const GLsizei&               in_width);
+        void copy_tex_sub_image_2d      (const VKGL::TextureTarget&   in_target,
+                                         const GLint&                 in_level,
+                                         const GLint&                 in_xoffset,
+                                         const GLint&                 in_yoffset,
+                                         const GLint&                 in_x,
+                                         const GLint&                 in_y,
+                                         const GLsizei&               in_width,
+                                         const GLsizei&               in_height);
+        void copy_tex_sub_image_3d      (const VKGL::TextureTarget&   in_target,
+                                         const GLint&                 in_level,
+                                         const GLint&                 in_xoffset,
+                                         const GLint&                 in_yoffset,
+                                         const GLint&                 in_zoffset,
+                                         const GLint&                 in_x,
+                                         const GLint&                 in_y,
+                                         const GLsizei&               in_width,
+                                         const GLsizei&               in_height);
+        void get_compressed_tex_image   (const VKGL::TextureTarget&   in_target,
+                                         const GLint&                 in_level,
+                                         void*                        in_img);
+        void sample_coverage            (const GLfloat&               in_value,
+                                         const GLboolean&             in_invert);
 
         void delete_textures      (const GLsizei&                 in_n,
                                    const GLuint*                  in_textures);

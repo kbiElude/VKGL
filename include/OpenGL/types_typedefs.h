@@ -80,6 +80,17 @@ namespace VKGL
     typedef void (*PFNVKGLDRAWRANGEELEMENTSPROC)(VKGL::Context* in_context_ptr, const GLenum& in_mode, const GLuint& in_start, const GLuint& in_end, const GLsizei& in_count, const GLenum& in_type, const void* in_indices);
     typedef void (*PFNVKGLTEXIMAGE3DPROC)       (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, const GLint& in_internalformat, const GLsizei& in_width, const GLsizei& in_height, const GLsizei& in_depth, const GLint& in_border, const GLenum& in_format, const GLenum& in_type, const void* in_pixels);
     typedef void (*PFNVKGLTEXSUBIMAGE3DPROC)    (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, const GLint& in_xoffset, const GLint& in_yoffset, const GLint& in_zoffset, const GLsizei& in_width, const GLsizei& in_height, const GLsizei& in_depth, const GLenum& in_format, const GLenum& in_type, const void* in_pixels);
+
+    /* VKG GL entrypoints : GL 1.3 */
+    typedef void (*PFNVKGLACTIVETEXTUREPROC)          (VKGL::Context* in_context_ptr, const GLenum& in_texture);
+    typedef void (*PFNVKGLCOMPRESSEDTEXIMAGE1DPROC)   (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, const GLenum& in_internalformat, const GLsizei& in_width, const GLint& in_border, const GLsizei& in_image_size, const void* in_data);
+    typedef void (*PFNVKGLCOMPRESSEDTEXIMAGE2DPROC)   (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, const GLenum& in_internalformat, const GLsizei& in_width, const GLsizei& in_height, const GLint& in_border, const GLsizei& in_image_size, const void* in_data);
+    typedef void (*PFNVKGLCOMPRESSEDTEXIMAGE3DPROC)   (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, const GLenum& in_internalformat, const GLsizei& in_width, const GLsizei& in_height, const GLsizei& in_depth, const GLint& in_border, const GLsizei& in_image_size, const void* in_data);
+    typedef void (*PFNVKGLCOMPRESSEDTEXSUBIMAGE1DPROC)(VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, const GLint& in_xoffset, const GLsizei& in_width, const GLenum& in_format, const GLsizei& in_image_size, const void* in_data);
+    typedef void (*PFNVKGLCOMPRESSEDTEXSUBIMAGE2DPROC)(VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, const GLint& in_xoffset, const GLint& in_yoffset, const GLsizei& in_width, const GLsizei& in_height, const GLenum& in_format, const GLsizei& in_image_size, const void* in_data);
+    typedef void (*PFNVKGLCOMPRESSEDTEXSUBIMAGE3DPROC)(VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, const GLint& in_xoffset, const GLint& in_yoffset, const GLint& in_zoffset, const GLsizei& in_width, const GLsizei& in_height, const GLsizei& in_depth, const GLenum& in_format, const GLsizei& in_image_size, const void* in_data);
+    typedef void (*PFNVKGLGETCOMPRESSEDTEXIMAGEPROC)  (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, void* in_img);
+    typedef void (*PFNVKGLSAMPLECOVERAGEPROC)         (VKGL::Context* in_context_ptr, const GLfloat& in_value, const GLboolean& in_invert);
 }
 
 #endif /* VKGL_TYPES_TYPEDEFS_H */

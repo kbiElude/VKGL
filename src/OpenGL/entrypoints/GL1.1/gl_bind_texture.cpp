@@ -47,6 +47,8 @@ void vkglBindTexture_with_validation(VKGL::Context* in_context_ptr,
                  in_target,
                  in_texture) )
     {
-        todo;
+        vkglBindTexture_execute(in_context_ptr,
+                                in_target,
+                                in_texture);
     }
 }

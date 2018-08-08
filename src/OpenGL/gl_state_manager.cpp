@@ -452,6 +452,13 @@ void VKGL::GLStateManager::set_read_buffer(const VKGL::ReadBuffer& in_read_buffe
     todo_fbos;
 }
 
+void VKGL::GLStateManager::set_sample_coverage(const float& in_value,
+                                               const bool&  in_invert)
+{
+    m_state_ptr->is_sample_coverage_invert_enabled = in_invert;
+    m_state_ptr->sample_coverage_value             = in_value;
+}
+
 void VKGL::GLStateManager::set_scissor(const int32_t& in_x,
                                        const int32_t& in_y,
                                        const size_t&  in_width,
