@@ -226,9 +226,9 @@ void VKGL::GLStateManager::init_prop_maps()
         // TODO: {VKGL::ContextProperty::Context_Flags,                              {VKGL::GetSetArgumentType::, 1, &m_state_ptr->} },
         {VKGL::ContextProperty::Cull_Face,                                  {VKGL::GetSetArgumentType::CullFaceVKGL,                  1, &m_state_ptr->cull_face_mode} },
         {VKGL::ContextProperty::Current_Program,                            {VKGL::GetSetArgumentType::Int,                           1, &m_state_ptr->current_program_id} },
-        {VKGL::ContextProperty::Depth_Clear_Value,                          {VKGL::GetSetArgumentType::Float,                         1, &m_state_ptr->depth_clear_value} },
+        {VKGL::ContextProperty::Depth_Clear_Value,                          {VKGL::GetSetArgumentType::Double,                        1, &m_state_ptr->depth_clear_value} },
         {VKGL::ContextProperty::Depth_Func,                                 {VKGL::GetSetArgumentType::DepthFunctionVKGL,             1, &m_state_ptr->depth_function} },
-        {VKGL::ContextProperty::Depth_Range,                                {VKGL::GetSetArgumentType::Float,                         2,  m_state_ptr->depth_range} },
+        {VKGL::ContextProperty::Depth_Range,                                {VKGL::GetSetArgumentType::Double,                        2,  m_state_ptr->depth_range} },
         {VKGL::ContextProperty::Depth_Test,                                 {VKGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->is_depth_test_enabled} },
         {VKGL::ContextProperty::Depth_Writemask,                            {VKGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->depth_writemask} },
         {VKGL::ContextProperty::Dither,                                     {VKGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->is_dither_enabled} },
@@ -294,6 +294,12 @@ void VKGL::GLStateManager::init_prop_maps()
         {VKGL::PixelStoreProperty::Unpack_Skip_Rows,    {VKGL::GetSetArgumentType::Int,     1, &m_state_ptr->unpack_skip_rows}    },
         {VKGL::PixelStoreProperty::Unpack_Swap_Bytes,   {VKGL::GetSetArgumentType::Boolean, 1, &m_state_ptr->unpack_swap_bytes}   },
     };
+
+    m_point_prop_map =
+    {
+        {VKGL::PointProperty::Fade_Threshold_Size, {VKGL::GetSetArgumentType::Float,                      1, &m_state_ptr->point_fade_threshold_size} },
+        {VKGL::PointProperty::Sprite_Coord_Origin, {VKGL::GetSetArgumentType::PointSpriteCoordOriginVKGL, 1, &m_state_ptr->point_sprite_coord_origin} },
+    };
 }
 
 void VKGL::GLStateManager::init_texture_units()
@@ -315,6 +321,28 @@ void VKGL::GLStateManager::init_texture_units()
     }
 }
 
+void VKGL::GLStateManager::set_active_texture(const uint32_t& in_n_texture_unit)
+{
+    m_state_ptr->active_texture_unit = in_n_texture_unit;
+}
+
+void VKGL::GLStateManager::set_blend_color(const float& in_red,
+                                           const float& in_green,
+                                           const float& in_blue,
+                                           const float& in_alpha)
+{
+    m_state_ptr->blend_color[0] = in_red;
+    m_state_ptr->blend_color[1] = in_green;
+    m_state_ptr->blend_color[2] = in_blue;
+    m_state_ptr->blend_color[3] = in_alpha;
+}
+
+void VKGL::GLStateManager::set_blend_equation(const VKGL::BlendEquation& in_blend_equation)
+{
+    m_state_ptr->blend_equation_alpha = in_blend_equation;
+    m_state_ptr->blend_equation_rgb   = in_blend_equation;
+}
+
 void VKGL::GLStateManager::set_blend_functions(const VKGL::BlendFunction& in_src_rgba_function,
                                                const VKGL::BlendFunction& in_dst_rgba_function)
 {
@@ -323,6 +351,17 @@ void VKGL::GLStateManager::set_blend_functions(const VKGL::BlendFunction& in_src
     m_state_ptr->blend_func_dst_alpha = in_dst_rgba_function;
     m_state_ptr->blend_func_dst_rgb   = in_dst_rgba_function;
 
+}
+
+void VKGL::GLStateManager::set_blend_functions_separate(const VKGL::BlendFunction& in_src_rgb_function,
+                                                        const VKGL::BlendFunction& in_dst_rgb_function,
+                                                        const VKGL::BlendFunction& in_src_alpha_function,
+                                                        const VKGL::BlendFunction& in_dst_alpha_function)
+{
+    m_state_ptr->blend_func_src_alpha = in_src_alpha_function;
+    m_state_ptr->blend_func_src_rgb   = in_src_rgb_function;
+    m_state_ptr->blend_func_dst_alpha = in_dst_alpha_function;
+    m_state_ptr->blend_func_dst_rgb   = in_dst_rgb_function;
 }
 
 void VKGL::GLStateManager::set_clear_color_value(const float& in_red,
@@ -437,6 +476,25 @@ void VKGL::GLStateManager::set_pixel_store_property(const VKGL::PixelStoreProper
     }
 }
 
+void VKGL::GLStateManager::set_point_property(const VKGL::PointProperty&      in_property,
+                                              const VKGL::GetSetArgumentType& in_arg_type,
+                                              const void*                     in_arg_value_ptr)
+{
+    const auto prop_map_iterator = m_point_prop_map.find(in_property);
+
+    vkgl_assert(prop_map_iterator != m_point_prop_map.end() );
+    if (prop_map_iterator != m_point_prop_map.end() )
+    {
+        const auto& prop_props = prop_map_iterator->second;
+
+        VKGL::Converters::convert(in_arg_type,
+                                  in_arg_value_ptr,
+                                  prop_props.n_value_components,
+                                  prop_props.getter_value_type,
+                                  prop_map_iterator->second.value_ptr);
+    }
+}
+
 void VKGL::GLStateManager::set_point_size(const float& in_size)
 {
     m_state_ptr->point_size = in_size;
@@ -466,8 +524,8 @@ void VKGL::GLStateManager::set_scissor(const int32_t& in_x,
 {
     m_state_ptr->scissor_box[0] = in_x;
     m_state_ptr->scissor_box[1] = in_y;
-    m_state_ptr->scissor_box[2] = in_width;
-    m_state_ptr->scissor_box[3] = in_height;
+    m_state_ptr->scissor_box[2] = static_cast<int32_t>(in_width);
+    m_state_ptr->scissor_box[3] = static_cast<int32_t>(in_height);
 }
 
 void VKGL::GLStateManager::set_stencil_function(const VKGL::StencilFunction& in_func,
@@ -537,8 +595,8 @@ void VKGL::GLStateManager::set_viewport(const int32_t& in_x,
 {
     m_state_ptr->viewport[0] = in_x;
     m_state_ptr->viewport[1] = in_y;
-    m_state_ptr->viewport[2] = in_width;
-    m_state_ptr->viewport[3] = in_height;
+    m_state_ptr->viewport[2] = static_cast<int32_t>(in_width);
+    m_state_ptr->viewport[3] = static_cast<int32_t>(in_height);
 }
 
 bool VKGL::GLStateManager::is_enabled(const VKGL::Capability& in_capability) const

@@ -634,6 +634,34 @@ bool VKGL::Context::is_texture(const GLuint& in_texture)
     return m_gl_texture_manager_ptr->is_alive_id(in_texture);
 }
 
+void VKGL::Context::multi_draw_arrays(const VKGL::DrawCallMode& in_mode,
+                                      const GLint*              in_first_ptr,
+                                      const GLsizei*            in_count_ptr,
+                                      const GLsizei&            in_drawcount)
+{
+    vkgl_assert(m_scheduler_ptr != nullptr);
+
+    m_scheduler_ptr->multi_draw_arrays(in_mode,
+                                       in_first_ptr,
+                                       in_count_ptr,
+                                       in_drawcount);
+}
+
+void VKGL::Context::multi_draw_elements(const VKGL::DrawCallMode&      in_mode,
+                                        const GLsizei*                 in_count_ptr,
+                                        const VKGL::DrawCallIndexType& in_type,
+                                        const void* const*             in_indices_ptr,
+                                        const GLsizei&                 in_drawcount)
+{
+    vkgl_assert(m_scheduler_ptr != nullptr);
+
+    m_scheduler_ptr->multi_draw_elements(in_mode,
+                                         in_count_ptr,
+                                         in_type,
+                                         in_indices_ptr,
+                                         in_drawcount);
+}
+
 void VKGL::Context::read_pixels(const int32_t&           in_x,
                                 const int32_t&           in_y,
                                 const size_t&            in_width,
@@ -662,13 +690,53 @@ void VKGL::Context::sample_coverage(const GLfloat&   in_value,
                                                 (in_invert == GL_TRUE) );
 }
 
+void VKGL::Context::set_active_texture(const uint32_t& in_n_texture_unit)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+
+    m_gl_state_manager_ptr->set_active_texture(in_n_texture_unit);
+}
+
+void VKGL::Context::set_blend_color(const float& in_red,
+                                    const float& in_green,
+                                    const float& in_blue,
+                                    const float& in_alpha)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+
+    m_gl_state_manager_ptr->set_blend_color(in_red,
+                                            in_green,
+                                            in_blue,
+                                            in_alpha);
+}
+
+void VKGL::Context::set_blend_equation(const VKGL::BlendEquation& in_blend_equation)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+
+    m_gl_state_manager_ptr->set_blend_equation(in_blend_equation);
+}
+
 void VKGL::Context::set_blend_functions(const VKGL::BlendFunction& in_src_rgba_function,
                                         const VKGL::BlendFunction& in_dst_rgba_function)
 {
     vkgl_assert(m_gl_state_manager_ptr != nullptr);
 
     m_gl_state_manager_ptr->set_blend_functions(in_src_rgba_function,
-                                                 in_dst_rgba_function);
+                                                in_dst_rgba_function);
+}
+
+void VKGL::Context::set_blend_functions_separate(const VKGL::BlendFunction& in_src_rgb_function,
+                                                 const VKGL::BlendFunction& in_dst_rgb_function,
+                                                 const VKGL::BlendFunction& in_src_alpha_function,
+                                                 const VKGL::BlendFunction& in_dst_alpha_function)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+
+    m_gl_state_manager_ptr->set_blend_functions_separate(in_src_rgb_function,
+                                                         in_dst_rgb_function,
+                                                         in_src_alpha_function,
+                                                         in_dst_alpha_function);
 }
 
 void VKGL::Context::set_clear_color_value(const float& in_red,
@@ -787,6 +855,17 @@ void VKGL::Context::set_pixel_store_property(const VKGL::PixelStoreProperty& in_
     m_gl_state_manager_ptr->set_pixel_store_property(in_property,
                                                      in_arg_type,
                                                      in_arg_value_ptr);
+}
+
+void VKGL::Context::set_point_property(const VKGL::PointProperty&      in_property,
+                                       const VKGL::GetSetArgumentType& in_arg_type,
+                                       const void*                     in_arg_value_ptr)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+
+    m_gl_state_manager_ptr->set_point_property(in_property,
+                                               in_arg_type,
+                                               in_arg_value_ptr);
 }
 
 void VKGL::Context::set_point_size(const float& in_size)

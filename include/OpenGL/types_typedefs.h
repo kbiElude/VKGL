@@ -91,6 +91,18 @@ namespace VKGL
     typedef void (*PFNVKGLCOMPRESSEDTEXSUBIMAGE3DPROC)(VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, const GLint& in_xoffset, const GLint& in_yoffset, const GLint& in_zoffset, const GLsizei& in_width, const GLsizei& in_height, const GLsizei& in_depth, const GLenum& in_format, const GLsizei& in_image_size, const void* in_data);
     typedef void (*PFNVKGLGETCOMPRESSEDTEXIMAGEPROC)  (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLint& in_level, void* in_img);
     typedef void (*PFNVKGLSAMPLECOVERAGEPROC)         (VKGL::Context* in_context_ptr, const GLfloat& in_value, const GLboolean& in_invert);
+
+    /* VKGL GL entrypoints : GL 1.4 */
+    typedef void (*PFNVKGLBLENDCOLORPROC)       (VKGL::Context* in_context_ptr, const GLfloat& red, const GLfloat& green, const GLfloat& blue, const GLfloat& alpha);
+    typedef void (*PFNVKGLBLENDEQUATIONPROC)    (VKGL::Context* in_context_ptr, const GLenum& mode);
+    typedef void (*PFNVKGLBLENDFUNCSEPARATEPROC)(VKGL::Context* in_context_ptr, const GLenum& sfactorRGB, const GLenum& dfactorRGB, const GLenum& sfactorAlpha, const GLenum& dfactorAlpha);
+    typedef void (*PFNVKGLMULTIDRAWARRAYSPROC)  (VKGL::Context* in_context_ptr, const GLenum& mode, const GLint* first, const GLsizei* count, const GLsizei& drawcount);
+    typedef void (*PFNVKGLMULTIDRAWELEMENTSPROC)(VKGL::Context* in_context_ptr, const GLenum& mode, const GLsizei* count, const GLenum& type, const void* const* indices, const GLsizei& drawcount);
+    typedef void (*PFNVKGLPOINTPARAMETERFPROC)  (VKGL::Context* in_context_ptr, const GLenum& pname, const GLfloat& param);
+    typedef void (*PFNVKGLPOINTPARAMETERFVPROC) (VKGL::Context* in_context_ptr, const GLenum& pname, const GLfloat* params);
+    typedef void (*PFNVKGLPOINTPARAMETERIPROC)  (VKGL::Context* in_context_ptr, const GLenum& pname, const GLint&  param);
+    typedef void (*PFNVKGLPOINTPARAMETERIVPROC) (VKGL::Context* in_context_ptr, const GLenum& pname, const GLint* params);
+
 }
 
 #endif /* VKGL_TYPES_TYPEDEFS_H */

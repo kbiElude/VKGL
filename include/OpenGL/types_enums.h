@@ -441,6 +441,7 @@ namespace VKGL
         HintModeVKGL,
         Int,
         LogicOpModeVKGL,
+        PointSpriteCoordOriginVKGL,
         ProvokingVertexConventionVKGL,
         StencilFunctionVKGL,
         StencilOperationVKGL,
@@ -656,6 +657,14 @@ namespace VKGL
         Unsigned_Short_5_5_5_1,
         Unsigned_Short_5_6_5,
         Unsigned_Short_5_6_5_Rev,
+
+        Unknown
+    };
+
+    enum class PointProperty
+    {
+        Fade_Threshold_Size,
+        Sprite_Coord_Origin,
 
         Unknown
     };

@@ -184,6 +184,17 @@ namespace VKGL
         PFNVKGLGETCOMPRESSEDTEXIMAGEPROC   pGLGetCompressedTexImage;
         PFNVKGLSAMPLECOVERAGEPROC          pGLSampleCoverage;
 
+        /* GL 1.4 */
+        PFNVKGLBLENDCOLORPROC        pGLBlendColor;
+        PFNVKGLBLENDEQUATIONPROC     pGLBlendEquation;
+        PFNVKGLBLENDFUNCSEPARATEPROC pGLBlendFuncSeparate;
+        PFNVKGLMULTIDRAWARRAYSPROC   pGLMultiDrawArrays;
+        PFNVKGLMULTIDRAWELEMENTSPROC pGLMultiDrawElements;
+        PFNVKGLPOINTPARAMETERFPROC   pGLPointParameterf;
+        PFNVKGLPOINTPARAMETERFVPROC  pGLPointParameterfv;
+        PFNVKGLPOINTPARAMETERIPROC   pGLPointParameteri;
+        PFNVKGLPOINTPARAMETERIVPROC  pGLPointParameteriv;
+
         DispatchTable();
     };
 
@@ -365,7 +376,7 @@ namespace VKGL
         int32_t primitive_restart_index;
 
         bool              is_depth_clamp_enabled;
-        float             depth_range[2];
+        double            depth_range[2];
         std::vector<bool> user_clip_planes_enabled;
         int32_t           viewport   [4];
 
@@ -433,7 +444,7 @@ namespace VKGL
 
         float    color_clear_value[4];
         uint32_t color_writemask_for_draw_buffers; /* 4-bits per each draw buffer. */
-        float    depth_clear_value;
+        double   depth_clear_value;
         bool     depth_writemask;
         uint32_t stencil_clear_value;
         uint32_t stencil_writemask_back;

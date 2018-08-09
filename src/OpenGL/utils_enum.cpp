@@ -1551,6 +1551,24 @@ GLenum VKGL::Utils::get_gl_enum_for_pixel_type(const VKGL::PixelType& in_pixel_t
     return result;
 }
 
+GLenum VKGL::Utils::get_gl_enum_for_point_property(const VKGL::PointProperty& in_property)
+{
+    GLenum result = 0;
+
+    switch (in_property)
+    {
+        case VKGL::PointProperty::Fade_Threshold_Size: result = GL_POINT_FADE_THRESHOLD_SIZE; break;
+        case VKGL::PointProperty::Sprite_Coord_Origin: result = GL_POINT_SPRITE_COORD_ORIGIN; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 GLenum VKGL::Utils::get_gl_enum_for_provoking_vertex_convention(const VKGL::ProvokingVertexConvention& in_convention)
 {
     GLenum result = 0;
@@ -2398,6 +2416,24 @@ VKGL::PixelType VKGL::Utils::get_pixel_type_for_gl_enum(const GLenum& in_enum)
     return result;
 }
 
+VKGL::PointProperty VKGL::Utils::get_point_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::PointProperty result = VKGL::PointProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_POINT_FADE_THRESHOLD_SIZE: result = VKGL::PointProperty::Fade_Threshold_Size; break;
+        case GL_POINT_SPRITE_COORD_ORIGIN: result = VKGL::PointProperty::Sprite_Coord_Origin; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::PointSpriteCoordOrigin VKGL::Utils::get_point_sprite_coord_origin_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::PointSpriteCoordOrigin result = VKGL::PointSpriteCoordOrigin::Unknown;
@@ -3028,5 +3064,5 @@ bool VKGL::Utils::is_texture_binding_pname(const VKGL::ContextProperty& in_pname
             in_pname == VKGL::ContextProperty::Texture_Binding_3D                   ||
             in_pname == VKGL::ContextProperty::Texture_Binding_Buffer               ||
             in_pname == VKGL::ContextProperty::Texture_Binding_Cube_Map             ||
-            in_pname == VKGL::ContextProperty::Texture_Binding_Rectangle)
+            in_pname == VKGL::ContextProperty::Texture_Binding_Rectangle);
 }

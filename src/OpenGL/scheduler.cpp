@@ -200,6 +200,23 @@ bool VKGL::Scheduler::init()
     return result;
 }
 
+void VKGL::Scheduler::multi_draw_arrays(const VKGL::DrawCallMode& in_mode,
+                                        const GLint*              in_first_ptr,
+                                        const GLsizei*            in_count_ptr,
+                                        const GLsizei&            in_drawcount)
+{
+    todo;
+}
+
+void VKGL::Scheduler::multi_draw_elements(const VKGL::DrawCallMode&      in_mode,
+                                          const GLsizei*                 in_count_ptr,
+                                          const VKGL::DrawCallIndexType& in_type,
+                                          const void* const*             in_indices_ptr,
+                                          const GLsizei&                 in_drawcount)
+{
+    todo;
+}
+
 void VKGL::Scheduler::read_pixels(const int32_t&           in_x,
                                   const int32_t&           in_y,
                                   const size_t&            in_width,

@@ -32,6 +32,15 @@ namespace VKGL
                                  const GLsizei&                 in_count,
                                  const VKGL::DrawCallIndexType& in_type,
                                  const void*                    in_indices);
+        void multi_draw_arrays  (const VKGL::DrawCallMode&      in_mode,
+                                 const GLint*                   in_first_ptr,
+                                 const GLsizei*                 in_count_ptr,
+                                 const GLsizei&                 in_drawcount);
+        void multi_draw_elements(const VKGL::DrawCallMode&      in_mode,
+                                 const GLsizei*                 in_count_ptr,
+                                 const VKGL::DrawCallIndexType& in_type,
+                                 const void* const*             in_indices_ptr,
+                                 const GLsizei&                 in_drawcount);
 
         void finish           ();
         void flush            ();

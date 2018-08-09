@@ -98,6 +98,9 @@ namespace VKGL
         GLenum          get_gl_enum_for_pixel_type(const VKGL::PixelType& in_pixel_type);
         VKGL::PixelType get_pixel_type_for_gl_enum(const GLenum&          in_enum);
 
+        GLenum              get_gl_enum_for_point_property(const VKGL::PointProperty& in_property);
+        VKGL::PointProperty get_point_property_for_gl_enum(const GLenum&              in_enum);
+
         GLenum                       get_gl_enum_for_point_sprite_coord_origin(const VKGL::PointSpriteCoordOrigin& in_origin);
         VKGL::PointSpriteCoordOrigin get_point_sprite_coord_origin_for_gl_enum(const GLenum&                       in_enum);
 

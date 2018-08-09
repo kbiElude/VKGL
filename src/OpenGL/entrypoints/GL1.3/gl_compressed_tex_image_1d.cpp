@@ -56,8 +56,7 @@ void vkglCompressedTexImage1D_execute(VKGL::Context* in_context_ptr,
     const auto internalformat_vkgl = VKGL::Utils::get_internal_format_for_gl_enum(in_internalformat);
     const auto target_vkgl         = VKGL::Utils::get_texture_target_for_gl_enum( in_target);
 
-    in_context_ptr->compressed_tex_image_1d(in_context_ptr,
-                                            target_vkgl,
+    in_context_ptr->compressed_tex_image_1d(target_vkgl,
                                             in_level,
                                             internalformat_vkgl,
                                             in_width,
