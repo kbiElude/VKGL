@@ -20,6 +20,15 @@ namespace VKGL
         VKGL::BufferAccess get_buffer_access_for_gl_enum(const GLenum&             in_enum);
         GLenum             get_gl_enum_for_buffer_access(const VKGL::BufferAccess& in_access);
 
+        VKGL::BufferPointerProperty get_buffer_pointer_property_for_gl_enum(const GLenum&                      in_enum);
+        GLenum                      get_gl_enum_for_buffer_pointer_property(const VKGL::BufferPointerProperty& in_property);
+
+        VKGL::BufferProperty get_buffer_property_for_gl_enum(const GLenum&               in_enum);
+        GLenum               get_gl_enum_for_buffer_property(const VKGL::BufferProperty& in_property);
+
+        VKGL::BufferTarget get_buffer_target_for_gl_enum(const GLenum&             in_enum);
+        GLenum             get_gl_enum_for_buffer_target(const VKGL::BufferTarget& in_target);
+
         VKGL::BufferUsage get_buffer_usage_for_gl_enum(const GLenum&            in_enum);
         GLenum            get_gl_enum_for_buffer_usage(const VKGL::BufferUsage& in_usage);
 
@@ -109,6 +118,15 @@ namespace VKGL
 
         GLenum                          get_gl_enum_for_provoking_vertex_convention(const VKGL::ProvokingVertexConvention& in_convention);
         VKGL::ProvokingVertexConvention get_provoking_vertex_convention_for_gl_enum(const GLenum&                          in_enum);
+
+        GLenum              get_gl_enum_for_query_property(const VKGL::QueryProperty& in_property);
+        VKGL::QueryProperty get_query_property_for_gl_enum(const GLenum&              in_enum);
+
+        GLenum            get_gl_enum_for_query_target(const VKGL::QueryTarget& in_target);
+        VKGL::QueryTarget get_query_target_for_gl_enum(const GLenum&            in_enum);
+
+        GLenum                    get_gl_enum_for_query_target_property(const VKGL::QueryTargetProperty& in_property);
+        VKGL::QueryTargetProperty get_query_target_property_for_gl_enum(const GLenum&                    in_enum);
 
         VKGL::ReadBuffer get_read_buffer_for_gl_enum(const GLenum&           in_enum);
         GLenum           get_gl_enum_for_read_buffer(const VKGL::ReadBuffer& in_read_buffer);

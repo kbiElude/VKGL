@@ -195,6 +195,27 @@ namespace VKGL
         PFNVKGLPOINTPARAMETERIPROC   pGLPointParameteri;
         PFNVKGLPOINTPARAMETERIVPROC  pGLPointParameteriv;
 
+        /* GL 1.5 */
+        PFNVKGLBEGINQUERYPROC           pGLBeginQuery;
+        PFNVKGLBINDBUFFERPROC           pGLBindBuffer;
+        PFNVKGLBUFFERDATAPROC           pGLBufferData;
+        PFNVKGLBUFFERSUBDATAPROC        pGLBufferSubData;
+        PFNVKGLDELETEBUFFERSPROC        pGLDeleteBuffers;
+        PFNVKGLDELETEQUERIESPROC        pGLDeleteQueries;
+        PFNVKGLENDQUERYPROC             pGLEndQuery;
+        PFNVKGLGENBUFFERSPROC           pGLGenBuffers;
+        PFNVKGLGENQUERIESPROC           pGLGenQueries;
+        PFNVKGLGETBUFFERPARAMETERIVPROC pGLGetBufferParameteriv;
+        PFNVKGLGETBUFFERPOINTERVPROC    pGLGetBufferPointerv;
+        PFNVKGLGETBUFFERSUBDATAPROC     pGLGetBufferSubData;
+        PFNVKGLGETQUERYOBJECTIVPROC     pGLGetQueryObjectiv;
+        PFNVKGLGETQUERYOBJECTUIVPROC    pGLGetQueryObjectuiv;
+        PFNVKGLGETQUERYIVPROC           pGLGetQueryiv;
+        PFNVKGLISBUFFERPROC             pGLIsBuffer;
+        PFNVKGLISQUERYPROC              pGLIsQuery;
+        PFNVKGLMAPBUFFERPROC            pGLMapBuffer;
+        PFNVKGLUNMAPBUFFERPROC          pGLUnmapBuffer;
+
         DispatchTable();
     };
 

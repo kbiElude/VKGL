@@ -48,6 +48,38 @@ namespace VKGL
         Unknown
     };
 
+    enum class BufferPointerProperty
+    {
+        Buffer_Map_Pointer,
+
+        Unknown
+    };
+
+    enum class BufferProperty
+    {
+        Buffer_Access,
+        Buffer_Mapped,
+        Buffer_Size,
+        Buffer_Usage,
+
+        Unknown
+    };
+
+    enum class BufferTarget
+    {
+        Array_Buffer,
+        Copy_Read_Buffer,
+        Copy_Write_Buffer,
+        Element_Array_Buffer,
+        Pixel_Pack_Buffer,
+        Pixel_Unpack_Buffer,
+        Texture_Buffer,
+        Transform_Feedback_Buffer,
+        Uniform_Buffer,
+
+        Unknown
+    };
+
     enum class BufferUsage
     {
         Dynamic_Copy,
@@ -446,6 +478,7 @@ namespace VKGL
         StencilFunctionVKGL,
         StencilOperationVKGL,
         String,
+        Unsigned_Int,
 
         Unknown,
     };
@@ -682,6 +715,31 @@ namespace VKGL
         Fill,
         Line,
         Point,
+
+        Unknown
+    };
+
+    enum class QueryProperty
+    {
+        Query_Result,
+        Query_Result_Available,
+
+        Unknown
+    };
+
+    enum class QueryTarget
+    {
+        Primitives_Generated,
+        Samples_Passed,
+        Transform_Feedback_Primitives_Written,
+
+        Unknown
+    };
+
+    enum class QueryTargetProperty
+    {
+        Current_Query,
+        Query_Counter_Bits,
 
         Unknown
     };

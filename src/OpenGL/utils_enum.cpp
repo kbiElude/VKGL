@@ -75,6 +75,68 @@ VKGL::BufferAccess VKGL::Utils::get_buffer_access_for_gl_enum(const GLenum& in_e
     return result;
 }
 
+VKGL::BufferPointerProperty VKGL::Utils::get_buffer_pointer_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::BufferPointerProperty result = VKGL::BufferPointerProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_BUFFER_MAP_POINTER: result = VKGL::BufferPointerProperty::Buffer_Map_Pointer; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::BufferProperty VKGL::Utils::get_buffer_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::BufferProperty result = VKGL::BufferProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_BUFFER_ACCESS: result = VKGL::BufferProperty::Buffer_Access; break;
+        case GL_BUFFER_MAPPED: result = VKGL::BufferProperty::Buffer_Mapped; break;
+        case GL_BUFFER_SIZE:   result = VKGL::BufferProperty::Buffer_Size;   break;
+        case GL_BUFFER_USAGE:  result = VKGL::BufferProperty::Buffer_Usage;  break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::BufferTarget VKGL::Utils::get_buffer_target_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::BufferTarget result = VKGL::BufferTarget::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_ARRAY_BUFFER:              result = VKGL::BufferTarget::Array_Buffer;              break;
+        case GL_COPY_READ_BUFFER:          result = VKGL::BufferTarget::Copy_Read_Buffer;          break;
+        case GL_COPY_WRITE_BUFFER:         result = VKGL::BufferTarget::Copy_Write_Buffer;         break;
+        case GL_ELEMENT_ARRAY_BUFFER:      result = VKGL::BufferTarget::Element_Array_Buffer;      break;
+        case GL_PIXEL_PACK_BUFFER:         result = VKGL::BufferTarget::Pixel_Pack_Buffer;         break;
+        case GL_PIXEL_UNPACK_BUFFER:       result = VKGL::BufferTarget::Pixel_Unpack_Buffer;       break;
+        case GL_TEXTURE_BUFFER:            result = VKGL::BufferTarget::Texture_Buffer;            break;
+        case GL_TRANSFORM_FEEDBACK_BUFFER: result = VKGL::BufferTarget::Transform_Feedback_Buffer; break;
+        case GL_UNIFORM_BUFFER:            result = VKGL::BufferTarget::Uniform_Buffer;            break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::BufferUsage VKGL::Utils::get_buffer_usage_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::BufferUsage result = VKGL::BufferUsage::Unknown;
@@ -797,6 +859,43 @@ VKGL::GeometryOutputType VKGL::Utils::get_geometry_output_type_for_gl_enum(const
     return result;
 }
 
+GLenum VKGL::Utils::get_gl_enum_for_buffer_pointer_property(const VKGL::BufferPointerProperty& in_property)
+{
+    GLenum result = 0;
+
+    switch (in_property)
+    {
+        case VKGL::BufferPointerProperty::Buffer_Map_Pointer: result = GL_BUFFER_MAP_POINTER; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_buffer_property(const VKGL::BufferProperty& in_property)
+{
+    GLenum result = 0;
+
+    switch (in_property)
+    {
+        case VKGL::BufferProperty::Buffer_Access: result = GL_BUFFER_ACCESS; break;
+        case VKGL::BufferProperty::Buffer_Mapped: result = GL_BUFFER_MAPPED; break;
+        case VKGL::BufferProperty::Buffer_Size:   result = GL_BUFFER_SIZE;   break;
+        case VKGL::BufferProperty::Buffer_Usage:  result = GL_BUFFER_USAGE;  break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 GLenum VKGL::Utils::get_gl_enum_for_geometry_input_type(const VKGL::GeometryInputType& in_type)
 {
     GLenum result = 0;
@@ -898,6 +997,31 @@ GLenum VKGL::Utils::get_gl_enum_for_buffer_access(const VKGL::BufferAccess& in_a
         case VKGL::BufferAccess::Read_Only:  result = GL_READ_ONLY;  break;
         case VKGL::BufferAccess::Read_Write: result = GL_READ_WRITE; break;
         case VKGL::BufferAccess::Write_Only: result = GL_WRITE_ONLY; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_buffer_target(const VKGL::BufferTarget& in_target)
+{
+    GLenum result = 0;
+
+    switch (in_target)
+    {
+        case VKGL::BufferTarget::Array_Buffer:              result = GL_ARRAY_BUFFER;              break;
+        case VKGL::BufferTarget::Copy_Read_Buffer:          result = GL_COPY_READ_BUFFER;          break;
+        case VKGL::BufferTarget::Copy_Write_Buffer:         result = GL_COPY_WRITE_BUFFER;         break;
+        case VKGL::BufferTarget::Element_Array_Buffer:      result = GL_ELEMENT_ARRAY_BUFFER;      break;
+        case VKGL::BufferTarget::Pixel_Pack_Buffer:         result = GL_PIXEL_PACK_BUFFER;         break;
+        case VKGL::BufferTarget::Pixel_Unpack_Buffer:       result = GL_PIXEL_UNPACK_BUFFER;       break;
+        case VKGL::BufferTarget::Texture_Buffer:            result = GL_TEXTURE_BUFFER;            break;
+        case VKGL::BufferTarget::Transform_Feedback_Buffer: result = GL_TRANSFORM_FEEDBACK_BUFFER; break;
+        case VKGL::BufferTarget::Uniform_Buffer:            result = GL_UNIFORM_BUFFER;            break;
 
         default:
         {
@@ -1577,6 +1701,61 @@ GLenum VKGL::Utils::get_gl_enum_for_provoking_vertex_convention(const VKGL::Prov
     {
         case VKGL::ProvokingVertexConvention::First: result = GL_FIRST_VERTEX_CONVENTION; break;
         case VKGL::ProvokingVertexConvention::Last:  result = GL_LAST_VERTEX_CONVENTION;  break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_query_property(const VKGL::QueryProperty& in_property)
+{
+    GLenum result = 0;
+
+    switch (in_property)
+    {
+        case VKGL::QueryProperty::Query_Result:           result = GL_QUERY_RESULT;           break;
+        case VKGL::QueryProperty::Query_Result_Available: result = GL_QUERY_RESULT_AVAILABLE; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_query_target(const VKGL::QueryTarget& in_target)
+{
+    GLenum result = 0;
+
+    switch (in_target)
+    {
+        case VKGL::QueryTarget::Primitives_Generated:                  result = GL_PRIMITIVES_GENERATED;                  break;
+        case VKGL::QueryTarget::Samples_Passed:                        result = GL_SAMPLES_PASSED;                        break;
+        case VKGL::QueryTarget::Transform_Feedback_Primitives_Written: result = GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_query_target_property(const VKGL::QueryTargetProperty& in_property)
+{
+    GLenum result = 0;
+
+    switch (in_property)
+    {
+        case VKGL::QueryTargetProperty::Current_Query:      result = GL_CURRENT_QUERY;      break;
+        case VKGL::QueryTargetProperty::Query_Counter_Bits: result = GL_QUERY_COUNTER_BITS; break;
 
         default:
         {
@@ -2479,6 +2658,61 @@ VKGL::ProvokingVertexConvention VKGL::Utils::get_provoking_vertex_convention_for
     {
         case GL_FIRST_VERTEX_CONVENTION: result = VKGL::ProvokingVertexConvention::First; break;
         case GL_LAST_VERTEX_CONVENTION:  result = VKGL::ProvokingVertexConvention::Last;  break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::QueryProperty VKGL::Utils::get_query_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::QueryProperty result = VKGL::QueryProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_QUERY_RESULT:           result = VKGL::QueryProperty::Query_Result;           break;
+        case GL_QUERY_RESULT_AVAILABLE: result = VKGL::QueryProperty::Query_Result_Available; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::QueryTarget VKGL::Utils::get_query_target_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::QueryTarget result = VKGL::QueryTarget::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_PRIMITIVES_GENERATED:                  result = VKGL::QueryTarget::Primitives_Generated;                  break;
+        case GL_SAMPLES_PASSED:                        result = VKGL::QueryTarget::Samples_Passed;                        break;
+        case GL_TRANSFORM_FEEDBACK_PRIMITIVES_WRITTEN: result = VKGL::QueryTarget::Transform_Feedback_Primitives_Written; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::QueryTargetProperty VKGL::Utils::get_query_target_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::QueryTargetProperty result = VKGL::QueryTargetProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_CURRENT_QUERY:      result = VKGL::QueryTargetProperty::Current_Query;      break;
+        case GL_QUERY_COUNTER_BITS: result = VKGL::QueryTargetProperty::Query_Counter_Bits; break;
 
         default:
         {

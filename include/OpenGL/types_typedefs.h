@@ -103,6 +103,28 @@ namespace VKGL
     typedef void (*PFNVKGLPOINTPARAMETERIPROC)  (VKGL::Context* in_context_ptr, const GLenum& pname, const GLint&  param);
     typedef void (*PFNVKGLPOINTPARAMETERIVPROC) (VKGL::Context* in_context_ptr, const GLenum& pname, const GLint* params);
 
+    /* VKGL GL entrypoints: GL 1.5 */
+    typedef void      (*PFNVKGLBEGINQUERYPROC)          (VKGL::Context* in_context_ptr, GLenum target, GLuint id);
+    typedef void      (*PFNVKGLBINDBUFFERPROC)          (VKGL::Context* in_context_ptr, GLenum target, GLuint buffer);
+    typedef void      (*PFNVKGLBUFFERDATAPROC)          (VKGL::Context* in_context_ptr, GLenum target, GLsizeiptr size, const void* data, GLenum usage);
+    typedef void      (*PFNVKGLBUFFERSUBDATAPROC)       (VKGL::Context* in_context_ptr, GLenum target, GLintptr offset, GLsizeiptr size, const void* data);
+    typedef void      (*PFNVKGLDELETEBUFFERSPROC)       (VKGL::Context* in_context_ptr, GLsizei n, const GLuint* buffers);
+    typedef void      (*PFNVKGLDELETEQUERIESPROC)       (VKGL::Context* in_context_ptr, GLsizei n, const GLuint* ids);
+    typedef void      (*PFNVKGLENDQUERYPROC)            (VKGL::Context* in_context_ptr, GLenum target);
+    typedef void      (*PFNVKGLGENBUFFERSPROC)          (VKGL::Context* in_context_ptr, GLsizei n, GLuint* buffers);
+    typedef void      (*PFNVKGLGENQUERIESPROC)          (VKGL::Context* in_context_ptr, GLsizei n, GLuint* ids);
+    typedef void      (*PFNVKGLGETBUFFERPARAMETERIVPROC)(VKGL::Context* in_context_ptr, GLenum target, GLenum pname, GLint* params);
+    typedef void      (*PFNVKGLGETBUFFERPOINTERVPROC)   (VKGL::Context* in_context_ptr, GLenum target, GLenum pname, void** params);
+    typedef void      (*PFNVKGLGETBUFFERSUBDATAPROC)    (VKGL::Context* in_context_ptr, GLenum target, GLintptr offset, GLsizeiptr size, void* data);
+    typedef void      (*PFNVKGLGETQUERYOBJECTIVPROC)    (VKGL::Context* in_context_ptr, GLuint id, GLenum pname, GLint* params);
+    typedef void      (*PFNVKGLGETQUERYOBJECTUIVPROC)   (VKGL::Context* in_context_ptr, GLuint id, GLenum pname, GLuint* params);
+    typedef void      (*PFNVKGLGETQUERYIVPROC)          (VKGL::Context* in_context_ptr, GLenum target, GLenum pname, GLint* params);
+    typedef GLboolean (*PFNVKGLISBUFFERPROC)            (VKGL::Context* in_context_ptr, GLuint buffer);
+    typedef GLboolean (*PFNVKGLISQUERYPROC)             (VKGL::Context* in_context_ptr, GLuint id);
+    typedef void*     (*PFNVKGLMAPBUFFERPROC)           (VKGL::Context* in_context_ptr, GLenum target, GLenum access);
+    typedef GLboolean (*PFNVKGLUNMAPBUFFERPROC)         (VKGL::Context* in_context_ptr, GLenum target);
+
+
 }
 
 #endif /* VKGL_TYPES_TYPEDEFS_H */
