@@ -28,14 +28,14 @@ namespace VKGL
         void gen_queries (const uint32_t& in_n,
                           uint32_t*       out_ids_ptr);
         void gen_textures(const GLsizei&  in_n,
-                          GLuint*         in_textures);
+                          GLuint*         out_ids_ptr);
 
         void delete_buffers (const GLsizei&  in_n,
                              const uint32_t* in_ids_ptr);
         void delete_queries (const GLsizei&  in_n,
                              const uint32_t* in_ids_ptr);
         void delete_textures(const GLsizei&  in_n,
-                             const GLuint*   in_textures);
+                             const GLuint*   in_ids_ptr);
 
         void get_buffer_property(const VKGL::BufferTarget&          in_target,
                                  const VKGL::BufferProperty&        in_pname,

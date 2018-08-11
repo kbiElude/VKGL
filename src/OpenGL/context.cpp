@@ -16,6 +16,24 @@ VKGL::Context::~Context()
     /* Stub */
 }
 
+void VKGL::Context::begin_query(const VKGL::QueryTarget& in_target,
+                                const uint32_t&          in_id)
+{
+    vkgl_assert(m_gl_query_manager_ptr != nullptr);
+
+    m_gl_query_manager_ptr->begin_query(in_target,
+                                        in_id);
+}
+
+void VKGL::Context::bind_buffer(const VKGL::BufferTarget& in_target,
+                                const uint32_t&           in_id)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+
+    m_gl_state_manager_ptr->set_buffer_binding(in_target,
+                                               in_id);
+}
+
 void VKGL::Context::bind_texture(const VKGL::TextureTarget& in_target,
                                  const GLuint&              in_texture)
 {
@@ -24,6 +42,40 @@ void VKGL::Context::bind_texture(const VKGL::TextureTarget& in_target,
     m_gl_state_manager_ptr->set_texture_binding(m_gl_state_manager_ptr->get_state()->active_texture_unit,
                                                 in_target,
                                                 in_texture);
+}
+
+void VKGL::Context::buffer_data(const VKGL::BufferTarget& in_target,
+                                const GLsizeiptr&         in_size,
+                                const void*               in_data_ptr,
+                                const VKGL::BufferUsage&  in_usage)
+{
+    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr  != nullptr);
+
+    const auto buffer_id = m_gl_state_manager_ptr->get_buffer_binding(in_target);
+    vkgl_assert(buffer_id != 0);
+
+    m_gl_buffer_manager_ptr->buffer_data(buffer_id,
+                                         in_size,
+                                         in_data_ptr,
+                                         in_usage);
+}
+
+void VKGL::Context::buffer_sub_data(const VKGL::BufferTarget& in_target,
+                                    const GLintptr&           in_offset,
+                                    const GLsizeiptr&         in_size,
+                                    const void*               in_data_ptr)
+{
+    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr  != nullptr);
+
+    const auto buffer_id = m_gl_state_manager_ptr->get_buffer_binding(in_target);
+    vkgl_assert(buffer_id != 0);
+
+    m_gl_buffer_manager_ptr->buffer_sub_data(buffer_id,
+                                             in_offset,
+                                             in_size,
+                                             in_data_ptr);
 }
 
 void VKGL::Context::clear(const VKGL::ClearBufferBits& in_buffers_to_clear)
@@ -340,15 +392,47 @@ VKGL::ContextUniquePtr VKGL::Context::create()
     return result_ptr;
 }
 
+void VKGL::Context::delete_buffers(const GLsizei&  in_n,
+                                   const uint32_t* in_ids_ptr)
+{
+    bool result;
+
+    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
+
+    result = m_gl_buffer_manager_ptr->delete_ids(in_n,
+                                                 in_ids_ptr);
+
+    if (!result)
+    {
+        vkgl_assert_fail();
+    }
+}
+
+void VKGL::Context::delete_queries(const GLsizei&  in_n,
+                                   const uint32_t* in_ids_ptr)
+{
+    bool result;
+
+    vkgl_assert(m_gl_query_manager_ptr != nullptr);
+
+    result = m_gl_query_manager_ptr->delete_ids(in_n,
+                                                in_ids_ptr);
+
+    if (!result)
+    {
+        vkgl_assert_fail();
+    }
+}
+
 void VKGL::Context::delete_textures(const GLsizei& in_n,
-                                    const GLuint*  in_textures)
+                                    const GLuint*  in_ids_ptr)
 {
     bool result;
 
     vkgl_assert(m_gl_texture_manager_ptr != nullptr);
 
     result = m_gl_texture_manager_ptr->delete_ids(in_n,
-                                                  in_textures);
+                                                  in_ids_ptr);
 
     if (!result)
     {
@@ -411,6 +495,17 @@ void VKGL::Context::enable(const VKGL::Capability& in_capability)
     m_gl_state_manager_ptr->enable(in_capability);
 }
 
+void VKGL::Context::end_query(const VKGL::QueryTarget& in_target)
+{
+    vkgl_assert(m_gl_query_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+
+    const auto query_id = m_gl_state_manager_ptr->get_query_binding(in_target);
+    vkgl_assert(query_id != 0);
+
+    m_gl_query_manager_ptr->end_query(query_id);
+}
+
 void VKGL::Context::finish()
 {
     vkgl_assert(m_scheduler_ptr != nullptr);
@@ -425,8 +520,32 @@ void VKGL::Context::flush()
     m_scheduler_ptr->flush();
 }
 
+void VKGL::Context::gen_buffers(const uint32_t& in_n,
+                                uint32_t*       out_ids_ptr)
+{
+    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
+
+    if (!m_gl_buffer_manager_ptr->generate_ids(in_n,
+                                               out_ids_ptr) )
+    {
+        vkgl_assert_fail();
+    }
+}
+
+void VKGL::Context::gen_queries(const uint32_t& in_n,
+                                uint32_t*       out_ids_ptr)
+{
+    vkgl_assert(m_gl_query_manager_ptr != nullptr);
+
+    if (!m_gl_query_manager_ptr->generate_ids(in_n,
+                                              out_ids_ptr) )
+    {
+        vkgl_assert_fail();
+    }
+}
+
 void VKGL::Context::gen_textures(const GLsizei& in_n,
-                                 GLuint*        in_textures)
+                                 GLuint*        out_ids_ptr)
 {
     vkgl_assert(m_gl_texture_manager_ptr != nullptr);
 
@@ -435,6 +554,54 @@ void VKGL::Context::gen_textures(const GLsizei& in_n,
     {
         vkgl_assert_fail();
     }
+}
+
+void VKGL::Context::get_buffer_pointerv(const VKGL::BufferTarget&          in_target,
+                                        const VKGL::BufferPointerProperty& in_pname,
+                                        void**                             out_params_ptr)
+{
+    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr  != nullptr);
+
+    const auto buffer_id = m_gl_state_manager_ptr->get_buffer_binding(in_target);
+
+    m_gl_buffer_manager_ptr->get_buffer_pointerv(buffer_id,
+                                                 in_pname,
+                                                 out_params_ptr);
+}
+
+void VKGL::Context::get_buffer_property(const VKGL::BufferTarget&       in_target,
+                                        const VKGL::BufferProperty&     in_pname,
+                                        const VKGL::GetSetArgumentType& in_arg_type,
+                                        const uint32_t&                 in_n_args,
+                                        void*                           out_result_ptr)
+{
+    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr  != nullptr);
+
+    const auto buffer_id = m_gl_state_manager_ptr->get_buffer_binding(in_target);
+
+    m_gl_buffer_manager_ptr->get_buffer_property(buffer_id,
+                                                 in_pname,
+                                                 in_arg_type,
+                                                 in_n_args,
+                                                 out_result_ptr);
+}
+
+void VKGL::Context::get_buffer_sub_data(const VKGL::BufferTarget& in_target,
+                                        const GLintptr&           in_offset,
+                                        const GLsizeiptr&         in_size,
+                                        void*                     out_data_ptr)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+
+    const auto buffer_id = m_gl_state_manager_ptr->get_buffer_binding(in_target);
+    vkgl_assert(buffer_id != 0);
+
+    m_scheduler_ptr->get_buffer_sub_data(buffer_id,
+                                         in_offset,
+                                         in_size,
+                                         out_data_ptr);
 }
 
 void VKGL::Context::get_compressed_tex_image(const VKGL::TextureTarget& in_target,
@@ -501,6 +668,33 @@ void VKGL::Context::get_parameter(const VKGL::ContextProperty&    in_pname,
     {
         vkgl_assert_fail();
     }
+}
+
+void VKGL::Context::get_query_property(const uint32_t&                  in_id,
+                                       const VKGL::QueryProperty&       in_pname,
+                                       const VKGL::GetSetArgumentType&  in_arg_type,
+                                       const uint32_t&                  in_n_args,
+                                       void*                            out_result_ptr)
+{
+    vkgl_assert(m_gl_query_manager_ptr != nullptr);
+
+    m_gl_query_manager_ptr->get_query_property(in_id,
+                                               in_pname,
+                                               in_arg_type,
+                                               in_n_args,
+                                               out_result_ptr);
+
+}
+
+void VKGL::Context::get_query_target_property(const VKGL::QueryTarget&         in_target,
+                                              const VKGL::QueryTargetProperty& in_pname,
+                                              int32_t*                         out_params_ptr)
+{
+    vkgl_assert(m_gl_query_manager_ptr != nullptr);
+
+    m_gl_query_manager_ptr->get_query_target_property(in_target,
+                                                      in_pname,
+                                                      out_params_ptr);
 }
 
 void VKGL::Context::get_texture_image(const VKGL::TextureTarget& in_target,
@@ -620,6 +814,13 @@ end:
     return result;
 }
 
+bool VKGL::Context::is_buffer(const GLuint& in_id)
+{
+    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
+
+    return m_gl_buffer_manager_ptr->is_alive_id(in_id);
+}
+
 bool VKGL::Context::is_enabled(const VKGL::Capability& in_capability) const
 {
     vkgl_assert(m_gl_state_manager_ptr != nullptr);
@@ -627,11 +828,31 @@ bool VKGL::Context::is_enabled(const VKGL::Capability& in_capability) const
     return m_gl_state_manager_ptr->is_enabled(in_capability);
 }
 
+bool VKGL::Context::is_query(const GLuint& in_id)
+{
+    vkgl_assert(m_gl_query_manager_ptr != nullptr);
+
+    return m_gl_query_manager_ptr->is_alive_id(in_id);
+}
+
 bool VKGL::Context::is_texture(const GLuint& in_texture)
 {
     vkgl_assert(m_gl_texture_manager_ptr != nullptr);
 
     return m_gl_texture_manager_ptr->is_alive_id(in_texture);
+}
+
+void* VKGL::Context::map_buffer(const VKGL::BufferTarget& in_target,
+                                const VKGL::BufferAccess& in_access)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_scheduler_ptr        != nullptr);
+
+    const auto buffer_id = m_gl_state_manager_ptr->get_buffer_binding(in_target);
+    vkgl_assert(buffer_id != 0);
+
+    return m_scheduler_ptr->map_buffer(in_target,
+                                       in_access);
 }
 
 void VKGL::Context::multi_draw_arrays(const VKGL::DrawCallMode& in_mode,
@@ -679,15 +900,6 @@ void VKGL::Context::read_pixels(const int32_t&           in_x,
                                  in_format,
                                  in_type,
                                  out_pixels_ptr);
-}
-
-void VKGL::Context::sample_coverage(const GLfloat&   in_value,
-                                    const GLboolean& in_invert)
-{
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
-
-    m_gl_state_manager_ptr->set_sample_coverage(in_value,
-                                                (in_invert == GL_TRUE) );
 }
 
 void VKGL::Context::set_active_texture(const uint32_t& in_n_texture_unit)
@@ -896,6 +1108,15 @@ void VKGL::Context::set_read_buffer(const VKGL::ReadBuffer& in_read_buffer)
     vkgl_assert(m_gl_state_manager_ptr != nullptr);
 
     m_gl_state_manager_ptr->set_read_buffer(in_read_buffer);
+}
+
+void VKGL::Context::set_sample_coverage(const GLfloat&   in_value,
+                                        const GLboolean& in_invert)
+{
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+
+    m_gl_state_manager_ptr->set_sample_coverage(in_value,
+                                                (in_invert == GL_TRUE) );
 }
 
 void VKGL::Context::set_scissor(const int32_t& in_x,
@@ -1144,4 +1365,15 @@ void VKGL::Context::tex_sub_image_3d(const VKGL::TextureTarget& in_target,
                                       in_format,
                                       in_type,
                                       in_pixels);
+}
+
+bool VKGL::Context::unmap_buffer(const VKGL::BufferTarget& in_target)
+{
+    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr  != nullptr);
+
+    const auto buffer_id = m_gl_state_manager_ptr->get_buffer_binding(in_target);
+    vkgl_assert(buffer_id != 0);
+
+    return m_scheduler_ptr->unmap_buffer(buffer_id);
 }
