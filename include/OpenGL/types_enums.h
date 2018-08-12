@@ -719,6 +719,29 @@ namespace VKGL
         Unknown
     };
 
+    enum class ProgramProperty
+    {
+        Active_Attribute_Max_Length,
+        Active_Attributes,
+        Active_Uniform_Block_Max_Name_Length,
+        Active_Uniform_Blocks,
+        Active_Uniform_Max_Length,
+        Active_Uniforms,
+        Attached_Shaders,
+        Delete_Status,
+        Geometry_Input_Type,
+        Geometry_Output_Type,
+        Geometry_Vertices_Out,
+        Info_Log_Length,
+        Link_Status,
+        Transform_Feedback_Buffer_Mode,
+        Transform_Feedback_Varying_Max_Length,
+        Transform_Feedback_Varyings,
+        Validate_Status,
+
+        Unknown
+    };
+
     enum class QueryProperty
     {
         Query_Result,
@@ -782,6 +805,17 @@ namespace VKGL
     {
         First,
         Last,
+
+        Unknown
+    };
+
+    enum class ShaderProperty
+    {
+        Compile_Status,
+        Delete_Status,
+        Info_Log_Length,
+        Shader_Source_Length,
+        Shader_Type,
 
         Unknown
     };
@@ -1065,6 +1099,13 @@ namespace VKGL
         Unsigned_Byte,
         Unsigned_Int,
         Unsigned_Short,
+
+        Unknown
+    };
+
+    enum class VertexAttributePointerProperty
+    {
+        Vertex_Attribute_Array_Pointer,
 
         Unknown
     };

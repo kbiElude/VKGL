@@ -2,6 +2,10 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+ /* VKGL (c) 2018 Dominik Witczak
+ *
+ * This code is licensed under MIT license (see LICENSE.txt for details)
+ */
 #include "OpenGL/entrypoints/GL1.4/gl_blend_func_separate.h"
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"

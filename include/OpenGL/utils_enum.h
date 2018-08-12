@@ -116,6 +116,9 @@ namespace VKGL
         GLenum            get_gl_enum_for_polygon_mode(const VKGL::PolygonMode& in_polygon_mode);
         VKGL::PolygonMode get_polygon_mode_for_gl_enum(const GLenum&            in_enum);
 
+        GLenum                get_gl_enum_for_program_property(const VKGL::ProgramProperty& in_pname);
+        VKGL::ProgramProperty get_program_property_for_gl_enum(const GLenum&                in_enum);
+
         GLenum                          get_gl_enum_for_provoking_vertex_convention(const VKGL::ProvokingVertexConvention& in_convention);
         VKGL::ProvokingVertexConvention get_provoking_vertex_convention_for_gl_enum(const GLenum&                          in_enum);
 
@@ -130,6 +133,9 @@ namespace VKGL
 
         VKGL::ReadBuffer get_read_buffer_for_gl_enum(const GLenum&           in_enum);
         GLenum           get_gl_enum_for_read_buffer(const VKGL::ReadBuffer& in_read_buffer);
+
+        GLenum               get_gl_enum_for_shader_property(const VKGL::ShaderProperty& in_pname);
+        VKGL::ShaderProperty get_shader_property_for_gl_enum(const GLenum&               in_enum);
 
         GLenum           get_gl_enum_for_shader_type(const VKGL::ShaderType& in_shader_type);
         VKGL::ShaderType get_shader_type_for_gl_enum(const GLenum&           in_enum);
@@ -178,6 +184,9 @@ namespace VKGL
 
         GLenum             get_gl_enum_for_variable_type(const VariableType& in_type);
         VKGL::VariableType get_variable_type_for_gl_enum(const GLenum&       in_enum);
+
+        GLenum                               get_gl_enum_for_vertex_attribute_pointer_property(const VKGL::VertexAttributePointerProperty& in_pname);
+        VKGL::VertexAttributePointerProperty get_vertex_attribute_pointer_property_for_gl_enum(const GLenum&                               in_enum);
 
         GLenum                         get_gl_enum_for_vertex_attribute_array_type(const VKGL::VertexAttributeArrayType& in_type);
         VKGL::VertexAttributeArrayType get_vertex_attribute_array_type_for_gl_enum(const GLenum&                         in_enum);

@@ -1693,6 +1693,39 @@ GLenum VKGL::Utils::get_gl_enum_for_point_property(const VKGL::PointProperty& in
     return result;
 }
 
+GLenum VKGL::Utils::get_gl_enum_for_program_property(const VKGL::ProgramProperty& in_pname)
+{
+    GLenum result = 0;
+
+    switch (in_pname)
+    {
+        case VKGL::ProgramProperty::Active_Attributes:                     result = GL_ACTIVE_ATTRIBUTES;                     break;
+        case VKGL::ProgramProperty::Active_Attribute_Max_Length:           result = GL_ACTIVE_ATTRIBUTE_MAX_LENGTH;           break;
+        case VKGL::ProgramProperty::Active_Uniforms:                       result = GL_ACTIVE_UNIFORMS;                       break;
+        case VKGL::ProgramProperty::Active_Uniform_Blocks:                 result = GL_ACTIVE_UNIFORM_BLOCKS;                 break;
+        case VKGL::ProgramProperty::Active_Uniform_Block_Max_Name_Length:  result = GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH;  break;
+        case VKGL::ProgramProperty::Active_Uniform_Max_Length:             result = GL_ACTIVE_UNIFORM_MAX_LENGTH;             break;
+        case VKGL::ProgramProperty::Attached_Shaders:                      result = GL_ATTACHED_SHADERS;                      break;
+        case VKGL::ProgramProperty::Delete_Status:                         result = GL_DELETE_STATUS;                         break;
+        case VKGL::ProgramProperty::Geometry_Input_Type:                   result = GL_GEOMETRY_INPUT_TYPE;                   break;
+        case VKGL::ProgramProperty::Geometry_Output_Type:                  result = GL_GEOMETRY_OUTPUT_TYPE;                  break;
+        case VKGL::ProgramProperty::Geometry_Vertices_Out:                 result = GL_GEOMETRY_VERTICES_OUT;                 break;
+        case VKGL::ProgramProperty::Info_Log_Length:                       result = GL_INFO_LOG_LENGTH;                       break;
+        case VKGL::ProgramProperty::Link_Status:                           result = GL_LINK_STATUS;                           break;
+        case VKGL::ProgramProperty::Transform_Feedback_Buffer_Mode:        result = GL_TRANSFORM_FEEDBACK_BUFFER_MODE;        break;
+        case VKGL::ProgramProperty::Transform_Feedback_Varyings:           result = GL_TRANSFORM_FEEDBACK_VARYINGS;           break;
+        case VKGL::ProgramProperty::Transform_Feedback_Varying_Max_Length: result = GL_TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH; break;
+        case VKGL::ProgramProperty::Validate_Status:                       result = GL_VALIDATE_STATUS;                       break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 GLenum VKGL::Utils::get_gl_enum_for_provoking_vertex_convention(const VKGL::ProvokingVertexConvention& in_convention)
 {
     GLenum result = 0;
@@ -1789,6 +1822,27 @@ GLenum VKGL::Utils::get_gl_enum_for_read_buffer(const VKGL::ReadBuffer& in_read_
         case VKGL::ReadBuffer::Front_Right:       result = GL_FRONT_RIGHT;       break;
         case VKGL::ReadBuffer::Left:              result = GL_LEFT;              break;
         case VKGL::ReadBuffer::Right:             result = GL_RIGHT;             break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_shader_property(const VKGL::ShaderProperty& in_pname)
+{
+    GLenum result = 0;
+
+    switch (in_pname)
+    {
+        case VKGL::ShaderProperty::Compile_Status:       result = GL_COMPILE_STATUS;       break;
+        case VKGL::ShaderProperty::Delete_Status:        result = GL_DELETE_STATUS;        break;
+        case VKGL::ShaderProperty::Info_Log_Length:      result = GL_INFO_LOG_LENGTH;      break;
+        case VKGL::ShaderProperty::Shader_Source_Length: result = GL_SHADER_SOURCE_LENGTH; break;
+        case VKGL::ShaderProperty::Shader_Type:          result = GL_SHADER_TYPE;          break;
 
         default:
         {
@@ -2200,6 +2254,23 @@ GLenum VKGL::Utils::get_gl_enum_for_variable_type(const VariableType& in_type)
         case VKGL::VariableType::Vec2:                 result = GL_FLOAT_VEC2;                                break;
         case VKGL::VariableType::Vec3:                 result = GL_FLOAT_VEC3;                                break;
         case VKGL::VariableType::Vec4:                 result = GL_FLOAT_VEC4;                                break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_vertex_attribute_pointer_property(const VKGL::VertexAttributePointerProperty& in_pname)
+{
+    GLenum result = 0;
+
+    switch (in_pname)
+    {
+        case VKGL::VertexAttributePointerProperty::Vertex_Attribute_Array_Pointer: result = GL_VERTEX_ATTRIB_ARRAY_POINTER; break;
 
         default:
         {
@@ -2650,6 +2721,39 @@ VKGL::PolygonMode VKGL::Utils::get_polygon_mode_for_gl_enum(const GLenum& in_enu
     return result;
 }
 
+VKGL::ProgramProperty VKGL::Utils::get_program_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::ProgramProperty result = VKGL::ProgramProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_ACTIVE_ATTRIBUTES:                     result = VKGL::ProgramProperty::Active_Attributes;                     break;
+        case GL_ACTIVE_ATTRIBUTE_MAX_LENGTH:           result = VKGL::ProgramProperty::Active_Attribute_Max_Length;           break;
+        case GL_ACTIVE_UNIFORMS:                       result = VKGL::ProgramProperty::Active_Uniforms;                       break;
+        case GL_ACTIVE_UNIFORM_BLOCKS:                 result = VKGL::ProgramProperty::Active_Uniform_Blocks;                 break;
+        case GL_ACTIVE_UNIFORM_BLOCK_MAX_NAME_LENGTH:  result = VKGL::ProgramProperty::Active_Uniform_Block_Max_Name_Length;  break;
+        case GL_ACTIVE_UNIFORM_MAX_LENGTH:             result = VKGL::ProgramProperty::Active_Uniform_Max_Length;             break;
+        case GL_ATTACHED_SHADERS:                      result = VKGL::ProgramProperty::Attached_Shaders;                      break;
+        case GL_DELETE_STATUS:                         result = VKGL::ProgramProperty::Delete_Status;                         break;
+        case GL_GEOMETRY_INPUT_TYPE:                   result = VKGL::ProgramProperty::Geometry_Input_Type;                   break;
+        case GL_GEOMETRY_OUTPUT_TYPE:                  result = VKGL::ProgramProperty::Geometry_Output_Type;                  break;
+        case GL_GEOMETRY_VERTICES_OUT:                 result = VKGL::ProgramProperty::Geometry_Vertices_Out;                 break;
+        case GL_INFO_LOG_LENGTH:                       result = VKGL::ProgramProperty::Info_Log_Length;                       break;
+        case GL_LINK_STATUS:                           result = VKGL::ProgramProperty::Link_Status;                           break;
+        case GL_TRANSFORM_FEEDBACK_BUFFER_MODE:        result = VKGL::ProgramProperty::Transform_Feedback_Buffer_Mode;        break;
+        case GL_TRANSFORM_FEEDBACK_VARYINGS:           result = VKGL::ProgramProperty::Transform_Feedback_Varyings;           break;
+        case GL_TRANSFORM_FEEDBACK_VARYING_MAX_LENGTH: result = VKGL::ProgramProperty::Transform_Feedback_Varying_Max_Length; break;
+        case GL_VALIDATE_STATUS:                       result = VKGL::ProgramProperty::Validate_Status;                       break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::ProvokingVertexConvention VKGL::Utils::get_provoking_vertex_convention_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::ProvokingVertexConvention result = VKGL::ProvokingVertexConvention::Unknown;
@@ -2746,6 +2850,27 @@ VKGL::ReadBuffer VKGL::Utils::get_read_buffer_for_gl_enum(const GLenum& in_enum)
         case GL_FRONT_RIGHT:       result = VKGL::ReadBuffer::Front_Right;       break;
         case GL_LEFT:              result = VKGL::ReadBuffer::Left;              break;
         case GL_RIGHT:             result = VKGL::ReadBuffer::Right;             break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::ShaderProperty VKGL::Utils::get_shader_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::ShaderProperty result = VKGL::ShaderProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_COMPILE_STATUS:       result = VKGL::ShaderProperty::Compile_Status;       break;
+        case GL_DELETE_STATUS:        result = VKGL::ShaderProperty::Delete_Status;        break;
+        case GL_INFO_LOG_LENGTH:      result = VKGL::ShaderProperty::Info_Log_Length;      break;
+        case GL_SHADER_SOURCE_LENGTH: result = VKGL::ShaderProperty::Shader_Source_Length; break;
+        case GL_SHADER_TYPE:          result = VKGL::ShaderProperty::Shader_Type;          break;
 
         default:
         {
@@ -3178,6 +3303,23 @@ VKGL::TransformFeedbackBufferMode VKGL::Utils::get_transform_feedback_buffer_mod
     {
         case GL_INTERLEAVED_ATTRIBS: result = VKGL::TransformFeedbackBufferMode::Interleaved_Attribs; break;
         case GL_SEPARATE_ATTRIBS:    result = VKGL::TransformFeedbackBufferMode::Separate_Attribs;    break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::VertexAttributePointerProperty VKGL::Utils::get_vertex_attribute_pointer_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::VertexAttributePointerProperty result = VKGL::VertexAttributePointerProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_VERTEX_ATTRIB_ARRAY_POINTER: result = VKGL::VertexAttributePointerProperty::Vertex_Attribute_Array_Pointer; break;
 
         default:
         {
