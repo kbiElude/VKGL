@@ -466,6 +466,7 @@ namespace VKGL
         BlendFunctionVKGL,
         Boolean,
         BooleanFromInt32_Bit0,
+        Byte,
         CullFaceVKGL,
         DepthFunctionVKGL,
         Double,
@@ -475,10 +476,13 @@ namespace VKGL
         LogicOpModeVKGL,
         PointSpriteCoordOriginVKGL,
         ProvokingVertexConventionVKGL,
+        Short,
         StencilFunctionVKGL,
         StencilOperationVKGL,
         String,
+        Unsigned_Byte,
         Unsigned_Int,
+        Unsigned_Short,
 
         Unknown,
     };
@@ -834,6 +838,15 @@ namespace VKGL
         Unknown
     };
 
+    enum class StencilStateFace
+    {
+        Back,
+        Front,
+        Front_And_Back,
+
+        Unknown
+    };
+
     enum class StencilOperation
     {
         Decr,
@@ -1106,6 +1119,21 @@ namespace VKGL
     enum class VertexAttributePointerProperty
     {
         Vertex_Attribute_Array_Pointer,
+
+        Unknown
+    };
+
+    enum class VertexAttributeProperty
+    {
+        Array_Size,
+        Array_Type,
+        Buffer_Binding,
+        Current_Vertex_Attribute,
+        Divisor,
+        Enabled,
+        Integer,
+        Stride,
+        Normalized,
 
         Unknown
     };

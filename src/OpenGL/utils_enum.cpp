@@ -1920,6 +1920,25 @@ GLenum VKGL::Utils::get_gl_enum_for_stencil_operation(const VKGL::StencilOperati
     return result;
 }
 
+GLenum VKGL::Utils::get_gl_enum_for_stencil_state_face(const VKGL::StencilStateFace& in_face)
+{
+    GLenum result = 0;
+
+    switch (in_face)
+    {
+        case VKGL::StencilStateFace::Back:           result = GL_BACK;           break;
+        case VKGL::StencilStateFace::Front:          result = GL_FRONT;          break;
+        case VKGL::StencilStateFace::Front_And_Back: result = GL_FRONT_AND_BACK; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 GLenum VKGL::Utils::get_gl_enum_for_texture_compare_function(const VKGL::TextureCompareFunction& in_compare_function)
 {
     GLenum result = 0;
@@ -2295,6 +2314,31 @@ GLenum VKGL::Utils::get_gl_enum_for_vertex_attribute_array_type(const VKGL::Vert
         case VKGL::VertexAttributeArrayType::Unsigned_Byte:  result = GL_UNSIGNED_BYTE;  break;
         case VKGL::VertexAttributeArrayType::Unsigned_Int:   result = GL_UNSIGNED_INT;   break;
         case VKGL::VertexAttributeArrayType::Unsigned_Short: result = GL_UNSIGNED_SHORT; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_vertex_attribute_property(const VKGL::VertexAttributeProperty& in_property)
+{
+    GLenum result = 0;
+
+    switch (in_property)
+    {
+        case VKGL::VertexAttributeProperty::Array_Size:               result = GL_VERTEX_ATTRIB_ARRAY_SIZE;           break;
+        case VKGL::VertexAttributeProperty::Array_Type:               result = GL_VERTEX_ATTRIB_ARRAY_TYPE;           break;
+        case VKGL::VertexAttributeProperty::Buffer_Binding:           result = GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING; break;
+        case VKGL::VertexAttributeProperty::Current_Vertex_Attribute: result = GL_CURRENT_VERTEX_ATTRIB;              break;
+        case VKGL::VertexAttributeProperty::Divisor:                  result = GL_VERTEX_ATTRIB_ARRAY_DIVISOR;        break;
+        case VKGL::VertexAttributeProperty::Enabled:                  result = GL_VERTEX_ATTRIB_ARRAY_ENABLED;        break;
+        case VKGL::VertexAttributeProperty::Integer:                  result = GL_VERTEX_ATTRIB_ARRAY_INTEGER;        break;
+        case VKGL::VertexAttributeProperty::Normalized:               result = GL_VERTEX_ATTRIB_ARRAY_NORMALIZED;     break;
+        case VKGL::VertexAttributeProperty::Stride:                   result = GL_VERTEX_ATTRIB_ARRAY_STRIDE;         break;
 
         default:
         {
@@ -2948,6 +2992,25 @@ VKGL::StencilOperation VKGL::Utils::get_stencil_operation_for_gl_enum(const GLen
     return result;
 }
 
+VKGL::StencilStateFace VKGL::Utils::get_stencil_state_face_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::StencilStateFace result = VKGL::StencilStateFace::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_BACK:           result = VKGL::StencilStateFace::Back;           break;
+        case GL_FRONT:          result = VKGL::StencilStateFace::Front;          break;
+        case GL_FRONT_AND_BACK: result = VKGL::StencilStateFace::Front_And_Back; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::TextureBindingProperty VKGL::Utils::get_texture_binding_property_for_context_property(const VKGL::ContextProperty& in_pname)
 {
     VKGL::TextureBindingProperty result = VKGL::TextureBindingProperty::Unknown;
@@ -3344,6 +3407,31 @@ VKGL::VertexAttributeArrayType VKGL::Utils::get_vertex_attribute_array_type_for_
         case GL_UNSIGNED_BYTE:  result = VKGL::VertexAttributeArrayType::Unsigned_Byte;  break;
         case GL_UNSIGNED_INT:   result = VKGL::VertexAttributeArrayType::Unsigned_Int;   break;
         case GL_UNSIGNED_SHORT: result = VKGL::VertexAttributeArrayType::Unsigned_Short; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::VertexAttributeProperty VKGL::Utils::get_vertex_attribute_property_for_gl_enum(const GLenum& in_pname)
+{
+    VKGL::VertexAttributeProperty result = VKGL::VertexAttributeProperty::Unknown;
+
+    switch (in_pname)
+    {
+        case GL_VERTEX_ATTRIB_ARRAY_SIZE:           result = VKGL::VertexAttributeProperty::Array_Size:               break;
+        case GL_VERTEX_ATTRIB_ARRAY_TYPE:           result = VKGL::VertexAttributeProperty::Array_Type:               break;
+        case GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING: result = VKGL::VertexAttributeProperty::Buffer_Binding:           break;
+        case GL_CURRENT_VERTEX_ATTRIB:              result = VKGL::VertexAttributeProperty::Current_Vertex_Attribute: break;
+        case GL_VERTEX_ATTRIB_ARRAY_DIVISOR:        result = VKGL::VertexAttributeProperty::Divisor:                  break;
+        case GL_VERTEX_ATTRIB_ARRAY_ENABLED:        result = VKGL::VertexAttributeProperty::Enabled:                  break;
+        case GL_VERTEX_ATTRIB_ARRAY_INTEGER:        result = VKGL::VertexAttributeProperty::Integer:                  break;
+        case GL_VERTEX_ATTRIB_ARRAY_NORMALIZED:     result = VKGL::VertexAttributeProperty::Normalized:               break;
+        case GL_VERTEX_ATTRIB_ARRAY_STRIDE:         result = VKGL::VertexAttributeProperty::Stride:                   break;
 
         default:
         {

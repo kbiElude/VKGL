@@ -3,9 +3,46 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "OpenGL/entrypoints/GL2.0/gl_is_program.h"
+#include "OpenGL/context.h"
+#include "OpenGL/globals.h"
+
+static bool validate(VKGL::Context* in_context_ptr,
+                     const GLuint&  in_program)
+{
+    bool result = false;
+
+    // ..
+
+    result = true;
+    return result;
+}
 
 VKGL_API GLboolean VKGL_APIENTRY glIsProgram(GLuint program)
 {
-    todo
+    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+
+    return dispatch_table_ptr->pGLIsProgram(dispatch_table_ptr->bound_context_ptr,
+                                            program) == GL_TRUE;
+}
+
+bool vkglIsProgram_execute(VKGL::Context* in_context_ptr,
+                           const GLuint&  in_program)
+{
+    return in_context_ptr->is_program(in_program);
+}
+
+bool vkglIsProgram_with_validation(VKGL::Context* in_context_ptr,
+                                   const GLuint&  in_program)
+{
+    bool result = false;
+
+    if (validate(in_context_ptr,
+                 in_program) )
+    {
+        result = vkglIsProgram_execute(in_context_ptr,
+                                       in_program);
+    }
+
+    return result;
 }
 

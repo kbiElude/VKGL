@@ -146,6 +146,9 @@ namespace VKGL
         GLenum                 get_gl_enum_for_stencil_operation(const VKGL::StencilOperation& in_operation);
         VKGL::StencilOperation get_stencil_operation_for_gl_enum(const GLenum&                 in_enum);
 
+        GLenum                 get_gl_enum_for_stencil_state_face(const VKGL::StencilStateFace& in_face);
+        VKGL::StencilStateFace get_stencil_state_face_for_gl_enum(const GLenum&                 in_enum);
+
         VKGL::TextureBindingProperty get_texture_binding_property_for_context_property(const VKGL::ContextProperty& in_pname);
         bool                         is_texture_binding_pname                         (const VKGL::ContextProperty& in_pname);
 
@@ -185,11 +188,14 @@ namespace VKGL
         GLenum             get_gl_enum_for_variable_type(const VariableType& in_type);
         VKGL::VariableType get_variable_type_for_gl_enum(const GLenum&       in_enum);
 
+        GLenum                         get_gl_enum_for_vertex_attribute_array_type(const VKGL::VertexAttributeArrayType& in_type);
+        VKGL::VertexAttributeArrayType get_vertex_attribute_array_type_for_gl_enum(const GLenum&                         in_enum);
+
         GLenum                               get_gl_enum_for_vertex_attribute_pointer_property(const VKGL::VertexAttributePointerProperty& in_pname);
         VKGL::VertexAttributePointerProperty get_vertex_attribute_pointer_property_for_gl_enum(const GLenum&                               in_enum);
 
-        GLenum                         get_gl_enum_for_vertex_attribute_array_type(const VKGL::VertexAttributeArrayType& in_type);
-        VKGL::VertexAttributeArrayType get_vertex_attribute_array_type_for_gl_enum(const GLenum&                         in_enum);
+        GLenum                        get_gl_enum_for_vertex_attribute_property(const VKGL::VertexAttributeProperty& in_property);
+        VKGL::VertexAttributeProperty get_vertex_attribute_property_for_gl_enum(const GLenum&                        in_pname);
 
         bool is_context_property_gl_limit(const VKGL::ContextProperty& in_pname);
     }
