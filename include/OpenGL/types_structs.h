@@ -311,6 +311,14 @@ namespace VKGL
         PFNVKGLVERTEXATTRIB4USVPROC         pGLVertexAttrib4usv;
         PFNVKGLVERTEXATTRIBPOINTERPROC      pGLVertexAttribPointer;
 
+        /* GL 2.1 */
+        PFNVKGLUNIFORMMATRIX2X3FVPROC pGLUniformMatrix2x3fv;
+        PFNVKGLUNIFORMMATRIX2X4FVPROC pGLUniformMatrix2x4fv;
+        PFNVKGLUNIFORMMATRIX3X2FVPROC pGLUniformMatrix3x2fv;
+        PFNVKGLUNIFORMMATRIX3X4FVPROC pGLUniformMatrix3x4fv;
+        PFNVKGLUNIFORMMATRIX4X2FVPROC pGLUniformMatrix4x2fv;
+        PFNVKGLUNIFORMMATRIX4X3FVPROC pGLUniformMatrix4x3fv;
+
         DispatchTable();
     };
 

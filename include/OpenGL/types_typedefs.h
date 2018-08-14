@@ -220,6 +220,14 @@ namespace VKGL
     typedef void      (*PFNVKGLVERTEXATTRIB4USVPROC)        (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLushort* in_v);
     typedef void      (*PFNVKGLVERTEXATTRIBPOINTERPROC)     (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLint& in_size, const GLenum& in_type, const GLboolean& in_normalized, const GLsizei& in_stride, const void* in_pointer);
 
+    /* VKGL GL entrypoints : GL 2.1 */
+    typedef void      (*PFNVKGLUNIFORMMATRIX2X3FVPROC)      (VKGL::Context* in_context_ptr, const GLint& in_location, const GLsizei& in_count, const GLboolean& in_transpose, const GLfloat* in_value);
+    typedef void      (*PFNVKGLUNIFORMMATRIX2X4FVPROC)      (VKGL::Context* in_context_ptr, const GLint& in_location, const GLsizei& in_count, const GLboolean& in_transpose, const GLfloat* in_value);
+    typedef void      (*PFNVKGLUNIFORMMATRIX3X2FVPROC)      (VKGL::Context* in_context_ptr, const GLint& in_location, const GLsizei& in_count, const GLboolean& in_transpose, const GLfloat* in_value);
+    typedef void      (*PFNVKGLUNIFORMMATRIX3X4FVPROC)      (VKGL::Context* in_context_ptr, const GLint& in_location, const GLsizei& in_count, const GLboolean& in_transpose, const GLfloat* in_value);
+    typedef void      (*PFNVKGLUNIFORMMATRIX4X2FVPROC)      (VKGL::Context* in_context_ptr, const GLint& in_location, const GLsizei& in_count, const GLboolean& in_transpose, const GLfloat* in_value);
+    typedef void      (*PFNVKGLUNIFORMMATRIX4X3FVPROC)      (VKGL::Context* in_context_ptr, const GLint& in_location, const GLsizei& in_count, const GLboolean& in_transpose, const GLfloat* in_value);
+
 }
 
 #endif /* VKGL_TYPES_TYPEDEFS_H */
