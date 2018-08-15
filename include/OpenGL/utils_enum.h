@@ -17,6 +17,12 @@ namespace VKGL
         VKGL::BlendFunction get_blend_function_for_gl_enum(const GLenum&              in_enum);
         GLenum              get_gl_enum_for_blend_function(const VKGL::BlendFunction& in_blend_func);
 
+        VKGL::BlitFilter get_blit_filter_for_gl_enum(const GLenum&           in_enum);
+        GLenum           get_gl_enum_for_blit_filter(const VKGL::BlitFilter& in_filter);
+
+        VKGL::BlitMaskBits get_blit_mask_bits_for_gl_enum(const GLenum&             in_enum);
+        GLenum             get_gl_enum_for_blit_mask_bits(const VKGL::BlitMaskBits& in_bits);
+
         VKGL::BufferAccess get_buffer_access_for_gl_enum(const GLenum&             in_enum);
         GLenum             get_gl_enum_for_buffer_access(const VKGL::BufferAccess& in_access);
 
@@ -43,8 +49,14 @@ namespace VKGL
         VKGL::ClampReadColorMode get_clamp_read_color_mode_for_gl_enum(const GLenum&                   in_enum);
         GLenum                   get_gl_enum_for_clamp_read_color_mode(const VKGL::ClampReadColorMode& in_mode);
 
+        VKGL::ClearBuffer get_clear_buffer_for_gl_enum(const GLenum&            in_enum);
+        GLenum            get_gl_enum_for_clear_buffer(const VKGL::ClearBuffer& in_clear_buffer);
+
         VKGL::ClearBufferBits get_clear_buffer_bits_for_gl_enum(const GLenum&                in_enum);
         GLenum                get_gl_enum_for_clear_buffer_bits(const VKGL::ClearBufferBits& in_buffers);
+
+        VKGL::ConditionalRenderMode get_conditional_render_mode_for_gl_enum(const GLenum&                      in_enum);
+        GLenum                      get_gl_enum_for_conditional_render_mode(const VKGL::ConditionalRenderMode& in_mode);
 
         VKGL::ContextProperty get_context_property_for_gl_enum(const GLenum&                in_enum);
         GLenum                get_gl_enum_for_context_property(const VKGL::ContextProperty& in_property);
@@ -75,6 +87,15 @@ namespace VKGL
 
         VKGL::FramebufferAttachmentObjectType get_framebuffer_attachment_object_type_for_gl_enum(const GLenum&                                in_enum);
         GLenum                                get_gl_enum_for_framebuffer_attachment_object_type(const VKGL::FramebufferAttachmentObjectType& in_type);
+
+        VKGL::FramebufferAttachmentPoint get_framebuffer_attachment_point_for_gl_enum(const GLenum&                           in_enum);
+        GLenum                           get_gl_enum_for_framebuffer_attachment_point(const VKGL::FramebufferAttachmentPoint& in_fb_attachment_point);
+
+        VKGL::FramebufferStatus get_framebuffer_status_for_gl_enum(const GLenum&                  in_enum);
+        GLenum                  get_gl_enum_for_framebuffer_status(const VKGL::FramebufferStatus& in_status);
+
+        VKGL::FramebufferTarget get_framebuffer_target_for_gl_enum(const GLenum&                  in_enum);
+        GLenum                  get_gl_enum_for_framebuffer_target(const VKGL::FramebufferTarget& in_target);
 
         VKGL::FrontFaceOrientation get_front_face_orientation_for_gl_enum(const GLenum&                     in_enum);
         GLenum                     get_gl_enum_for_front_face_orientation(const VKGL::FrontFaceOrientation& in_orientation);
@@ -131,8 +152,11 @@ namespace VKGL
         GLenum                    get_gl_enum_for_query_target_property(const VKGL::QueryTargetProperty& in_property);
         VKGL::QueryTargetProperty get_query_target_property_for_gl_enum(const GLenum&                    in_enum);
 
-        VKGL::ReadBuffer get_read_buffer_for_gl_enum(const GLenum&           in_enum);
         GLenum           get_gl_enum_for_read_buffer(const VKGL::ReadBuffer& in_read_buffer);
+        VKGL::ReadBuffer get_read_buffer_for_gl_enum(const GLenum&           in_enum);
+
+        GLenum                   get_gl_enum_for_renderbuffer_target(const VKGL::RenderbufferTarget& in_target);
+        VKGL::RenderbufferTarget get_renderbuffer_target_for_gl_enum(const GLenum&                   in_enum);
 
         GLenum               get_gl_enum_for_shader_property(const VKGL::ShaderProperty& in_pname);
         VKGL::ShaderProperty get_shader_property_for_gl_enum(const GLenum&               in_enum);
@@ -184,6 +208,9 @@ namespace VKGL
 
         GLenum                            get_gl_enum_for_transform_feedback_buffer_mode(const VKGL::TransformFeedbackBufferMode& in_mode);
         VKGL::TransformFeedbackBufferMode get_transform_feedback_buffer_mode_for_gl_enum(const GLenum&                            in_enum);
+
+        GLenum                               get_gl_enum_for_transform_feedback_primitive_mode(const VKGL::TransformFeedbackPrimitiveMode& in_mode);
+        VKGL::TransformFeedbackPrimitiveMode get_transform_feedback_primitive_mode_for_gl_enum(const GLenum&                               in_enum);
 
         GLenum             get_gl_enum_for_variable_type(const VariableType& in_type);
         VKGL::VariableType get_variable_type_for_gl_enum(const GLenum&       in_enum);

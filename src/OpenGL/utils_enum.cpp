@@ -56,6 +56,46 @@ VKGL::BlendFunction VKGL::Utils::get_blend_function_for_gl_enum(const GLenum& in
     return result;
 }
 
+VKGL::BlitFilter VKGL::Utils::get_blit_filter_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::BlitFilter result = VKGL::BlitFilter::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_LINEAR:  result = VKGL::BlitFilter::Linear;  break;
+        case GL_NEAREST: result = VKGL::BlitFilter::Nearest; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::BlitMaskBits VKGL::Utils::get_blit_mask_bits_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::BlitMaskBits result = 0;
+
+    if (in_enum & GL_COLOR_BUFFER_BIT)
+    {
+        result |= VKGL::BlitMaskBit::BLIT_MASK_BIT_COLOR_BUFFER;
+    }
+
+    if (in_enum & GL_DEPTH_BUFFER_BIT)
+    {
+        result |= VKGL::BlitMaskBit::BLIT_MASK_BIT_DEPTH_BUFFER;
+    }
+
+    if (in_enum & GL_STENCIL_BUFFER_BIT)
+    {
+        result |= VKGL::BlitMaskBit::BLIT_MASK_BIT_STENCIL_BUFFER;
+    }
+
+    return result;
+}
+
 VKGL::BufferAccess VKGL::Utils::get_buffer_access_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::BufferAccess result = VKGL::BufferAccess::Unknown;
@@ -180,6 +220,31 @@ VKGL::ClampReadColorMode VKGL::Utils::get_clamp_read_color_mode_for_gl_enum(cons
     return result;
 }
 
+VKGL::ClearBuffer VKGL::Utils::get_clear_buffer_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::ClearBuffer result = VKGL::ClearBuffer::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_BACK:           result = VKGL::ClearBuffer::Back;           break;
+        case GL_COLOR:          result = VKGL::ClearBuffer::Color;          break;
+        case GL_DEPTH:          result = VKGL::ClearBuffer::Depth;          break;
+        case GL_DEPTH_STENCIL:  result = VKGL::ClearBuffer::Depth_Stencil;  break;
+        case GL_FRONT:          result = VKGL::ClearBuffer::Front;          break;
+        case GL_FRONT_AND_BACK: result = VKGL::ClearBuffer::Front_And_Back; break;
+        case GL_LEFT:           result = VKGL::ClearBuffer::Left;           break;
+        case GL_RIGHT:          result = VKGL::ClearBuffer::Right;          break;
+        case GL_STENCIL:        result = VKGL::ClearBuffer::Stencil;        break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::ClearBufferBits VKGL::Utils::get_clear_buffer_bits_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::ClearBufferBits result = 0;
@@ -197,6 +262,24 @@ VKGL::ClearBufferBits VKGL::Utils::get_clear_buffer_bits_for_gl_enum(const GLenu
     if (in_enum & GL_STENCIL_BUFFER_BIT)
     {
         result |= VKGL::ClearBufferBit::CLEAR_BUFFER_BIT_STENCIL;
+    }
+
+    return result;
+}
+
+VKGL::ConditionalRenderMode VKGL::Utils::get_conditional_render_mode_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::ConditionalRenderMode result = VKGL::ConditionalRenderMode::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_QUERY_BY_REGION_NO_WAIT: result = VKGL::ConditionalRenderMode::Query_By_Region_No_Wait; break;
+        case GL_QUERY_BY_REGION_WAIT:    result = VKGL::ConditionalRenderMode::Query_By_Region_Wait;    break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
     }
 
     return result;
@@ -447,6 +530,31 @@ VKGL::ErrorCode VKGL::Utils::get_error_code_for_gl_enum(const GLenum& in_enum)
         case GL_INVALID_VALUE:                 result = VKGL::ErrorCode::Invalid_Value;                 break;
         case GL_NO_ERROR:                      result = VKGL::ErrorCode::No_Error;                      break;
         case GL_OUT_OF_MEMORY:                 result = VKGL::ErrorCode::Out_Of_Memory;                 break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::FramebufferStatus VKGL::Utils::get_framebuffer_status_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::FramebufferStatus result = VKGL::FramebufferStatus::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_FRAMEBUFFER_COMPLETE:                      result = VKGL::FramebufferStatus::Complete;                      break;
+        case GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT:         result = VKGL::FramebufferStatus::Incomplete_Attachment;         break;
+        case GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER:        result = VKGL::FramebufferStatus::Incomplete_Draw_Buffer;        break;
+        case GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS:      result = VKGL::FramebufferStatus::Incomplete_Layer_Targets;      break;
+        case GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT: result = VKGL::FramebufferStatus::Incomplete_Missing_Attachment; break;
+        case GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE:        result = VKGL::FramebufferStatus::Incomplete_Multisample;        break;
+        case GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER:        result = VKGL::FramebufferStatus::Incomplete_Read_Buffer;        break;
+        case GL_FRAMEBUFFER_UNDEFINED:                     result = VKGL::FramebufferStatus::Undefined;                     break;
+        case GL_FRAMEBUFFER_UNSUPPORTED:                   result = VKGL::FramebufferStatus::Unsupported;                   break;
 
         default:
         {
@@ -801,6 +909,52 @@ VKGL::FramebufferAttachmentObjectType VKGL::Utils::get_framebuffer_attachment_ob
     return result;
 }
 
+VKGL::FramebufferAttachmentPoint VKGL::Utils::get_framebuffer_attachment_point_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::FramebufferAttachmentPoint result = VKGL::FramebufferAttachmentPoint::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_COLOR_ATTACHMENT0:        result = VKGL::FramebufferAttachmentPoint::Color_Attachment0;        break;
+        case GL_COLOR_ATTACHMENT1:        result = VKGL::FramebufferAttachmentPoint::Color_Attachment1;        break;
+        case GL_COLOR_ATTACHMENT2:        result = VKGL::FramebufferAttachmentPoint::Color_Attachment2;        break;
+        case GL_COLOR_ATTACHMENT3:        result = VKGL::FramebufferAttachmentPoint::Color_Attachment3;        break;
+        case GL_COLOR_ATTACHMENT4:        result = VKGL::FramebufferAttachmentPoint::Color_Attachment4;        break;
+        case GL_COLOR_ATTACHMENT5:        result = VKGL::FramebufferAttachmentPoint::Color_Attachment5;        break;
+        case GL_COLOR_ATTACHMENT6:        result = VKGL::FramebufferAttachmentPoint::Color_Attachment6;        break;
+        case GL_COLOR_ATTACHMENT7:        result = VKGL::FramebufferAttachmentPoint::Color_Attachment7;        break;
+        case GL_DEPTH_ATTACHMENT:         result = VKGL::FramebufferAttachmentPoint::Depth_Attachment;         break;
+        case GL_DEPTH_STENCIL_ATTACHMENT: result = VKGL::FramebufferAttachmentPoint::Depth_Stencil_Attachment; break;
+        case GL_STENCIL_ATTACHMENT:       result = VKGL::FramebufferAttachmentPoint::Stencil_Attachment;       break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::FramebufferTarget VKGL::Utils::get_framebuffer_target_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::FramebufferTarget result = VKGL::FramebufferTarget::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_DRAW_FRAMEBUFFER: result = VKGL::FramebufferTarget::Draw_Framebuffer; break;
+        case GL_FRAMEBUFFER:      result = VKGL::FramebufferTarget::Framebuffer;      break;
+        case GL_READ_FRAMEBUFFER: result = VKGL::FramebufferTarget::Read_Framebuffer; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::FrontFaceOrientation VKGL::Utils::get_front_face_orientation_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::FrontFaceOrientation result = VKGL::FrontFaceOrientation::Unknown;
@@ -988,6 +1142,46 @@ GLenum VKGL::Utils::get_gl_enum_for_blend_function(const VKGL::BlendFunction& in
     return result;
 }
 
+GLenum VKGL::Utils::get_gl_enum_for_blit_filter(const VKGL::BlitFilter& in_filter)
+{
+    GLenum result = 0;
+
+    switch (in_filter)
+    {
+        case VKGL::BlitFilter::Linear:  result = GL_LINEAR;  break;
+        case VKGL::BlitFilter::Nearest: result = GL_NEAREST; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_blit_mask_bits(const VKGL::BlitMaskBits& in_bits)
+{
+    GLenum result = 0;
+
+    if (in_bits & VKGL::BlitMaskBit::BLIT_MASK_BIT_COLOR_BUFFER)
+    {
+        result |= GL_COLOR_BUFFER_BIT;
+    }
+
+    if (in_bits & VKGL::BlitMaskBit::BLIT_MASK_BIT_DEPTH_BUFFER)
+    {
+        result |= GL_DEPTH_BUFFER_BIT;
+    }
+
+    if (in_bits & VKGL::BlitMaskBit::BLIT_MASK_BIT_STENCIL_BUFFER)
+    {
+        result |= GL_STENCIL_BUFFER_BIT;
+    }
+
+    return result;
+}
+
 GLenum VKGL::Utils::get_gl_enum_for_buffer_access(const VKGL::BufferAccess& in_access)
 {
     GLenum result = 0;
@@ -1075,6 +1269,31 @@ GLenum VKGL::Utils::get_gl_enum_for_clamp_read_color_mode(const VKGL::ClampReadC
     return result;
 }
 
+GLenum VKGL::Utils::get_gl_enum_for_clear_buffer(const VKGL::ClearBuffer& in_clear_buffer)
+{
+    GLenum result = 0;
+
+    switch (in_clear_buffer)
+    {
+        case VKGL::ClearBuffer::Back:           result = GL_BACK;           break;
+        case VKGL::ClearBuffer::Color:          result = GL_COLOR;          break;
+        case VKGL::ClearBuffer::Depth:          result = GL_DEPTH;          break;
+        case VKGL::ClearBuffer::Depth_Stencil:  result = GL_DEPTH_STENCIL;  break;
+        case VKGL::ClearBuffer::Front:          result = GL_FRONT;          break;
+        case VKGL::ClearBuffer::Front_And_Back: result = GL_FRONT_AND_BACK; break;
+        case VKGL::ClearBuffer::Left:           result = GL_LEFT;           break;
+        case VKGL::ClearBuffer::Right:          result = GL_RIGHT;          break;
+        case VKGL::ClearBuffer::Stencil:        result = GL_STENCIL;        break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 GLenum VKGL::Utils::get_gl_enum_for_clear_buffer_bits(const VKGL::ClearBufferBits& in_buffers)
 {
     GLenum result = 0;
@@ -1092,6 +1311,24 @@ GLenum VKGL::Utils::get_gl_enum_for_clear_buffer_bits(const VKGL::ClearBufferBit
     if (in_buffers & VKGL::ClearBufferBit::CLEAR_BUFFER_BIT_STENCIL)
     {
         result |= GL_STENCIL_BUFFER_BIT;
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_conditional_render_mode(const VKGL::ConditionalRenderMode& in_mode)
+{
+    GLenum result = 0;
+
+    switch (in_mode)
+    {
+        case VKGL::ConditionalRenderMode::Query_By_Region_No_Wait: result = GL_QUERY_BY_REGION_NO_WAIT; break;
+        case VKGL::ConditionalRenderMode::Query_By_Region_Wait:    result = GL_QUERY_BY_REGION_WAIT;    break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
     }
 
     return result;
@@ -1270,6 +1507,77 @@ GLenum VKGL::Utils::get_gl_enum_for_framebuffer_attachment_object_type(const VKG
         case VKGL::FramebufferAttachmentObjectType::None:                result = GL_NONE;                break;
         case VKGL::FramebufferAttachmentObjectType::Renderbuffer:        result = GL_RENDERBUFFER;        break;
         case VKGL::FramebufferAttachmentObjectType::Texture:             result = GL_TEXTURE;             break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_framebuffer_attachment_point(const VKGL::FramebufferAttachmentPoint& in_fb_attachment_point)
+{
+    GLenum result = 0;
+
+    switch (in_fb_attachment_point)
+    {
+        case VKGL::FramebufferAttachmentPoint::Color_Attachment0:        result = GL_COLOR_ATTACHMENT0;        break;
+        case VKGL::FramebufferAttachmentPoint::Color_Attachment1:        result = GL_COLOR_ATTACHMENT1;        break;
+        case VKGL::FramebufferAttachmentPoint::Color_Attachment2:        result = GL_COLOR_ATTACHMENT2;        break;
+        case VKGL::FramebufferAttachmentPoint::Color_Attachment3:        result = GL_COLOR_ATTACHMENT3;        break;
+        case VKGL::FramebufferAttachmentPoint::Color_Attachment4:        result = GL_COLOR_ATTACHMENT4;        break;
+        case VKGL::FramebufferAttachmentPoint::Color_Attachment5:        result = GL_COLOR_ATTACHMENT5;        break;
+        case VKGL::FramebufferAttachmentPoint::Color_Attachment6:        result = GL_COLOR_ATTACHMENT6;        break;
+        case VKGL::FramebufferAttachmentPoint::Color_Attachment7:        result = GL_COLOR_ATTACHMENT7;        break;
+        case VKGL::FramebufferAttachmentPoint::Depth_Attachment:         result = GL_DEPTH_ATTACHMENT;         break;
+        case VKGL::FramebufferAttachmentPoint::Depth_Stencil_Attachment: result = GL_DEPTH_STENCIL_ATTACHMENT; break;
+        case VKGL::FramebufferAttachmentPoint::Stencil_Attachment:       result = GL_STENCIL_ATTACHMENT;       break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_framebuffer_status(const VKGL::FramebufferStatus& in_status)
+{
+    GLenum result = 0;
+
+    switch (in_status)
+    {
+        case VKGL::FramebufferStatus::Complete:                      result = GL_FRAMEBUFFER_COMPLETE;                      break;
+        case VKGL::FramebufferStatus::Incomplete_Attachment:         result = GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;         break;
+        case VKGL::FramebufferStatus::Incomplete_Draw_Buffer:        result = GL_FRAMEBUFFER_INCOMPLETE_DRAW_BUFFER;        break;
+        case VKGL::FramebufferStatus::Incomplete_Layer_Targets:      result = GL_FRAMEBUFFER_INCOMPLETE_LAYER_TARGETS;      break;
+        case VKGL::FramebufferStatus::Incomplete_Missing_Attachment: result = GL_FRAMEBUFFER_INCOMPLETE_MISSING_ATTACHMENT; break;
+        case VKGL::FramebufferStatus::Incomplete_Multisample:        result = GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE;        break;
+        case VKGL::FramebufferStatus::Incomplete_Read_Buffer:        result = GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER;        break;
+        case VKGL::FramebufferStatus::Undefined:                     result = GL_FRAMEBUFFER_UNDEFINED;                     break;
+        case VKGL::FramebufferStatus::Unsupported:                   result = GL_FRAMEBUFFER_UNSUPPORTED;                   break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_framebuffer_target(const VKGL::FramebufferTarget& in_target)
+{
+    GLenum result = 0;
+
+    switch (in_target)
+    {
+        case VKGL::FramebufferTarget::Draw_Framebuffer: result = GL_DRAW_FRAMEBUFFER; break;
+        case VKGL::FramebufferTarget::Framebuffer:      result = GL_FRAMEBUFFER;      break;
+        case VKGL::FramebufferTarget::Read_Framebuffer: result = GL_READ_FRAMEBUFFER; break;
 
         default:
         {
@@ -1832,6 +2140,13 @@ GLenum VKGL::Utils::get_gl_enum_for_read_buffer(const VKGL::ReadBuffer& in_read_
     return result;
 }
 
+GLenum VKGL::Utils::get_gl_enum_for_renderbuffer_target(const VKGL::RenderbufferTarget& in_target)
+{
+    vkgl_assert(in_target == VKGL::RenderbufferTarget::Renderbuffer);
+
+    return GL_RENDERBUFFER;
+}
+
 GLenum VKGL::Utils::get_gl_enum_for_shader_property(const VKGL::ShaderProperty& in_pname)
 {
     GLenum result = 0;
@@ -2196,6 +2511,25 @@ GLenum VKGL::Utils::get_gl_enum_for_transform_feedback_buffer_mode(const VKGL::T
     {
         case VKGL::TransformFeedbackBufferMode::Interleaved_Attribs: result = GL_INTERLEAVED_ATTRIBS; break;
         case VKGL::TransformFeedbackBufferMode::Separate_Attribs:    result = GL_SEPARATE_ATTRIBS;    break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_transform_feedback_primitive_mode(const VKGL::TransformFeedbackPrimitiveMode& in_mode)
+{
+    GLenum result = 0;
+
+    switch (in_mode)
+    {
+        case VKGL::TransformFeedbackPrimitiveMode::Lines:     result = GL_LINES;     break;
+        case VKGL::TransformFeedbackPrimitiveMode::Points:    result = GL_POINTS;    break;
+        case VKGL::TransformFeedbackPrimitiveMode::Triangles: result = GL_TRIANGLES; break;
 
         default:
         {
@@ -2904,6 +3238,13 @@ VKGL::ReadBuffer VKGL::Utils::get_read_buffer_for_gl_enum(const GLenum& in_enum)
     return result;
 }
 
+VKGL::RenderbufferTarget VKGL::Utils::get_renderbuffer_target_for_gl_enum(const GLenum& in_enum)
+{
+    vkgl_assert(in_enum == GL_RENDERBUFFER);
+
+    return VKGL::RenderbufferTarget::Renderbuffer;
+}
+
 VKGL::ShaderProperty VKGL::Utils::get_shader_property_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::ShaderProperty result = VKGL::ShaderProperty::Unknown;
@@ -3376,6 +3717,25 @@ VKGL::TransformFeedbackBufferMode VKGL::Utils::get_transform_feedback_buffer_mod
     return result;
 }
 
+VKGL::TransformFeedbackPrimitiveMode VKGL::Utils::get_transform_feedback_primitive_mode_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::TransformFeedbackPrimitiveMode result = VKGL::TransformFeedbackPrimitiveMode::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_LINES:     result = VKGL::TransformFeedbackPrimitiveMode::Lines;     break;
+        case GL_POINTS:    result = VKGL::TransformFeedbackPrimitiveMode::Points;    break;
+        case GL_TRIANGLES: result = VKGL::TransformFeedbackPrimitiveMode::Triangles; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::VertexAttributePointerProperty VKGL::Utils::get_vertex_attribute_pointer_property_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::VertexAttributePointerProperty result = VKGL::VertexAttributePointerProperty::Unknown;
@@ -3423,15 +3783,15 @@ VKGL::VertexAttributeProperty VKGL::Utils::get_vertex_attribute_property_for_gl_
 
     switch (in_pname)
     {
-        case GL_VERTEX_ATTRIB_ARRAY_SIZE:           result = VKGL::VertexAttributeProperty::Array_Size:               break;
-        case GL_VERTEX_ATTRIB_ARRAY_TYPE:           result = VKGL::VertexAttributeProperty::Array_Type:               break;
-        case GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING: result = VKGL::VertexAttributeProperty::Buffer_Binding:           break;
-        case GL_CURRENT_VERTEX_ATTRIB:              result = VKGL::VertexAttributeProperty::Current_Vertex_Attribute: break;
-        case GL_VERTEX_ATTRIB_ARRAY_DIVISOR:        result = VKGL::VertexAttributeProperty::Divisor:                  break;
-        case GL_VERTEX_ATTRIB_ARRAY_ENABLED:        result = VKGL::VertexAttributeProperty::Enabled:                  break;
-        case GL_VERTEX_ATTRIB_ARRAY_INTEGER:        result = VKGL::VertexAttributeProperty::Integer:                  break;
-        case GL_VERTEX_ATTRIB_ARRAY_NORMALIZED:     result = VKGL::VertexAttributeProperty::Normalized:               break;
-        case GL_VERTEX_ATTRIB_ARRAY_STRIDE:         result = VKGL::VertexAttributeProperty::Stride:                   break;
+        case GL_VERTEX_ATTRIB_ARRAY_SIZE:           result = VKGL::VertexAttributeProperty::Array_Size;               break;
+        case GL_VERTEX_ATTRIB_ARRAY_TYPE:           result = VKGL::VertexAttributeProperty::Array_Type;               break;
+        case GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING: result = VKGL::VertexAttributeProperty::Buffer_Binding;           break;
+        case GL_CURRENT_VERTEX_ATTRIB:              result = VKGL::VertexAttributeProperty::Current_Vertex_Attribute; break;
+        case GL_VERTEX_ATTRIB_ARRAY_DIVISOR:        result = VKGL::VertexAttributeProperty::Divisor;                  break;
+        case GL_VERTEX_ATTRIB_ARRAY_ENABLED:        result = VKGL::VertexAttributeProperty::Enabled;                  break;
+        case GL_VERTEX_ATTRIB_ARRAY_INTEGER:        result = VKGL::VertexAttributeProperty::Integer;                  break;
+        case GL_VERTEX_ATTRIB_ARRAY_NORMALIZED:     result = VKGL::VertexAttributeProperty::Normalized;               break;
+        case GL_VERTEX_ATTRIB_ARRAY_STRIDE:         result = VKGL::VertexAttributeProperty::Stride;                   break;
 
         default:
         {

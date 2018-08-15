@@ -39,6 +39,21 @@ namespace VKGL
         Unknown
     };
 
+    enum class BlitFilter
+    {
+        Linear,
+        Nearest,
+
+        Unknown
+    };
+
+    enum BlitMaskBit
+    {
+        BLIT_MASK_BIT_COLOR_BUFFER   = 1 << 0,
+        BLIT_MASK_BIT_DEPTH_BUFFER   = 1 << 1,
+        BLIT_MASK_BIT_STENCIL_BUFFER = 1 << 2
+    };
+
     enum class BufferAccess
     {
         Read_Only,
@@ -127,6 +142,21 @@ namespace VKGL
     {
         False,
         Fixed_Only,
+
+        Unknown
+    };
+
+    enum class ClearBuffer
+    {
+        Back,
+        Color,
+        Depth,
+        Depth_Stencil,
+        Front,
+        Front_And_Back,
+        Left,
+        Right,
+        Stencil,
 
         Unknown
     };
@@ -315,6 +345,14 @@ namespace VKGL
         Unknown
     };
 
+    enum class ConditionalRenderMode
+    {
+        Query_By_Region_No_Wait,
+        Query_By_Region_Wait,
+
+        Unknown,
+    };
+
     enum class CullMode
     {
         Back,
@@ -430,6 +468,47 @@ namespace VKGL
         Texture,
 
         Unknown
+    };
+
+    enum class FramebufferAttachmentPoint
+    {
+        Color_Attachment0,
+        Color_Attachment1,
+        Color_Attachment2,
+        Color_Attachment3,
+        Color_Attachment4,
+        Color_Attachment5,
+        Color_Attachment6,
+        Color_Attachment7,
+        Depth_Attachment,
+        Depth_Stencil_Attachment,
+        Stencil_Attachment,
+
+        Unknown,
+    };
+
+    enum class FramebufferStatus
+    {
+        Complete,
+        Incomplete_Attachment,
+        Incomplete_Draw_Buffer,
+        Incomplete_Layer_Targets,
+        Incomplete_Missing_Attachment,
+        Incomplete_Multisample,
+        Incomplete_Read_Buffer,
+        Undefined,
+        Unsupported,
+
+        Unknown,
+    };
+
+    enum class FramebufferTarget
+    {
+        Draw_Framebuffer,
+        Framebuffer,
+        Read_Framebuffer,
+
+        Unknown,
     };
 
     enum class FrontFaceOrientation
@@ -796,6 +875,13 @@ namespace VKGL
         Unknown
     };
 
+    enum class RenderbufferTarget
+    {
+        Renderbuffer,
+
+        Unknown,
+    };
+
     enum class ShaderType
     {
         Fragment,
@@ -1033,6 +1119,15 @@ namespace VKGL
         Separate_Attribs,
 
         Unknown
+    };
+
+    enum class TransformFeedbackPrimitiveMode
+    {
+        Lines,
+        Points,
+        Triangles,
+
+        Unknown,
     };
 
     enum class VariableType

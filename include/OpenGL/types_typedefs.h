@@ -8,6 +8,7 @@
 namespace VKGL
 {
     /* Bitfield type definitions */
+    typedef uint32_t BlitMaskBits;
     typedef uint32_t ClearBufferBits;
 
     /* VKGL GL entrypoints : GL 1.0 */
@@ -227,6 +228,92 @@ namespace VKGL
     typedef void      (*PFNVKGLUNIFORMMATRIX3X4FVPROC)      (VKGL::Context* in_context_ptr, const GLint& in_location, const GLsizei& in_count, const GLboolean& in_transpose, const GLfloat* in_value);
     typedef void      (*PFNVKGLUNIFORMMATRIX4X2FVPROC)      (VKGL::Context* in_context_ptr, const GLint& in_location, const GLsizei& in_count, const GLboolean& in_transpose, const GLfloat* in_value);
     typedef void      (*PFNVKGLUNIFORMMATRIX4X3FVPROC)      (VKGL::Context* in_context_ptr, const GLint& in_location, const GLsizei& in_count, const GLboolean& in_transpose, const GLfloat* in_value);
+
+    /* VKGL GL entrypoints : GL 3.0 */
+    typedef void           (*PFNVKGLBEGINCONDITIONALRENDERPROC)             (VKGL::Context* in_context_ptr, const GLuint& in_id, const GLenum& in_mode);
+    typedef void           (*PFNVKGLBEGINTRANSFORMFEEDBACKPROC)             (VKGL::Context* in_context_ptr, const GLenum& in_primitive_mode);
+    typedef void           (*PFNVKGLBINDBUFFERBASEPROC)                     (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLuint& in_index, const GLuint& in_buffer);
+    typedef void           (*PFNVKGLBINDBUFFERRANGEPROC)                    (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLuint& in_index, const GLuint& in_buffer, const GLintptr& in_offset, const GLsizeiptr& in_size);
+    typedef void           (*PFNVKGLBINDFRAGDATALOCATIONPROC)               (VKGL::Context* in_context_ptr, const GLuint& in_program, const GLuint& in_color, const GLchar* in_name_ptr);
+    typedef void           (*PFNVKGLBINDFRAMEBUFFERPROC)                    (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLuint& in_framebuffer);
+    typedef void           (*PFNVKGLBINDRENDERBUFFERPROC)                   (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLuint& in_renderbuffer);
+    typedef void           (*PFNVKGLBINDVERTEXARRAYPROC)                    (VKGL::Context* in_context_ptr, const GLuint& in_array);
+    typedef void           (*PFNVKGLBLITFRAMEBUFFERPROC)                    (VKGL::Context* in_context_ptr, const GLint& in_srcX0, const GLint& in_srcY0, const GLint& in_srcX1, const GLint& in_srcY1, const GLint& in_dstX0, const GLint& in_dstY0, const GLint& in_dstX1, const GLint& in_dstY1, const GLbitfield& in_mask, const GLenum& in_filter);
+    typedef GLenum         (*PFNVKGLCHECKFRAMEBUFFERSTATUSPROC)             (VKGL::Context* in_context_ptr, const GLenum& in_target);
+    typedef void           (*PFNVKGLCLAMPCOLORPROC)                         (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_clamp);
+    typedef void           (*PFNVKGLCLEARBUFFERFIPROC)                      (VKGL::Context* in_context_ptr, const GLenum& in_buffer, const GLint& in_drawbuffer, const GLfloat& in_depth, const GLint& in_stencil);
+    typedef void           (*PFNVKGLCLEARBUFFERFVPROC)                      (VKGL::Context* in_context_ptr, const GLenum& in_buffer, const GLint& in_drawbuffer, const GLfloat* in_value_ptr);
+    typedef void           (*PFNVKGLCLEARBUFFERIVPROC)                      (VKGL::Context* in_context_ptr, const GLenum& in_buffer, const GLint& in_drawbuffer, const GLint* in_value_ptr);
+    typedef void           (*PFNVKGLCLEARBUFFERUIVPROC)                     (VKGL::Context* in_context_ptr, const GLenum& in_buffer, const GLint& in_drawbuffer, const GLuint* in_value_ptr);
+    typedef void           (*PFNVKGLCOLORMASKIPROC)                         (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLboolean& in_r, const GLboolean& in_g, const GLboolean& in_b, const GLboolean& in_a);
+    typedef void           (*PFNVKGLDELETEFRAMEBUFFERSPROC)                 (VKGL::Context* in_context_ptr, const GLsizei& in_n, const GLuint* in_framebuffers_ptr);
+    typedef void           (*PFNVKGLDELETERENDERBUFFERSPROC)                (VKGL::Context* in_context_ptr, const GLsizei& in_n, const GLuint* in_renderbuffers_ptr);
+    typedef void           (*PFNVKGLDELETEVERTEXARRAYSPROC)                 (VKGL::Context* in_context_ptr, const GLsizei& in_n, const GLuint* in_arrays_ptr);
+    typedef void           (*PFNVKGLDISABLEIPROC)                           (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLuint& in_index);
+    typedef void           (*PFNVKGLENABLEIPROC)                            (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLuint& in_index);
+    typedef void           (*PFNVKGLENDCONDITIONALRENDERPROC)               (VKGL::Context* in_context_ptr);
+    typedef void           (*PFNVKGLENDTRANSFORMFEEDBACKPROC)               (VKGL::Context* in_context_ptr);
+    typedef void           (*PFNVKGLFLUSHMAPPEDBUFFERRANGEPROC)             (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLintptr& in_offset, const GLsizeiptr& in_length);
+    typedef void           (*PFNVKGLFRAMEBUFFERRENDERBUFFERPROC)            (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_attachment, const GLenum& in_renderbuffertarget, const GLuint& in_renderbuffer);
+    typedef void           (*PFNVKGLFRAMEBUFFERTEXTURE1DPROC)               (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_attachment, const GLenum& in_textarget, const GLuint& in_texture, const GLint& in_level);
+    typedef void           (*PFNVKGLFRAMEBUFFERTEXTURE2DPROC)               (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_attachment, const GLenum& in_textarget, const GLuint& in_texture, const GLint& in_level);
+    typedef void           (*PFNVKGLFRAMEBUFFERTEXTURE3DPROC)               (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_attachment, const GLenum& in_textarget, const GLuint& in_texture, const GLint& in_level, const GLint& in_zoffset);
+    typedef void           (*PFNVKGLFRAMEBUFFERTEXTURELAYERPROC)            (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_attachment, const GLuint& in_texture, const GLint& in_level, const GLint& in_layer);
+    typedef void           (*PFNVKGLGENFRAMEBUFFERSPROC)                    (VKGL::Context* in_context_ptr, const GLsizei& in_n, GLuint* out_framebuffers_ptr);
+    typedef void           (*PFNVKGLGENRENDERBUFFERSPROC)                   (VKGL::Context* in_context_ptr, const GLsizei& in_n, GLuint* out_renderbuffers_ptr);
+    typedef void           (*PFNVKGLGENVERTEXARRAYSPROC)                    (VKGL::Context* in_context_ptr, const GLsizei& in_n, GLuint* in_arrays_ptr);
+    typedef void           (*PFNVKGLGENERATEMIPMAPPROC)                     (VKGL::Context* in_context_ptr, const GLenum& in_target);
+    typedef void           (*PFNVKGLGETBOOLEANI_VPROC)                      (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLuint& in_index, GLboolean* out_data_ptr);
+    typedef GLint          (*PFNVKGLGETFRAGDATALOCATIONPROC)                (VKGL::Context* in_context_ptr, const GLuint& in_program, const GLchar* in_name_ptr);
+    typedef void           (*PFNVKGLGETFRAMEBUFFERATTACHMENTPARAMETERIVPROC)(VKGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_attachment, const GLenum& in_pname, GLint* out_params_ptr);
+    typedef void           (*PFNVKGLGETINTEGERI_VPROC)                      (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLuint& in_index, GLint* out_data_ptr);
+    typedef void           (*PFNVKGLGETRENDERBUFFERPARAMETERIVPROC)         (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_pname, GLint* out_params_ptr);
+    typedef const GLubyte* (*PFNVKGLGETSTRINGIPROC)                         (VKGL::Context* in_context_ptr, const GLenum& in_name, const GLuint& in_index);
+    typedef void           (*PFNVKGLGETTEXPARAMETERIIVPROC)                 (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_pname, GLint* out_params_ptr);
+    typedef void           (*PFNVKGLGETTEXPARAMETERIUIVPROC)                (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_pname, GLuint* out_params_ptr);
+    typedef void           (*PFNVKGLGETTRANSFORMFEEDBACKVARYINGPROC)        (VKGL::Context* in_context_ptr, const GLuint& in_program, const GLuint& in_index, const GLsizei& in_buf_size, GLsizei* out_length_ptr, GLsizei* out_size_ptr, GLenum* out_type_ptr, GLchar* out_name_ptr);
+    typedef void           (*PFNVKGLGETUNIFORMUIVPROC)                      (VKGL::Context* in_context_ptr, const GLuint& in_program, const GLint& in_location, GLuint* out_params_ptr);
+    typedef void           (*PFNVKGLGETVERTEXATTRIBIIVPROC)                 (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLenum& in_pname, GLint* out_params_ptr);
+    typedef void           (*PFNVKGLGETVERTEXATTRIBIUIVPROC)                (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLenum& in_pname, GLuint* out_params_ptr);
+    typedef GLboolean      (*PFNVKGLISENABLEDIPROC)                         (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLuint& in_index);
+    typedef GLboolean      (*PFNVKGLISFRAMEBUFFERPROC)                      (VKGL::Context* in_context_ptr, const GLuint& in_framebuffer);
+    typedef GLboolean      (*PFNVKGLISRENDERBUFFERPROC)                     (VKGL::Context* in_context_ptr, const GLuint& in_renderbuffer);
+    typedef GLboolean      (*PFNVKGLISVERTEXARRAYPROC)                      (VKGL::Context* in_context_ptr, const GLuint& in_array);
+    typedef void*          (*PFNVKGLMAPBUFFERRANGEPROC)                     (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLintptr& in_offset, const GLsizeiptr& in_length, const GLbitfield& in_access);
+    typedef void           (*PFNVKGLRENDERBUFFERSTORAGEPROC)                (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_internalformat, const GLsizei& in_width, const GLsizei& in_height);
+    typedef void           (*PFNVKGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)     (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLsizei& in_samples, const GLenum& in_internalformat, const GLsizei& in_width, const GLsizei& in_height);
+    typedef void           (*PFNVKGLTEXPARAMETERIIVPROC)                    (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_pname, const GLint* in_params_ptr);
+    typedef void           (*PFNVKGLTEXPARAMETERIUIVPROC)                   (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_pname, const GLuint* in_params_ptr);
+    typedef void           (*PFNVKGLTRANSFORMFEEDBACKVARYINGSPROC)          (VKGL::Context* in_context_ptr, const GLuint& in_program, const GLsizei& in_count, const GLchar* const* in_varyings_ptr_ptr, const GLenum& in_buffer_mode);
+    typedef void           (*PFNVKGLUNIFORM1UIPROC)                         (VKGL::Context* in_context_ptr, const GLint& in_location, const GLuint& in_v0);
+    typedef void           (*PFNVKGLUNIFORM1UIVPROC)                        (VKGL::Context* in_context_ptr, const GLint& in_location, const GLsizei& in_count, const GLuint* in_value_ptr);
+    typedef void           (*PFNVKGLUNIFORM2UIPROC)                         (VKGL::Context* in_context_ptr, const GLint& in_location, const GLuint& in_v0, const GLuint& in_v1);
+    typedef void           (*PFNVKGLUNIFORM2UIVPROC)                        (VKGL::Context* in_context_ptr, const GLint& in_location, const GLsizei& in_count, const GLuint* in_value_ptr);
+    typedef void           (*PFNVKGLUNIFORM3UIPROC)                         (VKGL::Context* in_context_ptr, const GLint& in_location, const GLuint& in_v0, const GLuint& in_v1, const GLuint& in_v2);
+    typedef void           (*PFNVKGLUNIFORM3UIVPROC)                        (VKGL::Context* in_context_ptr, const GLint& in_location, const GLsizei& in_count, const GLuint* in_value_ptr);
+    typedef void           (*PFNVKGLUNIFORM4UIPROC)                         (VKGL::Context* in_context_ptr, const GLint& in_location, const GLuint& in_v0, const GLuint& in_v1, const GLuint& in_v2, const GLuint& in_v3);
+    typedef void           (*PFNVKGLUNIFORM4UIVPROC)                        (VKGL::Context* in_context_ptr, const GLint& in_location, const GLsizei& in_count, const GLuint* in_value_ptr);
+    typedef void           (*PFNVKGLVERTEXATTRIBI1IPROC)                    (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLint& in_x);
+    typedef void           (*PFNVKGLVERTEXATTRIBI1IVPROC)                   (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLint* in_v_ptr);
+    typedef void           (*PFNVKGLVERTEXATTRIBI1UIPROC)                   (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLuint& in_x);
+    typedef void           (*PFNVKGLVERTEXATTRIBI1UIVPROC)                  (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLuint* in_v_ptr);
+    typedef void           (*PFNVKGLVERTEXATTRIBI2IPROC)                    (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLint& in_x, const GLint& in_y);
+    typedef void           (*PFNVKGLVERTEXATTRIBI2IVPROC)                   (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLint* in_v_ptr);
+    typedef void           (*PFNVKGLVERTEXATTRIBI2UIPROC)                   (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLuint& in_x, const GLuint& in_y);
+    typedef void           (*PFNVKGLVERTEXATTRIBI2UIVPROC)                  (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLuint* in_v_ptr);
+    typedef void           (*PFNVKGLVERTEXATTRIBI3IPROC)                    (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLint& in_x, const GLint& in_y, const GLint& in_z);
+    typedef void           (*PFNVKGLVERTEXATTRIBI3IVPROC)                   (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLint* in_v_ptr);
+    typedef void           (*PFNVKGLVERTEXATTRIBI3UIPROC)                   (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLuint& in_x, const GLuint& in_y, const GLuint& in_z);
+    typedef void           (*PFNVKGLVERTEXATTRIBI3UIVPROC)                  (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLuint* in_v_ptr);
+    typedef void           (*PFNVKGLVERTEXATTRIBI4BVPROC)                   (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLbyte* in_v_ptr);
+    typedef void           (*PFNVKGLVERTEXATTRIBI4IPROC)                    (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLint& in_x, const GLint& in_y, const GLint& in_z, const GLint& in_w);
+    typedef void           (*PFNVKGLVERTEXATTRIBI4IVPROC)                   (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLint* in_v_ptr);
+    typedef void           (*PFNVKGLVERTEXATTRIBI4SVPROC)                   (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLshort* in_v_ptr);
+    typedef void           (*PFNVKGLVERTEXATTRIBI4UBVPROC)                  (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLubyte* in_v_ptr);
+    typedef void           (*PFNVKGLVERTEXATTRIBI4UIPROC)                   (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLuint& in_x, const GLuint& in_y, const GLuint& in_z, const GLuint& in_w);
+    typedef void           (*PFNVKGLVERTEXATTRIBI4UIVPROC)                  (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLuint* in_v_ptr);
+    typedef void           (*PFNVKGLVERTEXATTRIBI4USVPROC)                  (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLushort* in_v_ptr);
+    typedef void           (*PFNVKGLVERTEXATTRIBIPOINTERPROC)               (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLint& in_size, const GLenum& in_type, const GLsizei& in_stride, const void* in_pointer_ptr);
 
 }
 

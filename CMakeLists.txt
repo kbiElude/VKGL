@@ -31,7 +31,7 @@ FILE(GLOB OpenGL32EntrypointsIncludes "${VK_GL_SOURCE_DIR}/include/OpenGL/entryp
                                       "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL1.5/*.h"
                                       "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL2.0/*.h"
                                       "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL2.1/*.h"
-                               #TODO: "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL3.0/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL3.0/*.h"
                                #TODO: "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL3.1/*.h"
                                #TODO: "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL3.2/*.h"
                                                                                                 )
@@ -43,7 +43,7 @@ FILE(GLOB OpenGL32EntrypointsSources  "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoint
                                       "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoints/GL1.5/*.cpp"
                                       "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoints/GL2.0/*.cpp"
                                       "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoints/GL2.1/*.cpp"
-                               #TODO: "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoints/GL3.0/*.cpp"
+                                      "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoints/GL3.0/*.cpp"
                                #TODO: "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoints/GL3.1/*.cpp"
                                #TODO: "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoints/GL3.2/*.cpp"
                                                                                               )
