@@ -91,6 +91,9 @@ namespace VKGL
         VKGL::FramebufferAttachmentPoint get_framebuffer_attachment_point_for_gl_enum(const GLenum&                           in_enum);
         GLenum                           get_gl_enum_for_framebuffer_attachment_point(const VKGL::FramebufferAttachmentPoint& in_fb_attachment_point);
 
+        VKGL::FramebufferAttachmentProperty get_framebuffer_attachment_property_for_gl_enum(const GLenum&                              in_enum);
+        GLenum                              get_gl_enum_for_framebuffer_attachment_property(const VKGL::FramebufferAttachmentProperty& in_pname);
+
         VKGL::FramebufferStatus get_framebuffer_status_for_gl_enum(const GLenum&                  in_enum);
         GLenum                  get_gl_enum_for_framebuffer_status(const VKGL::FramebufferStatus& in_status);
 
@@ -117,6 +120,9 @@ namespace VKGL
 
         GLenum            get_gl_enum_for_logic_op_mode(const VKGL::LogicOpMode& in_logic_op_mode);
         VKGL::LogicOpMode get_logic_op_mode_for_gl_enum(const GLenum&            in_enum);
+
+        GLenum                              get_gl_enum_for_mipmap_generation_texture_target(const VKGL::MipmapGenerationTextureTarget& in_target);
+        VKGL::MipmapGenerationTextureTarget get_mipmap_generation_texture_target_for_gl_enum(const GLenum&                              in_enum);
 
         GLenum            get_gl_enum_for_pixel_format(const VKGL::PixelFormat& in_pixel_format);
         VKGL::PixelFormat get_pixel_format_for_gl_enum(const GLenum&            in_enum);
@@ -154,6 +160,9 @@ namespace VKGL
 
         GLenum           get_gl_enum_for_read_buffer(const VKGL::ReadBuffer& in_read_buffer);
         VKGL::ReadBuffer get_read_buffer_for_gl_enum(const GLenum&           in_enum);
+
+        GLenum                     get_gl_enum_for_renderbuffer_property(const VKGL::RenderbufferProperty& in_pname);
+        VKGL::RenderbufferProperty get_renderbuffer_property_for_gl_enum(const GLenum&                     in_enum);
 
         GLenum                   get_gl_enum_for_renderbuffer_target(const VKGL::RenderbufferTarget& in_target);
         VKGL::RenderbufferTarget get_renderbuffer_target_for_gl_enum(const GLenum&                   in_enum);

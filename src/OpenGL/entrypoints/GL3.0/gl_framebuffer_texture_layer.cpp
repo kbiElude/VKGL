@@ -71,7 +71,7 @@ void vkglFramebufferTextureLayer_with_validation(VKGL::Context* in_context_ptr,
                  in_layer) )
     {
         vkglFramebufferTextureLayer_execute(in_context_ptr,
-                                            in_target,
+                                            in_tatotalrget,
                                             in_attachment,
                                             in_texture,
                                             in_level,

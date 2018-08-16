@@ -487,6 +487,26 @@ namespace VKGL
         Unknown,
     };
 
+    enum class FramebufferAttachmentProperty
+    {
+        Alpha_Size,
+        Blue_Size,
+        Color_Encoding,
+        Component_Type,
+        Depth_Size,
+        Green_Size,
+        Layered,
+        Object_Name,
+        Object_Type,
+        Red_Size,
+        Stencil_Size,
+        Texture_Cube_Map_Face,
+        Texture_Layer,
+        Texture_Level,
+
+        Unknown,
+    };
+
     enum class FramebufferStatus
     {
         Complete,
@@ -699,6 +719,18 @@ namespace VKGL
         Unknown
     };
 
+    enum class MipmapGenerationTextureTarget
+    {
+        Texture_1D,
+        Texture_1D_Array,
+        Texture_2D,
+        Texture_2D_Array,
+        Texture_3D,
+        Texture_Cube_Map,
+
+        Unknown,
+    };
+
     enum class PixelFormat
     {
         Blue,
@@ -873,6 +905,22 @@ namespace VKGL
         Color_Attachment7,
 
         Unknown
+    };
+
+    enum class RenderbufferProperty
+    {
+        Alpha_Size,
+        Blue_Size,
+        Depth_Size,
+        Green_Size,
+        Height,
+        Internal_Format,
+        Red_Size,
+        Samples,
+        Stencil_Size,
+        Width,
+
+        Unknown,
     };
 
     enum class RenderbufferTarget

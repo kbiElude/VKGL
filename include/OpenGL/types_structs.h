@@ -390,7 +390,7 @@ namespace VKGL
         PFNVKGLVERTEXATTRIBI2IPROC                     pGLVertexAttribI2i;
         PFNVKGLVERTEXATTRIBI2IVPROC                    pGLVertexAttribI2iv;
         PFNVKGLVERTEXATTRIBI2UIPROC                    pGLVertexAttribI2ui;
-        PFNVKGLVERTEXATTRIBI2UIVPROC                   pGLVertexAttribI2iv;
+        PFNVKGLVERTEXATTRIBI2UIVPROC                   pGLVertexAttribI2uiv;
         PFNVKGLVERTEXATTRIBI3IPROC                     pGLVertexAttribI3i;
         PFNVKGLVERTEXATTRIBI3IVPROC                    pGLVertexAttribI3iv;
         PFNVKGLVERTEXATTRIBI3UIPROC                    pGLVertexAttribI3ui;

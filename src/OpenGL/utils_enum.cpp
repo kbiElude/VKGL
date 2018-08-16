@@ -936,6 +936,36 @@ VKGL::FramebufferAttachmentPoint VKGL::Utils::get_framebuffer_attachment_point_f
     return result;
 }
 
+VKGL::FramebufferAttachmentProperty VKGL::Utils::get_framebuffer_attachment_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::FramebufferAttachmentProperty result = VKGL::FramebufferAttachmentProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE:            result = VKGL::FramebufferAttachmentProperty::Alpha_Size;             break;
+        case GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE:             result = VKGL::FramebufferAttachmentProperty::Blue_Size;              break;
+        case GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING:        result = VKGL::FramebufferAttachmentProperty::Color_Encoding;         break;
+        case GL_FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE:        result = VKGL::FramebufferAttachmentProperty::Component_Type;         break;
+        case GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE:            result = VKGL::FramebufferAttachmentProperty::Depth_Size;             break;
+        case GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE:            result = VKGL::FramebufferAttachmentProperty::Green_Size;             break;
+        case GL_FRAMEBUFFER_ATTACHMENT_LAYERED:               result = VKGL::FramebufferAttachmentProperty::Layered;                break;
+        case GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME:           result = VKGL::FramebufferAttachmentProperty::Object_Name;            break;
+        case GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE:           result = VKGL::FramebufferAttachmentProperty::Object_Type;            break;
+        case GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE:              result = VKGL::FramebufferAttachmentProperty::Red_Size;               break;
+        case GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE:          result = VKGL::FramebufferAttachmentProperty::Stencil_Size;           break;
+        case GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE: result = VKGL::FramebufferAttachmentProperty::Texture_Cube_Map_Face;  break;
+        case GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER:         result = VKGL::FramebufferAttachmentProperty::Texture_Layer;          break;
+        case GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL:         result = VKGL::FramebufferAttachmentProperty::Texture_Level;          break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::FramebufferTarget VKGL::Utils::get_framebuffer_target_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::FramebufferTarget result = VKGL::FramebufferTarget::Unknown;
@@ -1544,6 +1574,36 @@ GLenum VKGL::Utils::get_gl_enum_for_framebuffer_attachment_point(const VKGL::Fra
     return result;
 }
 
+GLenum VKGL::Utils::get_gl_enum_for_framebuffer_attachment_property(const VKGL::FramebufferAttachmentProperty& in_pname)
+{
+    GLenum result = 0;
+
+    switch (in_pname)
+    {
+        case VKGL::FramebufferAttachmentProperty::Alpha_Size:             result = GL_FRAMEBUFFER_ATTACHMENT_ALPHA_SIZE;            break;
+        case VKGL::FramebufferAttachmentProperty::Blue_Size:              result = GL_FRAMEBUFFER_ATTACHMENT_BLUE_SIZE;             break;
+        case VKGL::FramebufferAttachmentProperty::Color_Encoding:         result = GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING;        break;
+        case VKGL::FramebufferAttachmentProperty::Component_Type:         result = GL_FRAMEBUFFER_ATTACHMENT_COMPONENT_TYPE;        break;
+        case VKGL::FramebufferAttachmentProperty::Depth_Size:             result = GL_FRAMEBUFFER_ATTACHMENT_DEPTH_SIZE;            break;
+        case VKGL::FramebufferAttachmentProperty::Green_Size:             result = GL_FRAMEBUFFER_ATTACHMENT_GREEN_SIZE;            break;
+        case VKGL::FramebufferAttachmentProperty::Layered:                result = GL_FRAMEBUFFER_ATTACHMENT_LAYERED;               break;
+        case VKGL::FramebufferAttachmentProperty::Object_Name:            result = GL_FRAMEBUFFER_ATTACHMENT_OBJECT_NAME;           break;
+        case VKGL::FramebufferAttachmentProperty::Object_Type:            result = GL_FRAMEBUFFER_ATTACHMENT_OBJECT_TYPE;           break;
+        case VKGL::FramebufferAttachmentProperty::Red_Size:               result = GL_FRAMEBUFFER_ATTACHMENT_RED_SIZE;              break;
+        case VKGL::FramebufferAttachmentProperty::Stencil_Size:           result = GL_FRAMEBUFFER_ATTACHMENT_STENCIL_SIZE;          break;
+        case VKGL::FramebufferAttachmentProperty::Texture_Cube_Map_Face:  result = GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_CUBE_MAP_FACE; break;
+        case VKGL::FramebufferAttachmentProperty::Texture_Layer:          result = GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LAYER;         break;
+        case VKGL::FramebufferAttachmentProperty::Texture_Level:          result = GL_FRAMEBUFFER_ATTACHMENT_TEXTURE_LEVEL;         break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 GLenum VKGL::Utils::get_gl_enum_for_framebuffer_status(const VKGL::FramebufferStatus& in_status)
 {
     GLenum result = 0;
@@ -1793,6 +1853,28 @@ GLenum VKGL::Utils::get_gl_enum_for_logic_op_mode(const VKGL::LogicOpMode& in_lo
         case VKGL::LogicOpMode::Or_Reverse:    result = GL_OR_REVERSE;    break;
         case VKGL::LogicOpMode::Set:           result = GL_SET;           break;
         case VKGL::LogicOpMode::Xor:           result = GL_XOR;           break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_mipmap_generation_texture_target(const VKGL::MipmapGenerationTextureTarget& in_target)
+{
+    GLenum result = 0;
+
+    switch (in_target)
+    {
+        case VKGL::MipmapGenerationTextureTarget::Texture_1D:       result = GL_TEXTURE_1D;       break;
+        case VKGL::MipmapGenerationTextureTarget::Texture_1D_Array: result = GL_TEXTURE_1D_ARRAY; break;
+        case VKGL::MipmapGenerationTextureTarget::Texture_2D:       result = GL_TEXTURE_2D;       break;
+        case VKGL::MipmapGenerationTextureTarget::Texture_2D_Array: result = GL_TEXTURE_2D_ARRAY; break;
+        case VKGL::MipmapGenerationTextureTarget::Texture_3D:       result = GL_TEXTURE_3D;       break;
+        case VKGL::MipmapGenerationTextureTarget::Texture_Cube_Map: result = GL_TEXTURE_CUBE_MAP; break;
 
         default:
         {
@@ -2130,6 +2212,32 @@ GLenum VKGL::Utils::get_gl_enum_for_read_buffer(const VKGL::ReadBuffer& in_read_
         case VKGL::ReadBuffer::Front_Right:       result = GL_FRONT_RIGHT;       break;
         case VKGL::ReadBuffer::Left:              result = GL_LEFT;              break;
         case VKGL::ReadBuffer::Right:             result = GL_RIGHT;             break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_renderbuffer_property(const VKGL::RenderbufferProperty& in_pname)
+{
+    GLenum result = 0;
+
+    switch (in_pname)
+    {
+        case VKGL::RenderbufferProperty::Alpha_Size:      result = GL_RENDERBUFFER_ALPHA_SIZE;
+        case VKGL::RenderbufferProperty::Blue_Size:       result = GL_RENDERBUFFER_BLUE_SIZE;
+        case VKGL::RenderbufferProperty::Depth_Size:      result = GL_RENDERBUFFER_DEPTH_SIZE;
+        case VKGL::RenderbufferProperty::Green_Size:      result = GL_RENDERBUFFER_GREEN_SIZE;
+        case VKGL::RenderbufferProperty::Height:          result = GL_RENDERBUFFER_HEIGHT;
+        case VKGL::RenderbufferProperty::Internal_Format: result = GL_RENDERBUFFER_INTERNAL_FORMAT;
+        case VKGL::RenderbufferProperty::Red_Size:        result = GL_RENDERBUFFER_RED_SIZE;
+        case VKGL::RenderbufferProperty::Samples:         result = GL_RENDERBUFFER_SAMPLES;
+        case VKGL::RenderbufferProperty::Stencil_Size:    result = GL_RENDERBUFFER_STENCIL_SIZE;
+        case VKGL::RenderbufferProperty::Width:           result = GL_RENDERBUFFER_WIDTH;
 
         default:
         {
@@ -2874,6 +2982,28 @@ VKGL::LogicOpMode VKGL::Utils::get_logic_op_mode_for_gl_enum(const GLenum& in_en
     return result;
 }
 
+VKGL::MipmapGenerationTextureTarget VKGL::Utils::get_mipmap_generation_texture_target_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::MipmapGenerationTextureTarget result = VKGL::MipmapGenerationTextureTarget::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_TEXTURE_1D:       result = VKGL::MipmapGenerationTextureTarget::Texture_1D;       break;
+        case GL_TEXTURE_1D_ARRAY: result = VKGL::MipmapGenerationTextureTarget::Texture_1D_Array; break;
+        case GL_TEXTURE_2D:       result = VKGL::MipmapGenerationTextureTarget::Texture_2D;       break;
+        case GL_TEXTURE_2D_ARRAY: result = VKGL::MipmapGenerationTextureTarget::Texture_2D_Array; break;
+        case GL_TEXTURE_3D:       result = VKGL::MipmapGenerationTextureTarget::Texture_3D;       break;
+        case GL_TEXTURE_CUBE_MAP: result = VKGL::MipmapGenerationTextureTarget::Texture_Cube_Map; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::Capability VKGL::Utils::get_nonindexed_capability_for_gl_enum(const GLenum& in_enum)
 {
     VKGL::Capability result = VKGL::Capability::Unknown;
@@ -3238,6 +3368,32 @@ VKGL::ReadBuffer VKGL::Utils::get_read_buffer_for_gl_enum(const GLenum& in_enum)
     return result;
 }
 
+VKGL::RenderbufferProperty VKGL::Utils::get_renderbuffer_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::RenderbufferProperty result = VKGL::RenderbufferProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_RENDERBUFFER_ALPHA_SIZE:      result = VKGL::RenderbufferProperty::Alpha_Size;      break;
+        case GL_RENDERBUFFER_BLUE_SIZE:       result = VKGL::RenderbufferProperty::Blue_Size;       break;
+        case GL_RENDERBUFFER_DEPTH_SIZE:      result = VKGL::RenderbufferProperty::Depth_Size;      break;
+        case GL_RENDERBUFFER_GREEN_SIZE:      result = VKGL::RenderbufferProperty::Green_Size;      break;
+        case GL_RENDERBUFFER_HEIGHT:          result = VKGL::RenderbufferProperty::Height;          break;
+        case GL_RENDERBUFFER_INTERNAL_FORMAT: result = VKGL::RenderbufferProperty::Internal_Format; break;
+        case GL_RENDERBUFFER_RED_SIZE:        result = VKGL::RenderbufferProperty::Red_Size;        break;
+        case GL_RENDERBUFFER_SAMPLES:         result = VKGL::RenderbufferProperty::Samples;         break;
+        case GL_RENDERBUFFER_STENCIL_SIZE:    result = VKGL::RenderbufferProperty::Stencil_Size;    break;
+        case GL_RENDERBUFFER_WIDTH:           result = VKGL::RenderbufferProperty::Width;           break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::RenderbufferTarget VKGL::Utils::get_renderbuffer_target_for_gl_enum(const GLenum& in_enum)
 {
     vkgl_assert(in_enum == GL_RENDERBUFFER);
@@ -3574,6 +3730,7 @@ VKGL::TextureTarget VKGL::Utils::get_texture_target_for_gl_enum(const GLenum& in
         case GL_TEXTURE_2D_MULTISAMPLE:             result = VKGL::TextureTarget::_2D_Multisample;                    break;
         case GL_TEXTURE_2D_MULTISAMPLE_ARRAY:       result = VKGL::TextureTarget::_2D_Multisample_Array;              break;
         case GL_TEXTURE_3D:                         result = VKGL::TextureTarget::_3D;                                break;
+        case GL_TEXTURE_CUBE_MAP:                   result = VKGL::TextureTarget::Cube_Map;                           break;
         case GL_TEXTURE_CUBE_MAP_NEGATIVE_X:        result = VKGL::TextureTarget::Cube_Map_Negative_X;                break;
         case GL_TEXTURE_CUBE_MAP_NEGATIVE_Y:        result = VKGL::TextureTarget::Cube_Map_Negative_Y;                break;
         case GL_TEXTURE_CUBE_MAP_NEGATIVE_Z:        result = VKGL::TextureTarget::Cube_Map_Negative_Z;                break;

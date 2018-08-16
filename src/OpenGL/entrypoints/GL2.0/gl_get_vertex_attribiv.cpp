@@ -41,6 +41,7 @@ void vkglGetVertexAttribiv_execute(VKGL::Context* in_context_ptr,
 
     in_context_ptr->get_vertex_attribute_property(in_index,
                                                   pname_vkgl,
+                                                  VKGL::GetSetArgumentType::Float,
                                                   VKGL::GetSetArgumentType::Int,
                                                   out_params_ptr);
 }
