@@ -54,6 +54,7 @@ void vkglVertexAttribPointer_execute(VKGL::Context*   in_context_ptr,
     in_context_ptr->set_vertex_attrib_pointer(in_index,
                                               in_size,
                                               type_vkgl,
+                                              VKGL::GetSetArgumentType::Float,
                                               in_normalized == GL_TRUE,
                                               in_stride,
                                               in_pointer_ptr);

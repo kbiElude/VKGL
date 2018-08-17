@@ -54,6 +54,7 @@ void vkglVertexAttrib4s_execute(VKGL::Context* in_context_ptr,
 
     in_context_ptr->set_vertex_attribute(in_index,
                                          VKGL::GetSetArgumentType::Short,
+                                         VKGL::GetSetArgumentType::Float,
                                          4,
                                          false, /* in_normalized */
                                          data);

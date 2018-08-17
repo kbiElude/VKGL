@@ -54,6 +54,7 @@ void vkglVertexAttrib4Nub_execute(VKGL::Context* in_context_ptr,
 
     in_context_ptr->set_vertex_attribute(in_index,
                                          VKGL::GetSetArgumentType::Unsigned_Byte,
+                                         VKGL::GetSetArgumentType::Float,
                                          4,
                                          true, /* in_normalized */
                                          data);
