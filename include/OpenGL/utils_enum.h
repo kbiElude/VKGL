@@ -221,6 +221,12 @@ namespace VKGL
         GLenum                               get_gl_enum_for_transform_feedback_primitive_mode(const VKGL::TransformFeedbackPrimitiveMode& in_mode);
         VKGL::TransformFeedbackPrimitiveMode get_transform_feedback_primitive_mode_for_gl_enum(const GLenum&                               in_enum);
 
+        GLenum                     get_gl_enum_for_uniform_block_property(const VKGL::UniformBlockProperty& in_property);
+        VKGL::UniformBlockProperty get_uniform_block_property_for_gl_enum(const GLenum&                     in_enum);
+
+        GLenum                get_gl_enum_for_uniform_property(const VKGL::UniformProperty& in_property);
+        VKGL::UniformProperty get_uniform_property_for_gl_enum(const GLenum&                in_enum);
+
         GLenum             get_gl_enum_for_variable_type(const VariableType& in_type);
         VKGL::VariableType get_variable_type_for_gl_enum(const GLenum&       in_enum);
 

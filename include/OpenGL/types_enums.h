@@ -1178,6 +1178,20 @@ namespace VKGL
         Unknown,
     };
 
+    enum class UniformBlockProperty
+    {
+        Binding,
+        Block_Active_Uniforms,
+        Block_Active_Uniform_Indices,
+        Block_Data_Size,
+        Block_Name_Length,
+        Referenced_By_Fragment_Shader,
+        Referenced_By_Geometry_Shader,
+        Referenced_By_Vertex_Shader,
+
+        Unknown,
+    };
+
     enum class VariableType
     {
         Bool,
@@ -1241,6 +1255,19 @@ namespace VKGL
         Vec2,
         Vec3,
         Vec4,
+
+        Unknown
+    };
+
+    enum class UniformProperty
+    {
+        Array_Stride,
+        Block_Index,
+        Is_Row_Major,
+        Matrix_Stride,
+        Name_Length,
+        Offset,
+        Size,
 
         Unknown
     };

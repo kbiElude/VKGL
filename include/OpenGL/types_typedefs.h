@@ -315,6 +315,21 @@ namespace VKGL
     typedef void           (*PFNVKGLVERTEXATTRIBI4USVPROC)                  (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLushort* in_v_ptr);
     typedef void           (*PFNVKGLVERTEXATTRIBIPOINTERPROC)               (VKGL::Context* in_context_ptr, const GLuint& in_index, const GLint& in_size, const GLenum& in_type, const GLsizei& in_stride, const void* in_pointer_ptr);
 
+    /* VKGL GL entrypoints : GL 3.1 */
+    typedef void   (*PFNVKGLCOPYBUFFERSUBDATAPROC)        (VKGL::Context* in_context_ptr, const GLenum& in_read_target, const GLenum& in_write_target, const GLintptr& in_read_offset, const GLintptr& in_write_offset, const GLsizeiptr& in_size);
+    typedef void   (*PFNVKGLDRAWARRAYSINSTANCEDPROC)      (VKGL::Context* in_context_ptr, const GLenum& in_mode, const GLint& in_first, const GLsizei& in_count, const GLsizei& in_instancecount);
+    typedef void   (*PFNVKGLDRAWELEMENTSINSTANCEDPROC)    (VKGL::Context* in_context_ptr, const GLenum& in_mode, const GLsizei& in_count, const GLenum& in_type, const void* in_indices_ptr, const GLsizei& in_instancecount);
+    typedef void   (*PFNVKGLGETACTIVEUNIFORMBLOCKNAMEPROC)(VKGL::Context* in_context_ptr, const GLuint& in_program, const GLuint& in_uniform_block_index, const GLsizei& in_buf_size, GLsizei* in_length_ptr, GLchar* out_uniform_block_name);
+    typedef void   (*PFNVKGLGETACTIVEUNIFORMBLOCKIVPROC)  (VKGL::Context* in_context_ptr, const GLuint& in_program, const GLuint& in_uniform_block_index, const GLenum& in_pname, GLint* out_params_ptr);
+    typedef void   (*PFNVKGLGETACTIVEUNIFORMNAMEPROC)     (VKGL::Context* in_context_ptr, const GLuint& in_program, const GLuint& in_uniform_index, const GLsizei& in_buf_size, GLsizei* out_length_ptr, GLchar*  out_uniform_name_ptr);
+    typedef void   (*PFNVKGLGETACTIVEUNIFORMSIVPROC)      (VKGL::Context* in_context_ptr, const GLuint& in_program, const GLsizei& in_uniform_count, const GLuint* in_uniform_indices_ptr, const GLenum& in_pname, GLint* out_params_ptr);
+    typedef GLuint (*PFNVKGLGETUNIFORMBLOCKINDEXPROC)     (VKGL::Context* in_context_ptr, const GLuint& in_program, const GLchar* in_uniform_block_name_ptr);
+    typedef void   (*PFNVKGLGETUNIFORMINDICESPROC)        (VKGL::Context* in_context_ptr, const GLuint& in_program, const GLsizei& in_uniform_count, const GLchar* const* in_uniform_names_ptr_ptr, GLuint* out_uniform_indices_ptr);
+    typedef void   (*PFNVKGLPRIMITIVERESTARTINDEXPROC)    (VKGL::Context* in_context_ptr, const GLuint& in_index);
+    typedef void   (*PFNVKGLTEXBUFFERPROC)                (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_internalformat, const GLuint& in_buffer);
+    typedef void   (*PFNVKGLUNIFORMBLOCKBINDINGPROC)      (VKGL::Context* in_context_ptr, const GLuint& in_program, const GLuint& in_uniform_block_index, const GLuint& in_uniform_block_binding);
+
+
 }
 
 #endif /* VKGL_TYPES_TYPEDEFS_H */

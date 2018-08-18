@@ -405,6 +405,20 @@ namespace VKGL
         PFNVKGLVERTEXATTRIBI4USVPROC                   pGLVertexAttribI4usv;
         PFNVKGLVERTEXATTRIBIPOINTERPROC                pGLVertexAttribIPointer;
 
+        /* GL 3.1 */
+        PFNVKGLCOPYBUFFERSUBDATAPROC         pGLCopyBufferSubData;
+        PFNVKGLDRAWARRAYSINSTANCEDPROC       pGLDrawArraysInstanced;
+        PFNVKGLDRAWELEMENTSINSTANCEDPROC     pGLDrawElementsInstanced;
+        PFNVKGLGETACTIVEUNIFORMBLOCKNAMEPROC pGLGetActiveUniformBlockName;
+        PFNVKGLGETACTIVEUNIFORMBLOCKIVPROC   pGLGetActiveUniformBlockiv;
+        PFNVKGLGETACTIVEUNIFORMNAMEPROC      pGLGetActiveUniformName;
+        PFNVKGLGETACTIVEUNIFORMSIVPROC       pGLGetActiveUniformsiv;
+        PFNVKGLGETUNIFORMBLOCKINDEXPROC      pGLGetUniformBlockIndex;
+        PFNVKGLGETUNIFORMINDICESPROC         pGLGetUniformIndices;
+        PFNVKGLPRIMITIVERESTARTINDEXPROC     pGLPrimitiveRestartIndex;
+        PFNVKGLTEXBUFFERPROC                 pGLTexBuffer;
+        PFNVKGLUNIFORMBLOCKBINDINGPROC       pGLUniformBlockBinding;
+
         DispatchTable();
     };
 

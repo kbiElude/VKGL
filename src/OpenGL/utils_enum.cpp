@@ -2648,6 +2648,53 @@ GLenum VKGL::Utils::get_gl_enum_for_transform_feedback_primitive_mode(const VKGL
     return result;
 }
 
+GLenum VKGL::Utils::get_gl_enum_for_uniform_block_property(const VKGL::UniformBlockProperty& in_property)
+{
+    GLenum result = 0;
+
+    switch (in_property)
+    {
+        case VKGL::UniformBlockProperty::Binding:                       result = GL_UNIFORM_BLOCK_BINDING;                       break;
+        case VKGL::UniformBlockProperty::Block_Active_Uniforms:         result = GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS;               break;
+        case VKGL::UniformBlockProperty::Block_Active_Uniform_Indices:  result = GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES;        break;
+        case VKGL::UniformBlockProperty::Block_Data_Size:               result = GL_UNIFORM_BLOCK_DATA_SIZE;                     break;
+        case VKGL::UniformBlockProperty::Block_Name_Length:             result = GL_UNIFORM_BLOCK_NAME_LENGTH;                   break;
+        case VKGL::UniformBlockProperty::Referenced_By_Fragment_Shader: result = GL_UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER; break;
+        case VKGL::UniformBlockProperty::Referenced_By_Geometry_Shader: result = GL_UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER; break;
+        case VKGL::UniformBlockProperty::Referenced_By_Vertex_Shader:   result = GL_UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER;   break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_uniform_property(const VKGL::UniformProperty& in_property)
+{
+    GLenum result = 0;
+
+    switch (in_property)
+    {
+        case VKGL::UniformProperty::Array_Stride:  result = GL_UNIFORM_ARRAY_STRIDE;  break;
+        case VKGL::UniformProperty::Block_Index:   result = GL_UNIFORM_BLOCK_INDEX;   break;
+        case VKGL::UniformProperty::Is_Row_Major:  result = GL_UNIFORM_IS_ROW_MAJOR;  break;
+        case VKGL::UniformProperty::Matrix_Stride: result = GL_UNIFORM_MATRIX_STRIDE; break;
+        case VKGL::UniformProperty::Name_Length:   result = GL_UNIFORM_NAME_LENGTH;   break;
+        case VKGL::UniformProperty::Offset:        result = GL_UNIFORM_OFFSET;        break;
+        case VKGL::UniformProperty::Size:          result = GL_UNIFORM_SIZE;          break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 GLenum VKGL::Utils::get_gl_enum_for_variable_type(const VariableType& in_type)
 {
     GLenum result = 0;
@@ -3883,6 +3930,53 @@ VKGL::TransformFeedbackPrimitiveMode VKGL::Utils::get_transform_feedback_primiti
         case GL_LINES:     result = VKGL::TransformFeedbackPrimitiveMode::Lines;     break;
         case GL_POINTS:    result = VKGL::TransformFeedbackPrimitiveMode::Points;    break;
         case GL_TRIANGLES: result = VKGL::TransformFeedbackPrimitiveMode::Triangles; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::UniformBlockProperty VKGL::Utils::get_uniform_block_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::UniformBlockProperty result = VKGL::UniformBlockProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_UNIFORM_BLOCK_BINDING:                       result = VKGL::UniformBlockProperty::Binding;                       break;
+        case GL_UNIFORM_BLOCK_ACTIVE_UNIFORMS:               result = VKGL::UniformBlockProperty::Block_Active_Uniforms;         break;
+        case GL_UNIFORM_BLOCK_ACTIVE_UNIFORM_INDICES:        result = VKGL::UniformBlockProperty::Block_Active_Uniform_Indices;  break;
+        case GL_UNIFORM_BLOCK_DATA_SIZE:                     result = VKGL::UniformBlockProperty::Block_Data_Size;               break;
+        case GL_UNIFORM_BLOCK_NAME_LENGTH:                   result = VKGL::UniformBlockProperty::Block_Name_Length;             break;
+        case GL_UNIFORM_BLOCK_REFERENCED_BY_FRAGMENT_SHADER: result = VKGL::UniformBlockProperty::Referenced_By_Fragment_Shader; break;
+        case GL_UNIFORM_BLOCK_REFERENCED_BY_GEOMETRY_SHADER: result = VKGL::UniformBlockProperty::Referenced_By_Geometry_Shader; break;
+        case GL_UNIFORM_BLOCK_REFERENCED_BY_VERTEX_SHADER:   result = VKGL::UniformBlockProperty::Referenced_By_Vertex_Shader;   break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::UniformProperty VKGL::Utils::get_uniform_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::UniformProperty result = VKGL::UniformProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_UNIFORM_ARRAY_STRIDE:  result = VKGL::UniformProperty::Array_Stride;  break;
+        case GL_UNIFORM_BLOCK_INDEX:   result = VKGL::UniformProperty::Block_Index;   break;
+        case GL_UNIFORM_IS_ROW_MAJOR:  result = VKGL::UniformProperty::Is_Row_Major;  break;
+        case GL_UNIFORM_MATRIX_STRIDE: result = VKGL::UniformProperty::Matrix_Stride; break;
+        case GL_UNIFORM_NAME_LENGTH:   result = VKGL::UniformProperty::Name_Length;   break;
+        case GL_UNIFORM_OFFSET:        result = VKGL::UniformProperty::Offset;        break;
+        case GL_UNIFORM_SIZE:          result = VKGL::UniformProperty::Size;          break;
 
         default:
         {
