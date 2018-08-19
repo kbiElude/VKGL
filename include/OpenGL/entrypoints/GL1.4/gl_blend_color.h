@@ -12,4 +12,10 @@ VKGL_API void VKGL_APIENTRY glBlendColor(GLfloat red,
                                          GLfloat blue,
                                          GLfloat alpha);
 
+void vkglBlendColor_with_validation(VKGL::Context* in_context_ptr,
+                                    const GLfloat& in_red,
+                                    const GLfloat& in_green,
+                                    const GLfloat& in_blue,
+                                    const GLfloat& in_alpha);
+
 #endif /* VKGL_GL_BLEND_COLOR_H */

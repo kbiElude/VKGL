@@ -9,4 +9,7 @@
 
 VKGL_API void VKGL_APIENTRY glBlendEquation(GLenum mode);
 
+void vkglBlendEquation_with_validation(VKGL::Context* in_context_ptr,
+                                       const GLenum&  in_mode);
+
 #endif /* VKGL_GL_BLEND_EQUATION_H */

@@ -10,4 +10,8 @@
 VKGL_API void VKGL_APIENTRY glBindRenderbuffer(GLenum target,
                                                GLuint renderbuffer);
 
+void vkglBindRenderbuffer_with_validation(VKGL::Context* in_context_ptr,
+                                          const GLenum&  in_target,
+                                          const GLuint&  in_renderbuffer);
+
 #endif /* VKGL_GL_BIND_RENDERBUFFER_H */

@@ -9,4 +9,7 @@
 
 VKGL_API void VKGL_APIENTRY glDeleteShader(GLuint shader);
 
+void vkglDeleteShader_with_validation(VKGL::Context* in_context_ptr,
+                                      const GLuint&  in_shader);
+
 #endif /* VKGL_GL_DELETE_SHADER_H */

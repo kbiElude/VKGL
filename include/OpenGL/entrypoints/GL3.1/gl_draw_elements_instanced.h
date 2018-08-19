@@ -13,4 +13,11 @@ VKGL_API void VKGL_APIENTRY glDrawElementsInstanced(GLenum      mode,
                                                     const void* indices,
                                                     GLsizei     instancecount);
 
+void vkglDrawElementsInstanced_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLenum&  in_mode,
+                                               const GLsizei& in_count,
+                                               const GLenum&  in_type,
+                                               const void*    in_indices_ptr,
+                                               const GLsizei& in_instancecount);
+
 #endif /* VKGL_GL_DRAW_ELEMENTS_INSTANCED_H */

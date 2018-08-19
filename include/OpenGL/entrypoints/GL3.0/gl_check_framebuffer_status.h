@@ -9,4 +9,7 @@
 
 VKGL_API GLenum VKGL_APIENTRY glCheckFramebufferStatus(GLenum target);
 
+GLenum vkglCheckFramebufferStatus_with_validation(VKGL::Context* in_context_ptr,
+                                                  const GLenum&  in_target);
+
 #endif /* VKGL_GL_CHECK_FRAMEBUFFER_STATUS_H */

@@ -15,4 +15,13 @@ VKGL_API void VKGL_APIENTRY glGetActiveUniform(GLuint   program,
                                                GLenum*  type,
                                                GLchar*  name);
 
+void vkglGetActiveUniform_with_validation(VKGL::Context* in_context_ptr,
+                                          const GLuint&  in_program,
+                                          const GLuint&  in_index,
+                                          const GLsizei& in_buf_size,
+                                          GLsizei*       out_length_ptr,
+                                          GLint*         out_size_ptr,
+                                          GLenum*        out_type_ptr,
+                                          GLchar*        out_name_ptr);
+
 #endif /* VKGL_GL_GET_ACTIVE_UNIFORM_H */

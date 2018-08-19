@@ -9,4 +9,7 @@
 
 VKGL_API GLuint VKGL_APIENTRY glCreateShader(GLenum type);
 
+GLuint vkglCreateShader_with_validation(VKGL::Context* in_context_ptr,
+                                        const GLenum&  in_type);
+
 #endif /* VKGL_GL_CREATE_SHADER_H */

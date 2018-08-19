@@ -9,4 +9,7 @@
 
 VKGL_API void VKGL_APIENTRY glDeleteProgram(GLuint program);
 
+void vkglDeleteProgram_with_validation(VKGL::Context* in_context_ptr,
+                                       const GLuint&  in_program);
+
 #endif /* VKGL_GL_DELETE_PROGRAM_H */

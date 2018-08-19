@@ -12,4 +12,10 @@ VKGL_API void VKGL_APIENTRY glUniformMatrix3x2fv(GLint          location,
                                                  GLboolean      transpose,
                                                  const GLfloat* value);
 
+void vkglUniformMatrix3x2fv_with_validation(VKGL::Context*   in_context_ptr,
+                                            const GLint&     in_location,
+                                            const GLsizei&   in_count,
+                                            const GLboolean& in_transpose,
+                                            const GLfloat*   in_value_ptr)
+
 #endif /* VKGL_GL_UNIFORM_MATRIX_3X2_FV_H */

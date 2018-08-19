@@ -9,4 +9,7 @@
 
 VKGL_API void VKGL_APIENTRY glValidateProgram(GLuint program);
 
+void vkglValidateProgram_with_validation(VKGL::Context* in_context_ptr,
+                                         const GLuint&  in_program);
+
 #endif /* VKGL_GL_VALIDATE_PROGRAM_H */

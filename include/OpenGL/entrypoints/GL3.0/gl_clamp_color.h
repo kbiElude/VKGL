@@ -10,4 +10,8 @@
 VKGL_API void VKGL_APIENTRY glClampColor(GLenum target,
                                          GLenum clamp);
 
+void vkglClampColor_with_validation(VKGL::Context* in_context_ptr,
+                                    const GLenum&  in_target,
+                                    const GLenum&  in_clamp);
+
 #endif /* VKGL_GL_CLAMP_COLOR_H */

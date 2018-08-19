@@ -9,4 +9,7 @@
 
 VKGL_API GLboolean VKGL_APIENTRY glIsBuffer(GLuint buffer);
 
+bool vkglIsBuffer_with_validation(VKGL::Context* in_context_ptr,
+                                  const GLuint&  in_buffer);
+
 #endif /* VKGL_GL_IS_BUFFER_H */

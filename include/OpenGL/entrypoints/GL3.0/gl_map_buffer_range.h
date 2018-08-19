@@ -12,4 +12,10 @@ VKGL_API void *APIENTRY glMapBufferRange(GLenum     target,
                                          GLsizeiptr length,
                                          GLbitfield access);
 
+void* vkglMapBufferRange_with_validation(VKGL::Context*    in_context_ptr,
+                                         const GLenum&     in_target,
+                                         const GLintptr&   in_offset,
+                                         const GLsizeiptr& in_length,
+                                         const GLbitfield& in_access);
+
 #endif /* VKGL_GL_MAP_BUFFER_RANGE_H */

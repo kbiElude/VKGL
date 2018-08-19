@@ -9,4 +9,7 @@
 
 VKGL_API GLboolean VKGL_APIENTRY glIsQuery(GLuint id);
 
+bool vkglIsQuery_with_validation(VKGL::Context* in_context_ptr,
+                                 const GLuint&  in_id);
+
 #endif /* VKGL_GL_IS_QUERY_H */

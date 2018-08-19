@@ -9,4 +9,7 @@
 
 VKGL_API GLboolean VKGL_APIENTRY glIsProgram(GLuint program);
 
+bool vkglIsProgram_with_validation(VKGL::Context* in_context_ptr,
+                                   const GLuint&  in_program);
+
 #endif /* VKGL_GL_IS_PROGRAM_H */

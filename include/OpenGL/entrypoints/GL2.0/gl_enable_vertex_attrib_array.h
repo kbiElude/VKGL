@@ -9,4 +9,7 @@
 
 VKGL_API void VKGL_APIENTRY glEnableVertexAttribArray(GLuint index);
 
+void vkglEnableVertexAttribArray_with_validation(VKGL::Context* in_context_ptr,
+                                                 const GLuint&  in_index);
+
 #endif /* VKGL_GL_ENABLE_VERTEX_ATTRIB_ARRAY_H */

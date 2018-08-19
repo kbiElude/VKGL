@@ -10,4 +10,8 @@
 VKGL_API void VKGL_APIENTRY glGetInteger64v(GLenum   pname,
                                             GLint64* data);
 
+void vkglGetInteger64v_with_validation(VKGL::Context* in_context_ptr,
+                                       const GLenum&  in_pname,
+                                       GLint64*       out_data_ptr);
+
 #endif /* VKGL_GL_GET_INTEGER64V_H */

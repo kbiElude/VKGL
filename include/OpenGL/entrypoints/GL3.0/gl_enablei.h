@@ -10,4 +10,8 @@
 VKGL_API void VKGL_APIENTRY glEnablei(GLenum target,
                                       GLuint index);
 
+void vkglEnablei_with_validation(VKGL::Context* in_context_ptr,
+                                 const GLenum&  in_target,
+                                 const GLuint&  in_index);
+
 #endif /* VKGL_GL_ENABLEI_H */

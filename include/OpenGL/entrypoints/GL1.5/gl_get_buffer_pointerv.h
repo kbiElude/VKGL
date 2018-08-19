@@ -11,4 +11,9 @@ VKGL_API void VKGL_APIENTRY glGetBufferPointerv(GLenum target,
                                                 GLenum pname,
                                                 void** params);
 
+void vkglGetBufferPointerv_with_validation(VKGL::Context* in_context_ptr,
+                                           const GLenum&  in_target,
+                                           const GLenum&  in_pname,
+                                           void**         out_params_ptr_ptr);
+
 #endif /* VKGL_GL_GET_BUFFER_POINTERV_H */

@@ -10,4 +10,8 @@
 VKGL_API GLint VKGL_APIENTRY glGetUniformLocation(GLuint        program,
                                                   const GLchar* name);
 
+GLint vkglGetUniformLocation_with_validation(VKGL::Context* in_context_ptr,
+                                             const GLuint&  in_program,
+                                             const GLchar*  in_name);
+
 #endif /* VKGL_GL_GET_UNIFORM_LOCATION_H */

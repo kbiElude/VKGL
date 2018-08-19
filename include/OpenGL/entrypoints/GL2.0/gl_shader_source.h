@@ -12,4 +12,10 @@ VKGL_API void VKGL_APIENTRY glShaderSource(GLuint               shader,
                                            const GLchar* const* string,
                                            const GLint*         length);
 
+void vkglShaderSource_with_validation(VKGL::Context*       in_context_ptr,
+                                      const GLuint&        in_shader,
+                                      const GLsizei&       in_count,
+                                      const GLchar* const* in_string_ptr_ptr,
+                                      const GLint*         in_length_ptr);
+
 #endif /* VKGL_GL_SHADER_SOURCE_H */

@@ -10,4 +10,8 @@
 VKGL_API void VKGL_APIENTRY glPointParameterfv(GLenum         pname,
                                                const GLfloat* params);
 
+void vkglPointParameterfv_with_validation(VKGL::Context* in_context_ptr,
+                                          const GLenum&  in_pname,
+                                          const GLfloat* in_params);
+
 #endif /* VKGL_GL_POINT_PARAMETERFV_H */

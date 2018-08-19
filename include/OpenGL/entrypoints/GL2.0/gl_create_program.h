@@ -9,4 +9,6 @@
 
 VKGL_API GLuint VKGL_APIENTRY glCreateProgram(void);
 
+GLuint vkglCreateProgram_with_validation(VKGL::Context* in_context_ptr);
+
 #endif /* VKGL_GL_CREATE_PROGRAM_H */

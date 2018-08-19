@@ -15,4 +15,13 @@ VKGL_API void VKGL_APIENTRY glGetTransformFeedbackVarying(GLuint   program,
                                                           GLenum*  type,
                                                           GLchar*  name);
 
+void vkglGetTransformFeedbackVarying_with_validation(VKGL::Context* in_context_ptr,
+                                                     GLuint         in_program,
+                                                     GLuint         in_index,
+                                                     GLsizei        in_buf_size,
+                                                     GLsizei*       out_length_ptr,
+                                                     GLsizei*       out_size_ptr,
+                                                     GLenum*        out_type_ptr,
+                                                     GLchar*        out_name_ptr);
+
 #endif /* VKGL_GL_GET_TRANSFORM_FEEDBACK_VARYING_H */

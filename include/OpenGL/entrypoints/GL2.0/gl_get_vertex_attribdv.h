@@ -11,4 +11,9 @@ VKGL_API void VKGL_APIENTRY glGetVertexAttribdv(GLuint    index,
                                                 GLenum    pname,
                                                 GLdouble* params);
 
+void vkglGetVertexAttribdv_with_validation(VKGL::Context* in_context_ptr,
+                                           const GLuint&  in_index,
+                                           const GLenum&  in_pname,
+                                           GLdouble*      out_params_ptr);
+
 #endif /* VKGL_GL_GET_VERTEX_ATTRIBDV_H */

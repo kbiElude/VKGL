@@ -9,4 +9,7 @@
 
 VKGL_API GLboolean VKGL_APIENTRY glIsShader(GLuint shader);
 
+bool vkglIsShader_with_validation(VKGL::Context* in_context_ptr,
+                                  const GLuint&  in_shader);
+
 #endif /* VKGL_GL_IS_SHADER_H */

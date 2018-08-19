@@ -12,4 +12,11 @@ VKGL_API void VKGL_APIENTRY glGetShaderInfoLog(GLuint   shader,
                                                GLsizei* length,
                                                GLchar*  infoLog);
 
+void vkglGetShaderInfoLog_with_validation(VKGL::Context* in_context_ptr,
+                                          const GLuint&  in_shader,
+                                          const GLsizei& in_buf_size,
+                                          GLsizei*       inout_length_ptr,
+                                          GLchar*        out_info_log_ptr)
+
+
 #endif /* VKGL_GL_GET_SHADER_INFO_LOG_H */

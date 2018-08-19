@@ -12,4 +12,10 @@ VKGL_API void VKGL_APIENTRY glBlendFuncSeparate(GLenum sfactorRGB,
                                                 GLenum sfactorAlpha,
                                                 GLenum dfactorAlpha);
 
+void vkglBlendFuncSeparate_with_validation(VKGL::Context* in_context_ptr,
+                                           const GLenum&  in_sfactorRGB,
+                                           const GLenum&  in_dfactorRGB,
+                                           const GLenum&  in_sfactorAlpha,
+                                           const GLenum&  in_dfactorAlpha);
+
 #endif /* VKGL_GL_BLEND_FUNC_SEPARATE_H */

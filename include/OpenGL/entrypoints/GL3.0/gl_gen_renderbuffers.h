@@ -10,4 +10,8 @@
 VKGL_API void VKGL_APIENTRY glGenRenderbuffers(GLsizei n,
                                                GLuint* renderbuffers);
 
+void vkglGenRenderbuffers_with_validation(VKGL::Context* in_context_ptr,
+                                          const GLsizei& in_n,
+                                          GLuint*        out_renderbuffers_ptr);
+
 #endif /* VKGL_GL_GEN_RENDERBUFFERS_H */

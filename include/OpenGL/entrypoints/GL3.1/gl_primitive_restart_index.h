@@ -9,4 +9,7 @@
 
 VKGL_API void VKGL_APIENTRY glPrimitiveRestartIndex(GLuint index);
 
+void vkglPrimitiveRestartIndex_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLuint&  in_index);
+
 #endif /* VKGL_GL_PRIMITIVE_RESTART_INDEX_H */
