@@ -182,6 +182,12 @@ namespace VKGL
         GLenum                 get_gl_enum_for_stencil_state_face(const VKGL::StencilStateFace& in_face);
         VKGL::StencilStateFace get_stencil_state_face_for_gl_enum(const GLenum&                 in_enum);
 
+        GLenum              get_gl_enum_for_sync_condition(const VKGL::SyncCondition& in_condition);
+        VKGL::SyncCondition get_sync_condition_for_gl_enum(const GLenum&              in_enum);
+
+        GLenum             get_gl_enum_for_sync_property(const VKGL::SyncProperty& in_pname);
+        VKGL::SyncProperty get_sync_property_for_gl_enum(const GLenum&             in_enum);
+
         VKGL::TextureBindingProperty get_texture_binding_property_for_context_property(const VKGL::ContextProperty& in_pname);
         bool                         is_texture_binding_pname                         (const VKGL::ContextProperty& in_pname);
 
@@ -226,6 +232,12 @@ namespace VKGL
 
         GLenum                get_gl_enum_for_uniform_property(const VKGL::UniformProperty& in_property);
         VKGL::UniformProperty get_uniform_property_for_gl_enum(const GLenum&                in_enum);
+
+        GLenum           get_gl_enum_for_wait_result(const VKGL::WaitResult& in_result);
+        VKGL::WaitResult get_wait_result_for_gl_enum(const GLenum&           in_enum);
+
+        VKGL::WaitSyncBits get_wait_sync_bits_for_gl_enum(const GLenum&             in_enum);
+        GLenum             get_gl_enum_for_wait_sync_bits(const VKGL::WaitSyncBits& in_bits);
 
         GLenum             get_gl_enum_for_variable_type(const VariableType& in_type);
         VKGL::VariableType get_variable_type_for_gl_enum(const GLenum&       in_enum);

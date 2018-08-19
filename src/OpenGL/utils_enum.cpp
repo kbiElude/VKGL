@@ -2362,6 +2362,43 @@ GLenum VKGL::Utils::get_gl_enum_for_stencil_state_face(const VKGL::StencilStateF
     return result;
 }
 
+GLenum VKGL::Utils::get_gl_enum_for_sync_condition(const VKGL::SyncCondition& in_condition)
+{
+    GLenum result = 0;
+
+    switch (in_condition)
+    {
+        case VKGL::SyncCondition::Sync_GPU_Commands_Complete: result = GL_SYNC_GPU_COMMANDS_COMPLETE; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_sync_property(const VKGL::SyncProperty& in_pname)
+{
+    GLenum result = 0;
+
+    switch (in_pname)
+    {
+        case VKGL::SyncProperty::Condition:   result = GL_SYNC_CONDITION; break;
+        case VKGL::SyncProperty::Flags:       result = GL_SYNC_FLAGS;     break;
+        case VKGL::SyncProperty::Object_Type: result = GL_OBJECT_TYPE;    break;
+        case VKGL::SyncProperty::Status:      result = GL_SYNC_STATUS;    break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 GLenum VKGL::Utils::get_gl_enum_for_texture_compare_function(const VKGL::TextureCompareFunction& in_compare_function)
 {
     GLenum result = 0;
@@ -2833,6 +2870,58 @@ GLenum VKGL::Utils::get_gl_enum_for_vertex_attribute_property(const VKGL::Vertex
         {
             vkgl_assert_fail();
         }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_wait_result(const VKGL::WaitResult& in_result)
+{
+    GLenum result = 0;
+
+    switch (in_result)
+    {
+        case VKGL::WaitResult::Already_Signaled:    result = GL_ALREADY_SIGNALED;    break;
+        case VKGL::WaitResult::Condition_Satisfied: result = GL_CONDITION_SATISFIED; break;
+        case VKGL::WaitResult::Timeout_Expired:     result = GL_TIMEOUT_EXPIRED;     break;
+        case VKGL::WaitResult::Wait_Failed:         result = GL_WAIT_FAILED;         break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::WaitResult VKGL::Utils::get_wait_result_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::WaitResult result = VKGL::WaitResult::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_ALREADY_SIGNALED:    result = VKGL::WaitResult::Already_Signaled;    break;
+        case GL_CONDITION_SATISFIED: result = VKGL::WaitResult::Condition_Satisfied; break;
+        case GL_TIMEOUT_EXPIRED:     result = VKGL::WaitResult::Timeout_Expired;     break;
+        case GL_WAIT_FAILED:         result = VKGL::WaitResult::Wait_Failed;         break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+GLenum VKGL::Utils::get_gl_enum_for_wait_sync_bits(const VKGL::WaitSyncBits& in_bits)
+{
+    GLenum result = 0;
+
+    if (in_bits & VKGL::WaitSyncBit::Sync_Flush_Commands_Bit)
+    {
+        result |= GL_SYNC_FLUSH_COMMANDS_BIT;
     }
 
     return result;
@@ -3555,6 +3644,43 @@ VKGL::StencilStateFace VKGL::Utils::get_stencil_state_face_for_gl_enum(const GLe
     return result;
 }
 
+VKGL::SyncCondition VKGL::Utils::get_sync_condition_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::SyncCondition result = VKGL::SyncCondition::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_SYNC_GPU_COMMANDS_COMPLETE: result = VKGL::SyncCondition::Sync_GPU_Commands_Complete; break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+VKGL::SyncProperty VKGL::Utils::get_sync_property_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::SyncProperty result = VKGL::SyncProperty::Unknown;
+
+    switch (in_enum)
+    {
+        case GL_SYNC_CONDITION: result = VKGL::SyncProperty::Condition;   break;
+        case GL_SYNC_FLAGS:     result = VKGL::SyncProperty::Flags;       break;
+        case GL_OBJECT_TYPE:    result = VKGL::SyncProperty::Object_Type; break;
+        case GL_SYNC_STATUS:    result = VKGL::SyncProperty::Status;      break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 VKGL::TextureBindingProperty VKGL::Utils::get_texture_binding_property_for_context_property(const VKGL::ContextProperty& in_pname)
 {
     VKGL::TextureBindingProperty result = VKGL::TextureBindingProperty::Unknown;
@@ -3999,6 +4125,18 @@ VKGL::VertexAttributePointerProperty VKGL::Utils::get_vertex_attribute_pointer_p
         {
             vkgl_assert_fail();
         }
+    }
+
+    return result;
+}
+
+VKGL::WaitSyncBits VKGL::Utils::get_wait_sync_bits_for_gl_enum(const GLenum& in_enum)
+{
+    VKGL::WaitSyncBits result = 0;
+
+    if (in_enum & GL_SYNC_FLUSH_COMMANDS_BIT)
+    {
+        result |= VKGL::WaitSyncBit::Sync_Flush_Commands_Bit;
     }
 
     return result;

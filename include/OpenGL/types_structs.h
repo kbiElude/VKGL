@@ -419,6 +419,27 @@ namespace VKGL
         PFNVKGLTEXBUFFERPROC                 pGLTexBuffer;
         PFNVKGLUNIFORMBLOCKBINDINGPROC       pGLUniformBlockBinding;
 
+        /* GL 3.2 */
+        PFNVKGLCLIENTWAITSYNCPROC                  pGLClientWaitSync;
+        PFNVKGLDELETESYNCPROC                      pGLDeleteSync;
+        PFNVKGLDRAWELEMENTSBASEVERTEXPROC          pGLDrawElementsBaseVertex;
+        PFNVKGLDRAWELEMENTSINSTANCEDBASEVERTEXPROC pGLDrawElementsInstancedBaseVertex;
+        PFNVKGLDRAWRANGEELEMENTSBASEVERTEXPROC     pGLDrawRangeElementsBaseVertex;
+        PFNVKGLFENCESYNCPROC                       pGLFenceSync;
+        PFNVKGLFRAMEBUFFERTEXTUREPROC              pGLFramebufferTexture;
+        PFNVKGLGETBUFFERPARAMETERI64VPROC          pGLGetBufferParameteri64v;
+        PFNVKGLGETINTEGER64I_VPROC                 pGLGetInteger64i_v;
+        PFNVKGLGETINTEGER64VPROC                   pGLGetInteger64v;
+        PFNVKGLGETMULTISAMPLEFVPROC                pGLGetMultisamplefv;
+        PFNVKGLGETSYNCIVPROC                       pGLGetSynciv;
+        PFNVKGLISSYNCPROC                          pGLIsSync;
+        PFNVKGLMULTIDRAWELEMENTSBASEVERTEXPROC     pGLMultiDrawElementsBaseVertex;
+        PFNVKGLPROVOKINGVERTEXPROC                 pGLProvokingVertex;
+        PFNVKGLSAMPLEMASKIPROC                     pGLSampleMaski;
+        PFNVKGLTEXIMAGE2DMULTISAMPLEPROC           pGLTexImage2DMultisample;
+        PFNVKGLTEXIMAGE3DMULTISAMPLEPROC           pGLTexImage3DMultisample;
+        PFNVKGLWAITSYNCPROC                        pGLWaitSync;
+
         DispatchTable();
     };
 

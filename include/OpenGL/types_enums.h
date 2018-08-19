@@ -572,6 +572,7 @@ namespace VKGL
         Float,
         HintModeVKGL,
         Int,
+        Int64,
         LogicOpModeVKGL,
         PointSpriteCoordOriginVKGL,
         ProvokingVertexConventionVKGL,
@@ -995,6 +996,23 @@ namespace VKGL
         Unknown
     };
 
+    enum class SyncCondition
+    {
+        Sync_GPU_Commands_Complete,
+
+        Unknown,
+    };
+
+    enum class SyncProperty
+    {
+        Condition,
+        Flags,
+        Object_Type,
+        Status,
+
+        Unknown,
+    };
+
     enum class TextureBindingProperty
     {
         _1D,
@@ -1270,6 +1288,21 @@ namespace VKGL
         Size,
 
         Unknown
+    };
+
+    enum class WaitResult
+    {
+        Already_Signaled,
+        Condition_Satisfied,
+        Timeout_Expired,
+        Wait_Failed,
+
+        Unknown
+    };
+
+    enum WaitSyncBit
+    {
+        Sync_Flush_Commands_Bit = 1 << 0
     };
 
     enum class VertexAttributeArrayType

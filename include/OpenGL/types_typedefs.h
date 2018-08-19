@@ -10,6 +10,7 @@ namespace VKGL
     /* Bitfield type definitions */
     typedef uint32_t BlitMaskBits;
     typedef uint32_t ClearBufferBits;
+    typedef uint32_t WaitSyncBits;
 
     /* VKGL GL entrypoints : GL 1.0 */
     typedef void           (*PFNVKGLBLENDFUNCPROC)              (Context* context_ptr, const GLenum& in_sfactor, const GLenum& in_dfactor);
@@ -329,6 +330,26 @@ namespace VKGL
     typedef void   (*PFNVKGLTEXBUFFERPROC)                (VKGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_internalformat, const GLuint& in_buffer);
     typedef void   (*PFNVKGLUNIFORMBLOCKBINDINGPROC)      (VKGL::Context* in_context_ptr, const GLuint& in_program, const GLuint& in_uniform_block_index, const GLuint& in_uniform_block_binding);
 
+    /* VKGL GL entrypoints : GL 3.2 */
+    typedef GLenum    (*PFNVKGLCLIENTWAITSYNCPROC)                 (VKGL::Context* in_context_ptr, GLsync in_sync, GLbitfield in_flags, GLuint64 in_timeout);
+    typedef void      (*PFNVKGLDELETESYNCPROC)                     (VKGL::Context* in_context_ptr, GLsync in_sync);
+    typedef void      (*PFNVKGLDRAWELEMENTSBASEVERTEXPROC)         (VKGL::Context* in_context_ptr, GLenum in_mode, GLsizei in_count, GLenum in_type, const void* in_indices, GLint in_basevertex);
+    typedef void      (*PFNVKGLDRAWELEMENTSINSTANCEDBASEVERTEXPROC)(VKGL::Context* in_context_ptr, GLenum in_mode, GLsizei in_count, GLenum in_type, const void* in_indices, GLsizei in_instancecount, GLint in_basevertex);
+    typedef void      (*PFNVKGLDRAWRANGEELEMENTSBASEVERTEXPROC)    (VKGL::Context* in_context_ptr, GLenum in_mode, GLuint in_start, GLuint in_end, GLsizei in_count, GLenum in_type, const void* in_indices, GLint in_basevertex);
+    typedef GLsync    (*PFNVKGLFENCESYNCPROC)                      (VKGL::Context* in_context_ptr, GLenum in_condition, GLbitfield in_flags);
+    typedef void      (*PFNVKGLFRAMEBUFFERTEXTUREPROC)             (VKGL::Context* in_context_ptr, GLenum in_target, GLenum in_attachment, GLuint in_texture, GLint in_level);
+    typedef void      (*PFNVKGLGETBUFFERPARAMETERI64VPROC)         (VKGL::Context* in_context_ptr, GLenum in_target, GLenum in_pname, GLint64* in_params);
+    typedef void      (*PFNVKGLGETINTEGER64I_VPROC)                (VKGL::Context* in_context_ptr, GLenum in_target, GLuint in_index, GLint64* in_data);
+    typedef void      (*PFNVKGLGETINTEGER64VPROC)                  (VKGL::Context* in_context_ptr, GLenum in_pname, GLint64* in_data);
+    typedef void      (*PFNVKGLGETMULTISAMPLEFVPROC)               (VKGL::Context* in_context_ptr, GLenum in_pname, GLuint in_index, GLfloat* in_val);
+    typedef void      (*PFNVKGLGETSYNCIVPROC)                      (VKGL::Context* in_context_ptr, GLsync in_sync, GLenum in_pname, GLsizei in_bufSize, GLsizei* in_length, GLint* in_values);
+    typedef GLboolean (*PFNVKGLISSYNCPROC)                         (VKGL::Context* in_context_ptr, GLsync in_sync);
+    typedef void      (*PFNVKGLMULTIDRAWELEMENTSBASEVERTEXPROC)    (VKGL::Context* in_context_ptr, GLenum in_mode, const GLsizei* in_count, GLenum in_type, const void* const* in_indices, GLsizei in_drawcount, const GLint* in_basevertex);
+    typedef void      (*PFNVKGLPROVOKINGVERTEXPROC)                (VKGL::Context* in_context_ptr, GLenum in_mode);
+    typedef void      (*PFNVKGLSAMPLEMASKIPROC)                    (VKGL::Context* in_context_ptr, GLuint in_maskNumber, GLbitfield in_mask);
+    typedef void      (*PFNVKGLTEXIMAGE2DMULTISAMPLEPROC)          (VKGL::Context* in_context_ptr, GLenum in_target, GLsizei in_samples, GLenum in_internalformat, GLsizei in_width, GLsizei in_height, GLboolean in_fixedsamplelocations);
+    typedef void      (*PFNVKGLTEXIMAGE3DMULTISAMPLEPROC)          (VKGL::Context* in_context_ptr, GLenum in_target, GLsizei in_samples, GLenum in_internalformat, GLsizei in_width, GLsizei in_height, GLsizei in_depth, GLboolean in_fixedsamplelocations);
+    typedef void      (*PFNVKGLWAITSYNCPROC)                       (VKGL::Context* in_context_ptr, GLsync in_sync, GLbitfield in_flags, GLuint64 in_timeout);
 
 }
 
