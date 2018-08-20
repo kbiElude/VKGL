@@ -2,6 +2,8 @@ cmake_minimum_required (VERSION 2.8)
 project (VK_GL)
 
 # DO NOT MODIFY BELOW THIS LINE
+add_subdirectory(deps/Detours_VKGL)
+
 IF(MSVC)
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 
@@ -101,7 +103,7 @@ FILE(GLOB WGLIncludes                 "${VK_GL_SOURCE_DIR}/include/WGL/*.h"
 FILE(GLOB WGLSources                  "${VK_GL_SOURCE_DIR}/src/WGL/*.cpp"
                                       "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/*.cpp")
 
-ADD_LIBRARY(GDI32 STATIC    ${GDI32Sources}
+ADD_LIBRARY(GDI32 SHARED    ${GDI32Sources}
                             ${GDI32Includes})
 ADD_LIBRARY(OpenGL32 STATIC ${KhronosIncludes}
                             ${OpenGL32EntrypointsSources}
@@ -110,6 +112,8 @@ ADD_LIBRARY(OpenGL32 STATIC ${KhronosIncludes}
                             ${OpenGL32Includes})
 ADD_LIBRARY(WGL  STATIC     ${WGLSources}
                             ${WGLIncludes})
+
+target_link_libraries(GDI32 Detours)
 
 SET(LIBRARY_OUTPUT_PATH ${VK_GL_BINARY_DIR}/bin)
 
@@ -122,5 +126,3 @@ SOURCE_GROUP ("OpenGL32 includes"    FILES ${OpenGL32Includes})
 SOURCE_GROUP ("OpenGL32 sources"     FILES ${OpenGL32Sources})
 SOURCE_GROUP ("WGL includes"         FILES ${WGLIncludes})
 SOURCE_GROUP ("WGL sources"          FILES ${WGLSources})
-
-add_subdirectory(deps/Detours_VKGL)
