@@ -23,7 +23,54 @@ FILE(GLOB GDI32Sources                "${VK_GL_SOURCE_DIR}/src/GDI32/*.cpp"
                                       "${VK_GL_SOURCE_DIR}/src/GDI32/entrypoints/*.cpp")
 FILE(GLOB KhronosInclude              "${VK_GL_SOURCE_DIR}/include/Khronos/GL/*.h"
                                       "${VK_GL_SOURCE_DIR}/include/Khronos/KHR/*.h")
-FILE(GLOB OpenGL32EntrypointsIncludes "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL1.0/*.h"
+FILE(GLOB OpenGL32EntrypointsIncludes "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_color_buffer_float/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_copy_buffer/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_depth_buffer_float/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_depth_clamp/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_depth_texture/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_draw_buffers/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_draw_elements_base_vertex/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_draw_instanced/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_fragment_coord_conventions/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_fragment_program_shadow/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_framebuffer_object/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_framebuffer_sRGB/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_half_float_pixel/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_half_float_vertex/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_instanced_arrays/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_map_buffer_range/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_multisample/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_multitexture/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_occlusion_query/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_point_parameters/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_point_sprite/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_provoking_vertex/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_seamless_cube_map/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_shader_texture_lod/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_shading_language_100/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_shadow/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_sync/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_texture_border_clamp/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_texture_buffer_object/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_texture_compression/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_texture_compression_rgtc/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_texture_cube_map/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_texture_cube_map_array/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_texture_float/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_texture_gather/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_texture_mirrored_repeat/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_texture_multisample/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_texture_non_power_of_two/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_texture_query_lod/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_texture_rectangle/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_texture_rg/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_uniform_buffer_object/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_vertex_array_bgra/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_vertex_array_object/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_vertex_buffer_object/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_vertex_program/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_vertex_shader/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL1.0/*.h"
                                       "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL1.1/*.h"
                                       "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL1.2/*.h"
                                       "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL1.3/*.h"
@@ -69,8 +116,8 @@ SET(LIBRARY_OUTPUT_PATH ${VK_GL_BINARY_DIR}/bin)
 SOURCE_GROUP ("GDI32 includes"       FILES ${GDI32Includes})
 SOURCE_GROUP ("GDI32 sources"        FILES ${GDI32Sources})
 SOURCE_GROUP ("Khronos includes"     FILES ${KhronosIncludes})
-SOURCE_GROUP ("Entrypoints includes" FILES ${OpenGL32EntrypointsIncludes})
-SOURCE_GROUP ("Entrypoints sources"  FILES ${OpenGL32EntrypointsSources})
+SOURCE_GROUP ("Entrypoint includes"  FILES ${OpenGL32EntrypointsIncludes})
+SOURCE_GROUP ("Entrypoint sources"   FILES ${OpenGL32EntrypointsSources})
 SOURCE_GROUP ("OpenGL32 includes"    FILES ${OpenGL32Includes})
 SOURCE_GROUP ("OpenGL32 sources"     FILES ${OpenGL32Sources})
 SOURCE_GROUP ("WGL includes"         FILES ${WGLIncludes})
