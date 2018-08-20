@@ -2,8 +2,6 @@ cmake_minimum_required (VERSION 2.8)
 project (VK_GL)
 
 # DO NOT MODIFY BELOW THIS LINE
-include (GenerateExportHeader)
-
 IF(MSVC)
     ADD_DEFINITIONS(-D_CRT_SECURE_NO_WARNINGS)
 
@@ -97,7 +95,9 @@ FILE(GLOB OpenGL32EntrypointsSources  "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoint
 FILE(GLOB OpenGL32Includes            "${VK_GL_SOURCE_DIR}/include/OpenGL/*.h")
 FILE(GLOB OpenGL32Sources             "${VK_GL_SOURCE_DIR}/src/OpenGL/*.cpp")
 FILE(GLOB WGLIncludes                 "${VK_GL_SOURCE_DIR}/include/WGL/*.h"
-                                      "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/*.h")
+                                      "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/WGL_ARB_create_context/*.h"
+                                      "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/WGL_ARB_framebuffer_sRGB/*.h")
 FILE(GLOB WGLSources                  "${VK_GL_SOURCE_DIR}/src/WGL/*.cpp"
                                       "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/*.cpp")
 
@@ -122,3 +122,5 @@ SOURCE_GROUP ("OpenGL32 includes"    FILES ${OpenGL32Includes})
 SOURCE_GROUP ("OpenGL32 sources"     FILES ${OpenGL32Sources})
 SOURCE_GROUP ("WGL includes"         FILES ${WGLIncludes})
 SOURCE_GROUP ("WGL sources"          FILES ${WGLSources})
+
+add_subdirectory(deps/Detours_VKGL)
