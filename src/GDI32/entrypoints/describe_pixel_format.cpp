@@ -15,10 +15,10 @@ int WINAPI vkgl_describe_pixel_format(HDC                     in_hdc,
 {
     auto func_ptr = reinterpret_cast<PFNDESCRIBEPIXELFORMATPROC>(g_cached_describe_pixel_format_func_ptr);
 
-    MessageBox(HWND_DESKTOP,
-               "DescribePixelFormat() intercepted.",
-               "",
-               MB_OK);
+    //MessageBox(HWND_DESKTOP,
+    //           "DescribePixelFormat() intercepted.",
+    //           "",
+    //           MB_OK);
 
     return func_ptr(in_hdc,
                     in_n_pixel_format,

@@ -13,14 +13,18 @@ ENDIF(MSVC)
 SET(CMAKE_INCLUDE_PATH             "${VK_GL_SOURCE_DIR}/include")
 SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${VK_GL_BINARY_DIR}/bin")
 
-INCLUDE_DIRECTORIES("${VK_GL_SOURCE_DIR}/include"
+INCLUDE_DIRECTORIES("${VK_GL_SOURCE_DIR}/deps"
+                    "${VK_GL_SOURCE_DIR}/include"
                     "${VK_GL_SOURCE_DIR}/include/Khronos"
                    )
 
 FILE(GLOB GDI32Includes               "${VK_GL_SOURCE_DIR}/include/GDI32/*.h"
                                       "${VK_GL_SOURCE_DIR}/include/GDI32/entrypoints/*.h")
 FILE(GLOB GDI32Sources                "${VK_GL_SOURCE_DIR}/src/GDI32/*.cpp"
+                                      "${VK_GL_SOURCE_DIR}/src/GDI32/*.def"
                                       "${VK_GL_SOURCE_DIR}/src/GDI32/entrypoints/*.cpp")
+FILE(GLOB LauncherIncludes            "${VK_GL_SOURCE_DIR}/include/Launcher/*.h")
+FILE(GLOB LauncherSources             "${VK_GL_SOURCE_DIR}/src/Launcher/*.cpp")
 FILE(GLOB KhronosInclude              "${VK_GL_SOURCE_DIR}/include/Khronos/GL/*.h"
                                       "${VK_GL_SOURCE_DIR}/include/Khronos/KHR/*.h")
 FILE(GLOB OpenGL32EntrypointsIncludes "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_color_buffer_float/*.h"
@@ -103,26 +107,31 @@ FILE(GLOB WGLIncludes                 "${VK_GL_SOURCE_DIR}/include/WGL/*.h"
 FILE(GLOB WGLSources                  "${VK_GL_SOURCE_DIR}/src/WGL/*.cpp"
                                       "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/*.cpp")
 
-ADD_LIBRARY(GDI32 SHARED    ${GDI32Sources}
-                            ${GDI32Includes})
-ADD_LIBRARY(OpenGL32 STATIC ${KhronosIncludes}
-                            ${OpenGL32EntrypointsSources}
-                            ${OpenGL32EntrypointsIncludes}
-                            ${OpenGL32Sources}
-                            ${OpenGL32Includes})
-ADD_LIBRARY(WGL  STATIC     ${WGLSources}
-                            ${WGLIncludes})
+add_executable(Launcher           ${LauncherIncludes}
+                                  ${LauncherSources})
+add_library   (gdi32_proxy SHARED ${GDI32Sources}
+                                  ${GDI32Includes})
+add_library   (OpenGL32 STATIC    ${KhronosIncludes}
+                                  ${OpenGL32EntrypointsSources}
+                                  ${OpenGL32EntrypointsIncludes}
+                                  ${OpenGL32Sources}
+                                  ${OpenGL32Includes})
+add_library   (WGL  STATIC        ${WGLSources}
+                                  ${WGLIncludes})
 
-target_link_libraries(GDI32 Detours)
+target_link_libraries(gdi32_proxy Detours)
+target_link_libraries(Launcher Detours)
 
 SET(LIBRARY_OUTPUT_PATH ${VK_GL_BINARY_DIR}/bin)
 
-SOURCE_GROUP ("GDI32 includes"       FILES ${GDI32Includes})
-SOURCE_GROUP ("GDI32 sources"        FILES ${GDI32Sources})
-SOURCE_GROUP ("Khronos includes"     FILES ${KhronosIncludes})
-SOURCE_GROUP ("Entrypoint includes"  FILES ${OpenGL32EntrypointsIncludes})
-SOURCE_GROUP ("Entrypoint sources"   FILES ${OpenGL32EntrypointsSources})
-SOURCE_GROUP ("OpenGL32 includes"    FILES ${OpenGL32Includes})
-SOURCE_GROUP ("OpenGL32 sources"     FILES ${OpenGL32Sources})
-SOURCE_GROUP ("WGL includes"         FILES ${WGLIncludes})
-SOURCE_GROUP ("WGL sources"          FILES ${WGLSources})
+SOURCE_GROUP ("GDI32 include files"      FILES ${GDI32Includes})
+SOURCE_GROUP ("GDI32 source files"       FILES ${GDI32Sources})
+SOURCE_GROUP ("Khronos include files"    FILES ${KhronosIncludes})
+SOURCE_GROUP ("Launcher include files"   FILES ${LauncherIncludes})
+SOURCE_GROUP ("Launcher source files"    FILES ${LauncherSources})
+SOURCE_GROUP ("Entrypoint include files" FILES ${OpenGL32EntrypointsIncludes})
+SOURCE_GROUP ("Entrypoint source files"  FILES ${OpenGL32EntrypointsSources})
+SOURCE_GROUP ("OpenGL32 include files"   FILES ${OpenGL32Includes})
+SOURCE_GROUP ("OpenGL32 source files"    FILES ${OpenGL32Sources})
+SOURCE_GROUP ("WGL include files"        FILES ${WGLIncludes})
+SOURCE_GROUP ("WGL source files"         FILES ${WGLSources})

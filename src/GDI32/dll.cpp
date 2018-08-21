@@ -15,11 +15,16 @@
 #include "../deps/Detours/src/detours.h"
 
 
-__declspec(thread) void* g_cached_choose_pixel_format_func_ptr   = nullptr;
-__declspec(thread) void* g_cached_describe_pixel_format_func_ptr = nullptr;
-__declspec(thread) void* g_cached_get_pixel_format_func_ptr      = nullptr;
-__declspec(thread) void* g_cached_set_pixel_format_func_ptr      = nullptr;
-__declspec(thread) void* g_cached_swap_buffers_func_ptr          = nullptr;
+const void* g_cached_choose_pixel_format_func_ptr   = ChoosePixelFormat;
+const void* g_cached_describe_pixel_format_func_ptr = DescribePixelFormat;
+const void* g_cached_get_pixel_format_func_ptr      = GetPixelFormat;
+const void* g_cached_set_pixel_format_func_ptr      = SetPixelFormat;
+const void* g_cached_swap_buffers_func_ptr          = SwapBuffers;
+
+__declspec(dllexport) void dummy_function()
+{
+    /* Dummy function which has to be associated with ordinal 1 for Detours to work correctly. */
+}
 
 void handle_attach_detach_event(const bool& in_is_attach_event)
 {
@@ -27,16 +32,15 @@ void handle_attach_detach_event(const bool& in_is_attach_event)
 
     struct
     {
-        void* detoured_func_ptr;
-        void** detoured_func_cache_ptr_ptr;
-        void* new_func_ptr;
+        PVOID* detoured_func_ptr;
+        void*  new_func_ptr;
     } funcs_to_detour[] =
     {
-        {ChoosePixelFormat,   &g_cached_choose_pixel_format_func_ptr,   vkgl_choose_pixel_format},
-        {DescribePixelFormat, &g_cached_describe_pixel_format_func_ptr, vkgl_describe_pixel_format},
-        {GetPixelFormat,      &g_cached_get_pixel_format_func_ptr,      vkgl_get_pixel_format},
-        {SetPixelFormat,      &g_cached_set_pixel_format_func_ptr,      vkgl_set_pixel_format},
-        {SwapBuffers,         &g_cached_swap_buffers_func_ptr,          vkgl_swap_buffers}
+        {&(PVOID&)g_cached_choose_pixel_format_func_ptr,   vkgl_choose_pixel_format},
+        {&(PVOID&)g_cached_describe_pixel_format_func_ptr, vkgl_describe_pixel_format},
+        {&(PVOID&)g_cached_get_pixel_format_func_ptr,      vkgl_get_pixel_format},
+        {&(PVOID&)g_cached_set_pixel_format_func_ptr,      vkgl_set_pixel_format},
+        {&(PVOID&)g_cached_swap_buffers_func_ptr,          vkgl_swap_buffers}
     };
 
     if (in_is_attach_event)
@@ -46,19 +50,17 @@ void handle_attach_detach_event(const bool& in_is_attach_event)
 
     for (auto& current_func_data : funcs_to_detour)
     {
-        *current_func_data.detoured_func_cache_ptr_ptr = current_func_data.detoured_func_ptr;
-
         ::DetourTransactionBegin();
         ::DetourUpdateThread    (current_thread_handle);
 
         if (in_is_attach_event)
         {
-            ::DetourAttach(&(PVOID&)current_func_data.detoured_func_ptr,
+            ::DetourAttach(current_func_data.detoured_func_ptr,
                            current_func_data.new_func_ptr);
         }
         else
         {
-            ::DetourDetach(&(PVOID&)current_func_data.detoured_func_ptr,
+            ::DetourDetach(current_func_data.detoured_func_ptr,
                            current_func_data.new_func_ptr);
         }
 
