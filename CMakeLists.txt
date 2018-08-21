@@ -27,8 +27,11 @@ include_directories("${VK_GL_BINARY_DIR}"
 file(GLOB LauncherIncludes "${VK_GL_SOURCE_DIR}/include/Launcher/*.h")
 file(GLOB LauncherSources  "${VK_GL_SOURCE_DIR}/src/Launcher/*.cpp")
 
-file(GLOB VKGLSources "${VK_GL_SOURCE_DIR}/src/VKGL/*.cpp"
-                      "${VK_GL_SOURCE_DIR}/src/VKGL/*.def")
+file(GLOB CommonIncludes "${VK_GL_SOURCE_DIR}/include/Common/*.h")
+
+file(GLOB VKGLIncludes "${VK_GL_SOURCE_DIR}/include/VKGL/*.h")
+file(GLOB VKGLSources  "${VK_GL_SOURCE_DIR}/src/VKGL/*.cpp"
+                       "${VK_GL_SOURCE_DIR}/src/VKGL/*.def")
 
 add_executable(Launcher ${LauncherIncludes}
                         ${LauncherSources})
@@ -37,9 +40,11 @@ add_executable(Launcher ${LauncherIncludes}
 if (VKGL_INCLUDE_GDI32)
     file(GLOB GDI32Includes "${VK_GL_SOURCE_DIR}/include/GDI32/*.h"
                             "${VK_GL_SOURCE_DIR}/include/GDI32/entrypoints/*.h")
-    file(GLOB GDI32Sources  "${VK_GL_SOURCE_DIR}/src/GDI32/entrypoints/*.cpp")
+    file(GLOB GDI32Sources  "${VK_GL_SOURCE_DIR}/src/GDI32/*.cpp"
+                            "${VK_GL_SOURCE_DIR}/src/GDI32/entrypoints/*.cpp")
 
-    add_library(GDI32 STATIC ${GDI32Sources}
+    add_library(GDI32 STATIC ${CommonIncludes}
+                             ${GDI32Sources}
                              ${GDI32Includes})
 endif ()
 
@@ -122,7 +127,8 @@ if (VKGL_INCLUDE_OPENGL)
     FILE(GLOB OpenGL32Includes "${VK_GL_SOURCE_DIR}/include/OpenGL/*.h")
     FILE(GLOB OpenGL32Sources  "${VK_GL_SOURCE_DIR}/src/OpenGL/*.cpp")
 
-    add_library(OPENGL32 STATIC ${KhronosIncludes}
+    add_library(OPENGL32 STATIC ${CommonIncludes}
+                                ${KhronosIncludes}
                                 ${OpenGL32EntrypointsSources}
                                 ${OpenGL32EntrypointsIncludes}
                                 ${OpenGL32Sources}
@@ -138,7 +144,8 @@ if (VKGL_INCLUDE_WGL)
     file(GLOB WGLSources  "${VK_GL_SOURCE_DIR}/src/WGL/*.cpp"
                           "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/*.cpp")
 
-    add_library(WGL STATIC ${WGLSources}
+    add_library(WGL STATIC ${CommonIncludes}
+                           ${WGLSources}
                            ${WGLIncludes})
 endif ()
 
@@ -161,6 +168,7 @@ endif ()
 
 set(LIBRARY_OUTPUT_PATH ${VK_GL_BINARY_DIR}/bin)
 
+source_group ("Common include files"     FILES ${CommonIncludes})
 source_group ("GDI32 include files"      FILES ${GDI32Includes})
 source_group ("GDI32 source files"       FILES ${GDI32Sources})
 source_group ("Khronos include files"    FILES ${KhronosIncludes})

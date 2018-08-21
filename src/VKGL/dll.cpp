@@ -3,23 +3,18 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 
-#include "GDI32/dll.h"
+#include "vkgl_config.h"
 #include <Windows.h>
-
-#include "GDI32/entrypoints/choose_pixel_format.h"
-#include "GDI32/entrypoints/describe_pixel_format.h"
-#include "GDI32/entrypoints/get_pixel_format.h"
-#include "GDI32/entrypoints/set_pixel_format.h"
-#include "GDI32/entrypoints/swap_buffers.h"
-
+#include <vector>
 #include "../deps/Detours/src/detours.h"
 
+#if defined(VKGL_INCLUDE_GDI32)
+    #include "GDI32/interceptors.h"
+#endif
 
-const void* g_cached_choose_pixel_format_func_ptr   = ChoosePixelFormat;
-const void* g_cached_describe_pixel_format_func_ptr = DescribePixelFormat;
-const void* g_cached_get_pixel_format_func_ptr      = GetPixelFormat;
-const void* g_cached_set_pixel_format_func_ptr      = SetPixelFormat;
-const void* g_cached_swap_buffers_func_ptr          = SwapBuffers;
+
+const std::vector<FunctionInterceptor> g_function_interceptors = get_gdi32_function_interceptors(); // temp temp
+
 
 __declspec(dllexport) void dummy()
 {
@@ -30,38 +25,25 @@ void handle_attach_detach_event(const bool& in_is_attach_event)
 {
     const auto current_thread_handle = ::GetCurrentThread();
 
-    struct
-    {
-        PVOID* detoured_func_ptr;
-        void*  new_func_ptr;
-    } funcs_to_detour[] =
-    {
-        {&(PVOID&)g_cached_choose_pixel_format_func_ptr,   vkgl_choose_pixel_format},
-        {&(PVOID&)g_cached_describe_pixel_format_func_ptr, vkgl_describe_pixel_format},
-        {&(PVOID&)g_cached_get_pixel_format_func_ptr,      vkgl_get_pixel_format},
-        {&(PVOID&)g_cached_set_pixel_format_func_ptr,      vkgl_set_pixel_format},
-        {&(PVOID&)g_cached_swap_buffers_func_ptr,          vkgl_swap_buffers}
-    };
-
     if (in_is_attach_event)
     {
         ::DetourRestoreAfterWith();
     }
 
-    for (auto& current_func_data : funcs_to_detour)
+    for (auto& current_func_data : g_function_interceptors)
     {
         ::DetourTransactionBegin();
         ::DetourUpdateThread    (current_thread_handle);
 
         if (in_is_attach_event)
         {
-            ::DetourAttach(current_func_data.detoured_func_ptr,
-                           current_func_data.new_func_ptr);
+            ::DetourAttach(current_func_data.pfn_func_to_intercept_ptr_ptr,
+                           current_func_data.pfn_interceptor_func_ptr);
         }
         else
         {
-            ::DetourDetach(current_func_data.detoured_func_ptr,
-                           current_func_data.new_func_ptr);
+            ::DetourDetach(current_func_data.pfn_func_to_intercept_ptr_ptr,
+                           current_func_data.pfn_interceptor_func_ptr);
         }
 
         if (::DetourTransactionCommit() != NO_ERROR)
