@@ -7,7 +7,7 @@
 
 int main()
 {
-    char*               path_to_gdi32_proxy = "./gdi32_proxy.dll";
+    char*               path_to_gdi32_proxy = "./VKGL.dll";
     char*               path_to_executable  = "TestApp.exe";
     PROCESS_INFORMATION process_info;
     STARTUPINFO         startup_info;

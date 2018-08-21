@@ -1,0 +1,3 @@
+LIBRARY VKGL
+EXPORTS
+     dummy @1

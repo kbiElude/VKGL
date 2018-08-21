@@ -21,7 +21,7 @@ const void* g_cached_get_pixel_format_func_ptr      = GetPixelFormat;
 const void* g_cached_set_pixel_format_func_ptr      = SetPixelFormat;
 const void* g_cached_swap_buffers_func_ptr          = SwapBuffers;
 
-__declspec(dllexport) void dummy_function()
+__declspec(dllexport) void dummy()
 {
     /* Dummy function which has to be associated with ordinal 1 for Detours to work correctly. */
 }
