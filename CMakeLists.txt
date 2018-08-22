@@ -8,6 +8,7 @@ option(VKGL_INCLUDE_WGL    "Intercept WGL entrypoints"    ON)
 # DO NOT MODIFY BELOW THIS LINE
 configure_file("${VK_GL_SOURCE_DIR}/include/config.h.in" "${VK_GL_BINARY_DIR}/vkgl_config.h")
 
+add_subdirectory(deps/Anvil)
 add_subdirectory(deps/Detours_VKGL)
 
 if (MSVC)
@@ -158,7 +159,7 @@ endif ()
 add_library(VKGL SHARED ${VKGLSources})
 
 target_link_libraries(Launcher Detours)
-target_link_libraries(VKGL     Detours)
+target_link_libraries(VKGL     Anvil Detours)
 
 if (VKGL_INCLUDE_GDI32)
     add_dependencies     (VKGL GDI32)
