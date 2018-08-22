@@ -1,3 +1,0 @@
-#cmakedefine VKGL_INCLUDE_GDI32
-#cmakedefine VKGL_INCLUDE_OPENGL
-#cmakedefine VKGL_INCLUDE_WGL

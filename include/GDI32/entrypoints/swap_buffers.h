@@ -5,8 +5,4 @@
 #ifndef VKGL_SWAP_BUFFERS_H
 #define VKGL_SWAP_BUFFERS_H
 
-#include <Windows.h>
-
-BOOL WINAPI vkgl_swap_buffers(HDC in_hdc);
-
 #endif /* VKGL_SWAP_BUFFERS_H */
