@@ -7,8 +7,6 @@
 
 #include <Windows.h>
 
-typedef int (WINAPI *PFNGETPIXELFORMATPROC)(HDC);
-
 int WINAPI vkgl_get_pixel_format(HDC in_hdc);
 
 #endif /* VKGL_GET_PIXEL_FORMAT_H */

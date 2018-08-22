@@ -12,8 +12,19 @@
     #include "GDI32/interceptors.h"
 #endif
 
+#if defined(VKGL_INCLUDE_WGL)
+    #include "WGL/interceptors.h"
+#endif
 
-const std::vector<FunctionInterceptor> g_function_interceptors = get_gdi32_function_interceptors(); // temp temp
+const std::vector<FunctionInterceptor> g_function_interceptors[] =
+{
+#if defined(VKGL_INCLUDE_GDI32)
+    get_gdi32_function_interceptors(),
+#endif
+#if defined(VKGL_INCLUDE_WGL)
+    get_wgl_function_interceptors(),
+#endif
+};
 
 
 __declspec(dllexport) void dummy()
@@ -30,28 +41,31 @@ void handle_attach_detach_event(const bool& in_is_attach_event)
         ::DetourRestoreAfterWith();
     }
 
-    for (auto& current_func_data : g_function_interceptors)
+    for (auto& current_func_set : g_function_interceptors)
     {
-        ::DetourTransactionBegin();
-        ::DetourUpdateThread    (current_thread_handle);
+        for (auto& current_func_data : current_func_set)
+        {
+            ::DetourTransactionBegin();
+            ::DetourUpdateThread    (current_thread_handle);
 
-        if (in_is_attach_event)
-        {
-            ::DetourAttach(current_func_data.pfn_func_to_intercept_ptr_ptr,
-                           current_func_data.pfn_interceptor_func_ptr);
-        }
-        else
-        {
-            ::DetourDetach(current_func_data.pfn_func_to_intercept_ptr_ptr,
-                           current_func_data.pfn_interceptor_func_ptr);
-        }
+            if (in_is_attach_event)
+            {
+                ::DetourAttach(current_func_data.pfn_func_to_intercept_ptr_ptr,
+                               current_func_data.pfn_interceptor_func_ptr);
+            }
+            else
+            {
+                ::DetourDetach(current_func_data.pfn_func_to_intercept_ptr_ptr,
+                               current_func_data.pfn_interceptor_func_ptr);
+            }
 
-        if (::DetourTransactionCommit() != NO_ERROR)
-        {
-            MessageBox(HWND_DESKTOP,
-                       "DetourTransactionCommit() failed",
-                       "Error",
-                       MB_OK | MB_ICONERROR);
+            if (::DetourTransactionCommit() != NO_ERROR)
+            {
+                MessageBox(HWND_DESKTOP,
+                           "DetourTransactionCommit() failed",
+                           "Error",
+                           MB_OK | MB_ICONERROR);
+            }
         }
     }
 }

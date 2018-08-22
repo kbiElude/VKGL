@@ -37,6 +37,10 @@ add_executable(Launcher ${LauncherIncludes}
                         ${LauncherSources})
 
 
+if (VKGL_INCLUDE_OPENGL OR VKGL_INCLUDE_WGL)
+    find_package(OpenGL)
+endif()
+
 if (VKGL_INCLUDE_GDI32)
     file(GLOB GDI32Includes "${VK_GL_SOURCE_DIR}/include/GDI32/*.h"
                             "${VK_GL_SOURCE_DIR}/include/GDI32/entrypoints/*.h")
@@ -142,7 +146,9 @@ if (VKGL_INCLUDE_WGL)
                           "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/WGL_ARB_create_context/*.h"
                           "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/WGL_ARB_framebuffer_sRGB/*.h")
     file(GLOB WGLSources  "${VK_GL_SOURCE_DIR}/src/WGL/*.cpp"
-                          "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/*.cpp")
+                          "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/*.cpp"
+                          "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/WGL_ARB_create_context/*.cpp"
+                          "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/WGL_ARB_framebuffer_sRGB/*.cpp")
 
     add_library(WGL STATIC ${CommonIncludes}
                            ${WGLSources}
@@ -155,16 +161,22 @@ target_link_libraries(Launcher Detours)
 target_link_libraries(VKGL     Detours)
 
 if (VKGL_INCLUDE_GDI32)
+    add_dependencies     (VKGL GDI32)
     target_link_libraries(VKGL GDI32)
 endif ()
 
 if (VKGL_INCLUDE_OPENGL)
-    target_link_libraries(VKGL OPENGL32)
+    add_dependencies     (VKGL OPENGL32)
+    target_link_libraries(VKGL OPENGL32 ${OPENGL_gl_LIBRARY})
 endif ()
 
 if (VKGL_INCLUDE_WGL)
-    target_link_libraries(VKGL WGL)
+    add_dependencies     (VKGL WGL)
+    target_link_libraries(VKGL WGL ${OPENGL_gl_LIBRARY})
 endif ()
+
+add_dependencies(Launcher VKGL)
+
 
 set(LIBRARY_OUTPUT_PATH ${VK_GL_BINARY_DIR}/bin)
 

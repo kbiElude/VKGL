@@ -7,8 +7,6 @@
 
 #include <Windows.h>
 
-typedef BOOL (WINAPI* PFNSWAPBUFFERSPROC)(HDC);
-
 BOOL WINAPI vkgl_swap_buffers(HDC in_hdc);
 
 #endif /* VKGL_SWAP_BUFFERS_H */

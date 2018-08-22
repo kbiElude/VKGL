@@ -7,8 +7,6 @@
 
 #include <Windows.h>
 
-typedef BOOL (WINAPI* PFNSETPIXELFORMATPROC)(HDC, int, const PIXELFORMATDESCRIPTOR*);
-
 BOOL WINAPI vkgl_set_pixel_format(HDC                          in_hdc,
                                   int                          in_format,
                                   CONST PIXELFORMATDESCRIPTOR* in_pixel_format_descriptor_ptr);

@@ -5,6 +5,14 @@
 #ifndef GDI32_GLOBALS_H
 #define GDI32_GLOBALS_H
 
+#include <Windows.h>
+
+typedef int  (WINAPI *PFNCHOOSEPIXELFORMATPROC)  (HDC, const PIXELFORMATDESCRIPTOR*);
+typedef int  (WINAPI *PFNDESCRIBEPIXELFORMATPROC)(HDC, int, UINT, LPPIXELFORMATDESCRIPTOR);
+typedef int  (WINAPI *PFNGETPIXELFORMATPROC)     (HDC);
+typedef BOOL (WINAPI* PFNSETPIXELFORMATPROC)     (HDC, int, const PIXELFORMATDESCRIPTOR*);
+typedef BOOL (WINAPI* PFNSWAPBUFFERSPROC)        (HDC);
+
 extern void* g_cached_choose_pixel_format_func_ptr;
 extern void* g_cached_describe_pixel_format_func_ptr;
 extern void* g_cached_get_pixel_format_func_ptr;
