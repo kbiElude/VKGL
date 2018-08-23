@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_GET_ATTRIB_LOCATION_ARB_H
 #define VKGL_GL_GET_ATTRIB_LOCATION_ARB_H
 
-#define vkglGetAttribLocationARB_with_validation vkglGetAttribLocation_with_validation
+#define vkglGetAttribLocationARB vkglGetAttribLocation
 
 #endif /* VKGL_GL_GET_ATTRIB_LOCATION_ARB_H */

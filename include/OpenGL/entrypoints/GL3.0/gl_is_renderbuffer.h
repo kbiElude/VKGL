@@ -7,9 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLboolean VKGL_APIENTRY glIsRenderbuffer(GLuint renderbuffer);
-
-bool vkglIsRenderbuffer_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLuint&  in_renderbuffer);
+VKGL_API GLboolean VKGL_APIENTRY vkglIsRenderbuffer(GLuint renderbuffer);
 
 #endif /* VKGL_GL_IS_RENDERBUFFER_H */

@@ -7,13 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glClearBufferuiv(GLenum        buffer,
-                                             GLint         drawbuffer,
-                                             const GLuint* value);
-
-void vkglClearBufferuiv_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLenum&  in_buffer,
-                                        const GLint&   in_drawbuffer,
-                                        const GLuint*  in_value_ptr);
+VKGL_API void VKGL_APIENTRY vkglClearBufferuiv(GLenum        buffer,
+                                               GLint         drawbuffer,
+                                               const GLuint* value);
 
 #endif /* VKGL_GL_CLEAR_BUFFER_UIV_H */

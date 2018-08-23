@@ -7,17 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glDrawElementsBaseVertex(GLenum      mode,
-                                                     GLsizei     count,
-                                                     GLenum      type,
-                                                     const void* indices,
-                                                     GLint       basevertex);
-
-void vkglDrawElementsBaseVertex_with_validation(VKGL::Context* in_context_ptr,
-                                                const GLenum&  in_mode,
-                                                const GLsizei& in_count,
-                                                const GLenum&  in_type,
-                                                const void*    in_indices,
-                                                const GLint&   in_basevertex);
+VKGL_API void VKGL_APIENTRY vkglDrawElementsBaseVertex(GLenum      mode,
+                                                       GLsizei     count,
+                                                       GLenum      type,
+                                                       const void* indices,
+                                                       GLint       basevertex);
 
 #endif /* VKGL_GL_DRAW_ELEMENTS_BASE_VERTEX_H */

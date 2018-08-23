@@ -7,11 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glVertexAttrib4Nsv(GLuint         index,
-                                               const GLshort* v);
-
-void vkglVertexAttrib4Nsv_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_index,
-                                          const GLshort* in_v_ptr);
+VKGL_API void VKGL_APIENTRY vkglVertexAttrib4Nsv(GLuint         index,
+                                                 const GLshort* v);
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_4NSV_H */

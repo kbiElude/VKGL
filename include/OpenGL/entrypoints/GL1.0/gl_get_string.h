@@ -7,9 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API const GLubyte *APIENTRY glGetString(GLenum name);
-
-const GLubyte* vkglGetString_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLenum&  in_name);
+VKGL_API const GLubyte *APIENTRY vkglGetString(GLenum name);
 
 #endif /* VKGL_GL_GET_STRING_H */

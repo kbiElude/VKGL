@@ -7,13 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetTexParameterfv(GLenum   target,
-                                                GLenum   pname,
-                                                GLfloat* params);
-
-void vkglGetTexParameterfv_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLenum&  in_target,
-                                           const GLenum&  in_pname,
-                                           GLfloat*       out_params_ptr);
+VKGL_API void VKGL_APIENTRY vkglGetTexParameterfv(GLenum   target,
+                                                  GLenum   pname,
+                                                  GLfloat* params);
 
 #endif /* VKGL_GL_GET_TEX_PARAMETER_FV_H */

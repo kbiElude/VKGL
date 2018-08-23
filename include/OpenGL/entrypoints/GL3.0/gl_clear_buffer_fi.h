@@ -7,15 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glClearBufferfi(GLenum  buffer,
-                                            GLint   drawbuffer,
-                                            GLfloat depth,
-                                            GLint   stencil);
-
-void vkglClearBufferfi_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_buffer,
-                                       const GLint&   in_drawbuffer,
-                                       const GLfloat& in_depth,
-                                       const GLint&   in_stencil);
+VKGL_API void VKGL_APIENTRY vkglClearBufferfi(GLenum  buffer,
+                                              GLint   drawbuffer,
+                                              GLfloat depth,
+                                              GLint   stencil);
 
 #endif /* VKGL_GL_CLEAR_BUFFER_FI_H */

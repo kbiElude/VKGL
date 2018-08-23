@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_GET_COMPRESSED_TEX_IMAGE_ARB_H
 #define VKGL_GL_GET_COMPRESSED_TEX_IMAGE_ARB_H
 
-#define vkglGetCompressedTexImageARB_with_validation vkglGetCompressedTexImage_with_validation
+#define vkglGetCompressedTexImageARB vkglGetCompressedTexImage
 
 #endif /* VKGL_GL_GET_COMPRESSED_TEX_IMAGE_ARB_H */

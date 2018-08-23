@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-#define vkglBeginQueryARB_with_validation vkglBeginQuery_with_validation
+#define vkglBeginQueryARB vkglBeginQuery
 
 #endif /* VKGL_GL_BEGIN_QUERY_ARB_H */

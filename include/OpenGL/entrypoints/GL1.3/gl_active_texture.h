@@ -7,9 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glActiveTexture(GLenum texture);
-
-void vkglActiveTexture_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_texture);
+VKGL_API void VKGL_APIENTRY vkglActiveTexture(GLenum texture);
 
 #endif /* VKGL_GL_ACTIVE_TEXTURE_H */

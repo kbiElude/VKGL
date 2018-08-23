@@ -7,11 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glDetachShader(GLuint program,
-                                           GLuint shader);
-
-void vkglDetachShader_with_validation(VKGL::Context* in_context_ptr,
-                                      const GLuint&  in_program,
-                                      const GLuint&  in_shader);
+VKGL_API void VKGL_APIENTRY vkglDetachShader(GLuint program,
+                                             GLuint shader);
 
 #endif /* VKGL_GL_DETACH_SHADER_H */

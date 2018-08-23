@@ -7,8 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glEndConditionalRender(void);
-
-void vkglEndConditionalRender_with_validation(VKGL::Context* in_context_ptr);
+VKGL_API void VKGL_APIENTRY vkglEndConditionalRender(void);
 
 #endif /* VKGL_GL_END_CONDITIONAL_RENDER_H */

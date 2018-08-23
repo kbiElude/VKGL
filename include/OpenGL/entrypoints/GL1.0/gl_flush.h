@@ -7,8 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glFlush(void);
-
-void vkglFlush_with_validation(VKGL::Context* in_context_ptr);
+VKGL_API void VKGL_APIENTRY vkglFlush(void);
 
 #endif /* VKGL_GL_FLUSH_H */

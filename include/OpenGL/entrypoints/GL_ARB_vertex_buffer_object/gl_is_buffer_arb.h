@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_IS_BUFFER_ARB_H
 #define VKGL_GL_IS_BUFFER_ARB_H
 
-#define vkglIsBufferARB_with_validation vkglIsBuffer_with_validation
+#define vkglIsBufferARB vkglIsBuffer
 
 #endif /* VKGL_GL_IS_BUFFER_ARB_H */

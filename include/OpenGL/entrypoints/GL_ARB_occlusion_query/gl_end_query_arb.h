@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_END_QUERY_ARB_H
 #define VKGL_GL_END_QUERY_ARB_H
 
-#define vkglEndQueryARB_with_validation vkglEndQuery_with_validation
+#define vkglEndQueryARB vkglEndQuery
 
 #endif /* VKGL_GL_END_QUERY_ARB_H */

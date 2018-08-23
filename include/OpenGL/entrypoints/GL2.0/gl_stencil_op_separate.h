@@ -7,15 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glStencilOpSeparate(GLenum face,
-                                                GLenum sfail,
-                                                GLenum dpfail,
-                                                GLenum dppass);
-
-void vkglStencilOpSeparate_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLenum&  in_face,
-                                           const GLenum&  in_sfail,
-                                           const GLenum&  in_dpfail,
-                                           const GLenum&  in_dppass);
+VKGL_API void VKGL_APIENTRY vkglStencilOpSeparate(GLenum face,
+                                                  GLenum sfail,
+                                                  GLenum dpfail,
+                                                  GLenum dppass);
 
 #endif /* VKGL_GL_STENCIL_OP_SEPARATE_H */

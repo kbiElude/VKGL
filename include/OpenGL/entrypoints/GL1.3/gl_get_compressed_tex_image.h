@@ -7,13 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetCompressedTexImage(GLenum target,
-                                                    GLint  level,
-                                                    void*  img);
-
-void vkglGetCompressedTexImage_with_validation(VKGL::Context* in_context_ptr,
-                                               const GLenum&  in_target,
-                                               const GLint&   in_level,
-                                               void*          in_img);
+VKGL_API void VKGL_APIENTRY vkglGetCompressedTexImage(GLenum target,
+                                                      GLint  level,
+                                                      void*  img);
 
 #endif /* VKGL_GL_GET_COMPRESSED_TEX_IMAGE_H */

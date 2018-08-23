@@ -7,13 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetQueryObjectuiv(GLuint  id,
-                                                GLenum  pname,
-                                                GLuint* params);
-
-void vkglGetQueryObjectuiv_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLuint&  in_id,
-                                           const GLenum&  in_pname,
-                                           GLuint*        out_params_ptr);
+VKGL_API void VKGL_APIENTRY vkglGetQueryObjectuiv(GLuint  id,
+                                                  GLenum  pname,
+                                                  GLuint* params);
 
 #endif /* VKGL_GL_GET_QUERY_OBJECTUIV_H */

@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_GET_QUERY_OBJECTIV_ARB_H
 #define VKGL_GL_GET_QUERY_OBJECTIV_ARB_H
 
-#define vkglGetQueryObjectivARB_with_validation vkglGetQueryObjectiv_with_validation
+#define vkglGetQueryObjectivARB vkglGetQueryObjectiv
 
 #endif /* VKGL_GL_GET_QUERY_OBJECTIV_ARB_H */

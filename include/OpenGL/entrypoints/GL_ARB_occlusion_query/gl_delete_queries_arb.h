@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_DELETE_QUERIES_ARB_H
 #define VKGL_GL_DELETE_QUERIES_ARB_H
 
-#define vkglDeleteQueriesARB_with_validation vkglDeleteQueries_with_validation
+#define vkglDeleteQueriesARB vkglDeleteQueries
 
 #endif /* VKGL_GL_DELETE_QUERIES_ARB_H */

@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_POINT_PARAMETERFV_ARB_H
 #define VKGL_GL_POINT_PARAMETERFV_ARB_H
 
-#define vkglPointParameterfvARB_with_validation vkglPointParameterfv_with_validation
+#define vkglPointParameterfvARB vkglPointParameterfv
 
 #endif /* VKGL_GL_POINT_PARAMETERFV_ARB_H */

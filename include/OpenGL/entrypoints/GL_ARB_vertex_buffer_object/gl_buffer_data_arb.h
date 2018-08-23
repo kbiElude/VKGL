@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_BUFFER_DATA_ARB_H
 #define VKGL_GL_BUFFER_DATA_ARB_H
 
-#define vkglBufferDataARB_with_validation vkglBufferData_with_validation
+#define vkglBufferDataARB vkglBufferData
 
 #endif /* VKGL_GL_BUFFER_DATA_ARB_H */

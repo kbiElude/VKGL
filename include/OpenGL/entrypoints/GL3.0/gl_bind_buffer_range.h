@@ -7,17 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glBindBufferRange(GLenum     target,
-                                              GLuint     index,
-                                              GLuint     buffer,
-                                              GLintptr   offset,
-                                              GLsizeiptr size);
-
-void vkglBindBufferRange_with_validation(VKGL::Context*    in_context_ptr,
-                                         const GLenum&     in_target,
-                                         const GLuint&     in_index,
-                                         const GLuint&     in_buffer,
-                                         const GLintptr&   in_offset,
-                                         const GLsizeiptr& in_size);
+VKGL_API void VKGL_APIENTRY vkglBindBufferRange(GLenum     target,
+                                                GLuint     index,
+                                                GLuint     buffer,
+                                                GLintptr   offset,
+                                                GLsizeiptr size);
 
 #endif /* VKGL_GL_BIND_BUFFER_RANGE_H */

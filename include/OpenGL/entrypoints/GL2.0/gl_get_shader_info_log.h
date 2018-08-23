@@ -7,16 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetShaderInfoLog(GLuint   shader,
-                                               GLsizei  bufSize,
-                                               GLsizei* length,
-                                               GLchar*  infoLog);
-
-void vkglGetShaderInfoLog_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_shader,
-                                          const GLsizei& in_buf_size,
-                                          GLsizei*       inout_length_ptr,
-                                          GLchar*        out_info_log_ptr)
+VKGL_API void VKGL_APIENTRY vkglGetShaderInfoLog(GLuint   shader,
+                                                 GLsizei  bufSize,
+                                                 GLsizei* length,
+                                                 GLchar*  infoLog);
 
 
 #endif /* VKGL_GL_GET_SHADER_INFO_LOG_H */

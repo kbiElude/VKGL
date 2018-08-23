@@ -7,11 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glVertexAttrib4Nbv(GLuint        index,
-                                               const GLbyte* v);
-
-void vkglVertexAttrib4Nbv_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_index,
-                                          const GLbyte*  in_v_ptr);
+VKGL_API void VKGL_APIENTRY vkglVertexAttrib4Nbv(GLuint        index,
+                                                 const GLbyte* v);
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_4NBV_H */

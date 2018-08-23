@@ -7,9 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glDepthFunc(GLenum func);
-
-void vkglDepthFunc_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLenum&  in_func);
+VKGL_API void VKGL_APIENTRY vkglDepthFunc(GLenum func);
 
 #endif /* VKGL_GL_DEPTH_FUNC_H */

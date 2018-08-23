@@ -7,13 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetShaderiv(GLuint shader,
-                                          GLenum pname,
-                                          GLint* params);
-
-void vkglGetShaderiv_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLuint&  in_shader,
-                                     const GLenum&  in_pname,
-                                     GLint*         out_params_ptr);
+VKGL_API void VKGL_APIENTRY vkglGetShaderiv(GLuint shader,
+                                            GLenum pname,
+                                            GLint* params);
 
 #endif /* VKGL_GL_GET_SHADERIV_H */

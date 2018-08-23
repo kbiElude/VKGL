@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_SAMPLE_COVERAGE_ARB_H
 #define VKGL_GL_SAMPLE_COVERAGE_ARB_H
 
-#define vkglSampleCoverageARB_with_validation vkglSampleCoverage_with_validation
+#define vkglSampleCoverageARB vkglSampleCoverage
 
 #endif /* VKGL_GL_SAMPLE_COVERAGE_ARB_H */

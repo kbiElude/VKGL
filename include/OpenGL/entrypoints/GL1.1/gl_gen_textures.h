@@ -7,11 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGenTextures(GLsizei n,
-                                          GLuint* textures);
-
-void vkglGenTextures_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLsizei& in_n,
-                                     GLuint*        in_textures);
+VKGL_API void VKGL_APIENTRY vkglGenTextures(GLsizei n,
+                                            GLuint* textures);
 
 #endif /* VKGL_GL_GEN_TEXTURES_H */

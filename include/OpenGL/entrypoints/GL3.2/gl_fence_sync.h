@@ -7,11 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLsync VKGL_APIENTRY glFenceSync(GLenum     condition,
-                                          GLbitfield flags);
-
-GLsync vkglFenceSync_with_validation(VKGL::Context*    in_context_ptr,
-                                     const GLenum&     in_condition,
-                                     const GLbitfield& in_flags);
+VKGL_API GLsync VKGL_APIENTRY vkglFenceSync(GLenum     condition,
+                                            GLbitfield flags);
 
 #endif /* VKGL_GL_FENCE_SYNC_H */

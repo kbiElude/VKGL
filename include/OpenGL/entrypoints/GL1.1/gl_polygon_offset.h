@@ -7,11 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glPolygonOffset(GLfloat factor,
-                                            GLfloat units);
-
-void vkglPolygonOffset_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLfloat& in_factor,
-                                       const GLfloat& in_units);
+VKGL_API void VKGL_APIENTRY vkglPolygonOffset(GLfloat factor,
+                                              GLfloat units);
 
 #endif /* VKGL_GL_POLYGON_OFFSET_H */

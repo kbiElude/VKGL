@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_VERTEX_ATTRIB_POINTER_ARB_H
 #define VKGL_GL_VERTEX_ATTRIB_POINTER_ARB_H
 
-#define vkglVertexAttribPointerARB_with_validation vkglVertexAttribPointer_with_validation
+#define vkglVertexAttribPointerARB vkglVertexAttribPointer
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_POINTER_ARB_H */

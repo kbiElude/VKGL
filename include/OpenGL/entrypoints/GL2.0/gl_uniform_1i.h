@@ -7,11 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glUniform1i(GLint location,
-                                        GLint v0);
-
-void vkglUniform1i_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLint&   in_location,
-                                   const GLint&   in_v0);
+VKGL_API void VKGL_APIENTRY vkglUniform1i(GLint location,
+                                          GLint v0);
 
 #endif /* VKGL_GL_UNIFORM_1I_H */

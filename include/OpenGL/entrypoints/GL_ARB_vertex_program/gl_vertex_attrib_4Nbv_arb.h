@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_VERTEX_ATTRIB_4NBV_ARB_H
 #define VKGL_GL_VERTEX_ATTRIB_4NBV_ARB_H
 
-#define vkglVertexAttrib4NbvARB_with_validation vkglVertexAttrib4Nbv_with_validation
+#define vkglVertexAttrib4NbvARB vkglVertexAttrib4Nbv
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_4NBV_ARB_H */

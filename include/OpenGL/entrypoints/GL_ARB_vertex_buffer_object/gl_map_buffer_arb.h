@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_MAP_BUFFER_ARB_H
 #define VKGL_GL_MAP_BUFFER_ARB_H
 
-#define vkglMapBufferARB_with_validation vkglMapBuffer_with_validation
+#define vkglMapBufferARB vkglMapBuffer
 
 #endif /* VKGL_GL_MAP_BUFFER_ARB_H */

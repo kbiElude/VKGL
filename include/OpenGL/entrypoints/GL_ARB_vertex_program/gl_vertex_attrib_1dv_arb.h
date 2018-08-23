@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_VERTEX_ATTRIB_1DV_ARB_H
 #define VKGL_GL_VERTEX_ATTRIB_1DV_ARB_H
 
-#define vkglVertexAttrib1dvARB_with_validation vkglVertexAttrib1dv_with_validation
+#define vkglVertexAttrib1dvARB vkglVertexAttrib1dv
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_1DV_ARB_H */

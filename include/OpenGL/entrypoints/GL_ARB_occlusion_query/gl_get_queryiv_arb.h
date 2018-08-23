@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_GET_QUERYIV_ARB_H
 #define VKGL_GL_GET_QUERYIV_ARB_H
 
-#define vkglGetQueryivARB_with_validation vkglGetQueryiv_with_validation
+#define vkglGetQueryivARB vkglGetQueryiv
 
 #endif /* VKGL_GL_GET_QUERYIV_ARB_H */

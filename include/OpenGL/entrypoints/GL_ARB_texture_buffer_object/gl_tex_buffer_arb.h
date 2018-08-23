@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_TEX_BUFFER_ARB_H
 #define VKGL_GL_TEX_BUFFER_ARB_H
 
-#define vkglTexBufferARB_with_validation vkglTexBuffer_with_validation
+#define vkglTexBufferARB vkglTexBuffer
 
 #endif /* VKGL_GL_TEX_BUFFER_ARB_H */

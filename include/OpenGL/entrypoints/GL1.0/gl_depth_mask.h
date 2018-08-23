@@ -7,9 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glDepthMask(GLboolean flag);
-
-void vkglDepthMask_with_validation(VKGL::Context*   in_context_ptr,
-                                   const GLboolean& in_flag);
+VKGL_API void VKGL_APIENTRY vkglDepthMask(GLboolean flag);
 
 #endif /* VKGL_GL_DEPTH_MASK_H */

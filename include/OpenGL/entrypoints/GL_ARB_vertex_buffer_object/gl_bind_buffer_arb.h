@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-#define vkglBindBufferARB_with_validation vkglBindBuffer_with_validation
+#define vkglBindBufferARB vkglBindBuffer
 
 #endif /* VKGL_GL_BIND_BUFFER_ARB_H */

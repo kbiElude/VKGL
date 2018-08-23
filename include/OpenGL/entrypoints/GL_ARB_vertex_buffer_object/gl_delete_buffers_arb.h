@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_DELETE_BUFFERS_ARB_H
 #define VKGL_GL_DELETE_BUFFERS_ARB_H
 
-#define vkglDeleteBuffersARB_with_validation vkglDeleteBuffers_with_validation
+#define vkglDeleteBuffersARB vkglDeleteBuffers
 
 #endif /* VKGL_GL_DELETE_BUFFERS_ARB_H */

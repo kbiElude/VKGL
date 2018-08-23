@@ -7,17 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glVertexAttrib4Nub(GLuint  index,
-                                               GLubyte x,
-                                               GLubyte y,
-                                               GLubyte z,
-                                               GLubyte w);
-
-void vkglVertexAttrib4Nub_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_index,
-                                          const GLubyte& in_x,
-                                          const GLubyte& in_y,
-                                          const GLubyte& in_z,
-                                          const GLubyte& in_w);
+VKGL_API void VKGL_APIENTRY vkglVertexAttrib4Nub(GLuint  index,
+                                                 GLubyte x,
+                                                 GLubyte y,
+                                                 GLubyte z,
+                                                 GLubyte w);
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_4NUB_H */

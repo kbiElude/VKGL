@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_UNMAP_BUFFER_ARB_H
 #define VKGL_GL_UNMAP_BUFFER_ARB_H
 
-#define vkglUnmapBufferARB_with_validation vkglUnmapBuffer_with_validation
+#define vkglUnmapBufferARB vkglUnmapBuffer
 
 #endif /* VKGL_GL_UNMAP_BUFFER_ARB_H */

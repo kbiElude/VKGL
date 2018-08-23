@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_GET_ACTIVE_ATTRIB_ARB_H
 #define VKGL_GL_GET_ACTIVE_ATTRIB_ARB_H
 
-#define vkglGetActiveAttribARB_with_validation vkglGetActiveAttrib_with_validation
+#define vkglGetActiveAttribARB vkglGetActiveAttrib
 
 #endif /* VKGL_GL_GET_ACTIVE_ATTRIB_ARB_H */

@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_GET_BUFFER_SUB_DATA_ARB_H
 #define VKGL_GL_GET_BUFFER_SUB_DATA_ARB_H
 
-#define vkglGetBufferSubDataARB_with_validation vkglGetBufferSubData_with_validation
+#define vkglGetBufferSubDataARB vkglGetBufferSubData
 
 #endif /* VKGL_GL_GET_BUFFER_SUB_DATA_ARB_H */

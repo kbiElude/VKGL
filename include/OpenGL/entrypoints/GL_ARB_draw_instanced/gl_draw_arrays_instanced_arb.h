@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_DRAW_ARRAYS_INSTANCED_ARB_H
 #define VKGL_GL_DRAW_ARRAYS_INSTANCED_ARB_H
 
-#define vkglDrawArraysInstancedARB_with_validation vkglDrawArraysInstanced_with_validation
+#define vkglDrawArraysInstancedARB vkglDrawArraysInstanced
 
 #endif /* VKGL_GL_DRAW_ARRAYS_INSTANCED_ARB_H */

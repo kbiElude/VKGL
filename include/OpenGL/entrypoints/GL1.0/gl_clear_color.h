@@ -7,15 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glClearColor(GLfloat red,
-                                         GLfloat green,
-                                         GLfloat blue,
-                                         GLfloat alpha);
-
-void vkglClearColor_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLfloat& in_red,
-                                    const GLfloat& in_green,
-                                    const GLfloat& in_blue,
-                                    const GLfloat& in_alpha);
+VKGL_API void VKGL_APIENTRY vkglClearColor(GLfloat red,
+                                           GLfloat green,
+                                           GLfloat blue,
+                                           GLfloat alpha);
 
 #endif /* VKGL_GL_CLEAR_COLOR_H */

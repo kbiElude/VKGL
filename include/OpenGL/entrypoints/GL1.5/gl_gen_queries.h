@@ -7,11 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGenQueries(GLsizei n,
-                                         GLuint* ids);
-
-void vkglGenQueries_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLsizei& in_n,
-                                    GLuint*        out_ids_ptr);
+VKGL_API void VKGL_APIENTRY vkglGenQueries(GLsizei n,
+                                           GLuint* ids);
 
 #endif /* VKGL_GL_GEN_QUERIES_H */

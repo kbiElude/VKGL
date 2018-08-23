@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_COMPRESSED_TEX_IMAGE_1D_ARB_H
 #define VKGL_GL_COMPRESSED_TEX_IMAGE_1D_ARB_H
 
-#define vkglCompressedTexImage1DARB_with_validation vkglCompressedTexImage1D_with_validation
+#define vkglCompressedTexImage1DARB vkglCompressedTexImage1D
 
 #endif /* VKGL_GL_COMPRESSED_TEX_IMAGE_1D_ARB_H */
