@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGetVertexAttribfv(GLuint   index,
-                                                  GLenum   pname,
-                                                  GLfloat* params);
+void VKGL_APIENTRY vkglGetVertexAttribfv(GLuint   index,
+                                         GLenum   pname,
+                                         GLfloat* params);
 
 #endif /* VKGL_GL_GET_VERTEX_ATTRIBFV_H */

@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglUniform4fv(GLint          location,
-                                           GLsizei        count,
-                                           const GLfloat* value);
+void VKGL_APIENTRY vkglUniform4fv(GLint          location,
+                                  GLsizei        count,
+                                  const GLfloat* value);
 
 #endif /* VKGL_GL_UNIFORM_4FV_H */

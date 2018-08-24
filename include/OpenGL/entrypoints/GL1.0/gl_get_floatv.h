@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGetFloatv(GLenum   pname,
-                                          GLfloat* data);
+void VKGL_APIENTRY vkglGetFloatv(GLenum   pname,
+                                 GLfloat* data);
 
 #endif /* VKGL_GL_GET_FLOATV_H */

@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglClearStencil(GLint s);
+void VKGL_APIENTRY vkglClearStencil(GLint s);
 
 #endif /* VKGL_GL_CLEAR_STENCIL_H */

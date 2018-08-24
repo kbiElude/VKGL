@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglPolygonMode(GLenum face,
-                                            GLenum mode);
+void VKGL_APIENTRY vkglPolygonMode(GLenum face,
+                                   GLenum mode);
 
 #endif /* VKGL_GL_POLYGON_MODE_H */

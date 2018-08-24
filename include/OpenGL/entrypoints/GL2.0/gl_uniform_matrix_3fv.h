@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglUniformMatrix3fv(GLint          location,
-                                                 GLsizei        count,
-                                                 GLboolean      transpose,
-                                                 const GLfloat* value);
+void VKGL_APIENTRY vkglUniformMatrix3fv(GLint          location,
+                                        GLsizei        count,
+                                        GLboolean      transpose,
+                                        const GLfloat* value);
 
 #endif /* VKGL_GL_UNIFORM_MATRIX_3FV_H */

@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglFlushMappedBufferRange(GLenum     target,
-                                                       GLintptr   offset,
-                                                       GLsizeiptr length);
+void VKGL_APIENTRY vkglFlushMappedBufferRange(GLenum     target,
+                                              GLintptr   offset,
+                                              GLsizeiptr length);
 
 #endif /* VKGL_GL_FLUSH_MAPPED_BUFFER_RANGE_H */

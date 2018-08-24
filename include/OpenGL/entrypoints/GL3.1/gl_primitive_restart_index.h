@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglPrimitiveRestartIndex(GLuint index);
+void VKGL_APIENTRY vkglPrimitiveRestartIndex(GLuint index);
 
 #endif /* VKGL_GL_PRIMITIVE_RESTART_INDEX_H */

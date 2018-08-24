@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGetBufferPointerv(GLenum target,
-                                                  GLenum pname,
-                                                  void** params);
+void VKGL_APIENTRY vkglGetBufferPointerv(GLenum target,
+                                         GLenum pname,
+                                         void** params);
 
 #endif /* VKGL_GL_GET_BUFFER_POINTERV_H */

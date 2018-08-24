@@ -6,7 +6,7 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-VKGL_API void VKGL_APIENTRY glFlush(void)
+VKGL_API void VKGL_APIENTRY vkglFlush(void)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

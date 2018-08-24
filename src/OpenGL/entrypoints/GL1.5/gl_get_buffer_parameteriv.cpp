@@ -20,9 +20,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glGetBufferParameteriv(GLenum target,
-                                                   GLenum pname,
-                                                   GLint* params)
+VKGL_API void VKGL_APIENTRY vkglGetBufferParameteriv(GLenum target,
+                                                     GLenum pname,
+                                                     GLint* params)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

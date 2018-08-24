@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglColorMask(GLboolean red,
-                                          GLboolean green,
-                                          GLboolean blue,
-                                          GLboolean alpha);
+void VKGL_APIENTRY vkglColorMask(GLboolean red,
+                                 GLboolean green,
+                                 GLboolean blue,
+                                 GLboolean alpha);
 
 #endif /* VKGL_GL_COLOR_MASK_H */

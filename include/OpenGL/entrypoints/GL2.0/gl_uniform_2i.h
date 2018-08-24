@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglUniform2i(GLint location,
-                                          GLint v0,
-                                          GLint v1);
+void VKGL_APIENTRY vkglUniform2i(GLint location,
+                                 GLint v0,
+                                 GLint v1);
 
 #endif /* VKGL_GL_UNIFORM_2I_H */

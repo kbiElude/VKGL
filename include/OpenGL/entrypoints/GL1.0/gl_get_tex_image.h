@@ -7,10 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGetTexImage(GLenum target,
-                                            GLint  level,
-                                            GLenum format,
-                                            GLenum type,
-                                            void*  pixels);
+void VKGL_APIENTRY vkglGetTexImage(GLenum target,
+                                   GLint  level,
+                                   GLenum format,
+                                   GLenum type,
+                                   void*  pixels);
 
 #endif /* VKGL_GL_GET_TEX_IMAGE_H */

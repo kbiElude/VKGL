@@ -7,10 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglDrawElementsInstanced(GLenum      mode,
-                                                      GLsizei     count,
-                                                      GLenum      type,
-                                                      const void* indices,
-                                                      GLsizei     instancecount);
+void VKGL_APIENTRY vkglDrawElementsInstanced(GLenum      mode,
+                                             GLsizei     count,
+                                             GLenum      type,
+                                             const void* indices,
+                                             GLsizei     instancecount);
 
 #endif /* VKGL_GL_DRAW_ELEMENTS_INSTANCED_H */

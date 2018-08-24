@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglDepthRange(GLdouble n,
-                                           GLdouble f);
+void VKGL_APIENTRY vkglDepthRange(GLdouble n,
+                                  GLdouble f);
 
 #endif /* VKGL_GL_DEPTH_RANGE_H */

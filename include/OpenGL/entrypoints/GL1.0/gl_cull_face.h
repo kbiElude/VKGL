@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglCullFace(GLenum mode);
+void VKGL_APIENTRY vkglCullFace(GLenum mode);
 
 #endif /* VKGL_GL_CULL_FACE_H */

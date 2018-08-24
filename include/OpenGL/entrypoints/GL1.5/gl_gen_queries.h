@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGenQueries(GLsizei n,
-                                           GLuint* ids);
+void VKGL_APIENTRY vkglGenQueries(GLsizei n,
+                                  GLuint* ids);
 
 #endif /* VKGL_GL_GEN_QUERIES_H */

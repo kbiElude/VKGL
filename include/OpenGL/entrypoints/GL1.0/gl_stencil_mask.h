@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglStencilMask(GLuint mask);
+void VKGL_APIENTRY vkglStencilMask(GLuint mask);
 
 #endif /* VKGL_GL_STENCIL_MASK_H */

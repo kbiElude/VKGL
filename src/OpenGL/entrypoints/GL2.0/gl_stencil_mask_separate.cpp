@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glStencilMaskSeparate(GLenum face,
-                                                  GLuint mask)
+VKGL_API void VKGL_APIENTRY vkglStencilMaskSeparate(GLenum face,
+                                                    GLuint mask)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

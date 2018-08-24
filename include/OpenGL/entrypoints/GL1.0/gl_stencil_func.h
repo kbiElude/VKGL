@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglStencilFunc(GLenum func,
-                                            GLint  ref,
-                                            GLuint mask);
+void VKGL_APIENTRY vkglStencilFunc(GLenum func,
+                                   GLint  ref,
+                                   GLuint mask);
 
 #endif /* VKGL_GL_STENCIL_FUNC_H */

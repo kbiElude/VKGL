@@ -22,11 +22,11 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glGetActiveUniformBlockName(GLuint   program,
-                                                        GLuint   uniformBlockIndex,
-                                                        GLsizei  bufSize,
-                                                        GLsizei* length,
-                                                        GLchar*  uniformBlockName)
+VKGL_API void VKGL_APIENTRY vkglGetActiveUniformBlockName(GLuint   program,
+                                                          GLuint   uniformBlockIndex,
+                                                          GLsizei  bufSize,
+                                                          GLsizei* length,
+                                                          GLchar*  uniformBlockName)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

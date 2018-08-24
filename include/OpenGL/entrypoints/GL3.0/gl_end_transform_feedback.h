@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglEndTransformFeedback(void);
+void VKGL_APIENTRY vkglEndTransformFeedback(void);
 
 #endif /* VKGL_GL_END_TRANSFORM_FEEDBACK_H */

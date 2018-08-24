@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLboolean VKGL_APIENTRY vkglIsProgram(GLuint program);
+GLboolean VKGL_APIENTRY vkglIsProgram(GLuint program);
 
 #endif /* VKGL_GL_IS_PROGRAM_H */

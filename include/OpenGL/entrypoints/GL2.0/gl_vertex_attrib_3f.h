@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglVertexAttrib3f(GLuint  index,
-                                               GLfloat x,
-                                               GLfloat y,
-                                               GLfloat z);
+void VKGL_APIENTRY vkglVertexAttrib3f(GLuint  index,
+                                      GLfloat x,
+                                      GLfloat y,
+                                      GLfloat z);
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_3F_H */

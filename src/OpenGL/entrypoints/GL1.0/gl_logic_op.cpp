@@ -19,7 +19,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY glLogicOp(GLenum opcode)
+VKGL_API void VKGL_APIENTRY vkglLogicOp(GLenum opcode)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

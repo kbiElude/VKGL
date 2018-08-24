@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglFinish(void);
+void VKGL_APIENTRY vkglFinish(void);
 
 #endif /* VKGL_GL_FINISH_H */

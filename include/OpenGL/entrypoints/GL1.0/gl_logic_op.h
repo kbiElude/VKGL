@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglLogicOp(GLenum opcode);
+void VKGL_APIENTRY vkglLogicOp(GLenum opcode);
 
 #endif /* VKGL_GL_LOGIC_OP_H */

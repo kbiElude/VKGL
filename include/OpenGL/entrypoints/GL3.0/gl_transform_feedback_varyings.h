@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglTransformFeedbackVaryings(GLuint               program,
-                                                          GLsizei              count,
-                                                          const GLchar* const* varyings,
-                                                          GLenum               bufferMode);
+void VKGL_APIENTRY vkglTransformFeedbackVaryings(GLuint               program,
+                                                 GLsizei              count,
+                                                 const GLchar* const* varyings,
+                                                 GLenum               bufferMode);
 
 #endif /* VKGL_GL_TRANSFORM_FEEDBACK_VARYINGS_H */

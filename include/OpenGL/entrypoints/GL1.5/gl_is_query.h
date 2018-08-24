@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLboolean VKGL_APIENTRY vkglIsQuery(GLuint id);
+GLboolean VKGL_APIENTRY vkglIsQuery(GLuint id);
 
 #endif /* VKGL_GL_IS_QUERY_H */

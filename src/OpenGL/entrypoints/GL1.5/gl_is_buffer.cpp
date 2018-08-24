@@ -17,7 +17,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API GLboolean VKGL_APIENTRY glIsBuffer(GLuint buffer)
+VKGL_API GLboolean VKGL_APIENTRY vkglIsBuffer(GLuint buffer)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

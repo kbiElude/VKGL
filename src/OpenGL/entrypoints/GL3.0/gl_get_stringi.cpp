@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API const GLubyte *APIENTRY glGetStringi(GLenum name,
-                                              GLuint index)
+VKGL_API const GLubyte *APIENTRY vkglGetStringi(GLenum name,
+                                                GLuint index)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

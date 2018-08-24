@@ -19,8 +19,8 @@ static bool validate(VKGL::Context*  in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY glDepthRange(GLdouble n,
-                                         GLdouble f)
+VKGL_API void VKGL_APIENTRY vkglDepthRange(GLdouble n,
+                                           GLdouble f)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGenBuffers(GLsizei n,
-                                           GLuint* buffers);
+void VKGL_APIENTRY vkglGenBuffers(GLsizei n,
+                                  GLuint* buffers);
 
 #endif /* VKGL_GL_GEN_BUFFERS_H */

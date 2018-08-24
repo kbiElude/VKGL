@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGetBooleanv(GLenum     pname,
-                                            GLboolean* data);
+void VKGL_APIENTRY vkglGetBooleanv(GLenum     pname,
+                                   GLboolean* data);
 
 #endif /* VKGL_GL_GET_BOOLEANV_H */

@@ -21,10 +21,10 @@ static bool validate(VKGL::Context*    in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glBufferData(GLenum      target,
-                                         GLsizeiptr  size,
-                                         const void* data,
-                                         GLenum      usage)
+VKGL_API void VKGL_APIENTRY vkglBufferData(GLenum      target,
+                                           GLsizeiptr  size,
+                                           const void* data,
+                                           GLenum      usage)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

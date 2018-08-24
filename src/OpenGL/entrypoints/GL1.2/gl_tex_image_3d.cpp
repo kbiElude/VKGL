@@ -94,16 +94,16 @@ void vkglTexImage3D_with_validation(VKGL::Context* in_context_ptr,
     }
 }
 
-VKGL_API void VKGL_APIENTRY glTexImage3D(GLenum      target,
-                                         GLint       level,
-                                         GLint       internalformat,
-                                         GLsizei     width,
-                                         GLsizei     height,
-                                         GLsizei     depth,
-                                         GLint       border,
-                                         GLenum      format,
-                                         GLenum      type,
-                                         const void* pixels)
+VKGL_API void VKGL_APIENTRY vkglTexImage3D(GLenum      target,
+                                           GLint       level,
+                                           GLint       internalformat,
+                                           GLsizei     width,
+                                           GLsizei     height,
+                                           GLsizei     depth,
+                                           GLint       border,
+                                           GLenum      format,
+                                           GLenum      type,
+                                           const void* pixels)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

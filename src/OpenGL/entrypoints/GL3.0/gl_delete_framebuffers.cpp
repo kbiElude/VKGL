@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glDeleteFramebuffers(GLsizei       n,
-                                                 const GLuint* framebuffers)
+VKGL_API void VKGL_APIENTRY vkglDeleteFramebuffers(GLsizei       n,
+                                                   const GLuint* framebuffers)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

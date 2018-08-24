@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLboolean VKGL_APIENTRY vkglIsSync(GLsync sync);
+GLboolean VKGL_APIENTRY vkglIsSync(GLsync sync);
 
 #endif /* VKGL_GL_IS_SYNC_H */

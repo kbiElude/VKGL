@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglTexBuffer(GLenum target,
-                                          GLenum internalformat,
-                                          GLuint buffer);
+void VKGL_APIENTRY vkglTexBuffer(GLenum target,
+                                 GLenum internalformat,
+                                 GLuint buffer);
 
 #endif /* VKGL_GL_TEX_BUFFER_H */

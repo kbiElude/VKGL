@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGetShaderSource(GLuint   shader,
-                                                GLsizei  bufSize,
-                                                GLsizei* length,
-                                                GLchar*  source);
+void VKGL_APIENTRY vkglGetShaderSource(GLuint   shader,
+                                       GLsizei  bufSize,
+                                       GLsizei* length,
+                                       GLchar*  source);
 
 #endif /* VKGL_GL_GET_SHADER_SOURCE_H */

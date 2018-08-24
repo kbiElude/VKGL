@@ -17,8 +17,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glDrawBuffers(GLsizei       n,
-                                          const GLenum* bufs)
+VKGL_API void VKGL_APIENTRY vkglDrawBuffers(GLsizei       n,
+                                            const GLenum* bufs)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

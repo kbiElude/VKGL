@@ -7,11 +7,11 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglMultiDrawElementsBaseVertex(GLenum             mode,
-                                                            const GLsizei*     count,
-                                                            GLenum             type,
-                                                            const void* const* indices,
-                                                            GLsizei            drawcount,
-                                                            const GLint*       basevertex);
+void VKGL_APIENTRY vkglMultiDrawElementsBaseVertex(GLenum             mode,
+                                                   const GLsizei*     count,
+                                                   GLenum             type,
+                                                   const void* const* indices,
+                                                   GLsizei            drawcount,
+                                                   const GLint*       basevertex);
 
 #endif /* VKGL_GL_MULTI_DRAW_ELEMENTS_BASE_VERTEX_H */

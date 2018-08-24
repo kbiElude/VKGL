@@ -21,10 +21,10 @@ static bool validate(VKGL::Context*   in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY glColorMask(GLboolean red,
-                                        GLboolean green,
-                                        GLboolean blue,
-                                        GLboolean alpha)
+VKGL_API void VKGL_APIENTRY vkglColorMask(GLboolean red,
+                                          GLboolean green,
+                                          GLboolean blue,
+                                          GLboolean alpha)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLboolean VKGL_APIENTRY vkglIsShader(GLuint shader);
+GLboolean VKGL_APIENTRY vkglIsShader(GLuint shader);
 
 #endif /* VKGL_GL_IS_SHADER_H */

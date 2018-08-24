@@ -7,12 +7,12 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglTexImage3DMultisample(GLenum    target,
-                                                      GLsizei   samples,
-                                                      GLenum    internalformat,
-                                                      GLsizei   width,
-                                                      GLsizei   height,
-                                                      GLsizei   depth,
-                                                      GLboolean fixedsamplelocations);
+void VKGL_APIENTRY vkglTexImage3DMultisample(GLenum    target,
+                                             GLsizei   samples,
+                                             GLenum    internalformat,
+                                             GLsizei   width,
+                                             GLsizei   height,
+                                             GLsizei   depth,
+                                             GLboolean fixedsamplelocations);
 
 #endif /* VKGL_GL_TEX_IMAGE_3D_MULTISAMPLE_H */

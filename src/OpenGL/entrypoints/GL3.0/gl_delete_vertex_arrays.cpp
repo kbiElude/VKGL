@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glDeleteVertexArrays(GLsizei       n,
-                                                 const GLuint* arrays)
+VKGL_API void VKGL_APIENTRY vkglDeleteVertexArrays(GLsizei       n,
+                                                   const GLuint* arrays)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

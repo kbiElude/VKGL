@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglVertexAttribI1i(GLuint index,
-                                                GLint  x);
+void VKGL_APIENTRY vkglVertexAttribI1i(GLuint index,
+                                       GLint  x);
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_I_1I_H */

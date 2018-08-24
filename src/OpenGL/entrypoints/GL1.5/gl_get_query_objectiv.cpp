@@ -20,9 +20,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glGetQueryObjectiv(GLuint id,
-                                               GLenum pname,
-                                               GLint* params)
+VKGL_API void VKGL_APIENTRY vkglGetQueryObjectiv(GLuint id,
+                                                 GLenum pname,
+                                                 GLint* params)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

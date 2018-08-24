@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglPixelStorei(GLenum pname,
-                                            GLint  param);
+void VKGL_APIENTRY vkglPixelStorei(GLenum pname,
+                                   GLint  param);
 
 #endif /* VKGL_GL_PIXEL_STOREI_H */

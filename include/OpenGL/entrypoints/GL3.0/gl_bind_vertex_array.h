@@ -3,6 +3,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglBindVertexArray(GLuint array);
+void VKGL_APIENTRY vkglBindVertexArray(GLuint array);
 
 #endif /* VKGL_GL_BIND_VERTEX_ARRAY_H */

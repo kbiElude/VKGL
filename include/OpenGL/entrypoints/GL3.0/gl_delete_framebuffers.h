@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglDeleteFramebuffers(GLsizei       n,
-                                                   const GLuint* framebuffers);
+void VKGL_APIENTRY vkglDeleteFramebuffers(GLsizei       n,
+                                          const GLuint* framebuffers);
 
 #endif /* VKGL_GL_DELETE_FRAMEBUFFERS_H */

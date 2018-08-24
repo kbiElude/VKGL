@@ -7,10 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglVertexAttrib4s(GLuint  index,
-                                               GLshort x,
-                                               GLshort y,
-                                               GLshort z,
-                                               GLshort w);
+void VKGL_APIENTRY vkglVertexAttrib4s(GLuint  index,
+                                      GLshort x,
+                                      GLshort y,
+                                      GLshort z,
+                                      GLshort w);
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_4S_H */

@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglBlendEquation(GLenum mode);
+void VKGL_APIENTRY vkglBlendEquation(GLenum mode);
 
 #endif /* VKGL_GL_BLEND_EQUATION_H */

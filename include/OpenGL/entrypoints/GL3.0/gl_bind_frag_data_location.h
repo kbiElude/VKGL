@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglBindFragDataLocation(GLuint        program,
-                                                     GLuint        color,
-                                                     const GLchar* name);
+void VKGL_APIENTRY vkglBindFragDataLocation(GLuint        program,
+                                            GLuint        color,
+                                            const GLchar* name);
 
 #endif /* VKGL_GL_BIND_FRAG_DATA_LOCATION_H */

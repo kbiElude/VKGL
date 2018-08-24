@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglBindRenderbuffer(GLenum target,
-                                                 GLuint renderbuffer);
+void VKGL_APIENTRY vkglBindRenderbuffer(GLenum target,
+                                        GLuint renderbuffer);
 
 #endif /* VKGL_GL_BIND_RENDERBUFFER_H */

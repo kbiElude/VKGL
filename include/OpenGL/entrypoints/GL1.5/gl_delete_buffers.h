@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglDeleteBuffers(GLsizei       n,
-                                              const GLuint* buffers);
+void VKGL_APIENTRY vkglDeleteBuffers(GLsizei       n,
+                                     const GLuint* buffers);
 
 #endif /* VKGL_GL_DELETE_BUFFERS_H */

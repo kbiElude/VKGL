@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglEnablei(GLenum target,
-                                        GLuint index);
+void VKGL_APIENTRY vkglEnablei(GLenum target,
+                               GLuint index);
 
 #endif /* VKGL_GL_ENABLEI_H */

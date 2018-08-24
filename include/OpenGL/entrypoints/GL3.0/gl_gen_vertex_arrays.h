@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGenVertexArrays(GLsizei n,
-                                                GLuint* arrays);
+void VKGL_APIENTRY vkglGenVertexArrays(GLsizei n,
+                                       GLuint* arrays);
 
 #endif /* VKGL_GL_GEN_VERTEX_ARRAYS_H */

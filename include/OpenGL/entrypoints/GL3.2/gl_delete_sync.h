@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglDeleteSync(GLsync sync);
+void VKGL_APIENTRY vkglDeleteSync(GLsync sync);
 
 #endif /* VKGL_GL_DELETE_SYNC_H */

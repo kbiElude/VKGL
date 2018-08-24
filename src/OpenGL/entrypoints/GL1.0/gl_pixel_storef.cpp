@@ -20,8 +20,8 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-GLAPI void APIENTRY glPixelStoref(GLenum  pname,
-                                  GLfloat param)
+GLAPI void APIENTRY vkglPixelStoref(GLenum  pname,
+                                    GLfloat param)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLboolean VKGL_APIENTRY vkglIsFramebuffer(GLuint framebuffer);
+GLboolean VKGL_APIENTRY vkglIsFramebuffer(GLuint framebuffer);
 
 #endif /* VKGL_GL_IS_FRAMEBUFFER_H */

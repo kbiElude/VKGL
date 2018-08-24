@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglClearDepth(GLdouble depth);
+void VKGL_APIENTRY vkglClearDepth(GLdouble depth);
 
 #endif /* VKGL_GL_CLEAR_DEPTH_H */

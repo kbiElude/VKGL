@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglDrawBuffer(GLenum buf);
+void VKGL_APIENTRY vkglDrawBuffer(GLenum buf);
 
 #endif /* VKGL_GL_DRAW_BUFFER_H */

@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void *APIENTRY glMapBuffer(GLenum target,
-                                    GLenum access)
+VKGL_API void *APIENTRY vkglMapBuffer(GLenum target,
+                                      GLenum access)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

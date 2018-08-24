@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglDrawElements(GLenum      mode,
-                                             GLsizei     count,
-                                             GLenum      type,
-                                             const void* indices);
+void VKGL_APIENTRY vkglDrawElements(GLenum      mode,
+                                    GLsizei     count,
+                                    GLenum      type,
+                                    const void* indices);
 
 #endif /* VKGL_GL_DRAW_ELEMENTS_H */

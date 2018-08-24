@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglUniformBlockBinding(GLuint program,
-                                                    GLuint uniformBlockIndex,
-                                                    GLuint uniformBlockBinding);
+void VKGL_APIENTRY vkglUniformBlockBinding(GLuint program,
+                                           GLuint uniformBlockIndex,
+                                           GLuint uniformBlockBinding);
 
 #endif /* VKGL_GL_UNIFORM_BLOCK_BINDING_H */

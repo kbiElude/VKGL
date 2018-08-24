@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLboolean VKGL_APIENTRY vkglUnmapBuffer(GLenum target);
+GLboolean VKGL_APIENTRY vkglUnmapBuffer(GLenum target);
 
 #endif /* VKGL_GL_UNMAP_BUFFER_H */

@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void *APIENTRY vkglMapBufferRange(GLenum     target,
-                                           GLintptr   offset,
-                                           GLsizeiptr length,
-                                           GLbitfield access);
+void *VKGL_APIENTRY vkglMapBufferRange(GLenum     target,
+                                       GLintptr   offset,
+                                       GLsizeiptr length,
+                                       GLbitfield access);
 
 #endif /* VKGL_GL_MAP_BUFFER_RANGE_H */

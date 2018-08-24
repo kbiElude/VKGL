@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglEnableVertexAttribArray(GLuint index);
+void VKGL_APIENTRY vkglEnableVertexAttribArray(GLuint index);
 
 #endif /* VKGL_GL_ENABLE_VERTEX_ATTRIB_ARRAY_H */

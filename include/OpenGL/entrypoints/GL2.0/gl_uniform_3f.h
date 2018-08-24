@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglUniform3f(GLint   location,
-                                          GLfloat v0,
-                                          GLfloat v1,
-                                          GLfloat v2);
+void VKGL_APIENTRY vkglUniform3f(GLint   location,
+                                 GLfloat v0,
+                                 GLfloat v1,
+                                 GLfloat v2);
 
 #endif /* VKGL_GL_UNIFORM_3F_H */

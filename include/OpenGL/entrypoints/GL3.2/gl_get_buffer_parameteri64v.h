@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGetBufferParameteri64v(GLenum   target,
-                                                       GLenum   pname,
-                                                       GLint64* params);
+void VKGL_APIENTRY vkglGetBufferParameteri64v(GLenum   target,
+                                              GLenum   pname,
+                                              GLint64* params);
 
 #endif /* VKGL_GL_GET_BUFFER_PARAMETERI64V_H */

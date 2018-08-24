@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglDeleteTextures(GLsizei       n,
-                                               const GLuint* textures);
+void VKGL_APIENTRY vkglDeleteTextures(GLsizei       n,
+                                      const GLuint* textures);
 
 #endif /* VKGL_GL_DELETE_TEXTURES_H */

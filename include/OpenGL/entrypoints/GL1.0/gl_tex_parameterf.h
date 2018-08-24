@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglTexParameterf(GLenum  target,
-                                              GLenum  pname,
-                                              GLfloat param);
+void VKGL_APIENTRY vkglTexParameterf(GLenum  target,
+                                     GLenum  pname,
+                                     GLfloat param);
 
 #endif /* VKGL_GL_TEX_PARAMETERF_H */

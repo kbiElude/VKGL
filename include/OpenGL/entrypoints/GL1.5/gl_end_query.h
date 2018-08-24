@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglEndQuery(GLenum target);
+void VKGL_APIENTRY vkglEndQuery(GLenum target);
 
 #endif /* VKGL_GL_END_QUERY_H */

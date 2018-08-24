@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglSampleCoverage(GLfloat   value,
-                                               GLboolean invert);
+void VKGL_APIENTRY vkglSampleCoverage(GLfloat   value,
+                                      GLboolean invert);
 
 #endif /* VKGL_GL_ACTIVE_TEXTURE_H */

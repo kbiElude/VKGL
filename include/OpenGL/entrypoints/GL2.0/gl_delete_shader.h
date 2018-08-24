@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglDeleteShader(GLuint shader);
+void VKGL_APIENTRY vkglDeleteShader(GLuint shader);
 
 #endif /* VKGL_GL_DELETE_SHADER_H */

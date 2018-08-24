@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglBlendFunc(GLenum sfactor,
-                                          GLenum dfactor);
+void VKGL_APIENTRY vkglBlendFunc(GLenum sfactor,
+                                 GLenum dfactor);
 
 #endif /* VKGL_GL_BLEND_FUNC_H */

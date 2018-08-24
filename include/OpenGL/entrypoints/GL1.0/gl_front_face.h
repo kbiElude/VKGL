@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglFrontFace(GLenum mode);
+void VKGL_APIENTRY vkglFrontFace(GLenum mode);
 
 #endif /* VKGL_GL_FRONT_FACE_H */

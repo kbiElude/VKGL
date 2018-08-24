@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGetIntegeri_v(GLenum target,
-                                              GLuint index,
-                                              GLint* data);
+void VKGL_APIENTRY vkglGetIntegeri_v(GLenum target,
+                                     GLuint index,
+                                     GLint* data);
 
 #endif /* VKGL_GL_GET_INTEGERI_V_H */

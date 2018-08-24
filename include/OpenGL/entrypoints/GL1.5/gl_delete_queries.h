@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglDeleteQueries(GLsizei       n,
-                                              const GLuint* ids);
+void VKGL_APIENTRY vkglDeleteQueries(GLsizei       n,
+                                     const GLuint* ids);
 
 #endif /* VKGL_GL_DELETE_QUERIES_H */

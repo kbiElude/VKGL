@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglVertexAttrib4usv(GLuint          index,
-                                                 const GLushort* v);
+void VKGL_APIENTRY vkglVertexAttrib4usv(GLuint          index,
+                                        const GLushort* v);
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_4USV_H */

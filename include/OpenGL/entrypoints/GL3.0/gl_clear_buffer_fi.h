@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglClearBufferfi(GLenum  buffer,
-                                              GLint   drawbuffer,
-                                              GLfloat depth,
-                                              GLint   stencil);
+void VKGL_APIENTRY vkglClearBufferfi(GLenum  buffer,
+                                     GLint   drawbuffer,
+                                     GLfloat depth,
+                                     GLint   stencil);
 
 #endif /* VKGL_GL_CLEAR_BUFFER_FI_H */

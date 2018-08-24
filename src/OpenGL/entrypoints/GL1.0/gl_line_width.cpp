@@ -18,7 +18,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY glLineWidth(GLfloat width)
+VKGL_API void VKGL_APIENTRY vkglLineWidth(GLfloat width)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

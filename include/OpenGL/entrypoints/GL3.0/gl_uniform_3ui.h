@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglUniform3ui(GLint  location,
-                                           GLuint v0,
-                                           GLuint v1,
-                                           GLuint v2);
+void VKGL_APIENTRY vkglUniform3ui(GLint  location,
+                                  GLuint v0,
+                                  GLuint v1,
+                                  GLuint v2);
 
 #endif /* VKGL_GL_UNIFORM_3UI_H */

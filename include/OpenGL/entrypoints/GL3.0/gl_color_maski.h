@@ -7,10 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglColorMaski(GLuint    index,
-                                           GLboolean r,
-                                           GLboolean g,
-                                           GLboolean b,
-                                           GLboolean a);
+void VKGL_APIENTRY vkglColorMaski(GLuint    index,
+                                  GLboolean r,
+                                  GLboolean g,
+                                  GLboolean b,
+                                  GLboolean a);
 
 #endif /* VKGL_GL_COLOR_MASKI_H */

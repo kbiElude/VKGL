@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLboolean VKGL_APIENTRY vkglIsTexture(GLuint texture);
+GLboolean VKGL_APIENTRY vkglIsTexture(GLuint texture);
 
 #endif /* VKGL_GL_IS_TEXTURE_H */

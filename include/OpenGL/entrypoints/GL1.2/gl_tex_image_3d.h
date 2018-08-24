@@ -7,15 +7,15 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglTexImage3D(GLenum      target,
-                                           GLint       level,
-                                           GLint       internalformat,
-                                           GLsizei     width,
-                                           GLsizei     height,
-                                           GLsizei     depth,
-                                           GLint       border,
-                                           GLenum      format,
-                                           GLenum      type,
-                                           const void* pixels);
+void VKGL_APIENTRY vkglTexImage3D(GLenum      target,
+                                  GLint       level,
+                                  GLint       internalformat,
+                                  GLsizei     width,
+                                  GLsizei     height,
+                                  GLsizei     depth,
+                                  GLint       border,
+                                  GLenum      format,
+                                  GLenum      type,
+                                  const void* pixels);
 
 #endif /* VKGL_GL_TEX_IMAGE_3D_H */

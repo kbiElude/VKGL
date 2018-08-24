@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglBindFramebuffer(GLenum target,
-                                                GLuint framebuffer);
+void VKGL_APIENTRY vkglBindFramebuffer(GLenum target,
+                                       GLuint framebuffer);
 
 #endif /* VKGL_GL_BIND_FRAMEBUFFER_H */

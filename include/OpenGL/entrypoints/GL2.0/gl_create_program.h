@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLuint VKGL_APIENTRY vkglCreateProgram(void);
+GLuint VKGL_APIENTRY vkglCreateProgram(void);
 
 #endif /* VKGL_GL_CREATE_PROGRAM_H */

@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglStencilMaskSeparate(GLenum face,
-                                                    GLuint mask);
+void VKGL_APIENTRY vkglStencilMaskSeparate(GLenum face,
+                                           GLuint mask);
 
 #endif /* VKGL_GL_STENCIL_MASK_SEPARATE_H */

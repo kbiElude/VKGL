@@ -20,9 +20,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glGetMultisamplefv(GLenum   pname,
-                                               GLuint   index,
-                                               GLfloat* val)
+VKGL_API void VKGL_APIENTRY vkglGetMultisamplefv(GLenum   pname,
+                                                 GLuint   index,
+                                                 GLfloat* val)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

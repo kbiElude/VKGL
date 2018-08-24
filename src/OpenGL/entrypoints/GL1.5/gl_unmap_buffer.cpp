@@ -18,7 +18,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API GLboolean VKGL_APIENTRY glUnmapBuffer(GLenum target)
+VKGL_API GLboolean VKGL_APIENTRY vkglUnmapBuffer(GLenum target)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

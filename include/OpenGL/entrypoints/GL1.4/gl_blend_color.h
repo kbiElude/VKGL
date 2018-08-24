@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglBlendColor(GLfloat red,
-                                           GLfloat green,
-                                           GLfloat blue,
-                                           GLfloat alpha);
+void VKGL_APIENTRY vkglBlendColor(GLfloat red,
+                                  GLfloat green,
+                                  GLfloat blue,
+                                  GLfloat alpha);
 
 #endif /* VKGL_GL_BLEND_COLOR_H */

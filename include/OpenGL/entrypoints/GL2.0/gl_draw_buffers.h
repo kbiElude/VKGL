@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglDrawBuffers(GLsizei       n,
-                                            const GLenum* bufs);
+void VKGL_APIENTRY vkglDrawBuffers(GLsizei       n,
+                                   const GLenum* bufs);
 
 #endif /* VKGL_GL_DRAW_BUFFERS_H */

@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLuint VKGL_APIENTRY vkglCreateShader(GLenum type);
+GLuint VKGL_APIENTRY vkglCreateShader(GLenum type);
 
 #endif /* VKGL_GL_CREATE_SHADER_H */

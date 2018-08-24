@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGenerateMipmap(GLenum target);
+void VKGL_APIENTRY vkglGenerateMipmap(GLenum target);
 
 #endif /* VKGL_GL_GENERATE_MIPMAP_H */

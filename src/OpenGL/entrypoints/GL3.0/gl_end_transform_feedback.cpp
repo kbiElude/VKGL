@@ -16,7 +16,7 @@ static bool validate(VKGL::Context* in_context_ptr)
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glEndTransformFeedback(void)
+VKGL_API void VKGL_APIENTRY vkglEndTransformFeedback(void)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

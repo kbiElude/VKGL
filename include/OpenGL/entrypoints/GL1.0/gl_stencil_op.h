@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglStencilOp(GLenum fail,
-                                          GLenum zfail,
-                                          GLenum zpass);
+void VKGL_APIENTRY vkglStencilOp(GLenum fail,
+                                 GLenum zfail,
+                                 GLenum zpass);
 
 #endif /* VKGL_GL_STENCIL_OP_H */

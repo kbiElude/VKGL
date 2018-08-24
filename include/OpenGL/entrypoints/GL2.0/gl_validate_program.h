@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglValidateProgram(GLuint program);
+void VKGL_APIENTRY vkglValidateProgram(GLuint program);
 
 #endif /* VKGL_GL_VALIDATE_PROGRAM_H */

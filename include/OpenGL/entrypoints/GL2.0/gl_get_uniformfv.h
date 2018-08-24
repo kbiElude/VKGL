@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGetUniformfv(GLuint   program,
-                                             GLint    location,
-                                             GLfloat* params);
+void VKGL_APIENTRY vkglGetUniformfv(GLuint   program,
+                                    GLint    location,
+                                    GLfloat* params);
 
 #endif /* VKGL_GL_GET_UNIFORMFV_H */

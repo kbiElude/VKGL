@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGetUniformIndices(GLuint               program,
-                                                  GLsizei              uniformCount,
-                                                  const GLchar* const* uniformNames,
-                                                  GLuint*              uniformIndices);
+void VKGL_APIENTRY vkglGetUniformIndices(GLuint               program,
+                                         GLsizei              uniformCount,
+                                         const GLchar* const* uniformNames,
+                                         GLuint*              uniformIndices);
 
 #endif /* VKGL_GL_GET_UNIFORM_INDICES_H */

@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglEnable(GLenum cap);
+void VKGL_APIENTRY vkglEnable(GLenum cap);
 
 #endif /* VKGL_GL_ENABLE_H */

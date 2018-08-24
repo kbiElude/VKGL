@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGetTexParameterIuiv(GLenum  target,
-                                                    GLenum  pname,
-                                                    GLuint* params);
+void VKGL_APIENTRY vkglGetTexParameterIuiv(GLenum  target,
+                                           GLenum  pname,
+                                           GLuint* params);
 
 #endif /* VKGL_GL_GET_TEX_PARAMETER_I_UIV_H */

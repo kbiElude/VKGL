@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglBlendFuncSeparate(GLenum sfactorRGB,
-                                                  GLenum dfactorRGB,
-                                                  GLenum sfactorAlpha,
-                                                  GLenum dfactorAlpha);
+void VKGL_APIENTRY vkglBlendFuncSeparate(GLenum sfactorRGB,
+                                         GLenum dfactorRGB,
+                                         GLenum sfactorAlpha,
+                                         GLenum dfactorAlpha);
 
 #endif /* VKGL_GL_BLEND_FUNC_SEPARATE_H */

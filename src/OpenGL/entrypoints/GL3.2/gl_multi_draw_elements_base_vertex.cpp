@@ -24,12 +24,12 @@ static bool validate(VKGL::Context*     in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY glMultiDrawElementsBaseVertex(GLenum             mode,
-                                                          const GLsizei*     count,
-                                                          GLenum             type,
-                                                          const void* const* indices,
-                                                          GLsizei            drawcount,
-                                                          const GLint*       basevertex)
+VKGL_API void VKGL_APIENTRY vkglMultiDrawElementsBaseVertex(GLenum             mode,
+                                                            const GLsizei*     count,
+                                                            GLenum             type,
+                                                            const void* const* indices,
+                                                            GLsizei            drawcount,
+                                                            const GLint*       basevertex)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

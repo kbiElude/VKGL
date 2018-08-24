@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGetAttachedShaders(GLuint   program,
-                                                   GLsizei  maxCount,
-                                                   GLsizei* count,
-                                                   GLuint*  shaders);
+void VKGL_APIENTRY vkglGetAttachedShaders(GLuint   program,
+                                          GLsizei  maxCount,
+                                          GLsizei* count,
+                                          GLuint*  shaders);
 
 #endif /* VKGL_GL_GET_ATTACHED_SHADERS_H */

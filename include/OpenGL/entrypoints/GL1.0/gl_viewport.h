@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglViewport(GLint   x,
-                                         GLint   y,
-                                         GLsizei width,
-                                         GLsizei height);
+void VKGL_APIENTRY vkglViewport(GLint   x,
+                                GLint   y,
+                                GLsizei width,
+                                GLsizei height);
 
 #endif /* VKGL_GL_VIEWPORT_H */

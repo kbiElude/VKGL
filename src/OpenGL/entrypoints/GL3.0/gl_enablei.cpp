@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glEnablei(GLenum target,
-                                      GLuint index)
+VKGL_API void VKGL_APIENTRY vkglEnablei(GLenum target,
+                                        GLuint index)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglMultiDrawArrays(GLenum         mode,
-                                                const GLint*   first,
-                                                const GLsizei* count,
-                                                GLsizei        drawcount);
+void VKGL_APIENTRY vkglMultiDrawArrays(GLenum         mode,
+                                       const GLint*   first,
+                                       const GLsizei* count,
+                                       GLsizei        drawcount);
 
 #endif /* VKGL_GL_MULTI_DRAW_ARRAYS_H */

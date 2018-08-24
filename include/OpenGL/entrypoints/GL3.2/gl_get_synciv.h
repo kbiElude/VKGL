@@ -7,10 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGetSynciv(GLsync   sync,
-                                          GLenum   pname,
-                                          GLsizei  bufSize,
-                                          GLsizei* length,
-                                          GLint*   values);
+void VKGL_APIENTRY vkglGetSynciv(GLsync   sync,
+                                 GLenum   pname,
+                                 GLsizei  bufSize,
+                                 GLsizei* length,
+                                 GLint*   values);
 
 #endif /* VKGL_GL_GET_SYNCIV_H */

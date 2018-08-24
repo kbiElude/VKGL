@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglAttachShader(GLuint program,
-                                             GLuint shader);
+void VKGL_APIENTRY vkglAttachShader(GLuint program,
+                                    GLuint shader);
 
 
 #endif /* VKGL_GL_ATTACH_SHADER_H */

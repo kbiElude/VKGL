@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglSampleMaski(GLuint     maskNumber,
-                                            GLbitfield mask);
+void VKGL_APIENTRY vkglSampleMaski(GLuint     maskNumber,
+                                   GLbitfield mask);
 
 #endif /* VKGL_GL_SAMPLE_MASKI_H */

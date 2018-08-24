@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglFlush(void);
+void VKGL_APIENTRY vkglFlush(void);
 
 #endif /* VKGL_GL_FLUSH_H */

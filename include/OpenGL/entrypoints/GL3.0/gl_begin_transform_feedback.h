@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglBeginTransformFeedback(GLenum primitiveMode);
+void VKGL_APIENTRY vkglBeginTransformFeedback(GLenum primitiveMode);
 
 #endif /* VKGL_GL_BEGIN_TRANSFORM_FEEDBACK_H */

@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLboolean VKGL_APIENTRY vkglIsBuffer(GLuint buffer);
+GLboolean VKGL_APIENTRY vkglIsBuffer(GLuint buffer);
 
 #endif /* VKGL_GL_IS_BUFFER_H */

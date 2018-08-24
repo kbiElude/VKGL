@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglDeleteProgram(GLuint program);
+void VKGL_APIENTRY vkglDeleteProgram(GLuint program);
 
 #endif /* VKGL_GL_DELETE_PROGRAM_H */

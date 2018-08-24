@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglHint(GLenum target,
-                                     GLenum mode);
+void VKGL_APIENTRY vkglHint(GLenum target,
+                            GLenum mode);
 
 #endif /* VKGL_GL_HINT_H */

@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglReadBuffer(GLenum src);
+void VKGL_APIENTRY vkglReadBuffer(GLenum src);
 
 #endif /* VKGL_GL_READ_BUFFER_H */

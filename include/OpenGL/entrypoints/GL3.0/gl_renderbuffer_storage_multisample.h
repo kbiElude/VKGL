@@ -7,10 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglRenderbufferStorageMultisample(GLenum  target,
-                                                               GLsizei samples,
-                                                               GLenum  internalformat,
-                                                               GLsizei width,
-                                                               GLsizei height);
+void VKGL_APIENTRY vkglRenderbufferStorageMultisample(GLenum  target,
+                                                      GLsizei samples,
+                                                      GLenum  internalformat,
+                                                      GLsizei width,
+                                                      GLsizei height);
 
 #endif /* VKGL_GL_RENDERBUFFER_STORAGE_MULTISAMPLE_H */

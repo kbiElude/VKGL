@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglBeginQuery(GLenum target,
-                                           GLuint id);
+void VKGL_APIENTRY vkglBeginQuery(GLenum target,
+                                  GLuint id);
 
 
 #endif /* VKGL_GL_BEGIN_QUERY_H */

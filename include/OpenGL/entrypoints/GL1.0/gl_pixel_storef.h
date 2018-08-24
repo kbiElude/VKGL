@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-GLAPI void APIENTRY vkglPixelStoref(GLenum  pname,
-                                    GLfloat param);
+void APIENTRY vkglPixelStoref(GLenum  pname,
+                              GLfloat param);
 
 #endif /* VKGL_GL_PIXEL_STOREF_H */

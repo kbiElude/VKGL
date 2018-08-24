@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglLineWidth(GLfloat width);
+void VKGL_APIENTRY vkglLineWidth(GLfloat width);
 
 #endif /* VKGL_GL_LINE_WIDTH_H */

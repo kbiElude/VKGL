@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGetBufferSubData(GLenum     target,
-                                                 GLintptr   offset,
-                                                 GLsizeiptr size,
-                                                 void*      data);
+void VKGL_APIENTRY vkglGetBufferSubData(GLenum     target,
+                                        GLintptr   offset,
+                                        GLsizeiptr size,
+                                        void*      data);
 
 #endif /* VKGL_GL_GET_BUFFER_SUB_DATA_H */

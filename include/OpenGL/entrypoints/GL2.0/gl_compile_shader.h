@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglCompileShader(GLuint shader);
+void VKGL_APIENTRY vkglCompileShader(GLuint shader);
 
 #endif /* VKGL_GL_COMPILE_SHADER_H */

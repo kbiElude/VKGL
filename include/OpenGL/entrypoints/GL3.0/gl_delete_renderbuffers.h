@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglDeleteRenderbuffers(GLsizei       n,
-                                                    const GLuint* renderbuffers);
+void VKGL_APIENTRY vkglDeleteRenderbuffers(GLsizei       n,
+                                           const GLuint* renderbuffers);
 
 #endif /* VKGL_GL_DELETE_RENDERBUFFERS_H */

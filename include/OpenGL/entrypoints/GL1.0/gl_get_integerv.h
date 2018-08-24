@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglGetIntegerv(GLenum pname,
-                                            GLint* data);
+void VKGL_APIENTRY vkglGetIntegerv(GLenum pname,
+                                   GLint* data);
 
 #endif /* VKGL_GL_GET_INTEGERV_H */

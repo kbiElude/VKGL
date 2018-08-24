@@ -20,9 +20,9 @@ static bool validate(VKGL::Context*    in_context_ptr,
     return result;
 }
 
-VKGL_API GLenum VKGL_APIENTRY glClientWaitSync(GLsync     sync,
-                                               GLbitfield flags,
-                                               GLuint64   timeout)
+VKGL_API GLenum VKGL_APIENTRY vkglClientWaitSync(GLsync     sync,
+                                                 GLbitfield flags,
+                                                 GLuint64   timeout)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

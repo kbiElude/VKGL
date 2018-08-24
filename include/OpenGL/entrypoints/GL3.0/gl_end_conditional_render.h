@@ -7,6 +7,6 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglEndConditionalRender(void);
+void VKGL_APIENTRY vkglEndConditionalRender(void);
 
 #endif /* VKGL_GL_END_CONDITIONAL_RENDER_H */

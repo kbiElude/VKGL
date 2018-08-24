@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glBeginQuery(GLenum target,
-                                         GLuint id)
+VKGL_API void VKGL_APIENTRY vkglBeginQuery(GLenum target,
+                                           GLuint id)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 
