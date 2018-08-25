@@ -10,4 +10,8 @@
 void VKGL_APIENTRY vkglGenTextures(GLsizei n,
                                    GLuint* textures);
 
+void vkglGenTextures_with_validation(VKGL::Context* in_context_ptr,
+                                     const GLsizei& in_n,
+                                     GLuint*        in_textures);
+
 #endif /* VKGL_GL_GEN_TEXTURES_H */

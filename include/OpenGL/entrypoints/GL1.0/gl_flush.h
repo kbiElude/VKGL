@@ -9,4 +9,6 @@
 
 void VKGL_APIENTRY vkglFlush(void);
 
+void vkglFlush_with_validation(VKGL::Context* in_context_ptr);
+
 #endif /* VKGL_GL_FLUSH_H */

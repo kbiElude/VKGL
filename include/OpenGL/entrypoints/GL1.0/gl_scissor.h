@@ -12,4 +12,10 @@ void VKGL_APIENTRY vkglScissor(GLint   x,
                                GLsizei width,
                                GLsizei height);
 
+void vkglScissor_with_validation(VKGL::Context* in_context_ptr,
+                                 const GLint&   in_x,
+                                 const GLint&   in_y,
+                                 const GLsizei& in_width,
+                                 const GLsizei& in_height);
+
 #endif /* VKGL_GL_SCISSOR_H */

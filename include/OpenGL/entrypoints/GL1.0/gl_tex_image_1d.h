@@ -16,4 +16,14 @@ void VKGL_APIENTRY vkglTexImage1D(GLenum      target,
                                   GLenum      type,
                                   const void* pixels);
 
+void vkglTexImage1D_with_validation(VKGL::Context* in_context_ptr,
+                                    const GLenum&  in_target,
+                                    const GLint&   in_level,
+                                    const GLint&   in_internalformat,
+                                    const GLsizei& in_width,
+                                    const GLint&   in_border,
+                                    const GLenum&  in_format,
+                                    const GLenum&  in_type,
+                                    const void*    in_pixels_ptr);
+
 #endif /* VKGL_GL_TEX_IMAGE_1D_H */

@@ -11,4 +11,9 @@ void VKGL_APIENTRY vkglUniform2i(GLint location,
                                  GLint v0,
                                  GLint v1);
 
+void vkglUniform2i_with_validation(VKGL::Context* in_context_ptr,
+                                   const GLint&   in_location,
+                                   const GLint&   in_v0,
+                                   const GLint&   in_v1);
+
 #endif /* VKGL_GL_UNIFORM_2I_H */

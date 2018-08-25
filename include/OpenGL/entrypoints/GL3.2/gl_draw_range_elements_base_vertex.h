@@ -15,4 +15,13 @@ void VKGL_APIENTRY vkglDrawRangeElementsBaseVertex(GLenum      mode,
                                                    const void* indices,
                                                    GLint       basevertex);
 
+void vkglDrawRangeElementsBaseVertex_with_validation(VKGL::Context* in_context_ptr,
+                                                     const GLenum&  in_mode,
+                                                     const GLuint&  in_start,
+                                                     const GLuint&  in_end,
+                                                     const GLsizei& in_count,
+                                                     const GLenum&  in_type,
+                                                     const void*    in_indices,
+                                                     const GLint&   in_basevertex);
+
 #endif /* VKGL_GL_DRAW_RANGE_ELEMENTS_BASE_VERTEX_H */

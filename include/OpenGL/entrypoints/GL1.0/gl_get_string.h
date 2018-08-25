@@ -9,4 +9,7 @@
 
 const GLubyte *APIENTRY vkglGetString(GLenum name);
 
+const GLubyte* vkglGetString_with_validation(VKGL::Context* in_context_ptr,
+                                             const GLenum&  in_name);
+
 #endif /* VKGL_GL_GET_STRING_H */

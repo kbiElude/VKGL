@@ -12,4 +12,10 @@ void VKGL_APIENTRY vkglFramebufferRenderbuffer(GLenum target,
                                                GLenum renderbuffertarget,
                                                GLuint renderbuffer);
 
+void vkglFramebufferRenderbuffer_with_validation(VKGL::Context* in_context_ptr,
+                                                 const GLenum&  in_target,
+                                                 const GLenum&  in_attachment,
+                                                 const GLenum&  in_renderbuffertarget,
+                                                 const GLuint&  in_renderbuffer);
+
 #endif /* VKGL_GL_FRAMEBUFFER_RENDERBUFFER_H */

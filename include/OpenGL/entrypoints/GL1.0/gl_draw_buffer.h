@@ -9,4 +9,7 @@
 
 void VKGL_APIENTRY vkglDrawBuffer(GLenum buf);
 
+void vkglDrawBuffer_with_validation(VKGL::Context* in_context_ptr,
+                                    const GLenum&  in_buf);
+
 #endif /* VKGL_GL_DRAW_BUFFER_H */

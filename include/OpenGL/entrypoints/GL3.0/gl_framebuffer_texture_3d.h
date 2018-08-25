@@ -14,4 +14,12 @@ void VKGL_APIENTRY vkglFramebufferTexture3D(GLenum target,
                                             GLint  level,
                                             GLint  zoffset);
 
+void vkglFramebufferTexture3D_with_validation(VKGL::Context* in_context_ptr,
+                                              const GLenum&  in_target,
+                                              const GLenum&  in_attachment,
+                                              const GLenum&  in_textarget,
+                                              const GLuint&  in_texture,
+                                              const GLint&   in_level,
+                                              const GLint&   in_zoffset);
+
 #endif /* VKGL_GL_FRAMEBUFFER_TEXTURE_3D_H */

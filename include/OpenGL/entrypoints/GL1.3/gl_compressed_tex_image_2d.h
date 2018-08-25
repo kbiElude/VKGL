@@ -16,4 +16,14 @@ void VKGL_APIENTRY vkglCompressedTexImage2D(GLenum      target,
                                             GLsizei     imageSize,
                                             const void* data);
 
+void vkglCompressedTexImage2D_with_validation(VKGL::Context* in_context_ptr,
+                                              const GLenum&  in_target,
+                                              const GLint&   in_level,
+                                              const GLenum&  in_internalformat,
+                                              const GLsizei& in_width,
+                                              const GLsizei& in_height,
+                                              const GLint&   in_border,
+                                              const GLsizei& in_image_size,
+                                              const void*    in_data);
+
 #endif /* VKGL_GL_COMPRESSED_TEX_IMAGE_2D_H */

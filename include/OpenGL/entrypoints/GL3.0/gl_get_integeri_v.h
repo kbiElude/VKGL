@@ -11,4 +11,9 @@ void VKGL_APIENTRY vkglGetIntegeri_v(GLenum target,
                                      GLuint index,
                                      GLint* data);
 
+void vkglGetIntegeri_v_with_validation(VKGL::Context* in_context_ptr,
+                                       const GLenum&  in_target,
+                                       const GLuint&  in_index,
+                                       GLint*         out_data_ptr);
+
 #endif /* VKGL_GL_GET_INTEGERI_V_H */

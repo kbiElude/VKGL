@@ -15,4 +15,13 @@ void VKGL_APIENTRY vkglReadPixels(GLint   x,
                                   GLenum  type,
                                   void*   pixels);
 
+void vkglReadPixels_with_validation(VKGL::Context* in_context_ptr,
+                                    const GLint&   in_x,
+                                    const GLint&   in_y,
+                                    const GLsizei& in_width,
+                                    const GLsizei& in_height,
+                                    const GLenum&  in_format,
+                                    const GLenum&  in_type,
+                                    void*          out_pixels_ptr);
+
 #endif /* VKGL_GL_READ_PIXELS_H */

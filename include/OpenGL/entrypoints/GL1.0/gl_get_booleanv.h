@@ -10,4 +10,8 @@
 void VKGL_APIENTRY vkglGetBooleanv(GLenum     pname,
                                    GLboolean* data);
 
+void vkglGetBooleanv_with_validation(VKGL::Context* in_context_ptr,
+                                     const GLenum&  in_pname,
+                                     GLboolean*     out_data_ptr);
+
 #endif /* VKGL_GL_GET_BOOLEANV_H */

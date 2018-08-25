@@ -10,4 +10,8 @@
 void VKGL_APIENTRY vkglDisablei(GLenum target,
                                 GLuint index);
 
+void vkglDisablei_with_validation(VKGL::Context* in_context_ptr,
+                                  const GLenum&  in_target,
+                                  const GLuint&  in_index);
+
 #endif /* VKGL_GL_DISABLEI_H */

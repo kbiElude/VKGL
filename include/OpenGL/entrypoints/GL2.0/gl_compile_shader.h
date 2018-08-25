@@ -9,4 +9,7 @@
 
 void VKGL_APIENTRY vkglCompileShader(GLuint shader);
 
+void vkglCompileShader_with_validation(VKGL::Context* in_context_ptr,
+                                       const GLuint&  in_shader);
+
 #endif /* VKGL_GL_COMPILE_SHADER_H */

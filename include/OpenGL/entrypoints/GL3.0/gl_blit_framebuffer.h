@@ -18,4 +18,16 @@ void VKGL_APIENTRY vkglBlitFramebuffer(GLint      srcX0,
                                        GLbitfield mask,
                                        GLenum     filter);
 
+void vkglBlitFramebuffer_with_validation(VKGL::Context*    in_context_ptr,
+                                         const GLint&      in_src_x0,
+                                         const GLint&      in_src_y0,
+                                         const GLint&      in_src_x1,
+                                         const GLint&      in_src_y1,
+                                         const GLint&      in_dst_x0,
+                                         const GLint&      in_dst_y0,
+                                         const GLint&      in_dst_x1,
+                                         const GLint&      in_dst_y1,
+                                         const GLbitfield& in_mask,
+                                         const GLenum&     in_filter);
+
 #endif /* VKGL_GL_BLIT_FRAMEBUFFER_H */

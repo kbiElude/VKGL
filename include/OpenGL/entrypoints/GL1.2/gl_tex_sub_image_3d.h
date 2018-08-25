@@ -19,4 +19,16 @@ void VKGL_APIENTRY vkglTexSubImage3D(GLenum      target,
                                      GLenum      type,
                                      const void* pixels);
 
+void VKGL_APIENTRY vkglTexSubImage3D(GLenum      target,
+                                     GLint       level,
+                                     GLint       xoffset,
+                                     GLint       yoffset,
+                                     GLint       zoffset,
+                                     GLsizei     width,
+                                     GLsizei     height,
+                                     GLsizei     depth,
+                                     GLenum      format,
+                                     GLenum      type,
+                                     const void* pixels);
+
 #endif /* VKGL_GL_TEX_SUB_IMAGE_3D_H */

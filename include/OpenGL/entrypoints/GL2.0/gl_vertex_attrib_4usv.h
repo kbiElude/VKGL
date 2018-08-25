@@ -10,4 +10,8 @@
 void VKGL_APIENTRY vkglVertexAttrib4usv(GLuint          index,
                                         const GLushort* v);
 
+void vkglVertexAttrib4usv_with_validation(VKGL::Context*  in_context_ptr,
+                                          const GLuint&   in_index,
+                                          const GLushort* in_v_ptr);
+
 #endif /* VKGL_GL_VERTEX_ATTRIB_4USV_H */

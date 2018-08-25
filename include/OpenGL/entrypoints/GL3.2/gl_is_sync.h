@@ -9,4 +9,7 @@
 
 GLboolean VKGL_APIENTRY vkglIsSync(GLsync sync);
 
+GLboolean vkglIsSync_with_validation(VKGL::Context* in_context_ptr,
+                                     const GLsync&  in_sync);
+
 #endif /* VKGL_GL_IS_SYNC_H */

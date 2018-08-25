@@ -9,4 +9,6 @@
 
 void VKGL_APIENTRY vkglEndConditionalRender(void);
 
+void vkglEndConditionalRender_with_validation(VKGL::Context* in_context_ptr);
+
 #endif /* VKGL_GL_END_CONDITIONAL_RENDER_H */

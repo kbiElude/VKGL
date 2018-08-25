@@ -12,4 +12,10 @@ void VKGL_APIENTRY vkglUniform3f(GLint   location,
                                  GLfloat v1,
                                  GLfloat v2);
 
+void vkglUniform3f_with_validation(VKGL::Context* in_context_ptr,
+                                   const GLint&   in_location,
+                                   const GLfloat& in_v0,
+                                   const GLfloat& in_v1,
+                                   const GLfloat& in_v2);
+
 #endif /* VKGL_GL_UNIFORM_3F_H */

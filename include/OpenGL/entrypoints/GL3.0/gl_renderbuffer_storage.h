@@ -12,4 +12,10 @@ void VKGL_APIENTRY vkglRenderbufferStorage(GLenum  target,
                                            GLsizei width,
                                            GLsizei height);
 
+void vkglRenderbufferStorage_with_validation(VKGL::Context* in_context_ptr,
+                                             const GLenum&  in_target,
+                                             const GLenum&  in_internalformat,
+                                             const GLsizei& in_width,
+                                             const GLsizei& in_height);
+
 #endif /* VKGL_GL_RENDERBUFFER_STORAGE_H */

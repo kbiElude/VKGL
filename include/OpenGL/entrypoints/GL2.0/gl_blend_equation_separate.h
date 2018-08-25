@@ -10,4 +10,8 @@
 void VKGL_APIENTRY vkglBlendEquationSeparate(GLenum modeRGB,
                                              GLenum modeAlpha);
 
+void vkglBlendEquationSeparate_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLenum&  in_modeRGB,
+                                               const GLenum&  in_modeAlpha);
+
 #endif /* VKGL_GL_BLEND_EQUATION_SEPARATE_H */

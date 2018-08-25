@@ -12,4 +12,10 @@ void VKGL_APIENTRY vkglVertexAttrib3d(GLuint   index,
                                       GLdouble y,
                                       GLdouble z);
 
+void vkglVertexAttrib3d_with_validation(VKGL::Context*  in_context_ptr,
+                                        const GLuint&   in_index,
+                                        const GLdouble& in_x,
+                                        const GLdouble& in_y,
+                                        const GLdouble& in_z);
+
 #endif /* VKGL_GL_VERTEX_ATTRIB_3D_H */

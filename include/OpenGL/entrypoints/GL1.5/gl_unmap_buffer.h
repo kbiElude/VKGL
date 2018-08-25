@@ -9,4 +9,7 @@
 
 GLboolean VKGL_APIENTRY vkglUnmapBuffer(GLenum target);
 
+bool vkglUnmapBuffer_with_validation(VKGL::Context* in_context_ptr,
+                                     const GLenum&  in_target);
+
 #endif /* VKGL_GL_UNMAP_BUFFER_H */

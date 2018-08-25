@@ -12,4 +12,10 @@ void VKGL_APIENTRY vkglVertexAttrib3s(GLuint  index,
                                       GLshort y,
                                       GLshort z);
 
+void vkglVertexAttrib3s_with_validation(VKGL::Context* in_context_ptr,
+                                        const GLuint&  in_index,
+                                        const GLshort& in_x,
+                                        const GLshort& in_y,
+                                        const GLshort& in_z);
+
 #endif /* VKGL_GL_VERTEX_ATTRIB_3S_H */

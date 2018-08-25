@@ -10,4 +10,8 @@
 void VKGL_APIENTRY vkglDeleteQueries(GLsizei       n,
                                      const GLuint* ids);
 
+void vkglDeleteQueries_with_validation(VKGL::Context* in_context_ptr,
+                                       const GLsizei& in_n,
+                                       const GLuint*  in_ids);
+
 #endif /* VKGL_GL_DELETE_QUERIES_H */

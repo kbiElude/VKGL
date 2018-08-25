@@ -12,4 +12,10 @@ void VKGL_APIENTRY vkglDrawArraysInstanced(GLenum  mode,
                                            GLsizei count,
                                            GLsizei instancecount);
 
+void vkglDrawArraysInstanced_with_validation(VKGL::Context* in_context_ptr,
+                                             const GLenum&  in_mode,
+                                             const GLint&   in_first,
+                                             const GLsizei& in_count,
+                                             const GLsizei& in_instancecount);
+
 #endif /* VKGL_GL_DRAW_ARRAYS_INSTANCED_H */

@@ -9,4 +9,7 @@
 
 void VKGL_APIENTRY vkglUseProgram(GLuint program);
 
+void vkglUseProgram_with_validation(VKGL::Context* in_context_ptr,
+                                    const GLuint&  in_program);
+
 #endif /* VKGL_GL_USE_PROGRAM_H */

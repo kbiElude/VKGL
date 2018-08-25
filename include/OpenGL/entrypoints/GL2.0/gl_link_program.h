@@ -9,4 +9,7 @@
 
 void VKGL_APIENTRY vkglLinkProgram(GLuint program);
 
+bool vkglLinkProgram_with_validation(VKGL::Context* in_context_ptr,
+                                     const GLuint&  in_program);
+
 #endif /* VKGL_GL_LINK_PROGRAM_H */

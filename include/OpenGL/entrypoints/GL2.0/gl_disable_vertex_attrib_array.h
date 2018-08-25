@@ -9,4 +9,7 @@
 
 void VKGL_APIENTRY vkglDisableVertexAttribArray(GLuint index);
 
+void vkglDisableVertexAttribArray_with_validation(VKGL::Context* in_context_ptr,
+                                                  const GLuint&  in_index);
+
 #endif /* VKGL_GL_DISABLE_VERTEX_ATTRIB_ARRAY_H */

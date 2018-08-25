@@ -9,4 +9,7 @@
 
 void VKGL_APIENTRY vkglProvokingVertex(GLenum mode);
 
+void vkglProvokingVertex_with_validation(VKGL::Context* in_context_ptr,
+                                         const GLenum&  in_mode);
+
 #endif /* VKGL_GL_PROVOKING_VERTEX_H */

@@ -9,4 +9,7 @@
 
 void VKGL_APIENTRY vkglStencilMask(GLuint mask);
 
+void vkglStencilMask_with_validation(VKGL::Context* in_context_ptr,
+                                     const GLuint&  in_mask);
+
 #endif /* VKGL_GL_STENCIL_MASK_H */

@@ -15,4 +15,13 @@ void VKGL_APIENTRY vkglCompressedTexSubImage1D(GLenum      target,
                                                GLsizei     imageSize,
                                                const void* data);
 
+void vkglCompressedTexSubImage1D_with_validation(VKGL::Context* in_context_ptr,
+                                                 const GLenum&  in_target,
+                                                 const GLint&   in_level,
+                                                 const GLint&   in_xoffset,
+                                                 const GLsizei& in_width,
+                                                 const GLenum&  in_format,
+                                                 const GLsizei& in_image_size,
+                                                 const void*    in_data);
+
 #endif /* VKGL_GL_COMPRESSED_TEX_SUB_IMAGE_1D_H */

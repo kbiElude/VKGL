@@ -9,4 +9,6 @@
 
 void VKGL_APIENTRY vkglEndTransformFeedback(void);
 
+void vkglEndTransformFeedback_with_validation(VKGL::Context* in_context_ptr);
+
 #endif /* VKGL_GL_END_TRANSFORM_FEEDBACK_H */

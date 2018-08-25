@@ -10,5 +10,8 @@
 void VKGL_APIENTRY vkglVertexAttribI1ui(GLuint index,
                                         GLuint x);
 
+void vkglVertexAttribI1ui_with_validation(VKGL::Context* in_context_ptr,
+                                          const GLuint&  in_index,
+                                          const GLuint&  in_x);
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_I_1UI_H */

@@ -13,4 +13,11 @@ void VKGL_APIENTRY vkglBindBufferRange(GLenum     target,
                                        GLintptr   offset,
                                        GLsizeiptr size);
 
+void vkglBindBufferRange_with_validation(VKGL::Context*    in_context_ptr,
+                                         const GLenum&     in_target,
+                                         const GLuint&     in_index,
+                                         const GLuint&     in_buffer,
+                                         const GLintptr&   in_offset,
+                                         const GLsizeiptr& in_size);
+
 #endif /* VKGL_GL_BIND_BUFFER_RANGE_H */

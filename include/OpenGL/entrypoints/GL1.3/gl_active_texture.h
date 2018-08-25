@@ -9,4 +9,7 @@
 
 void VKGL_APIENTRY vkglActiveTexture(GLenum texture);
 
+void vkglActiveTexture_with_validation(VKGL::Context* in_context_ptr,
+                                       const GLenum&  in_texture);
+
 #endif /* VKGL_GL_ACTIVE_TEXTURE_H */

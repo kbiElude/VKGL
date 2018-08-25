@@ -12,4 +12,10 @@ void VKGL_APIENTRY vkglGetShaderSource(GLuint   shader,
                                        GLsizei* length,
                                        GLchar*  source);
 
+void vkglGetShaderSource_with_validation(VKGL::Context* in_context_ptr,
+                                         const GLuint&  in_shader,
+                                         const GLsizei& in_buf_size,
+                                         GLsizei*       inout_length_ptr,
+                                         GLchar*        out_source_ptr);
+
 #endif /* VKGL_GL_GET_SHADER_SOURCE_H */
