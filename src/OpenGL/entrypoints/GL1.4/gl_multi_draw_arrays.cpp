@@ -21,10 +21,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY vkglMultiDrawArrays(GLenum         mode,
-                                                const GLint*   first,
-                                                const GLsizei* count,
-                                                GLsizei        drawcount)
+void VKGL_APIENTRY vkglMultiDrawArrays(GLenum         mode,
+                                       const GLint*   first,
+                                       const GLsizei* count,
+                                       GLsizei        drawcount)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

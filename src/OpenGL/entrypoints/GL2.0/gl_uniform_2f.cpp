@@ -19,9 +19,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY vkglUniform2f(GLint   location,
-                                          GLfloat v0,
-                                          GLfloat v1)
+void VKGL_APIENTRY vkglUniform2f(GLint   location,
+                                 GLfloat v0,
+                                 GLfloat v1)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

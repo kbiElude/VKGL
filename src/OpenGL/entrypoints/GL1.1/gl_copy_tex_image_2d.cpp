@@ -25,14 +25,14 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY vkglCopyTexImage2D(GLenum  target,
-                                               GLint   level,
-                                               GLenum  internalformat,
-                                               GLint   x,
-                                               GLint   y,
-                                               GLsizei width,
-                                               GLsizei height,
-                                               GLint   border)
+void VKGL_APIENTRY vkglCopyTexImage2D(GLenum  target,
+                                      GLint   level,
+                                      GLenum  internalformat,
+                                      GLint   x,
+                                      GLint   y,
+                                      GLsizei width,
+                                      GLsizei height,
+                                      GLint   border)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

@@ -22,11 +22,11 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY vkglGetActiveUniformName(GLuint   program,
-                                                     GLuint   uniformIndex,
-                                                     GLsizei  bufSize,
-                                                     GLsizei* length,
-                                                     GLchar*  uniformName)
+void VKGL_APIENTRY vkglGetActiveUniformName(GLuint   program,
+                                            GLuint   uniformIndex,
+                                            GLsizei  bufSize,
+                                            GLsizei* length,
+                                            GLchar*  uniformName)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

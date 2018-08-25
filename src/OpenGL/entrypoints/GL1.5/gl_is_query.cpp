@@ -18,7 +18,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-VKGL_API GLboolean VKGL_APIENTRY vkglIsQuery(GLuint id)
+GLboolean VKGL_APIENTRY vkglIsQuery(GLuint id)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-VKGL_API GLenum VKGL_APIENTRY vkglGetError(void)
+GLenum VKGL_APIENTRY vkglGetError(void)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

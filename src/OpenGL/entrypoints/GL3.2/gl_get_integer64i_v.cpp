@@ -21,9 +21,9 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY vkglGetInteger64i_v(GLenum   target,
-                                                GLuint   index,
-                                                GLint64* data)
+void VKGL_APIENTRY vkglGetInteger64i_v(GLenum   target,
+                                       GLuint   index,
+                                       GLint64* data)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

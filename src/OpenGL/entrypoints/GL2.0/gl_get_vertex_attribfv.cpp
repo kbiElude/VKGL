@@ -20,9 +20,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY vkglGetVertexAttribfv(GLuint   index,
-                                                  GLenum   pname,
-                                                  GLfloat* params)
+void VKGL_APIENTRY vkglGetVertexAttribfv(GLuint   index,
+                                         GLenum   pname,
+                                         GLfloat* params)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

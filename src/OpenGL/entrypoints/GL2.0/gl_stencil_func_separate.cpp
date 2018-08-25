@@ -21,10 +21,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY vkglStencilFuncSeparate(GLenum face,
-                                                    GLenum func,
-                                                    GLint  ref,
-                                                    GLuint mask)
+void VKGL_APIENTRY vkglStencilFuncSeparate(GLenum face,
+                                           GLenum func,
+                                           GLint  ref,
+                                           GLuint mask)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

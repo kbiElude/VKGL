@@ -19,9 +19,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void vkglGetDoublev_execute(VKGL::Context* in_context_ptr,
-                            const GLenum&  in_pname,
-                            GLdouble*      out_data_ptr)
+vkglGetDoublev_execute(VKGL::Context* in_context_ptr,
+                       const GLenum&  in_pname,
+                       GLdouble*      out_data_ptr)
 {
     const auto pname_vkgl = VKGL::Utils::get_context_property_for_gl_enum(in_pname);
 
@@ -44,8 +44,8 @@ void vkglGetDoublev_with_validation(VKGL::Context* in_context_ptr,
     }
 }
 
-VKGL_API void VKGL_APIENTRY vkglGetDoublev(GLenum    pname,
-                                           GLdouble* data)
+void VKGL_APIENTRY vkglGetDoublev(GLenum    pname,
+                                  GLdouble* data)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

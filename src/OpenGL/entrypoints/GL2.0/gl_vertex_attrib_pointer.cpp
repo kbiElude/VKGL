@@ -23,12 +23,12 @@ static bool validate(VKGL::Context*   in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY vkglVertexAttribPointer(GLuint      index,
-                                                    GLint       size,
-                                                    GLenum      type,
-                                                    GLboolean   normalized,
-                                                    GLsizei     stride,
-                                                    const void* pointer)
+void VKGL_APIENTRY vkglVertexAttribPointer(GLuint      index,
+                                           GLint       size,
+                                           GLenum      type,
+                                           GLboolean   normalized,
+                                           GLsizei     stride,
+                                           const void* pointer)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

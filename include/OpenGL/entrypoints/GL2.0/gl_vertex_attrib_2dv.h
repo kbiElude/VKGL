@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY vkglVertexAttrib2dv(GLuint          index,
-                                                const GLdouble* v);
+void VKGL_APIENTRY vkglVertexAttrib2dv(GLuint          index,
+                                       const GLdouble* v);
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_2DV_H */

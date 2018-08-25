@@ -24,13 +24,13 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY vkglTexSubImage1D(GLenum      target,
-                                              GLint       level,
-                                              GLint       xoffset,
-                                              GLsizei     width,
-                                              GLenum      format,
-                                              GLenum      type,
-                                              const void* pixels)
+void VKGL_APIENTRY vkglTexSubImage1D(GLenum      target,
+                                     GLint       level,
+                                     GLint       xoffset,
+                                     GLsizei     width,
+                                     GLenum      format,
+                                     GLenum      type,
+                                     const void* pixels)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

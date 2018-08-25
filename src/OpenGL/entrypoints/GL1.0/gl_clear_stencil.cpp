@@ -18,7 +18,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY vkglClearStencil(GLint s)
+void VKGL_APIENTRY vkglClearStencil(GLint s)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

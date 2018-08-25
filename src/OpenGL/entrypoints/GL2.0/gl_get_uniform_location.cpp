@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API GLint VKGL_APIENTRY vkglGetUniformLocation(GLuint        program,
-                                                    const GLchar* name)
+GLint VKGL_APIENTRY vkglGetUniformLocation(GLuint        program,
+                                           const GLchar* name)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

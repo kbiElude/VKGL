@@ -18,7 +18,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API GLenum VKGL_APIENTRY vkglCheckFramebufferStatus(GLenum target)
+GLenum VKGL_APIENTRY vkglCheckFramebufferStatus(GLenum target)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
     const auto  result             = dispatch_table_ptr->pGLCheckFramebufferStatus(dispatch_table_ptr->bound_context_ptr,

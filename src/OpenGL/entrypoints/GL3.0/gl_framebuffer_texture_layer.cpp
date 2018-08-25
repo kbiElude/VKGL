@@ -23,11 +23,11 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY vkglFramebufferTextureLayer(GLenum target,
-                                                        GLenum attachment,
-                                                        GLuint texture,
-                                                        GLint  level,
-                                                        GLint  layer)
+void VKGL_APIENTRY vkglFramebufferTextureLayer(GLenum target,
+                                               GLenum attachment,
+                                               GLuint texture,
+                                               GLint  level,
+                                               GLint  layer)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

@@ -20,10 +20,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY vkglGetAttachedShaders(GLuint   program,
-                                                   GLsizei  maxCount,
-                                                   GLsizei* count,
-                                                   GLuint*  shaders)
+void VKGL_APIENTRY vkglGetAttachedShaders(GLuint   program,
+                                          GLsizei  maxCount,
+                                          GLsizei* count,
+                                          GLuint*  shaders)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

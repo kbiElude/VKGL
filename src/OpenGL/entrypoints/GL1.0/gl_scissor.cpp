@@ -21,10 +21,10 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY vkglScissor(GLint   x,
-                                        GLint   y,
-                                        GLsizei width,
-                                        GLsizei height)
+void VKGL_APIENTRY vkglScissor(GLint   x,
+                               GLint   y,
+                               GLsizei width,
+                               GLsizei height)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 
