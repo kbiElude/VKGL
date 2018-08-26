@@ -5,6 +5,6 @@
 #ifndef VKGL_GL_GET_VERTEX_ATTRIBFV_ARB_H
 #define VKGL_GL_GET_VERTEX_ATTRIBFV_ARB_H
 
-#define vkglGetVertexAttribfvARB vkglGetVertexAttribfv
+#define vkglGetVertexAttribfvARB_with_validation vkglGetVertexAttribfv_with_validation
 
 #endif /* VKGL_GL_GET_VERTEX_ATTRIBFV_ARB_H */
