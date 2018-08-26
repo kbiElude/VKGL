@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glUniform2ui(GLint  location,
-                                         GLuint v0,
-                                         GLuint v1);
+void VKGL_APIENTRY vkglUniform2ui(GLint  location,
+                                  GLuint v0,
+                                  GLuint v1);
 
 void vkglUniform2ui_with_validation(VKGL::Context* in_context_ptr,
                                     const GLint&   in_location,

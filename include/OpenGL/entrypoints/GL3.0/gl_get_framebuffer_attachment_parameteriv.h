@@ -7,10 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetFramebufferAttachmentParameteriv(GLenum target,
-                                                                  GLenum attachment,
-                                                                  GLenum pname,
-                                                                  GLint* params);
+void VKGL_APIENTRY vkglGetFramebufferAttachmentParameteriv(GLenum target,
+                                                           GLenum attachment,
+                                                           GLenum pname,
+                                                           GLint* params);
 
 void vkglGetFramebufferAttachmentParameteriv_with_validation(VKGL::Context* in_context_ptr,
                                                              const GLenum&  in_target,

@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glEndQuery(GLenum target);
+void VKGL_APIENTRY vkglEndQuery(GLenum target);
 
 void vkglEndQuery_with_validation(VKGL::Context* in_context_ptr,
                                   const GLenum&  in_target);

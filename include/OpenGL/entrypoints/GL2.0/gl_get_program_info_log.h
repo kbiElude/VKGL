@@ -7,10 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetProgramInfoLog(GLuint   program,
-                                                GLsizei  bufSize,
-                                                GLsizei* length,
-                                                GLchar*  infoLog);
+void VKGL_APIENTRY vkglGetProgramInfoLog(GLuint   program,
+                                         GLsizei  bufSize,
+                                         GLsizei* length,
+                                         GLchar*  infoLog);
 
 void vkglGetProgramInfoLog_with_validation(VKGL::Context* in_context_ptr,
                                            const GLuint&  in_program,

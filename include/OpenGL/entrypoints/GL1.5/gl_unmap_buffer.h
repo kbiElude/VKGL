@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLboolean VKGL_APIENTRY glUnmapBuffer(GLenum target);
+GLboolean VKGL_APIENTRY vkglUnmapBuffer(GLenum target);
 
 bool vkglUnmapBuffer_with_validation(VKGL::Context* in_context_ptr,
                                      const GLenum&  in_target);

@@ -7,15 +7,15 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glTexImage2D(GLenum      target,
-                                         GLint       level,
-                                         GLint       internalformat,
-                                         GLsizei     width,
-                                         GLsizei     height,
-                                         GLint       border,
-                                         GLenum      format,
-                                         GLenum      type,
-                                         const void* pixels);
+void VKGL_APIENTRY vkglTexImage2D(GLenum      target,
+                                  GLint       level,
+                                  GLint       internalformat,
+                                  GLsizei     width,
+                                  GLsizei     height,
+                                  GLint       border,
+                                  GLenum      format,
+                                  GLenum      type,
+                                  const void* pixels);
 
 void vkglTexImage2D_with_validation(VKGL::Context* in_context_ptr,
                                     const GLenum&  in_target,

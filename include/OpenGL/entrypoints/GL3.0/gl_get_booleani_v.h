@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetBooleani_v(GLenum     target,
-                                            GLuint     index,
-                                            GLboolean* data);
+void VKGL_APIENTRY vkglGetBooleani_v(GLenum     target,
+                                     GLuint     index,
+                                     GLboolean* data);
 
 void vkglGetBooleani_v_with_validation(VKGL::Context* in_context_ptr,
                                        const GLenum&  in_target,

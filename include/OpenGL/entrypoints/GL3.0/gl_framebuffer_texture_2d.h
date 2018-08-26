@@ -7,11 +7,11 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glFramebufferTexture2D(GLenum target,
-                                                   GLenum attachment,
-                                                   GLenum textarget,
-                                                   GLuint texture,
-                                                   GLint  level);
+void VKGL_APIENTRY vkglFramebufferTexture2D(GLenum target,
+                                            GLenum attachment,
+                                            GLenum textarget,
+                                            GLuint texture,
+                                            GLint  level);
 
 void vkglFramebufferTexture2D_with_validation(VKGL::Context* in_context_ptr,
                                               const GLenum&  in_target,

@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLuint VKGL_APIENTRY glCreateProgram(void);
+GLuint VKGL_APIENTRY vkglCreateProgram(void);
 
 GLuint vkglCreateProgram_with_validation(VKGL::Context* in_context_ptr);
 

@@ -7,16 +7,16 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glBlitFramebuffer(GLint      srcX0,
-                                              GLint      srcY0,
-                                              GLint      srcX1,
-                                              GLint      srcY1,
-                                              GLint      dstX0,
-                                              GLint      dstY0,
-                                              GLint      dstX1,
-                                              GLint      dstY1,
-                                              GLbitfield mask,
-                                              GLenum     filter);
+void VKGL_APIENTRY vkglBlitFramebuffer(GLint      srcX0,
+                                       GLint      srcY0,
+                                       GLint      srcX1,
+                                       GLint      srcY1,
+                                       GLint      dstX0,
+                                       GLint      dstY0,
+                                       GLint      dstX1,
+                                       GLint      dstY1,
+                                       GLbitfield mask,
+                                       GLenum     filter);
 
 void vkglBlitFramebuffer_with_validation(VKGL::Context*    in_context_ptr,
                                          const GLint&      in_src_x0,

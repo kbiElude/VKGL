@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetVertexAttribIiv(GLuint index,
-                                                 GLenum pname,
-                                                 GLint* params);
+void VKGL_APIENTRY vkglGetVertexAttribIiv(GLuint index,
+                                          GLenum pname,
+                                          GLint* params);
 
 void vkglGetVertexAttribIiv_with_validation(VKGL::Context* in_context_ptr,
                                             const GLuint&  in_index,

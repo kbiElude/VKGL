@@ -7,11 +7,11 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glUniform4f(GLint   location,
-                                        GLfloat v0,
-                                        GLfloat v1,
-                                        GLfloat v2,
-                                        GLfloat v3);
+void VKGL_APIENTRY vkglUniform4f(GLint   location,
+                                 GLfloat v0,
+                                 GLfloat v1,
+                                 GLfloat v2,
+                                 GLfloat v3);
 
 void vkglUniform4f_with_validation(VKGL::Context* in_context_ptr,
                                    const GLint&   in_location,

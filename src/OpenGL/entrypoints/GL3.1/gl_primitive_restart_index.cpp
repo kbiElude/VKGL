@@ -17,7 +17,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glPrimitiveRestartIndex(GLuint index)
+void VKGL_APIENTRY vkglPrimitiveRestartIndex(GLuint index)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

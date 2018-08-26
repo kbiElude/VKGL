@@ -26,15 +26,15 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glCompressedTexSubImage2D(GLenum      target,
-                                                      GLint       level,
-                                                      GLint       xoffset,
-                                                      GLint       yoffset,
-                                                      GLsizei     width,
-                                                      GLsizei     height,
-                                                      GLenum      format,
-                                                      GLsizei     imageSize,
-                                                      const void* data)
+void VKGL_APIENTRY vkglCompressedTexSubImage2D(GLenum      target,
+                                               GLint       level,
+                                               GLint       xoffset,
+                                               GLint       yoffset,
+                                               GLsizei     width,
+                                               GLsizei     height,
+                                               GLenum      format,
+                                               GLsizei     imageSize,
+                                               const void* data)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

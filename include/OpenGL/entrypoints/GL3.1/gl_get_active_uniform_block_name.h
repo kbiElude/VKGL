@@ -7,11 +7,11 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetActiveUniformBlockName(GLuint   program,
-                                                        GLuint   uniformBlockIndex,
-                                                        GLsizei  bufSize,
-                                                        GLsizei* length,
-                                                        GLchar*  uniformBlockName);
+void VKGL_APIENTRY vkglGetActiveUniformBlockName(GLuint   program,
+                                                 GLuint   uniformBlockIndex,
+                                                 GLsizei  bufSize,
+                                                 GLsizei* length,
+                                                 GLchar*  uniformBlockName);
 
 void vkglGetActiveUniformBlockName_with_validation(VKGL::Context* in_context_ptr,
                                                    const GLuint&  in_program,

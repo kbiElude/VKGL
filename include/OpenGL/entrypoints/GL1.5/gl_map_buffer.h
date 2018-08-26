@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void *APIENTRY glMapBuffer(GLenum target,
-                                    GLenum access);
+void *VKGL_APIENTRY vkglMapBuffer(GLenum target,
+                                  GLenum access);
 
 void* vkglMapBuffer_with_validation(VKGL::Context* in_context_ptr,
                                     const GLenum&  in_target,

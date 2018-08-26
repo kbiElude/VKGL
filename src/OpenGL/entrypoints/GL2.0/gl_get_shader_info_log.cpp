@@ -20,10 +20,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glGetShaderInfoLog(GLuint   shader,
-                                               GLsizei  bufSize,
-                                               GLsizei* length,
-                                               GLchar*  infoLog)
+void VKGL_APIENTRY vkglGetShaderInfoLog(GLuint   shader,
+                                        GLsizei  bufSize,
+                                        GLsizei* length,
+                                        GLchar*  infoLog)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

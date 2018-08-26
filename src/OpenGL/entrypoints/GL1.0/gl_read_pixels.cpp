@@ -25,13 +25,13 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY glReadPixels(GLint   x,
-                                         GLint   y,
-                                         GLsizei width,
-                                         GLsizei height,
-                                         GLenum  format,
-                                         GLenum  type,
-                                         void*   pixels)
+void VKGL_APIENTRY vkglReadPixels(GLint   x,
+                                  GLint   y,
+                                  GLsizei width,
+                                  GLsizei height,
+                                  GLenum  format,
+                                  GLenum  type,
+                                  void*   pixels)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

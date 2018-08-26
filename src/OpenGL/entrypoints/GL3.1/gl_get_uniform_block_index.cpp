@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API GLuint VKGL_APIENTRY glGetUniformBlockIndex(GLuint        program,
-                                                     const GLchar* uniformBlockName)
+GLuint VKGL_APIENTRY vkglGetUniformBlockIndex(GLuint        program,
+                                              const GLchar* uniformBlockName)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

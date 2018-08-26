@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API const GLubyte *APIENTRY glGetStringi(GLenum name,
-                                              GLuint index);
+const GLubyte *APIENTRY vkglGetStringi(GLenum name,
+                                       GLuint index);
 
 const GLubyte* vkglGetStringi_with_validation(VKGL::Context* in_context_ptr,
                                               const GLenum&  in_name,

@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLuint VKGL_APIENTRY glGetUniformBlockIndex(GLuint        program,
-                                                     const GLchar* uniformBlockName);
+GLuint VKGL_APIENTRY vkglGetUniformBlockIndex(GLuint        program,
+                                              const GLchar* uniformBlockName);
 
 GLuint vkglGetUniformBlockIndex_with_validation(VKGL::Context* in_context_ptr,
                                                 GLuint         in_program,

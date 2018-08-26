@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glVertexAttrib2s(GLuint  index,
-                                             GLshort x,
-                                             GLshort y);
+void VKGL_APIENTRY vkglVertexAttrib2s(GLuint  index,
+                                      GLshort x,
+                                      GLshort y);
 
 void vkglVertexAttrib2s_with_validation(VKGL::Context* in_context_ptr,
                                         const GLuint&  in_index,

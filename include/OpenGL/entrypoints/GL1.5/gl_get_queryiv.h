@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetQueryiv(GLenum target,
-                                         GLenum pname,
-                                         GLint* params);
+void VKGL_APIENTRY vkglGetQueryiv(GLenum target,
+                                  GLenum pname,
+                                  GLint* params);
 
 void vkglGetQueryiv_with_validation(VKGL::Context* in_context_ptr,
                                     const GLenum&  in_target,

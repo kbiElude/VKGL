@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glFinish(void);
+void VKGL_APIENTRY vkglFinish(void);
 
 void vkglFinish_with_validation(VKGL::Context* in_context_ptr);
 

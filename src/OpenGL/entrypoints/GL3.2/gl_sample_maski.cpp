@@ -18,8 +18,8 @@ static bool validate(VKGL::Context*    in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glSampleMaski(GLuint     maskNumber,
-                                          GLbitfield mask)
+void VKGL_APIENTRY vkglSampleMaski(GLuint     maskNumber,
+                                   GLbitfield mask)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

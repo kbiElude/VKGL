@@ -7,11 +7,11 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetActiveUniformsiv(GLuint        program,
-                                                  GLsizei       uniformCount,
-                                                  const GLuint* uniformIndices,
-                                                  GLenum        pname,
-                                                  GLint*        params);
+void VKGL_APIENTRY vkglGetActiveUniformsiv(GLuint        program,
+                                           GLsizei       uniformCount,
+                                           const GLuint* uniformIndices,
+                                           GLenum        pname,
+                                           GLint*        params);
 
 void vkglGetActiveUniformsiv_with_validation(VKGL::Context* in_context_ptr,
                                              const GLuint&  in_program,

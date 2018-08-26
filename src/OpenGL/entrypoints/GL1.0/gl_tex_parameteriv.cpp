@@ -21,9 +21,9 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY glTexParameteriv(GLenum       target,
-                                             GLenum       pname,
-                                             const GLint* params)
+void VKGL_APIENTRY vkglTexParameteriv(GLenum       target,
+                                      GLenum       pname,
+                                      const GLint* params)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

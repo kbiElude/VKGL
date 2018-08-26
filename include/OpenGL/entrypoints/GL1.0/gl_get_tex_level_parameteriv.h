@@ -7,10 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetTexLevelParameteriv(GLenum target,
-                                                     GLint  level,
-                                                     GLenum pname,
-                                                     GLint* params);
+void VKGL_APIENTRY vkglGetTexLevelParameteriv(GLenum target,
+                                              GLint  level,
+                                              GLenum pname,
+                                              GLint* params);
 
 void vkglGetTexLevelParameteriv_with_validation(VKGL::Context* in_context_ptr,
                                                 const GLenum&  in_target,

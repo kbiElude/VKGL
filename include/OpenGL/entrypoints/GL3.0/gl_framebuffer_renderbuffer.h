@@ -7,10 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glFramebufferRenderbuffer(GLenum target,
-                                                      GLenum attachment,
-                                                      GLenum renderbuffertarget,
-                                                      GLuint renderbuffer);
+void VKGL_APIENTRY vkglFramebufferRenderbuffer(GLenum target,
+                                               GLenum attachment,
+                                               GLenum renderbuffertarget,
+                                               GLuint renderbuffer);
 
 void vkglFramebufferRenderbuffer_with_validation(VKGL::Context* in_context_ptr,
                                                  const GLenum&  in_target,

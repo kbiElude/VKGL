@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glWaitSync(GLsync     sync,
-                                       GLbitfield flags,
-                                       GLuint64   timeout);
+void VKGL_APIENTRY vkglWaitSync(GLsync     sync,
+                                GLbitfield flags,
+                                GLuint64   timeout);
 
 void vkglWaitSync_with_validation(VKGL::Context*    in_context_ptr,
                                   const GLsync&     in_sync,

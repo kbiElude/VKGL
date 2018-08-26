@@ -7,13 +7,13 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glReadPixels(GLint   x,
-                                         GLint   y,
-                                         GLsizei width,
-                                         GLsizei height,
-                                         GLenum  format,
-                                         GLenum  type,
-                                         void*   pixels);
+void VKGL_APIENTRY vkglReadPixels(GLint   x,
+                                  GLint   y,
+                                  GLsizei width,
+                                  GLsizei height,
+                                  GLenum  format,
+                                  GLenum  type,
+                                  void*   pixels);
 
 void vkglReadPixels_with_validation(VKGL::Context* in_context_ptr,
                                     const GLint&   in_x,

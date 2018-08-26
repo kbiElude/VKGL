@@ -7,10 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glRenderbufferStorage(GLenum  target,
-                                                  GLenum  internalformat,
-                                                  GLsizei width,
-                                                  GLsizei height);
+void VKGL_APIENTRY vkglRenderbufferStorage(GLenum  target,
+                                           GLenum  internalformat,
+                                           GLsizei width,
+                                           GLsizei height);
 
 void vkglRenderbufferStorage_with_validation(VKGL::Context* in_context_ptr,
                                              const GLenum&  in_target,

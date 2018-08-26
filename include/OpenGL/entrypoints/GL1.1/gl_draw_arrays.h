@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glDrawArrays(GLenum  mode,
-                                         GLint   first,
-                                         GLsizei count);
+void VKGL_APIENTRY vkglDrawArrays(GLenum  mode,
+                                  GLint   first,
+                                  GLsizei count);
 
 void vkglDrawArrays_with_validation(VKGL::Context* in_context_ptr,
                                     const GLenum&  in_mode,

@@ -21,10 +21,10 @@ static bool validate(VKGL::Context*    in_context_ptr,
     return result;
 }
 
-VKGL_API void* APIENTRY glMapBufferRange(GLenum     target,
-                                         GLintptr   offset,
-                                         GLsizeiptr length,
-                                         GLbitfield access)
+void* APIENTRY vkglMapBufferRange(GLenum     target,
+                                  GLintptr   offset,
+                                  GLsizeiptr length,
+                                  GLbitfield access)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

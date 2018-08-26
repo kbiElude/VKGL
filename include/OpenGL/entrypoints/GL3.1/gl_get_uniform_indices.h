@@ -7,10 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetUniformIndices(GLuint               program,
-                                                GLsizei              uniformCount,
-                                                const GLchar* const* uniformNames,
-                                                GLuint*              uniformIndices);
+void VKGL_APIENTRY vkglGetUniformIndices(GLuint               program,
+                                         GLsizei              uniformCount,
+                                         const GLchar* const* uniformNames,
+                                         GLuint*              uniformIndices);
 
 void vkglGetUniformIndices_with_validation(VKGL::Context*       in_context_ptr,
                                            const GLuint&        in_program,

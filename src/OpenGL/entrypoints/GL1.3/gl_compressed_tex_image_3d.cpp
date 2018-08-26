@@ -26,15 +26,15 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glCompressedTexImage3D(GLenum      target,
-                                                   GLint       level,
-                                                   GLenum      internalformat,
-                                                   GLsizei     width,
-                                                   GLsizei     height,
-                                                   GLsizei     depth,
-                                                   GLint       border,
-                                                   GLsizei     imageSize,
-                                                   const void* data)
+void VKGL_APIENTRY vkglCompressedTexImage3D(GLenum      target,
+                                            GLint       level,
+                                            GLenum      internalformat,
+                                            GLsizei     width,
+                                            GLsizei     height,
+                                            GLsizei     depth,
+                                            GLint       border,
+                                            GLsizei     imageSize,
+                                            const void* data)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

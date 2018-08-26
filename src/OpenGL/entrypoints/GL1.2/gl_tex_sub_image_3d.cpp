@@ -99,17 +99,17 @@ void vkglTexSubImage3D_with_validation(VKGL::Context* in_context_ptr,
     }
 }
 
-VKGL_API void VKGL_APIENTRY glTexSubImage3D(GLenum      target,
-                                            GLint       level,
-                                            GLint       xoffset,
-                                            GLint       yoffset,
-                                            GLint       zoffset,
-                                            GLsizei     width,
-                                            GLsizei     height,
-                                            GLsizei     depth,
-                                            GLenum      format,
-                                            GLenum      type,
-                                            const void* pixels)
+void VKGL_APIENTRY vkglTexSubImage3D(GLenum      target,
+                                     GLint       level,
+                                     GLint       xoffset,
+                                     GLint       yoffset,
+                                     GLint       zoffset,
+                                     GLsizei     width,
+                                     GLsizei     height,
+                                     GLsizei     depth,
+                                     GLenum      format,
+                                     GLenum      type,
+                                     const void* pixels)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

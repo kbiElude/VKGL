@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glPointParameteriv(GLenum       pname,
-                                               const GLint* params)
+void VKGL_APIENTRY vkglPointParameteriv(GLenum       pname,
+                                        const GLint* params)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

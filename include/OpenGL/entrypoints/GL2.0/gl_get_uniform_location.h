@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLint VKGL_APIENTRY glGetUniformLocation(GLuint        program,
-                                                  const GLchar* name);
+GLint VKGL_APIENTRY vkglGetUniformLocation(GLuint        program,
+                                           const GLchar* name);
 
 GLint vkglGetUniformLocation_with_validation(VKGL::Context* in_context_ptr,
                                              const GLuint&  in_program,

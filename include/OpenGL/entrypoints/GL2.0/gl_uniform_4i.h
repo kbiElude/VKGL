@@ -7,11 +7,11 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glUniform4i(GLint location,
-                                        GLint v0,
-                                        GLint v1,
-                                        GLint v2,
-                                        GLint v3);
+void VKGL_APIENTRY vkglUniform4i(GLint location,
+                                 GLint v0,
+                                 GLint v1,
+                                 GLint v2,
+                                 GLint v3);
 
 void vkglUniform4i_with_validation(VKGL::Context* in_context_ptr,
                                    const GLint&   in_location,

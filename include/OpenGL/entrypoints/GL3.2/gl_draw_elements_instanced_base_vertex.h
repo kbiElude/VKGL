@@ -7,12 +7,12 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glDrawElementsInstancedBaseVertex(GLenum      mode,
-                                                              GLsizei     count,
-                                                              GLenum      type,
-                                                              const void* indices,
-                                                              GLsizei     instancecount,
-                                                              GLint       basevertex);
+void VKGL_APIENTRY vkglDrawElementsInstancedBaseVertex(GLenum      mode,
+                                                       GLsizei     count,
+                                                       GLenum      type,
+                                                       const void* indices,
+                                                       GLsizei     instancecount,
+                                                       GLint       basevertex);
 
 void vkglDrawElementsInstancedBaseVertex_with_validation(VKGL::Context* in_context_ptr,
                                                          const GLenum&  in_mode,

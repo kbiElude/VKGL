@@ -7,11 +7,11 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetActiveUniformName(GLuint   program,
-                                                   GLuint   uniformIndex,
-                                                   GLsizei  bufSize,
-                                                   GLsizei* length,
-                                                   GLchar*  uniformName);
+void VKGL_APIENTRY vkglGetActiveUniformName(GLuint   program,
+                                            GLsizei* length,
+                                            GLuint   uniformIndex,
+                                            GLsizei  bufSize,
+                                            GLchar*  uniformName);
 
 void vkglGetActiveUniformName_with_validation(VKGL::Context* in_context_ptr,
                                               const GLuint&  in_program,

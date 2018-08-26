@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glBlendFunc(GLenum sfactor,
-                                        GLenum dfactor)
+void VKGL_APIENTRY vkglBlendFunc(GLenum sfactor,
+                                 GLenum dfactor)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

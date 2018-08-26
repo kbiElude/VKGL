@@ -7,13 +7,13 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetActiveAttrib(GLuint   program,
-                                              GLuint   index,
-                                              GLsizei  bufSize,
-                                              GLsizei* length,
-                                              GLint*   size,
-                                              GLenum*  type,
-                                              GLchar*  name);
+void VKGL_APIENTRY vkglGetActiveAttrib(GLuint   program,
+                                       GLuint   index,
+                                       GLsizei  bufSize,
+                                       GLsizei* length,
+                                       GLint*   size,
+                                       GLenum*  type,
+                                       GLchar*  name);
 
 void vkglGetActiveAttrib_with_validation(VKGL::Context* in_context_ptr,
                                          const GLuint&  in_program,

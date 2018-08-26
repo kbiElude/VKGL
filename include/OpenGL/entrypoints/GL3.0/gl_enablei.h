@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glEnablei(GLenum target,
-                                      GLuint index);
+void VKGL_APIENTRY vkglEnablei(GLenum target,
+                               GLuint index);
 
 void vkglEnablei_with_validation(VKGL::Context* in_context_ptr,
                                  const GLenum&  in_target,

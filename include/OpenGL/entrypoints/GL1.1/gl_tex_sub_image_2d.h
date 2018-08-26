@@ -7,15 +7,15 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glTexSubImage2D(GLenum      target,
-                                            GLint       level,
-                                            GLint       xoffset,
-                                            GLint       yoffset,
-                                            GLsizei     width,
-                                            GLsizei     height,
-                                            GLenum      format,
-                                            GLenum      type,
-                                            const void* pixels);
+void VKGL_APIENTRY vkglTexSubImage2D(GLenum      target,
+                                     GLint       level,
+                                     GLint       xoffset,
+                                     GLint       yoffset,
+                                     GLsizei     width,
+                                     GLsizei     height,
+                                     GLenum      format,
+                                     GLenum      type,
+                                     const void* pixels);
 
 void vkglTexSubImage2D_with_validation(VKGL::Context* in_context_ptr,
                                        const GLenum&  in_target,

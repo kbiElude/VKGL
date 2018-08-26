@@ -7,11 +7,11 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glCopyBufferSubData(GLenum     readTarget,
-                                                GLenum     writeTarget,
-                                                GLintptr   readOffset,
-                                                GLintptr   writeOffset,
-                                                GLsizeiptr size);
+void VKGL_APIENTRY vkglCopyBufferSubData(GLenum     readTarget,
+                                         GLenum     writeTarget,
+                                         GLintptr   readOffset,
+                                         GLintptr   writeOffset,
+                                         GLsizeiptr size);
 
 void vkglCopyBufferSubData_with_validation(VKGL::Context*    in_context_ptr,
                                            const GLenum&     in_read_target,

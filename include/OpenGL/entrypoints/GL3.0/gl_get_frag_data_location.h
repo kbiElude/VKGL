@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLint VKGL_APIENTRY glGetFragDataLocation(GLuint        program,
-                                                   const GLchar* name);
+GLint VKGL_APIENTRY vkglGetFragDataLocation(GLuint        program,
+                                            const GLchar* name);
 
 GLint vkglGetFragDataLocation_with_validation(VKGL::Context* in_context_ptr,
                                               const GLuint&  in_program,

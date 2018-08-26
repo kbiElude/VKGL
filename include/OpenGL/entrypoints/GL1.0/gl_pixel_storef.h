@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-GLAPI void APIENTRY glPixelStoref(GLenum  pname,
-                                  GLfloat param);
+void APIENTRY vkglPixelStoref(GLenum  pname,
+                              GLfloat param);
 
 void vkglPixelStoref_with_validation(VKGL::Context* in_context_ptr,
                                      const GLenum&  in_pname,

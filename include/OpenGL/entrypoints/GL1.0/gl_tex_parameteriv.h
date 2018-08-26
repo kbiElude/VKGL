@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glTexParameteriv(GLenum       target,
-                                             GLenum       pname,
-                                             const GLint* params);
+void VKGL_APIENTRY vkglTexParameteriv(GLenum       target,
+                                      GLenum       pname,
+                                      const GLint* params);
 
 void vkglTexParameteriv_with_validation(VKGL::Context* in_context_ptr,
                                         const GLenum&  in_target,

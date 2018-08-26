@@ -19,9 +19,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glVertexAttrib2s(GLuint  index,
-                                             GLshort x,
-                                             GLshort y)
+void VKGL_APIENTRY vkglVertexAttrib2s(GLuint  index,
+                                      GLshort x,
+                                      GLshort y)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

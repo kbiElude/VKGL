@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetInteger64v(GLenum   pname,
-                                            GLint64* data);
+void VKGL_APIENTRY vkglGetInteger64v(GLenum   pname,
+                                     GLint64* data);
 
 void vkglGetInteger64v_with_validation(VKGL::Context* in_context_ptr,
                                        const GLenum&  in_pname,

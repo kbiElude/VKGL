@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetBufferPointerv(GLenum target,
-                                                GLenum pname,
-                                                void** params);
+void VKGL_APIENTRY vkglGetBufferPointerv(GLenum target,
+                                         GLenum pname,
+                                         void** params);
 
 void vkglGetBufferPointerv_with_validation(VKGL::Context* in_context_ptr,
                                            const GLenum&  in_target,

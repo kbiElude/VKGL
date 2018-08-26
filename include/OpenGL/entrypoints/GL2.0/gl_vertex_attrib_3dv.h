@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glVertexAttrib3dv(GLuint          index,
-                                              const GLdouble* v);
+void VKGL_APIENTRY vkglVertexAttrib3dv(GLuint          index,
+                                       const GLdouble* v);
 
 void vkglVertexAttrib3dv_with_validation(VKGL::Context*  in_context_ptr,
                                          const GLuint&   in_index,

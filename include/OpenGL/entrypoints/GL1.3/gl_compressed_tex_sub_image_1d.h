@@ -7,13 +7,13 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glCompressedTexSubImage1D(GLenum      target,
-                                                      GLint       level,
-                                                      GLint       xoffset,
-                                                      GLsizei     width,
-                                                      GLenum      format,
-                                                      GLsizei     imageSize,
-                                                      const void* data);
+void VKGL_APIENTRY vkglCompressedTexSubImage1D(GLenum      target,
+                                               GLint       level,
+                                               GLint       xoffset,
+                                               GLsizei     width,
+                                               GLenum      format,
+                                               GLsizei     imageSize,
+                                               const void* data);
 
 void vkglCompressedTexSubImage1D_with_validation(VKGL::Context* in_context_ptr,
                                                  const GLenum&  in_target,

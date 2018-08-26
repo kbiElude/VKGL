@@ -7,13 +7,13 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetActiveUniform(GLuint   program,
-                                               GLuint   index,
-                                               GLsizei  bufSize,
-                                               GLsizei* length,
-                                               GLint*   size,
-                                               GLenum*  type,
-                                               GLchar*  name);
+void VKGL_APIENTRY vkglGetActiveUniform(GLuint   program,
+                                        GLuint   index,
+                                        GLsizei  bufSize,
+                                        GLsizei* length,
+                                        GLint*   size,
+                                        GLenum*  type,
+                                        GLchar*  name);
 
 void vkglGetActiveUniform_with_validation(VKGL::Context* in_context_ptr,
                                           const GLuint&  in_program,

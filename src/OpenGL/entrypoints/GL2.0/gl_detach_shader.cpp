@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glDetachShader(GLuint program,
-                                           GLuint shader)
+void VKGL_APIENTRY vkglDetachShader(GLuint program,
+                                    GLuint shader)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

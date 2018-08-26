@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glBindAttribLocation(GLuint        program,
-                                                 GLuint        index,
-                                                 const GLchar* name);
+void VKGL_APIENTRY vkglBindAttribLocation(GLuint        program,
+                                          GLuint        index,
+                                          const GLchar* name);
 
 void vkglBindAttribLocation_with_validation(VKGL::Context* in_context_ptr,
                                             const GLuint&  in_program,

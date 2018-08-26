@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glBlendEquationSeparate(GLenum modeRGB,
-                                                    GLenum modeAlpha);
+void VKGL_APIENTRY vkglBlendEquationSeparate(GLenum modeRGB,
+                                             GLenum modeAlpha);
 
 void vkglBlendEquationSeparate_with_validation(VKGL::Context* in_context_ptr,
                                                const GLenum&  in_modeRGB,

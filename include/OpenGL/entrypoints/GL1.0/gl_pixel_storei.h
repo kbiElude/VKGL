@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glPixelStorei(GLenum pname,
-                                          GLint  param);
+void VKGL_APIENTRY vkglPixelStorei(GLenum pname,
+                                   GLint  param);
 
 void vkglPixelStorei_with_validation(VKGL::Context* in_context_ptr,
                                      const GLenum&  in_pname,

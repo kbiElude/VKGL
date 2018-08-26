@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLint VKGL_APIENTRY glGetAttribLocation(GLuint        program,
-                                                 const GLchar* name);
+GLint VKGL_APIENTRY vkglGetAttribLocation(GLuint        program,
+                                          const GLchar* name);
 
 GLint vkglGetAttribLocation_with_validation(VKGL::Context* in_context_ptr,
                                             const GLuint&  in_program,

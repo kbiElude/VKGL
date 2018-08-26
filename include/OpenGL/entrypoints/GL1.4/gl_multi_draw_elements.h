@@ -7,11 +7,11 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glMultiDrawElements(GLenum             mode,
-                                                const GLsizei*     count,
-                                                GLenum             type,
-                                                const void* const* indices,
-                                                GLsizei            drawcount);
+void VKGL_APIENTRY vkglMultiDrawElements(GLenum             mode,
+                                         const GLsizei*     count,
+                                         GLenum             type,
+                                         const void* const* indices,
+                                         GLsizei            drawcount);
 
 void vkglMultiDrawElements_with_validation(VKGL::Context*     in_context_ptr,
                                            const GLenum&      in_mode,

@@ -27,15 +27,15 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY glTexImage2D(GLenum      target,
-                                         GLint       level,
-                                         GLint       internalformat,
-                                         GLsizei     width,
-                                         GLsizei     height,
-                                         GLint       border,
-                                         GLenum      format,
-                                         GLenum      type,
-                                         const void* pixels)
+void VKGL_APIENTRY vkglTexImage2D(GLenum      target,
+                                  GLint       level,
+                                  GLint       internalformat,
+                                  GLsizei     width,
+                                  GLsizei     height,
+                                  GLint       border,
+                                  GLenum      format,
+                                  GLenum      type,
+                                  const void* pixels)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

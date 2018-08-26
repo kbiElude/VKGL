@@ -7,14 +7,14 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glCopyTexImage2D(GLenum  target,
-                                             GLint   level,
-                                             GLenum  internalformat,
-                                             GLint   x,
-                                             GLint   y,
-                                             GLsizei width,
-                                             GLsizei height,
-                                             GLint   border);
+void VKGL_APIENTRY vkglCopyTexImage2D(GLenum  target,
+                                      GLint   level,
+                                      GLenum  internalformat,
+                                      GLint   x,
+                                      GLint   y,
+                                      GLsizei width,
+                                      GLsizei height,
+                                      GLint   border);
 
 void vkglCopyTexImage2D_with_validation(VKGL::Context* in_context_ptr,
                                         const GLenum&  in_target,

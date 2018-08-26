@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glDeleteSync(GLsync sync);
+void VKGL_APIENTRY vkglDeleteSync(GLsync sync);
 
 void vkglDeleteSync_with_validation(VKGL::Context* in_context_ptr,
                                     const GLsync&  in_sync);

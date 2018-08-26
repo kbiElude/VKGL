@@ -7,12 +7,12 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glTexImage2DMultisample(GLenum    target,
-                                                    GLsizei   samples,
-                                                    GLenum    internalformat,
-                                                    GLsizei   width,
-                                                    GLsizei   height,
-                                                    GLboolean fixedsamplelocations);
+void VKGL_APIENTRY vkglTexImage2DMultisample(GLenum    target,
+                                             GLsizei   samples,
+                                             GLenum    internalformat,
+                                             GLsizei   width,
+                                             GLsizei   height,
+                                             GLboolean fixedsamplelocations);
 
 void vkglTexImage2DMultisample_with_validation(VKGL::Context*   in_context_ptr,
                                                const GLenum&    in_target,

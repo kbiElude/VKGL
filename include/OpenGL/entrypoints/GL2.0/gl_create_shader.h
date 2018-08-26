@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLuint VKGL_APIENTRY glCreateShader(GLenum type);
+GLuint VKGL_APIENTRY vkglCreateShader(GLenum type);
 
 GLuint vkglCreateShader_with_validation(VKGL::Context* in_context_ptr,
                                         const GLenum&  in_type);

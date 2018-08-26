@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLboolean VKGL_APIENTRY glIsSync(GLsync sync);
+GLboolean VKGL_APIENTRY vkglIsSync(GLsync sync);
 
 GLboolean vkglIsSync_with_validation(VKGL::Context* in_context_ptr,
                                      const GLsync&  in_sync);

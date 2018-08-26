@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API GLenum VKGL_APIENTRY glCheckFramebufferStatus(GLenum target);
+GLenum VKGL_APIENTRY vkglCheckFramebufferStatus(GLenum target);
 
 GLenum vkglCheckFramebufferStatus_with_validation(VKGL::Context* in_context_ptr,
                                                   const GLenum&  in_target);

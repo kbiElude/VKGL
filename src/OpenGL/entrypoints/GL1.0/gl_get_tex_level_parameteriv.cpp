@@ -22,10 +22,10 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY glGetTexLevelParameteriv(GLenum target,
-                                                     GLint  level,
-                                                     GLenum pname,
-                                                     GLint* params)
+void VKGL_APIENTRY vkglGetTexLevelParameteriv(GLenum target,
+                                              GLint  level,
+                                              GLenum pname,
+                                              GLint* params)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

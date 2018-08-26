@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glReadBuffer(GLenum src);
+void VKGL_APIENTRY vkglReadBuffer(GLenum src);
 
 void vkglReadBuffer_with_validation(VKGL::Context* in_context_ptr,
                                     const GLenum&  in_src);

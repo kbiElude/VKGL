@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 2.8)
 project (VK_GL)
 
 option(VKGL_INCLUDE_GDI32  "Intercept GDI32 entrypoints"  ON)
-option(VKGL_INCLUDE_OPENGL "Intercept OpenGL entrypoints" OFF) # TODO: Does not compile for now.
+option(VKGL_INCLUDE_OPENGL "Intercept OpenGL entrypoints" ON)
 option(VKGL_INCLUDE_WGL    "Intercept WGL entrypoints"    ON)
 
 # DO NOT MODIFY BELOW THIS LINE
@@ -54,8 +54,8 @@ if (VKGL_INCLUDE_GDI32)
 endif ()
 
 if (VKGL_INCLUDE_OPENGL)
-    FILE(GLOB KhronosInclude "${VK_GL_SOURCE_DIR}/include/Khronos/GL/*.h"
-                             "${VK_GL_SOURCE_DIR}/include/Khronos/KHR/*.h")
+    FILE(GLOB KhronosIncludes "${VK_GL_SOURCE_DIR}/include/Khronos/GL/*.h"
+                              "${VK_GL_SOURCE_DIR}/include/Khronos/KHR/*.h")
 
     FILE(GLOB OpenGL32EntrypointsIncludes "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_color_buffer_float/*.h"
                                           "${VK_GL_SOURCE_DIR}/include/OpenGL/entrypoints/GL_ARB_copy_buffer/*.h"
@@ -132,12 +132,12 @@ if (VKGL_INCLUDE_OPENGL)
     FILE(GLOB OpenGL32Includes "${VK_GL_SOURCE_DIR}/include/OpenGL/*.h")
     FILE(GLOB OpenGL32Sources  "${VK_GL_SOURCE_DIR}/src/OpenGL/*.cpp")
 
-    add_library(OPENGL32 STATIC ${CommonIncludes}
-                                ${KhronosIncludes}
-                                ${OpenGL32EntrypointsSources}
-                                ${OpenGL32EntrypointsIncludes}
-                                ${OpenGL32Sources}
-                                ${OpenGL32Includes})
+    add_library(OpenGL STATIC ${CommonIncludes}
+                              ${KhronosIncludes}
+                              ${OpenGL32EntrypointsSources}
+                              ${OpenGL32EntrypointsIncludes}
+                              ${OpenGL32Sources}
+                              ${OpenGL32Includes})
 
 endif ()
 
@@ -167,8 +167,8 @@ if (VKGL_INCLUDE_GDI32)
 endif ()
 
 if (VKGL_INCLUDE_OPENGL)
-    add_dependencies     (VKGL OPENGL32)
-    target_link_libraries(VKGL OPENGL32 ${OPENGL_gl_LIBRARY})
+    add_dependencies     (VKGL OpenGL)
+    target_link_libraries(VKGL OpenGL ${OPENGL_gl_LIBRARY})
 endif ()
 
 if (VKGL_INCLUDE_WGL)

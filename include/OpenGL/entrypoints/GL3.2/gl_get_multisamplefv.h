@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetMultisamplefv(GLenum   pname,
-                                               GLuint   index,
-                                               GLfloat* val);
+void VKGL_APIENTRY vkglGetMultisamplefv(GLenum   pname,
+                                        GLuint   index,
+                                        GLfloat* val);
 
 void vkglGetMultisamplefv_with_validation(VKGL::Context* in_context_ptr,
                                           const GLenum&  in_pname,

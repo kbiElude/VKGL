@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glStencilMask(GLuint mask);
+void VKGL_APIENTRY vkglStencilMask(GLuint mask);
 
 void vkglStencilMask_with_validation(VKGL::Context* in_context_ptr,
                                      const GLuint&  in_mask);

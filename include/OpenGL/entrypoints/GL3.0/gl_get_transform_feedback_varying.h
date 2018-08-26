@@ -7,13 +7,13 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetTransformFeedbackVarying(GLuint   program,
-                                                          GLuint   index,
-                                                          GLsizei  bufSize,
-                                                          GLsizei* length,
-                                                          GLsizei* size,
-                                                          GLenum*  type,
-                                                          GLchar*  name);
+void VKGL_APIENTRY vkglGetTransformFeedbackVarying(GLuint   program,
+                                                   GLuint   index,
+                                                   GLsizei  bufSize,
+                                                   GLsizei* length,
+                                                   GLsizei* size,
+                                                   GLenum*  type,
+                                                   GLchar*  name);
 
 void vkglGetTransformFeedbackVarying_with_validation(VKGL::Context* in_context_ptr,
                                                      GLuint         in_program,

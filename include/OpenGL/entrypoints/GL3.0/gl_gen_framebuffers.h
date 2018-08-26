@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGenFramebuffers(GLsizei n,
-                                              GLuint* framebuffers);
+void VKGL_APIENTRY vkglGenFramebuffers(GLsizei n,
+                                       GLuint* framebuffers);
 
 void vkglGenFramebuffers_with_validation(VKGL::Context* in_context_ptr,
                                          const GLsizei& in_n,

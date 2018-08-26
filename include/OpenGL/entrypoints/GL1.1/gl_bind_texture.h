@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glBindTexture(GLenum target,
-                                          GLuint texture);
+void VKGL_APIENTRY vkglBindTexture(GLenum target,
+                                   GLuint texture);
 
 void vkglBindTexture_with_validation(VKGL::Context* in_context_ptr,
                                      const GLenum&  in_target,

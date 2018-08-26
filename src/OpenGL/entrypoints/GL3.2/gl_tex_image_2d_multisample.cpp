@@ -24,12 +24,12 @@ static bool validate(VKGL::Context*   in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY glTexImage2DMultisample(GLenum    target,
-                                                    GLsizei   samples,
-                                                    GLenum    internalformat,
-                                                    GLsizei   width,
-                                                    GLsizei   height,
-                                                    GLboolean fixedsamplelocations)
+void VKGL_APIENTRY vkglTexImage2DMultisample(GLenum    target,
+                                             GLsizei   samples,
+                                             GLenum    internalformat,
+                                             GLsizei   width,
+                                             GLsizei   height,
+                                             GLboolean fixedsamplelocations)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

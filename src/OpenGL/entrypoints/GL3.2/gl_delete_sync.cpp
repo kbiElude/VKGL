@@ -17,7 +17,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glDeleteSync(GLsync sync)
+void VKGL_APIENTRY vkglDeleteSync(GLsync sync)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

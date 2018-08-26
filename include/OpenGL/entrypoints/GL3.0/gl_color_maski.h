@@ -7,11 +7,11 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glColorMaski(GLuint    index,
-                                         GLboolean r,
-                                         GLboolean g,
-                                         GLboolean b,
-                                         GLboolean a);
+void VKGL_APIENTRY vkglColorMaski(GLuint    index,
+                                  GLboolean r,
+                                  GLboolean g,
+                                  GLboolean b,
+                                  GLboolean a);
 
 void vkglColorMaski_with_validation(VKGL::Context*   in_context_ptr,
                                     const GLuint&    in_index,

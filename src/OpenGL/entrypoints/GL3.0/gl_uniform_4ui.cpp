@@ -21,11 +21,11 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glUniform4ui(GLint  location,
-                                         GLuint v0,
-                                         GLuint v1,
-                                         GLuint v2,
-                                         GLuint v3)
+void VKGL_APIENTRY vkglUniform4ui(GLint  location,
+                                  GLuint v0,
+                                  GLuint v1,
+                                  GLuint v2,
+                                  GLuint v3)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

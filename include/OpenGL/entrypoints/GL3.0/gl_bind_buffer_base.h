@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glBindBufferBase(GLenum target,
-                                             GLuint index,
-                                             GLuint buffer);
+void VKGL_APIENTRY vkglBindBufferBase(GLenum target,
+                                      GLuint index,
+                                      GLuint buffer);
 
 void vkglBindBufferBase_with_validation(VKGL::Context* in_context_ptr,
                                         const GLenum&  in_target,

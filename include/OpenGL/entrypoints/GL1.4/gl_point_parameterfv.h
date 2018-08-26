@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glPointParameterfv(GLenum         pname,
-                                               const GLfloat* params);
+void VKGL_APIENTRY vkglPointParameterfv(GLenum         pname,
+                                        const GLfloat* params);
 
 void vkglPointParameterfv_with_validation(VKGL::Context* in_context_ptr,
                                           const GLenum&  in_pname,

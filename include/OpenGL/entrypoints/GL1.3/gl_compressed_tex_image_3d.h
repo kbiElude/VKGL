@@ -7,15 +7,15 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glCompressedTexImage3D(GLenum      target,
-                                                   GLint       level,
-                                                   GLenum      internalformat,
-                                                   GLsizei     width,
-                                                   GLsizei     height,
-                                                   GLsizei     depth,
-                                                   GLint       border,
-                                                   GLsizei     imageSize,
-                                                   const void* data);
+void VKGL_APIENTRY vkglCompressedTexImage3D(GLenum      target,
+                                            GLint       level,
+                                            GLenum      internalformat,
+                                            GLsizei     width,
+                                            GLsizei     height,
+                                            GLsizei     depth,
+                                            GLint       border,
+                                            GLsizei     imageSize,
+                                            const void* data);
 
 void vkglCompressedTexImage3D_with_validation(VKGL::Context* in_context_ptr,
                                               const GLenum&  in_target,

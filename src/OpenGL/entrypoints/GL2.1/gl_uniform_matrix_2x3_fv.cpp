@@ -20,10 +20,10 @@ static bool validate(VKGL::Context*   in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glUniformMatrix2x3fv(GLint          location,
-                                                 GLsizei        count,
-                                                 GLboolean      transpose,
-                                                 const GLfloat* value)
+void VKGL_APIENTRY vkglUniformMatrix2x3fv(GLint          location,
+                                          GLsizei        count,
+                                          GLboolean      transpose,
+                                          const GLfloat* value)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

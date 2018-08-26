@@ -21,10 +21,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glDrawArraysInstanced(GLenum  mode,
-                                                  GLint   first,
-                                                  GLsizei count,
-                                                  GLsizei instancecount)
+void VKGL_APIENTRY vkglDrawArraysInstanced(GLenum  mode,
+                                           GLint   first,
+                                           GLsizei count,
+                                           GLsizei instancecount)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

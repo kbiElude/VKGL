@@ -7,8 +7,8 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glDeleteQueries(GLsizei       n,
-                                            const GLuint* ids);
+void VKGL_APIENTRY vkglDeleteQueries(GLsizei       n,
+                                     const GLuint* ids);
 
 void vkglDeleteQueries_with_validation(VKGL::Context* in_context_ptr,
                                        const GLsizei& in_n,

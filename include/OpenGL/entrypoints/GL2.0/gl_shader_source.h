@@ -7,10 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glShaderSource(GLuint               shader,
-                                           GLsizei              count,
-                                           const GLchar* const* string,
-                                           const GLint*         length);
+void VKGL_APIENTRY vkglShaderSource(GLuint               shader,
+                                    GLsizei              count,
+                                    const GLchar* const* string,
+                                    const GLint*         length);
 
 void vkglShaderSource_with_validation(VKGL::Context*       in_context_ptr,
                                       const GLuint&        in_shader,

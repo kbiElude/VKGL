@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glClearBufferfv(GLenum         buffer,
-                                            GLint          drawbuffer,
-                                            const GLfloat* value);
+void VKGL_APIENTRY vkglClearBufferfv(GLenum         buffer,
+                                     GLint          drawbuffer,
+                                     const GLfloat* value);
 
 void vkglClearBufferfv_with_validation(VKGL::Context* in_context_ptr,
                                        const GLenum&  in_buffer,

@@ -11,12 +11,6 @@
 #include <unordered_map>
 #include <vector>
 
-#if defined(_WIN32)
-    #define VKGL_API __declspec(dllexport)
-#else
-    #define VKGL_API
-#endif
-
 #define VKGL_APIENTRY KHRONOS_APIENTRY
 
 #if defined(_WIN32)

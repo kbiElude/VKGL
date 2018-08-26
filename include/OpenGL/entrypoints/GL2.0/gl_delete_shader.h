@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glDeleteShader(GLuint shader);
+void VKGL_APIENTRY vkglDeleteShader(GLuint shader);
 
 void vkglDeleteShader_with_validation(VKGL::Context* in_context_ptr,
                                       const GLuint&  in_shader);

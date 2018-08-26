@@ -19,7 +19,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY glFrontFace(GLenum mode)
+void VKGL_APIENTRY vkglFrontFace(GLenum mode)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

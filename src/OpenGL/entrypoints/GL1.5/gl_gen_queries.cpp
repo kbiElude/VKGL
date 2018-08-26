@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glGenQueries(GLsizei n,
-                                         GLuint* ids)
+void VKGL_APIENTRY vkglGenQueries(GLsizei n,
+                                  GLuint* ids)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

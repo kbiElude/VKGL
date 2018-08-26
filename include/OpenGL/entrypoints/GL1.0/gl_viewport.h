@@ -7,10 +7,10 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glViewport(GLint   x,
-                                       GLint   y,
-                                       GLsizei width,
-                                       GLsizei height);
+void VKGL_APIENTRY vkglViewport(GLint   x,
+                                GLint   y,
+                                GLsizei width,
+                                GLsizei height);
 
 void vkglViewport_with_validation(VKGL::Context* in_context_ptr,
                                   const GLint&   in_x,

@@ -21,9 +21,9 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY glGetVertexAttribPointerv(GLuint index,
-                                                      GLenum pname,
-                                                      void** pointer)
+void VKGL_APIENTRY vkglGetVertexAttribPointerv(GLuint index,
+                                               GLenum pname,
+                                               void** pointer)
 {
     const auto& dispatch_table_ptr = g_dispatch_table_ptr;
 

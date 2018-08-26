@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetInteger64i_v(GLenum   target,
-                                              GLuint   index,
-                                              GLint64* data);
+void VKGL_APIENTRY vkglGetInteger64i_v(GLenum   target,
+                                       GLuint   index,
+                                       GLint64* data);
 
 void vkglGetInteger64i_v_with_validation(VKGL::Context* in_context_ptr,
                                          const GLenum&  in_target,

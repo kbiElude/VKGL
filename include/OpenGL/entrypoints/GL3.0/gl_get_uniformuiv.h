@@ -7,9 +7,9 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glGetUniformuiv(GLuint  program,
-                                            GLint   location,
-                                            GLuint* params);
+void VKGL_APIENTRY vkglGetUniformuiv(GLuint  program,
+                                     GLint   location,
+                                     GLuint* params);
 
 void vkglGetUniformuiv_with_validation(VKGL::Context* in_context_ptr,
                                        const GLuint&  in_program,

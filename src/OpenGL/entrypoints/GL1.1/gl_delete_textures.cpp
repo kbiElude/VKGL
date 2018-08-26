@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-VKGL_API void VKGL_APIENTRY glDeleteTextures(GLsizei       n,
-                                             const GLuint* textures)
+void VKGL_APIENTRY vkglDeleteTextures(GLsizei       n,
+                                      const GLuint* textures)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

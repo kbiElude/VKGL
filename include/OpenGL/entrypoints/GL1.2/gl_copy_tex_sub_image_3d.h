@@ -7,15 +7,15 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glCopyTexSubImage3D(GLenum  target,
-                                                GLint   level,
-                                                GLint   xoffset,
-                                                GLint   yoffset,
-                                                GLint   zoffset,
-                                                GLint   x,
-                                                GLint   y,
-                                                GLsizei width,
-                                                GLsizei height);
+void VKGL_APIENTRY vkglCopyTexSubImage3D(GLenum  target,
+                                         GLint   level,
+                                         GLint   xoffset,
+                                         GLint   yoffset,
+                                         GLint   zoffset,
+                                         GLint   x,
+                                         GLint   y,
+                                         GLsizei width,
+                                         GLsizei height);
 
 void vkglCopyTexSubImage3D_with_validation(VKGL::Context* in_context_ptr,
                                            const GLenum&  in_target,

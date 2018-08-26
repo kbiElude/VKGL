@@ -7,11 +7,11 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glVertexAttribIPointer(GLuint      index,
-                                                   GLint       size,
-                                                   GLenum      type,
-                                                   GLsizei     stride,
-                                                   const void* pointer);
+void VKGL_APIENTRY vkglVertexAttribIPointer(GLuint      index,
+                                            GLint       size,
+                                            GLenum      type,
+                                            GLsizei     stride,
+                                            const void* pointer);
 
 void vkglVertexAttribIPointer_with_validation(VKGL::Context*   in_context_ptr,
                                               const GLuint&    in_index,

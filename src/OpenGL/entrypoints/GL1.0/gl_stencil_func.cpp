@@ -21,9 +21,9 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-VKGL_API void VKGL_APIENTRY glStencilFunc(GLenum func,
-                                          GLint  ref,
-                                          GLuint mask)
+void VKGL_APIENTRY vkglStencilFunc(GLenum func,
+                                   GLint  ref,
+                                   GLuint mask)
 {
     const auto dispatch_table_ptr = g_dispatch_table_ptr;
 

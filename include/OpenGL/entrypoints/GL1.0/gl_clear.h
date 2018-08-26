@@ -7,7 +7,7 @@
 
 #include "OpenGL/types.h"
 
-VKGL_API void VKGL_APIENTRY glClear(GLbitfield mask);
+void VKGL_APIENTRY vkglClear(GLbitfield mask);
 
 void vkglClear_with_validation(VKGL::Context*    in_context_ptr,
                                const GLbitfield& in_mask);
