@@ -13,34 +13,35 @@ const char* GDI32::convert_pixel_format_descriptor_to_raw_string(const PIXELFORM
     std::stringstream            result_sstream;
     std::string                  result_string;
 
-    result_sstream << "+ ::bReserved       = " << in_pixel_format_descriptor_ptr->bReserved        << "\n"
-                   << "+ ::cAccumAlphaBits = " << in_pixel_format_descriptor_ptr->cAccumAlphaBits  << "\n"
-                   << "+ ::cAccumBits      = " << in_pixel_format_descriptor_ptr->cAccumBits       << "\n"
-                   << "+ ::cAccumBlueBits  = " << in_pixel_format_descriptor_ptr->cAccumBlueBits   << "\n"
-                   << "+ ::cAccumGreenBits = " << in_pixel_format_descriptor_ptr->cAccumGreenBits  << "\n"
-                   << "+ ::cAccumRedBits   = " << in_pixel_format_descriptor_ptr->cAccumRedBits    << "\n"
-                   << "+ ::cAlphaBits      = " << in_pixel_format_descriptor_ptr->cAlphaBits       << "\n"
-                   << "+ ::cAlphaShift     = " << in_pixel_format_descriptor_ptr->cAlphaShift      << "\n"
-                   << "+ ::cAuxBuffers     = " << in_pixel_format_descriptor_ptr->cAuxBuffers      << "\n"
-                   << "+ ::cBlueBits       = " << in_pixel_format_descriptor_ptr->cBlueBits        << "\n"
-                   << "+ ::cBlueShift      = " << in_pixel_format_descriptor_ptr->cBlueShift       << "\n"
-                   << "+ ::cColorBits      = " << in_pixel_format_descriptor_ptr->cColorBits       << "\n"
-                   << "+ ::cDepthBits      = " << in_pixel_format_descriptor_ptr->cDepthBits       << "\n"
-                   << "+ ::cGreenBits      = " << in_pixel_format_descriptor_ptr->cGreenBits       << "\n"
-                   << "+ ::cGreenShift     = " << in_pixel_format_descriptor_ptr->cGreenShift      << "\n"
-                   << "+ ::cRedBits        = " << in_pixel_format_descriptor_ptr->cRedBits         << "\n"
-                   << "+ ::cRedShift       = " << in_pixel_format_descriptor_ptr->cRedShift        << "\n"
-                   << "+ ::cStencilBits    = " << in_pixel_format_descriptor_ptr->cStencilBits     << "\n"
-                   << "+ ::dwDamageMask    = " << in_pixel_format_descriptor_ptr->dwDamageMask     << "\n"
-                   << "+ ::dwFlags         = " << in_pixel_format_descriptor_ptr->dwFlags          << "\n"
-                   << "+ ::dwLayerMask     = " << in_pixel_format_descriptor_ptr->dwLayerMask      << "\n"
-                   << "+ ::dwVisibleMask   = " << in_pixel_format_descriptor_ptr->dwVisibleMask    << "\n"
-                   << "+ ::iPixelType      = " << in_pixel_format_descriptor_ptr->iPixelType       << "\n"
-                   << "+ ::iLayerType      = " << in_pixel_format_descriptor_ptr->iLayerType       << "\n"
-                   << "+ ::nSize           = " << in_pixel_format_descriptor_ptr->nSize            << "\n"
-                   << "+ ::nVersion        = " << in_pixel_format_descriptor_ptr->nVersion         << "\n";
+    result_sstream << "\n"
+                      "+ ::bReserved       = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->bReserved)        << "\n"
+                   << "+ ::cAccumAlphaBits = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cAccumAlphaBits)  << "\n"
+                   << "+ ::cAccumBits      = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cAccumBits)       << "\n"
+                   << "+ ::cAccumBlueBits  = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cAccumBlueBits)   << "\n"
+                   << "+ ::cAccumGreenBits = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cAccumGreenBits)  << "\n"
+                   << "+ ::cAccumRedBits   = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cAccumRedBits)    << "\n"
+                   << "+ ::cAlphaBits      = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cAlphaBits)       << "\n"
+                   << "+ ::cAlphaShift     = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cAlphaShift)      << "\n"
+                   << "+ ::cAuxBuffers     = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cAuxBuffers)      << "\n"
+                   << "+ ::cBlueBits       = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cBlueBits)        << "\n"
+                   << "+ ::cBlueShift      = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cBlueShift)       << "\n"
+                   << "+ ::cColorBits      = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cColorBits)       << "\n"
+                   << "+ ::cDepthBits      = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cDepthBits)       << "\n"
+                   << "+ ::cGreenBits      = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cGreenBits)       << "\n"
+                   << "+ ::cGreenShift     = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cGreenShift)      << "\n"
+                   << "+ ::cRedBits        = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cRedBits)         << "\n"
+                   << "+ ::cRedShift       = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cRedShift)        << "\n"
+                   << "+ ::cStencilBits    = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cStencilBits)     << "\n"
+                   << "+ ::dwDamageMask    = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->dwDamageMask)     << "\n"
+                   << "+ ::dwFlags         = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->dwFlags)          << "\n"
+                   << "+ ::dwLayerMask     = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->dwLayerMask)      << "\n"
+                   << "+ ::dwVisibleMask   = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->dwVisibleMask)    << "\n"
+                   << "+ ::iPixelType      = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->iPixelType)       << "\n"
+                   << "+ ::iLayerType      = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->iLayerType)       << "\n"
+                   << "+ ::nSize           = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->nSize)            << "\n"
+                   << "+ ::nVersion        = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->nVersion)         << "\n";
 
-    result_string = result_sstream.str().substr(0, MAX_PERF_OBJECTS_IN_QUERY_FUNCTION - 1 /* terminator */);
+    result_string = result_sstream.str().substr(0, MAX_PER_FUNC_LOCAL_HELPER_STORAGE_SIZE - 1 /* terminator */);
 
     memcpy(cache,
           &result_string.at  (0),

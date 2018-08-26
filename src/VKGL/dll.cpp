@@ -83,6 +83,8 @@ INT APIENTRY DllMain(HMODULE in_module_handle,
     {
         case DLL_PROCESS_ATTACH:
         {
+            VKGL::Logger::init();
+
             handle_attach_detach_event(true); /* in_is_attach_event */
 
             break;
@@ -90,6 +92,8 @@ INT APIENTRY DllMain(HMODULE in_module_handle,
 
         case DLL_PROCESS_DETACH:
         {
+            VKGL::Logger::deinit();
+
             handle_attach_detach_event(false); /* in_is_attach_event */
 
             break;

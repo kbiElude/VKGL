@@ -6,7 +6,7 @@
 #define VKGL_LOGGER_H
 
 #include "vkgl_config.h"
-
+#include <sstream>
 
 namespace VKGL
 {
@@ -26,9 +26,15 @@ namespace VKGL
          Logger();
         ~Logger();
 
+        static void deinit();
+        static void init  ();
+
         void log(const LogLevel& in_log_level,
                  const char*     in_message_template,
                  ...);
+
+    private:
+        std::stringstream m_log_data_sstream;
     };
 
     extern Logger* g_logger_ptr;
