@@ -6,14 +6,13 @@
 #include "WGL/globals.h"
 #include "WGL/entrypoints/wgl_make_current.h"
 
-BOOL WINAPI vkgl_wgl_make_current(HDC   in_hdc,
-                                  HGLRC in_hglrc)
+BOOL WINAPI WGL::make_current(HDC   in_hdc,
+                              HGLRC in_hglrc)
 {
-    MessageBox(HWND_DESKTOP,
-               "wglMakeCurrent() intercepted.",
-               "",
-               MB_OK);
+    VKGL_TRACE("wglMakeCurrent(in_hdc=[%p] in_hglrc=[%p])",
+               in_hdc,
+               in_hglrc);
 
-    return reinterpret_cast<PFNWGLMAKECURRENTPROC>(g_cached_wgl_make_current_func_ptr)(in_hdc,
-                                                                                       in_hglrc);
+    return reinterpret_cast<WGL::PFNWGLMAKECURRENTPROC>(WGL::g_cached_make_current_func_ptr)(in_hdc,
+                                                                                             in_hglrc);
 }

@@ -13,12 +13,6 @@
 
 #define VKGL_APIENTRY KHRONOS_APIENTRY
 
-#if defined(_WIN32)
-    #define VKGL_THREADLOCAL __declspec(thread)
-#else
-    #error todo
-#endif
-
 namespace VKGL
 {
     /* Forward declarations */

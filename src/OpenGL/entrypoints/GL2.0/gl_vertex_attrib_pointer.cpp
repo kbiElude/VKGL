@@ -30,7 +30,7 @@ void VKGL_APIENTRY vkglVertexAttribPointer(GLuint      index,
                                            GLsizei     stride,
                                            const void* pointer)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLVertexAttribPointer(dispatch_table_ptr->bound_context_ptr,
                                                index,

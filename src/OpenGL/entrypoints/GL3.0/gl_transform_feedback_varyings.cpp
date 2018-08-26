@@ -26,7 +26,7 @@ void VKGL_APIENTRY vkglTransformFeedbackVaryings(GLuint               program,
                                                  const GLchar* const* varyings,
                                                  GLenum               bufferMode)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLTransformFeedbackVaryings(dispatch_table_ptr->bound_context_ptr,
                                                      program,

@@ -24,7 +24,7 @@ void VKGL_APIENTRY vkglWaitSync(GLsync     sync,
                                 GLbitfield flags,
                                 GLuint64   timeout)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLWaitSync(dispatch_table_ptr->bound_context_ptr,
                                     sync,

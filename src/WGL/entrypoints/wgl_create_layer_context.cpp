@@ -6,14 +6,13 @@
 #include "WGL/globals.h"
 #include "WGL/entrypoints/wgl_create_layer_context.h"
 
-HGLRC WINAPI vkgl_wgl_create_layer_context(HDC in_hdc,
-                                           int in_layer_plane_index)
+HGLRC WINAPI WGL::create_layer_context(HDC in_hdc,
+                                       int in_layer_plane_index)
 {
-    MessageBox(HWND_DESKTOP,
-               "wglCreateLayerContext() intercepted.",
-               "",
-               MB_OK);
+    VKGL_TRACE("wglCreateLayerContext(in_hdc=[%p] in_layer_plane_index=[%d])",
+               in_hdc,
+               in_layer_plane_index);
 
-    return reinterpret_cast<PFNWGLCREATELAYERCONTEXTPROC>(g_cached_wgl_create_layer_context_func_ptr)(in_hdc,
-                                                                                                      in_layer_plane_index);
+    return reinterpret_cast<WGL::PFNWGLCREATELAYERCONTEXTPROC>(WGL::g_cached_create_layer_context_func_ptr)(in_hdc,
+                                                                                                            in_layer_plane_index);
 }

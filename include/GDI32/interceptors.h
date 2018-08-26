@@ -8,6 +8,9 @@
 #include "Common/globals.h"
 #include <vector>
 
-extern std::vector<FunctionInterceptor> get_gdi32_function_interceptors();
+namespace GDI32
+{
+    extern std::vector<VKGL::FunctionInterceptor> get_function_interceptors();
+}
 
 #endif /* GDI32_INTERCEPTORS_H */

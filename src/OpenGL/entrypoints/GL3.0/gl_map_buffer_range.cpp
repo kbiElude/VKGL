@@ -26,7 +26,7 @@ void* APIENTRY vkglMapBufferRange(GLenum     target,
                                   GLsizeiptr length,
                                   GLbitfield access)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     return dispatch_table_ptr->pGLMapBufferRange(dispatch_table_ptr->bound_context_ptr,
                                                  target,

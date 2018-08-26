@@ -38,7 +38,7 @@ void VKGL_APIENTRY vkglBlitFramebuffer(GLint      srcX0,
                                        GLbitfield mask,
                                        GLenum     filter)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLBlitFramebuffer(dispatch_table_ptr->bound_context_ptr,
                                            srcX0,

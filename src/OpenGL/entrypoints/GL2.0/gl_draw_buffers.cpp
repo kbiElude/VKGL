@@ -20,7 +20,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 void VKGL_APIENTRY vkglDrawBuffers(GLsizei       n,
                                    const GLenum* bufs)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLDrawBuffers(dispatch_table_ptr->bound_context_ptr,
                                        n,

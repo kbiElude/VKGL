@@ -26,7 +26,7 @@ void VKGL_APIENTRY vkglDrawElements(GLenum      mode,
                                     GLenum      type,
                                     const void* indices)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLDrawElements(dispatch_table_ptr->bound_context_ptr,
                                         mode,

@@ -7,6 +7,9 @@
 
 #include <windows.h>
 
-HGLRC WINAPI vkgl_wgl_create_context(HDC in_hdc);
+namespace WGL
+{
+    HGLRC WINAPI create_context(HDC in_hdc);
+}
 
 #endif /* WGL_CREATE_CONTEXT_H */

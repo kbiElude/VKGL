@@ -13,20 +13,23 @@
     #include "OpenGL/interceptors.h"
 #endif
 
-PROC WINAPI vkgl_wgl_get_proc_address(LPCSTR in_name)
+PROC WINAPI WGL::get_proc_address(LPCSTR in_name)
 {
+    VKGL_TRACE("wglGetProcAddress(in_name=[%s])",
+               in_name);
+
     /* TODO: Cache the func ptr data in HGLRC context */
 
     PROC result = nullptr;
 
 #if defined(VKGL_INCLUDE_OPENGL)
-    const std::unordered_map<std::string, void*> opengl_func_ptrs = vkgl_get_func_name_to_func_ptr_map();
+    const auto opengl_func_ptrs = OpenGL::get_func_name_to_func_ptr_map();
 #endif
 
     static const std::unordered_map<std::string, void*> wgl_func_ptrs =
     {
         /* WGL_ARB_create_context */
-        {"wglCreateContextAttribsARB", vkgl_wgl_create_context_attribs_arb},
+        {"wglCreateContextAttribsARB", WGL::create_context_attribs_arb},
     };
 
     const std::unordered_map<std::string, void*> func_ptr_data[] =

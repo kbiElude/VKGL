@@ -22,7 +22,7 @@ static bool validate(VKGL::Context*    in_context_ptr,
 GLsync VKGL_APIENTRY vkglFenceSync(GLenum     condition,
                                    GLbitfield flags)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     return dispatch_table_ptr->pGLFenceSync(dispatch_table_ptr->bound_context_ptr,
                                             condition,

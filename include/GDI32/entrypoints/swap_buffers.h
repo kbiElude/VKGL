@@ -7,6 +7,9 @@
 
 #include <Windows.h>
 
-BOOL WINAPI vkgl_swap_buffers(HDC in_hdc);
+namespace GDI32
+{
+    BOOL WINAPI swap_buffers(HDC in_hdc);
+}
 
 #endif /* VKGL_SWAP_BUFFERS_H */

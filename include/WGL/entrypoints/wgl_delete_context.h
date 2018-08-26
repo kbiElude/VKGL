@@ -7,6 +7,9 @@
 
 #include <windows.h>
 
-BOOL WINAPI vkgl_wgl_delete_context(HGLRC in_hglrc);
+namespace WGL
+{
+    BOOL WINAPI delete_context(HGLRC in_hglrc);
+}
 
 #endif /* WGL_DELETE_CONTEXT_H */

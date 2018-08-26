@@ -25,7 +25,7 @@ void VKGL_APIENTRY vkglStencilFunc(GLenum func,
                                    GLint  ref,
                                    GLuint mask)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLStencilFunc(dispatch_table_ptr->bound_context_ptr,
                                        func,

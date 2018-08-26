@@ -28,7 +28,7 @@ void VKGL_APIENTRY vkglDrawElementsBaseVertex(GLenum      mode,
                                               const void* indices,
                                               GLint       basevertex)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLDrawElementsBaseVertex(dispatch_table_ptr->bound_context_ptr,
                                                   mode,

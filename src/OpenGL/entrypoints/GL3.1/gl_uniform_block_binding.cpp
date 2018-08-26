@@ -23,7 +23,7 @@ void VKGL_APIENTRY vkglUniformBlockBinding(GLuint program,
                                            GLuint uniformBlockIndex,
                                            GLuint uniformBlockBinding)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLUniformBlockBinding(dispatch_table_ptr->bound_context_ptr,
                                                program,

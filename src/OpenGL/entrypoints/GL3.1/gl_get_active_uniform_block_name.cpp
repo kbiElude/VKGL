@@ -28,7 +28,7 @@ void VKGL_APIENTRY vkglGetActiveUniformBlockName(GLuint   program,
                                                  GLsizei* length,
                                                  GLchar*  uniformBlockName)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLGetActiveUniformBlockName(dispatch_table_ptr->bound_context_ptr,
                                                      program,

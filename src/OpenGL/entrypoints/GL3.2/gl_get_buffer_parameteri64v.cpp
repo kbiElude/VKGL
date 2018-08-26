@@ -25,7 +25,7 @@ void VKGL_APIENTRY vkglGetBufferParameteri64v(GLenum   target,
                                               GLenum   pname,
                                               GLint64* params)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLGetBufferParameteri64v(dispatch_table_ptr->bound_context_ptr,
                                                   target,

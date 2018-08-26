@@ -27,7 +27,7 @@ void VKGL_APIENTRY vkglUniform4f(GLint   location,
                                  GLfloat v2,
                                  GLfloat v3)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLUniform4f(dispatch_table_ptr->bound_context_ptr,
                                      location,

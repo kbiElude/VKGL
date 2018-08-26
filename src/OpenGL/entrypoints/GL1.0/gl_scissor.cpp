@@ -26,7 +26,7 @@ void VKGL_APIENTRY vkglScissor(GLint   x,
                                GLsizei width,
                                GLsizei height)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLScissor(dispatch_table_ptr->bound_context_ptr,
                                    x,

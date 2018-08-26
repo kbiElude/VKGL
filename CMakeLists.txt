@@ -1,9 +1,10 @@
 cmake_minimum_required (VERSION 2.8)
 project (VK_GL)
 
-option(VKGL_INCLUDE_GDI32  "Intercept GDI32 entrypoints"  ON)
-option(VKGL_INCLUDE_OPENGL "Intercept OpenGL entrypoints" ON)
-option(VKGL_INCLUDE_WGL    "Intercept WGL entrypoints"    ON)
+option(VKGL_DUMP_API_CALLS "Dump API calls to text files (debugging)" ON)
+option(VKGL_INCLUDE_GDI32  "Intercept GDI32 entrypoints"              ON)
+option(VKGL_INCLUDE_OPENGL "Intercept OpenGL entrypoints"             OFF)
+option(VKGL_INCLUDE_WGL    "Intercept WGL entrypoints"                ON)
 
 # DO NOT MODIFY BELOW THIS LINE
 configure_file("${VK_GL_SOURCE_DIR}/include/config.h.in" "${VK_GL_BINARY_DIR}/vkgl_config.h")
@@ -156,7 +157,8 @@ if (VKGL_INCLUDE_WGL)
                            ${WGLIncludes})
 endif ()
 
-add_library(VKGL SHARED ${VKGLSources})
+add_library(VKGL SHARED ${VKGLIncludes}
+                        ${VKGLSources})
 
 target_link_libraries(Launcher Detours)
 target_link_libraries(VKGL     Anvil Detours)

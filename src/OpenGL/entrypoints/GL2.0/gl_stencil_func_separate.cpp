@@ -26,7 +26,7 @@ void VKGL_APIENTRY vkglStencilFuncSeparate(GLenum face,
                                            GLint  ref,
                                            GLuint mask)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLStencilFuncSeparate(dispatch_table_ptr->bound_context_ptr,
                                                face,

@@ -6,12 +6,9 @@
 #include "WGL/globals.h"
 #include "WGL/entrypoints/wgl_get_current_context.h"
 
-HGLRC WINAPI vkgl_wgl_get_current_context()
+HGLRC WINAPI WGL::get_current_context()
 {
-    MessageBox(HWND_DESKTOP,
-               "wglGetCurrentContext() intercepted.",
-               "",
-               MB_OK);
+    VKGL_TRACE("wglGetCurrentContext()");
 
-    return reinterpret_cast<PFNWGLGETCURRENTCONTEXTPROC>(g_cached_wgl_get_current_context_func_ptr)();
+    return reinterpret_cast<WGL::PFNWGLGETCURRENTCONTEXTPROC>(WGL::g_cached_get_current_context_func_ptr)();
 }

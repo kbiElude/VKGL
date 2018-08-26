@@ -22,7 +22,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 void VKGL_APIENTRY vkglDetachShader(GLuint program,
                                     GLuint shader)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLDetachShader(dispatch_table_ptr->bound_context_ptr,
                                         program,

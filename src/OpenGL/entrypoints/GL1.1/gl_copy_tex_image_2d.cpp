@@ -34,7 +34,7 @@ void VKGL_APIENTRY vkglCopyTexImage2D(GLenum  target,
                                       GLsizei height,
                                       GLint   border)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLCopyTexImage2D(dispatch_table_ptr->bound_context_ptr,
                                           target,

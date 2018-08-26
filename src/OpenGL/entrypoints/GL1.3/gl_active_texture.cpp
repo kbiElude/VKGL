@@ -20,7 +20,7 @@ static bool validate(const VKGL::Context* in_context_ptr,
 
 void VKGL_APIENTRY vkglActiveTexture(GLenum texture)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLActiveTexture(dispatch_table_ptr->bound_context_ptr,
                                          texture);

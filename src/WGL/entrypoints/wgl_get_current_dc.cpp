@@ -6,12 +6,9 @@
 #include "WGL/globals.h"
 #include "WGL/entrypoints/wgl_get_current_dc.h"
 
-HDC WINAPI vkgl_wgl_get_current_dc()
+HDC WINAPI WGL::get_current_dc()
 {
-    MessageBox(HWND_DESKTOP,
-               "wglGetCurrentDc() intercepted.",
-               "",
-               MB_OK);
+    VKGL_TRACE("wglGetCurrentDC()");
 
-    return reinterpret_cast<PFNWGLGETCURRENTDCPROC>(g_cached_wgl_get_current_dc_func_ptr)();
+    return reinterpret_cast<WGL::PFNWGLGETCURRENTDCPROC>(WGL::g_cached_get_current_dc_func_ptr)();
 }

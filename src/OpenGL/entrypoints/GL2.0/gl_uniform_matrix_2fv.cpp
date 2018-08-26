@@ -25,7 +25,7 @@ void VKGL_APIENTRY vkglUniformMatrix2fv(GLint          location,
                                         GLboolean      transpose,
                                         const GLfloat* value)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLUniformMatrix2fv(dispatch_table_ptr->bound_context_ptr,
                                             location,

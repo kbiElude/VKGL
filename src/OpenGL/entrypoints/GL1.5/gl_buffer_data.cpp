@@ -26,7 +26,7 @@ void VKGL_APIENTRY vkglBufferData(GLenum      target,
                                   const void* data,
                                   GLenum      usage)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLBufferData(dispatch_table_ptr->bound_context_ptr,
                                       target,

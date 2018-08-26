@@ -23,7 +23,7 @@ void VKGL_APIENTRY vkglVertexAttribI2ui(GLuint index,
                                         GLuint x,
                                         GLuint y)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLVertexAttribI2ui(dispatch_table_ptr->bound_context_ptr,
                                             index,

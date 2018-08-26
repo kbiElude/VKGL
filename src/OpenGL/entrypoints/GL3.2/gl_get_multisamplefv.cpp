@@ -24,7 +24,7 @@ void VKGL_APIENTRY vkglGetMultisamplefv(GLenum   pname,
                                         GLuint   index,
                                         GLfloat* val)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLGetMultisamplefv(dispatch_table_ptr->bound_context_ptr,
                                             pname,

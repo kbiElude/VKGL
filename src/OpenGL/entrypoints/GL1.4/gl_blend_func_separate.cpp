@@ -30,7 +30,7 @@ void VKGL_APIENTRY vkglBlendFuncSeparate(GLenum sfactorRGB,
                                          GLenum sfactorAlpha,
                                          GLenum dfactorAlpha)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLBlendFuncSeparate(dispatch_table_ptr->bound_context_ptr,
                                              sfactorRGB,

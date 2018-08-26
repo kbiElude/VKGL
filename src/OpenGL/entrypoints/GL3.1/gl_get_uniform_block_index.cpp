@@ -21,7 +21,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 GLuint VKGL_APIENTRY vkglGetUniformBlockIndex(GLuint        program,
                                               const GLchar* uniformBlockName)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     return dispatch_table_ptr->pGLGetUniformBlockIndex(dispatch_table_ptr->bound_context_ptr,
                                                        program,

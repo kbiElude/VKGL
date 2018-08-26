@@ -7,6 +7,9 @@
 
 #include <windows.h>
 
-PROC WINAPI vkgl_wgl_get_proc_address(LPCSTR in_name);
+namespace WGL
+{
+    PROC WINAPI get_proc_address(LPCSTR in_name);
+}
 
 #endif /* WGL_GET_PROC_ADDRESS_H */

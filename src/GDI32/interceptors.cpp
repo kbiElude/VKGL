@@ -10,14 +10,14 @@
 #include "GDI32/globals.h"
 #include "GDI32/interceptors.h"
 
-std::vector<FunctionInterceptor> get_gdi32_function_interceptors()
+std::vector<VKGL::FunctionInterceptor> GDI32::get_function_interceptors()
 {
-    return std::vector<FunctionInterceptor>
+    return std::vector<VKGL::FunctionInterceptor>
     {
-        FunctionInterceptor(&(PVOID&)g_cached_choose_pixel_format_func_ptr,   vkgl_choose_pixel_format),
-        FunctionInterceptor(&(PVOID&)g_cached_describe_pixel_format_func_ptr, vkgl_describe_pixel_format),
-        FunctionInterceptor(&(PVOID&)g_cached_get_pixel_format_func_ptr,      vkgl_get_pixel_format),
-        FunctionInterceptor(&(PVOID&)g_cached_set_pixel_format_func_ptr,      vkgl_set_pixel_format),
-        FunctionInterceptor(&(PVOID&)g_cached_swap_buffers_func_ptr,          vkgl_swap_buffers)
+        VKGL::FunctionInterceptor(&(PVOID&)GDI32::g_cached_choose_pixel_format_func_ptr,   GDI32::choose_pixel_format),
+        VKGL::FunctionInterceptor(&(PVOID&)GDI32::g_cached_describe_pixel_format_func_ptr, GDI32::describe_pixel_format),
+        VKGL::FunctionInterceptor(&(PVOID&)GDI32::g_cached_get_pixel_format_func_ptr,      GDI32::get_pixel_format),
+        VKGL::FunctionInterceptor(&(PVOID&)GDI32::g_cached_set_pixel_format_func_ptr,      GDI32::set_pixel_format),
+        VKGL::FunctionInterceptor(&(PVOID&)GDI32::g_cached_swap_buffers_func_ptr,          GDI32::swap_buffers)
     };
 }

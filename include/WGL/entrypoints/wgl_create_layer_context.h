@@ -7,7 +7,10 @@
 
 #include <windows.h>
 
-HGLRC WINAPI vkgl_wgl_create_layer_context(HDC in_hdc,
-                                           int in_layer_plane_index);
+namespace WGL
+{
+    HGLRC WINAPI create_layer_context(HDC in_hdc,
+                                      int in_layer_plane_index);
+}
 
 #endif /* WGL_CREATE_LAYER_CONTEXT_H */

@@ -19,7 +19,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 
 GLboolean VKGL_APIENTRY vkglIsProgram(GLuint program)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     return dispatch_table_ptr->pGLIsProgram(dispatch_table_ptr->bound_context_ptr,
                                             program) == GL_TRUE;

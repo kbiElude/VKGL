@@ -5,23 +5,16 @@
 #ifndef COMMON_GLOBALS_H
 #define COMMON_GLOBALS_H
 
-struct FunctionInterceptor
-{
-    void** pfn_func_to_intercept_ptr_ptr;
-    void*  pfn_interceptor_func_ptr;
+#include "vkgl_config.h"
+#include "Common/types.h"
+#include "VKGL/logger.h"
 
-    FunctionInterceptor()
-    {
-        pfn_func_to_intercept_ptr_ptr = nullptr;
-        pfn_interceptor_func_ptr      = nullptr;
-    }
+#define MAX_PER_FUNC_LOCAL_HELPER_STORAGE_SIZE (4096)
 
-    FunctionInterceptor(void** in_pfn_func_to_intercept_ptr_ptr,
-                        void*  in_pfn_interceptor_func_ptr)
-    {
-        pfn_func_to_intercept_ptr_ptr = in_pfn_func_to_intercept_ptr_ptr;
-        pfn_interceptor_func_ptr      = in_pfn_interceptor_func_ptr;
-    }
-};
+#if defined(_WIN32)
+    #define VKGL_THREADLOCAL __declspec(thread)
+#else
+    #error todo
+#endif
 
 #endif /* COMMON_GLOBALS_H */

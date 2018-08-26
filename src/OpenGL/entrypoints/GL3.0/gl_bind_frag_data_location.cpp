@@ -24,7 +24,7 @@ void VKGL_APIENTRY vkglBindFragDataLocation(GLuint        program,
                                             GLuint        color,
                                             const GLchar* name)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLBindFragDataLocation(dispatch_table_ptr->bound_context_ptr,
                                                 program,

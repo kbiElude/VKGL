@@ -2,10 +2,10 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
-#ifndef VKGL_TYPES_MACRO_H
-#define VKGL_TYPES_MACRO_H
+#ifndef COMMON_MACROS_H
+#define COMMON_MACROS_H
 
-#include "OpenGL/debug.h"
+#include "Common/debug.h"
 
 #ifdef _DEBUG
     #define vkgl_assert(assertion)                  \
@@ -25,4 +25,4 @@
     #define vkgl_assert_fail()
 #endif
 
-#endif /* VKGL_TYPES_MACRO_H */
+#endif /* COMMON_MACROS_H */

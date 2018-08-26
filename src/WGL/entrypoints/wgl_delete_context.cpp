@@ -6,12 +6,10 @@
 #include "WGL/globals.h"
 #include "WGL/entrypoints/wgl_delete_context.h"
 
-BOOL WINAPI vkgl_wgl_delete_context(HGLRC in_hglrc)
+BOOL WINAPI WGL::delete_context(HGLRC in_hglrc)
 {
-    MessageBox(HWND_DESKTOP,
-               "wglDeleteContext() intercepted.",
-               "",
-               MB_OK);
+    VKGL_TRACE("wglDeleteContext(in_hglrc=[%p])",
+               in_hglrc);
 
-    return reinterpret_cast<PFNWGLDELETECONTEXTPROC>(g_cached_wgl_delete_context_func_ptr)(in_hglrc);
+    return reinterpret_cast<WGL::PFNWGLDELETECONTEXTPROC>(WGL::g_cached_delete_context_func_ptr)(in_hglrc);
 }

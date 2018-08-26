@@ -37,7 +37,7 @@ void VKGL_APIENTRY vkglTexImage2D(GLenum      target,
                                   GLenum      type,
                                   const void* pixels)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLTexImage2D(dispatch_table_ptr->bound_context_ptr,
                                       target,

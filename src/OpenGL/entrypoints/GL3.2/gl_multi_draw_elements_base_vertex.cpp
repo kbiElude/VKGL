@@ -31,7 +31,7 @@ void VKGL_APIENTRY vkglMultiDrawElementsBaseVertex(GLenum             mode,
                                                    GLsizei            drawcount,
                                                    const GLint*       basevertex)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLMultiDrawElementsBaseVertex(dispatch_table_ptr->bound_context_ptr,
                                                        mode,

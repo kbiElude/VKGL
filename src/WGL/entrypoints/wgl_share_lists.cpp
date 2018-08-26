@@ -6,14 +6,13 @@
 #include "WGL/globals.h"
 #include "WGL/entrypoints/wgl_share_lists.h"
 
-BOOL WINAPI vkgl_wgl_share_lists(HGLRC in_hglrc1,
-                                 HGLRC in_hglrc2)
+BOOL WINAPI WGL::share_lists(HGLRC in_hglrc1,
+                             HGLRC in_hglrc2)
 {
-    MessageBox(HWND_DESKTOP,
-               "wglShareLists() intercepted.",
-               "",
-               MB_OK);
+    VKGL_TRACE("wglShareLists(in_hglrc1=[%p] in_hglrc2=[%p])",
+               in_hglrc1,
+               in_hglrc2);
 
-    return reinterpret_cast<PFNWGLSHARELISTSPROC>(g_cached_wgl_share_lists_func_ptr)(in_hglrc1,
-                                                                                     in_hglrc2);
+    return reinterpret_cast<WGL::PFNWGLSHARELISTSPROC>(WGL::g_cached_share_lists_func_ptr)(in_hglrc1,
+                                                                                           in_hglrc2);
 }

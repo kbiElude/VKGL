@@ -26,7 +26,7 @@ void VKGL_APIENTRY vkglRenderbufferStorage(GLenum  target,
                                            GLsizei width,
                                            GLsizei height)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLRenderbufferStorage(dispatch_table_ptr->bound_context_ptr,
                                                target,

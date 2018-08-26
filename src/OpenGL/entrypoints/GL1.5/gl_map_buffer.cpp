@@ -22,7 +22,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 void *APIENTRY vkglMapBuffer(GLenum target,
                              GLenum access)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     return dispatch_table_ptr->pGLMapBuffer(dispatch_table_ptr->bound_context_ptr,
                                             target,

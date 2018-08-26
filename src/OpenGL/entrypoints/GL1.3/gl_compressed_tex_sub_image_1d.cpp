@@ -32,7 +32,7 @@ void VKGL_APIENTRY vkglCompressedTexSubImage1D(GLenum      target,
                                                GLsizei     imageSize,
                                                const void* data)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLCompressedTexSubImage1D(dispatch_table_ptr->bound_context_ptr,
                                                    target,
@@ -74,7 +74,7 @@ void vkglCompressedTexSubImage1D_with_validation(VKGL::Context* in_context_ptr,
                                                  const GLsizei& in_image_size,
                                                  const void*    in_data)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     if (validate(in_context_ptr,
                  in_target,

@@ -26,7 +26,7 @@ void VKGL_APIENTRY vkglMultiDrawArrays(GLenum         mode,
                                        const GLsizei* count,
                                        GLsizei        drawcount)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLMultiDrawArrays(dispatch_table_ptr->bound_context_ptr,
                                            mode,

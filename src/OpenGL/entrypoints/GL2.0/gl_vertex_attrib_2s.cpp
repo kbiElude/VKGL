@@ -23,7 +23,7 @@ void VKGL_APIENTRY vkglVertexAttrib2s(GLuint  index,
                                       GLshort x,
                                       GLshort y)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLVertexAttrib2s(dispatch_table_ptr->bound_context_ptr,
                                           index,

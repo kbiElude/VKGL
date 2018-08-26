@@ -33,7 +33,7 @@ void VKGL_APIENTRY vkglReadPixels(GLint   x,
                                   GLenum  type,
                                   void*   pixels)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLReadPixels(dispatch_table_ptr->bound_context_ptr,
                                       x,

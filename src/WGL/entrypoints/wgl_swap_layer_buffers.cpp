@@ -6,14 +6,13 @@
 #include "WGL/globals.h"
 #include "WGL/entrypoints/wgl_swap_layer_buffers.h"
 
-BOOL WINAPI vkgl_wgl_swap_layer_buffers(HDC  in_hdc,
-                                        UINT in_planes)
+BOOL WINAPI WGL::swap_layer_buffers(HDC  in_hdc,
+                                    UINT in_planes)
 {
-    MessageBox(HWND_DESKTOP,
-               "wglSwapLayerBuffers() intercepted.",
-               "",
-               MB_OK);
+    VKGL_TRACE("wglSwapLayerBuffers(in_hdc=[%p] in_planes=[%d])",
+               in_hdc,
+               in_planes);
 
-    return reinterpret_cast<PFNWGLSWAPLAYERBUFFERSPROC>(g_cached_wgl_swap_layer_buffers_func_ptr)(in_hdc,
-                                                                                                  in_planes);
+    return reinterpret_cast<WGL::PFNWGLSWAPLAYERBUFFERSPROC>(WGL::g_cached_swap_layer_buffers_func_ptr)(in_hdc,
+                                                                                                        in_planes);
 }

@@ -30,7 +30,7 @@ void VKGL_APIENTRY vkglCopyTexSubImage1D(GLenum  target,
                                          GLint   y,
                                          GLsizei width)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     dispatch_table_ptr->pGLCopyTexSubImage1D(dispatch_table_ptr->bound_context_ptr,
                                              target,
@@ -67,7 +67,7 @@ void vkglCopyTexSubImage1D_with_validation(VKGL::Context* in_context_ptr,
                                            const GLint&   in_y,
                                            const GLsizei& in_width)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     if (validate(in_context_ptr,
                  in_target,

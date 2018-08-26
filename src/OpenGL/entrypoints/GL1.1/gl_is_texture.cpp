@@ -19,7 +19,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 
 GLboolean VKGL_APIENTRY vkglIsTexture(GLuint texture)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     return dispatch_table_ptr->pGLIsTexture(dispatch_table_ptr->bound_context_ptr,
                                             texture);

@@ -22,7 +22,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 GLboolean VKGL_APIENTRY vkglIsEnabledi(GLenum target,
                                        GLuint index)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     return dispatch_table_ptr->pGLIsEnabledi(dispatch_table_ptr->bound_context_ptr,
                                              target,
