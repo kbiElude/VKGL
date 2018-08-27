@@ -6,9 +6,13 @@
 #define WGL_GLOBALS_H
 
 #include <windows.h>
+#include "Common/globals.h"
 
 namespace WGL
 {
+    /* Forward declarations */
+    class Context;
+
     typedef BOOL  (WINAPI* PFNWGLCOPYCONTEXTPROC)            (HGLRC, HGLRC, UINT);
     typedef HGLRC (WINAPI* PFNWGLCREATECONTEXTPROC)          (HDC);
     typedef HGLRC (WINAPI* PFNWGLCREATECONTEXTATTRIBSARBPROC)(HDC, HGLRC, const int*);
@@ -32,6 +36,8 @@ namespace WGL
     extern void* g_cached_make_current_func_ptr;
     extern void* g_cached_share_lists_func_ptr;
     extern void* g_cached_swap_layer_buffers_func_ptr;
+
+    VKGL_THREADLOCAL extern Context* g_current_wgl_context_ptr;
 }
 
 #endif /* WGL_GLOBALS_H */

@@ -4,13 +4,14 @@
  */
 #include "Common/globals.h"
 #include "WGL/entrypoints/WGL_EXT_swap_control/wgl_get_swap_interval_ext.h"
+#include "WGL/context.h"
 #include "WGL/globals.h"
 #include "WGL/utils_trace.h"
 
 int WINAPI WGL::get_swap_interval_ext()
 {
-    /* TODO: Needs to be associated with per-thread WGL context */
     VKGL_TRACE("wglGetSwapIntervalEXT()\n");
 
-    return 1;
+    vkgl_assert(WGL::g_current_wgl_context_ptr != nullptr);
+    return WGL::g_current_wgl_context_ptr->get_swap_interval();
 }

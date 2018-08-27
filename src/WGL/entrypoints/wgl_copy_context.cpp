@@ -15,7 +15,9 @@ BOOL WINAPI WGL::copy_context(HGLRC in_hglrc_source,
                in_hglrc_destination,
                in_mask);
 
-    return reinterpret_cast<WGL::PFNWGLCOPYCONTEXTPROC>(WGL::g_cached_copy_context_func_ptr)(in_hglrc_source,
-                                                                                             in_hglrc_destination,
-                                                                                             in_mask);
+    VKGL::g_logger_ptr->log(VKGL::LogLevel::Error,
+                            "wglCopyContext() is NOT supported");
+
+    vkgl_assert_fail();
+    return FALSE;
 }

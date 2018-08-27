@@ -3,6 +3,7 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Common/globals.h"
+#include "WGL/context.h"
 #include "WGL/globals.h"
 #include "WGL/entrypoints/wgl_make_current.h"
 
@@ -13,6 +14,12 @@ BOOL WINAPI WGL::make_current(HDC   in_hdc,
                in_hdc,
                in_hglrc);
 
-    return reinterpret_cast<WGL::PFNWGLMAKECURRENTPROC>(WGL::g_cached_make_current_func_ptr)(in_hdc,
-                                                                                             in_hglrc);
+    WGL::g_current_wgl_context_ptr = reinterpret_cast<WGL::Context*>(in_hglrc);
+
+    if (WGL::g_current_wgl_context_ptr != nullptr)
+    {
+        WGL::g_current_wgl_context_ptr->set_current_hdc(in_hdc);
+    }
+
+    return TRUE;
 }

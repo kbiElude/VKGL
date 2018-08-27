@@ -13,6 +13,9 @@ BOOL WINAPI WGL::share_lists(HGLRC in_hglrc1,
                in_hglrc1,
                in_hglrc2);
 
-    return reinterpret_cast<WGL::PFNWGLSHARELISTSPROC>(WGL::g_cached_share_lists_func_ptr)(in_hglrc1,
-                                                                                           in_hglrc2);
+    VKGL_LOG(VKGL::LogLevel::Error,
+             "wglShareLists() is NOT supported");
+
+    vkgl_assert_fail();
+    return FALSE;
 }
