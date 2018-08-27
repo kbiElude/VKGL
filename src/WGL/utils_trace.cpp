@@ -89,7 +89,7 @@ const char* WGL::convert_context_attrib_list_to_raw_string(const int* in_attrib_
             }
         }
 
-        result_sstream << " + [" << attribute_name << "]"
+        result_sstream << " + [" << attribute_name_string << "]"
                        << " = "
                        << attribute_value_string
                        << "\n";

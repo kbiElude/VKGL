@@ -19,5 +19,7 @@ HGLRC WINAPI WGL::create_context_attribs_arb(HDC        in_hdc,
                in_share_context_handle,
                WGL::convert_context_attrib_list_to_raw_string(in_attrib_list_ptr) );
 
-    return nullptr;
+    return reinterpret_cast<PFNWGLCREATECONTEXTATTRIBSARBPROC>(g_cached_create_context_attribs_arb_func_ptr)(in_hdc,
+                                                                                                             in_share_context_handle,
+                                                                                                             in_attrib_list_ptr);
 }

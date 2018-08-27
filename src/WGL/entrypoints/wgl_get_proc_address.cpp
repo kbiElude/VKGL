@@ -6,6 +6,9 @@
 #include "Common/globals.h"
 #include "WGL/globals.h"
 #include "WGL/entrypoints/WGL_ARB_create_context/wgl_create_context_attribs_arb.h"
+#include "WGL/entrypoints/WGL_ARB_extensions_string/wgl_get_extensions_string_arb.h"
+#include "WGL/entrypoints/WGL_EXT_swap_control/wgl_get_swap_interval_ext.h"
+#include "WGL/entrypoints/WGL_EXT_swap_control/wgl_swap_interval_ext.h"
 #include "WGL/entrypoints/wgl_get_proc_address.h"
 #include <unordered_map>
 
@@ -30,6 +33,13 @@ PROC WINAPI WGL::get_proc_address(LPCSTR in_name)
     {
         /* WGL_ARB_create_context */
         {"wglCreateContextAttribsARB", WGL::create_context_attribs_arb},
+
+        /* WGL_ARB_extensions_string */
+        {"wglGetExtensionsStringARB", WGL::get_extensions_string_arb},
+
+        /* WGL_EXT_swap_control */
+        {"wglGetSwapIntervalEXT", WGL::get_swap_interval_ext},
+        {"wglSwapIntervalEXT",    WGL::swap_interval_ext},
     };
 
     const std::unordered_map<std::string, void*> func_ptr_data[] =
@@ -50,6 +60,21 @@ PROC WINAPI WGL::get_proc_address(LPCSTR in_name)
 
             break;
         }
+    }
+
+    /* NOTE: There is a chicken-and-egg problem with wglCreateContextAttribsARB. The func ptr
+     *       can only be retrieved from a trampoline context, so we need to cache it at wglGetProcAddress()
+     *       call time. At wglCreateContextAttribs() interception time, there needs not be an active context
+     *       available, meaning we can't extract the underlying implementation's function pointer.
+     *
+     * NOTE: This workaround will be removed once WGL contexts are fully replaced with VKGL's implementation.
+     */
+    if (strcmp(in_name, "wglCreateContextAttribsARB") == 0       &&
+        g_cached_create_context_attribs_arb_func_ptr  == nullptr)
+    {
+        g_cached_create_context_attribs_arb_func_ptr = reinterpret_cast<PFNWGLGETPROCADDRESSPROC>(g_cached_get_proc_address_func_ptr)("wglCreateContextAttribsARB");
+
+        vkgl_assert(g_cached_create_context_attribs_arb_func_ptr != nullptr);
     }
 
     return result;

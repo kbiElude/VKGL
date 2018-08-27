@@ -13,7 +13,7 @@ const char* GDI32::convert_pixel_format_descriptor_to_raw_string(const PIXELFORM
     std::stringstream            result_sstream;
     std::string                  result_string;
 
-    result_sstream << "\n"
+    result_sstream << "{\n"
                       "+ ::bReserved       = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->bReserved)        << "\n"
                    << "+ ::cAccumAlphaBits = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cAccumAlphaBits)  << "\n"
                    << "+ ::cAccumBits      = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->cAccumBits)       << "\n"
@@ -39,7 +39,8 @@ const char* GDI32::convert_pixel_format_descriptor_to_raw_string(const PIXELFORM
                    << "+ ::iPixelType      = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->iPixelType)       << "\n"
                    << "+ ::iLayerType      = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->iLayerType)       << "\n"
                    << "+ ::nSize           = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->nSize)            << "\n"
-                   << "+ ::nVersion        = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->nVersion)         << "\n";
+                   << "+ ::nVersion        = " << static_cast<uint32_t>(in_pixel_format_descriptor_ptr->nVersion)         << "\n"
+                      "}";
 
     result_string = result_sstream.str().substr(0, MAX_PER_FUNC_LOCAL_HELPER_STORAGE_SIZE - 1 /* terminator */);
 

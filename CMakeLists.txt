@@ -147,11 +147,17 @@ if (VKGL_INCLUDE_WGL)
     file(GLOB WGLIncludes "${VK_GL_SOURCE_DIR}/include/WGL/*.h"
                           "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/*.h"
                           "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/WGL_ARB_create_context/*.h"
-                          "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/WGL_ARB_framebuffer_sRGB/*.h")
+                          "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/WGL_ARB_extensions_string/*.h"
+                          "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/WGL_ARB_framebuffer_sRGB/*.h"
+                          "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/WGL_EXT_swap_control/*.h"
+                          )
     file(GLOB WGLSources  "${VK_GL_SOURCE_DIR}/src/WGL/*.cpp"
                           "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/*.cpp"
                           "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/WGL_ARB_create_context/*.cpp"
-                          "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/WGL_ARB_framebuffer_sRGB/*.cpp")
+                          "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/WGL_ARB_extensions_string/*.cpp"
+                          "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/WGL_ARB_framebuffer_sRGB/*.cpp"
+                          "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/WGL_EXT_swap_control/*.cpp"
+                          )
 
     add_library(WGL STATIC ${CommonIncludes}
                            ${WGLSources}

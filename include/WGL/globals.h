@@ -9,18 +9,20 @@
 
 namespace WGL
 {
-    typedef BOOL  (WINAPI* PFNWGLCOPYCONTEXTPROC)       (HGLRC, HGLRC, UINT);
-    typedef HGLRC (WINAPI* PFNWGLCREATECONTEXTPROC)     (HDC);
-    typedef HGLRC (WINAPI* PFNWGLCREATELAYERCONTEXTPROC)(HDC, int);
-    typedef BOOL  (WINAPI* PFNWGLDELETECONTEXTPROC)     (HGLRC);
-    typedef HGLRC (WINAPI* PFNWGLGETCURRENTCONTEXTPROC) ();
-    typedef HDC   (WINAPI* PFNWGLGETCURRENTDCPROC)      ();
-    typedef PROC  (WINAPI* PFNWGLGETPROCADDRESSPROC)    (LPCSTR);
-    typedef BOOL  (WINAPI* PFNWGLMAKECURRENTPROC)       (HDC, HGLRC);
-    typedef BOOL  (WINAPI* PFNWGLSHARELISTSPROC)        (HGLRC, HGLRC);
-    typedef BOOL  (WINAPI* PFNWGLSWAPLAYERBUFFERSPROC)  (HDC, UINT);
+    typedef BOOL  (WINAPI* PFNWGLCOPYCONTEXTPROC)            (HGLRC, HGLRC, UINT);
+    typedef HGLRC (WINAPI* PFNWGLCREATECONTEXTPROC)          (HDC);
+    typedef HGLRC (WINAPI* PFNWGLCREATECONTEXTATTRIBSARBPROC)(HDC, HGLRC, const int*);
+    typedef HGLRC (WINAPI* PFNWGLCREATELAYERCONTEXTPROC)     (HDC, int);
+    typedef BOOL  (WINAPI* PFNWGLDELETECONTEXTPROC)          (HGLRC);
+    typedef HGLRC (WINAPI* PFNWGLGETCURRENTCONTEXTPROC)      ();
+    typedef HDC   (WINAPI* PFNWGLGETCURRENTDCPROC)           ();
+    typedef PROC  (WINAPI* PFNWGLGETPROCADDRESSPROC)         (LPCSTR);
+    typedef BOOL  (WINAPI* PFNWGLMAKECURRENTPROC)            (HDC, HGLRC);
+    typedef BOOL  (WINAPI* PFNWGLSHARELISTSPROC)             (HGLRC, HGLRC);
+    typedef BOOL  (WINAPI* PFNWGLSWAPLAYERBUFFERSPROC)       (HDC, UINT);
 
     extern void* g_cached_copy_context_func_ptr;
+    extern void* g_cached_create_context_attribs_arb_func_ptr;
     extern void* g_cached_create_context_func_ptr;
     extern void* g_cached_create_layer_context_func_ptr;
     extern void* g_cached_delete_context_func_ptr;
