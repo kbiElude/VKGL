@@ -21,10 +21,10 @@ static bool validate(VKGL::Context*    in_context_ptr,
     return result;
 }
 
-void* APIENTRY vkglMapBufferRange(GLenum     target,
-                                  GLintptr   offset,
-                                  GLsizeiptr length,
-                                  GLbitfield access)
+void* APIENTRY OpenGL::vkglMapBufferRange(GLenum     target,
+                                          GLintptr   offset,
+                                          GLsizeiptr length,
+                                          GLbitfield access)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -35,11 +35,11 @@ void* APIENTRY vkglMapBufferRange(GLenum     target,
                                                  access);
 }
 
-void* vkglMapBufferRange_execute(VKGL::Context*    in_context_ptr,
-                                 const GLenum&     in_target,
-                                 const GLintptr&   in_offset,
-                                 const GLsizeiptr& in_length,
-                                 const GLbitfield& in_access)
+static void* vkglMapBufferRange_execute(VKGL::Context*    in_context_ptr,
+                                        const GLenum&     in_target,
+                                        const GLintptr&   in_offset,
+                                        const GLsizeiptr& in_length,
+                                        const GLbitfield& in_access)
 {
     const auto access_vkgl = VKGL::Utils::get_buffer_access_for_gl_enum(in_access);
     const auto target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum(in_target);
@@ -50,11 +50,11 @@ void* vkglMapBufferRange_execute(VKGL::Context*    in_context_ptr,
                                             access_vkgl);
 }
 
-void* vkglMapBufferRange_with_validation(VKGL::Context*    in_context_ptr,
-                                         const GLenum&     in_target,
-                                         const GLintptr&   in_offset,
-                                         const GLsizeiptr& in_length,
-                                         const GLbitfield& in_access)
+void* OpenGL::vkglMapBufferRange_with_validation(VKGL::Context*    in_context_ptr,
+                                                 const GLenum&     in_target,
+                                                 const GLintptr&   in_offset,
+                                                 const GLsizeiptr& in_length,
+                                                 const GLbitfield& in_access)
 {
     void* result = nullptr;
 

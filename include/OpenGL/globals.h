@@ -5,6 +5,7 @@
 #ifndef OPENGL_GLOBALS_H
 #define OPENGL_GLOBALS_H
 
+#include "Common/globals.h"
 #include "OpenGL/types.h"
 
 namespace OpenGL

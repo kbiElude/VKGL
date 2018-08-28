@@ -21,11 +21,11 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglUniform4f(GLint   location,
-                                 GLfloat v0,
-                                 GLfloat v1,
-                                 GLfloat v2,
-                                 GLfloat v3)
+void VKGL_APIENTRY OpenGL::vkglUniform4f(GLint   location,
+                                         GLfloat v0,
+                                         GLfloat v1,
+                                         GLfloat v2,
+                                         GLfloat v3)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -37,12 +37,12 @@ void VKGL_APIENTRY vkglUniform4f(GLint   location,
                                      v3);
 }
 
-void vkglUniform4f_execute(VKGL::Context* in_context_ptr,
-                           const GLint&   in_location,
-                           const GLfloat& in_v0,
-                           const GLfloat& in_v1,
-                           const GLfloat& in_v2,
-                           const GLfloat& in_v3)
+static void vkglUniform4f_execute(VKGL::Context* in_context_ptr,
+                                  const GLint&   in_location,
+                                  const GLfloat& in_v0,
+                                  const GLfloat& in_v1,
+                                  const GLfloat& in_v2,
+                                  const GLfloat& in_v3)
 {
     const GLfloat data[] =
     {
@@ -58,12 +58,12 @@ void vkglUniform4f_execute(VKGL::Context* in_context_ptr,
                                 data);
 }
 
-void vkglUniform4f_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLint&   in_location,
-                                   const GLfloat& in_v0,
-                                   const GLfloat& in_v1,
-                                   const GLfloat& in_v2,
-                                   const GLfloat& in_v3)
+void OpenGL::vkglUniform4f_with_validation(VKGL::Context* in_context_ptr,
+                                           const GLint&   in_location,
+                                           const GLfloat& in_v0,
+                                           const GLfloat& in_v1,
+                                           const GLfloat& in_v2,
+                                           const GLfloat& in_v3)
 {
     if (validate(in_context_ptr,
                  in_location,

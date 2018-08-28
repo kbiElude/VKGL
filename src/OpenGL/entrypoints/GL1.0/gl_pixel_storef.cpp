@@ -20,8 +20,8 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void APIENTRY vkglPixelStoref(GLenum  pname,
-                              GLfloat param)
+void APIENTRY OpenGL::vkglPixelStoref(GLenum  pname,
+                                      GLfloat param)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -30,9 +30,9 @@ void APIENTRY vkglPixelStoref(GLenum  pname,
                                        param);
 }
 
-void vkglPixelStoref_execute(VKGL::Context* in_context_ptr,
-                             const GLenum&  in_pname,
-                             const GLfloat& in_param)
+static void vkglPixelStoref_execute(VKGL::Context* in_context_ptr,
+                                    const GLenum&  in_pname,
+                                    const GLfloat& in_param)
 {
     const auto pname_vkgl = VKGL::Utils::get_pixel_store_property_for_gl_enum(in_pname);
 
@@ -41,9 +41,9 @@ void vkglPixelStoref_execute(VKGL::Context* in_context_ptr,
                                             &in_param);
 }
 
-void vkglPixelStoref_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLenum&  in_pname,
-                                     const GLfloat& in_param)
+void OpenGL::vkglPixelStoref_with_validation(VKGL::Context* in_context_ptr,
+                                             const GLenum&  in_pname,
+                                             const GLfloat& in_param)
 {
     if (validate(in_context_ptr,
                  in_pname,

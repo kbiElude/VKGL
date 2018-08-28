@@ -17,7 +17,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLboolean VKGL_APIENTRY vkglIsBuffer(GLuint buffer)
+GLboolean VKGL_APIENTRY OpenGL::vkglIsBuffer(GLuint buffer)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -26,14 +26,14 @@ GLboolean VKGL_APIENTRY vkglIsBuffer(GLuint buffer)
                                                    : GL_FALSE;
 }
 
-bool vkglIsBuffer_execute(VKGL::Context* in_context_ptr,
-                          const GLuint&  in_buffer)
+static bool vkglIsBuffer_execute(VKGL::Context* in_context_ptr,
+                                 const GLuint&  in_buffer)
 {
     return in_context_ptr->is_buffer(in_buffer);
 }
 
-bool vkglIsBuffer_with_validation(VKGL::Context* in_context_ptr,
-                                  const GLuint&  in_buffer)
+bool OpenGL::vkglIsBuffer_with_validation(VKGL::Context* in_context_ptr,
+                                          const GLuint&  in_buffer)
 {
     bool result = false;
 

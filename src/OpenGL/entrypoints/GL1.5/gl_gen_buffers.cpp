@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGenBuffers(GLsizei n,
-                                  GLuint* buffers)
+void VKGL_APIENTRY OpenGL::vkglGenBuffers(GLsizei n,
+                                          GLuint* buffers)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -28,17 +28,17 @@ void VKGL_APIENTRY vkglGenBuffers(GLsizei n,
                                       buffers);
 }
 
-void vkglGenBuffers_execute(VKGL::Context* in_context_ptr,
-                            const GLsizei& in_n,
-                            GLuint*        out_buffers_ptr)
+static void vkglGenBuffers_execute(VKGL::Context* in_context_ptr,
+                                   const GLsizei& in_n,
+                                   GLuint*        out_buffers_ptr)
 {
     in_context_ptr->gen_buffers(in_n,
                                 out_buffers_ptr);
 }
 
-void vkglGenBuffers_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLsizei& in_n,
-                                    GLuint*        out_buffers_ptr)
+void OpenGL::vkglGenBuffers_with_validation(VKGL::Context* in_context_ptr,
+                                            const GLsizei& in_n,
+                                            GLuint*        out_buffers_ptr)
 {
     if (validate(in_context_ptr,
                  in_n,

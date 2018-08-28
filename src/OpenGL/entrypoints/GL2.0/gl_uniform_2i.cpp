@@ -19,9 +19,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglUniform2i(GLint location,
-                                 GLint v0,
-                                 GLint v1)
+void VKGL_APIENTRY OpenGL::vkglUniform2i(GLint location,
+                                         GLint v0,
+                                         GLint v1)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -31,10 +31,10 @@ void VKGL_APIENTRY vkglUniform2i(GLint location,
                                      v1);
 }
 
-void vkglUniform2i_execute(VKGL::Context* in_context_ptr,
-                           const GLint&   in_location,
-                           const GLint&   in_v0,
-                           const GLint&   in_v1)
+static void vkglUniform2i_execute(VKGL::Context* in_context_ptr,
+                                  const GLint&   in_location,
+                                  const GLint&   in_v0,
+                                  const GLint&   in_v1)
 {
     const GLint data[] =
     {
@@ -48,10 +48,10 @@ void vkglUniform2i_execute(VKGL::Context* in_context_ptr,
                                 data);
 }
 
-void vkglUniform2i_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLint&   in_location,
-                                   const GLint&   in_v0,
-                                   const GLint&   in_v1)
+void OpenGL::vkglUniform2i_with_validation(VKGL::Context* in_context_ptr,
+                                           const GLint&   in_location,
+                                           const GLint&   in_v0,
+                                           const GLint&   in_v1)
 {
     if (validate(in_context_ptr,
                  in_location,

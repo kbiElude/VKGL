@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglClampColor(GLenum target,
-                                  GLenum clamp)
+void VKGL_APIENTRY OpenGL::vkglClampColor(GLenum target,
+                                          GLenum clamp)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -29,18 +29,18 @@ void VKGL_APIENTRY vkglClampColor(GLenum target,
                                       clamp);
 }
 
-void vkglClampColor_execute(VKGL::Context* in_context_ptr,
-                            const GLenum&  in_target,
-                            const GLenum&  in_clamp)
+static void vkglClampColor_execute(VKGL::Context* in_context_ptr,
+                                   const GLenum&  in_target,
+                                   const GLenum&  in_clamp)
 {
     vkgl_assert(in_target == GL_CLAMP_READ_COLOR);
 
     in_context_ptr->set_clamp_color( (in_clamp == GL_TRUE) ? true : false);
 }
 
-void vkglClampColor_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLenum&  in_target,
-                                    const GLenum&  in_clamp)
+void OpenGL::vkglClampColor_with_validation(VKGL::Context* in_context_ptr,
+                                            const GLenum&  in_target,
+                                            const GLenum&  in_clamp)
 {
     if (validate(in_context_ptr,
                  in_target,

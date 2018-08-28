@@ -27,16 +27,16 @@ static bool validate(VKGL::Context*    in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglBlitFramebuffer(GLint      srcX0,
-                                       GLint      srcY0,
-                                       GLint      srcX1,
-                                       GLint      srcY1,
-                                       GLint      dstX0,
-                                       GLint      dstY0,
-                                       GLint      dstX1,
-                                       GLint      dstY1,
-                                       GLbitfield mask,
-                                       GLenum     filter)
+void VKGL_APIENTRY OpenGL::vkglBlitFramebuffer(GLint      srcX0,
+                                               GLint      srcY0,
+                                               GLint      srcX1,
+                                               GLint      srcY1,
+                                               GLint      dstX0,
+                                               GLint      dstY0,
+                                               GLint      dstX1,
+                                               GLint      dstY1,
+                                               GLbitfield mask,
+                                               GLenum     filter)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -53,17 +53,17 @@ void VKGL_APIENTRY vkglBlitFramebuffer(GLint      srcX0,
                                            filter);
 }
 
-void vkglBlitFramebuffer_execute(VKGL::Context*    in_context_ptr,
-                                 const GLint&      in_src_x0,
-                                 const GLint&      in_src_y0,
-                                 const GLint&      in_src_x1,
-                                 const GLint&      in_src_y1,
-                                 const GLint&      in_dst_x0,
-                                 const GLint&      in_dst_y0,
-                                 const GLint&      in_dst_x1,
-                                 const GLint&      in_dst_y1,
-                                 const GLbitfield& in_mask,
-                                 const GLenum&     in_filter)
+static void vkglBlitFramebuffer_execute(VKGL::Context*    in_context_ptr,
+                                        const GLint&      in_src_x0,
+                                        const GLint&      in_src_y0,
+                                        const GLint&      in_src_x1,
+                                        const GLint&      in_src_y1,
+                                        const GLint&      in_dst_x0,
+                                        const GLint&      in_dst_y0,
+                                        const GLint&      in_dst_x1,
+                                        const GLint&      in_dst_y1,
+                                        const GLbitfield& in_mask,
+                                        const GLenum&     in_filter)
 {
     const auto filter_vkgl = VKGL::Utils::get_blit_filter_for_gl_enum   (in_filter);
     const auto mask_vkgl   = VKGL::Utils::get_blit_mask_bits_for_gl_enum(in_mask);
@@ -80,17 +80,17 @@ void vkglBlitFramebuffer_execute(VKGL::Context*    in_context_ptr,
                                      filter_vkgl);
 }
 
-void vkglBlitFramebuffer_with_validation(VKGL::Context*    in_context_ptr,
-                                         const GLint&      in_src_x0,
-                                         const GLint&      in_src_y0,
-                                         const GLint&      in_src_x1,
-                                         const GLint&      in_src_y1,
-                                         const GLint&      in_dst_x0,
-                                         const GLint&      in_dst_y0,
-                                         const GLint&      in_dst_x1,
-                                         const GLint&      in_dst_y1,
-                                         const GLbitfield& in_mask,
-                                         const GLenum&     in_filter)
+void OpenGL::vkglBlitFramebuffer_with_validation(VKGL::Context*    in_context_ptr,
+                                                 const GLint&      in_src_x0,
+                                                 const GLint&      in_src_y0,
+                                                 const GLint&      in_src_x1,
+                                                 const GLint&      in_src_y1,
+                                                 const GLint&      in_dst_x0,
+                                                 const GLint&      in_dst_y0,
+                                                 const GLint&      in_dst_x1,
+                                                 const GLint&      in_dst_y1,
+                                                 const GLbitfield& in_mask,
+                                                 const GLenum&     in_filter)
 {
     if (validate(in_context_ptr,
                  in_src_x0,

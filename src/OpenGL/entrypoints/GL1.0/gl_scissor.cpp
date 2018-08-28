@@ -21,10 +21,10 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglScissor(GLint   x,
-                               GLint   y,
-                               GLsizei width,
-                               GLsizei height)
+void VKGL_APIENTRY OpenGL::vkglScissor(GLint   x,
+                                       GLint   y,
+                                       GLsizei width,
+                                       GLsizei height)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -35,11 +35,11 @@ void VKGL_APIENTRY vkglScissor(GLint   x,
                                    height);
 }
 
-void vkglScissor_execute(VKGL::Context* in_context_ptr,
-                         const GLint&   in_x,
-                         const GLint&   in_y,
-                         const GLsizei& in_width,
-                         const GLsizei& in_height)
+static void vkglScissor_execute(VKGL::Context* in_context_ptr,
+                                const GLint&   in_x,
+                                const GLint&   in_y,
+                                const GLsizei& in_width,
+                                const GLsizei& in_height)
 {
     in_context_ptr->set_scissor(in_x,
                                 in_y,
@@ -47,11 +47,11 @@ void vkglScissor_execute(VKGL::Context* in_context_ptr,
                                 in_height);
 }
 
-void vkglScissor_with_validation(VKGL::Context* in_context_ptr,
-                                 const GLint&   in_x,
-                                 const GLint&   in_y,
-                                 const GLsizei& in_width,
-                                 const GLsizei& in_height)
+void OpenGL::vkglScissor_with_validation(VKGL::Context* in_context_ptr,
+                                         const GLint&   in_x,
+                                         const GLint&   in_y,
+                                         const GLsizei& in_width,
+                                         const GLsizei& in_height)
 {
     if (validate(in_context_ptr,
                  in_x,

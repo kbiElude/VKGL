@@ -20,10 +20,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglClearColor(GLfloat red,
-                                  GLfloat green,
-                                  GLfloat blue,
-                                  GLfloat alpha)
+void VKGL_APIENTRY OpenGL::vkglClearColor(GLfloat red,
+                                          GLfloat green,
+                                          GLfloat blue,
+                                          GLfloat alpha)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -34,11 +34,11 @@ void VKGL_APIENTRY vkglClearColor(GLfloat red,
                                       alpha);
 }
 
-void vkglClearColor_execute(VKGL::Context* in_context_ptr,
-                            const GLfloat& in_red,
-                            const GLfloat& in_green,
-                            const GLfloat& in_blue,
-                            const GLfloat& in_alpha)
+static void vkglClearColor_execute(VKGL::Context* in_context_ptr,
+                                   const GLfloat& in_red,
+                                   const GLfloat& in_green,
+                                   const GLfloat& in_blue,
+                                   const GLfloat& in_alpha)
 {
     in_context_ptr->set_clear_color_value(in_red,
                                           in_green,
@@ -46,11 +46,11 @@ void vkglClearColor_execute(VKGL::Context* in_context_ptr,
                                           in_alpha);
 }
 
-void vkglClearColor_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLfloat& in_red,
-                                    const GLfloat& in_green,
-                                    const GLfloat& in_blue,
-                                    const GLfloat& in_alpha)
+void OpenGL::vkglClearColor_with_validation(VKGL::Context* in_context_ptr,
+                                            const GLfloat& in_red,
+                                            const GLfloat& in_green,
+                                            const GLfloat& in_blue,
+                                            const GLfloat& in_alpha)
 {
     if (validate(in_context_ptr,
                  in_red,

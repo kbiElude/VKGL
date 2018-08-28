@@ -19,9 +19,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetUniformuiv(GLuint  program,
-                                     GLint   location,
-                                     GLuint* params)
+void VKGL_APIENTRY OpenGL::vkglGetUniformuiv(GLuint  program,
+                                             GLint   location,
+                                             GLuint* params)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -31,10 +31,10 @@ void VKGL_APIENTRY vkglGetUniformuiv(GLuint  program,
                                          params);
 }
 
-void vkglGetUniformuiv_execute(VKGL::Context* in_context_ptr,
-                               const GLuint&  in_program,
-                               const GLint&   in_location,
-                               GLuint*        out_params_ptr)
+static void vkglGetUniformuiv_execute(VKGL::Context* in_context_ptr,
+                                      const GLuint&  in_program,
+                                      const GLint&   in_location,
+                                      GLuint*        out_params_ptr)
 {
     in_context_ptr->get_uniform_value(in_program,
                                       in_location,
@@ -42,10 +42,10 @@ void vkglGetUniformuiv_execute(VKGL::Context* in_context_ptr,
                                       out_params_ptr);
 }
 
-void vkglGetUniformuiv_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLuint&  in_program,
-                                       const GLint&   in_location,
-                                       GLuint*        out_params_ptr)
+void OpenGL::vkglGetUniformuiv_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLuint&  in_program,
+                                               const GLint&   in_location,
+                                               GLuint*        out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_program,

@@ -21,10 +21,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglClearBufferfi(GLenum  buffer,
-                                     GLint   drawbuffer,
-                                     GLfloat depth,
-                                     GLint   stencil)
+void VKGL_APIENTRY OpenGL::vkglClearBufferfi(GLenum  buffer,
+                                             GLint   drawbuffer,
+                                             GLfloat depth,
+                                             GLint   stencil)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -35,11 +35,11 @@ void VKGL_APIENTRY vkglClearBufferfi(GLenum  buffer,
                                          stencil);
 }
 
-void vkglClearBufferfi_execute(VKGL::Context* in_context_ptr,
-                               const GLenum&  in_buffer,
-                               const GLint&   in_drawbuffer,
-                               const GLfloat& in_depth,
-                               const GLint&   in_stencil)
+static void vkglClearBufferfi_execute(VKGL::Context* in_context_ptr,
+                                      const GLenum&  in_buffer,
+                                      const GLint&   in_drawbuffer,
+                                      const GLfloat& in_depth,
+                                      const GLint&   in_stencil)
 {
     const auto buffer_vkgl = VKGL::Utils::get_clear_buffer_for_gl_enum(in_buffer);
 
@@ -52,11 +52,11 @@ void vkglClearBufferfi_execute(VKGL::Context* in_context_ptr,
                                  in_stencil);
 }
 
-void vkglClearBufferfi_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_buffer,
-                                       const GLint&   in_drawbuffer,
-                                       const GLfloat& in_depth,
-                                       const GLint&   in_stencil)
+void OpenGL::vkglClearBufferfi_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLenum&  in_buffer,
+                                               const GLint&   in_drawbuffer,
+                                               const GLfloat& in_depth,
+                                               const GLint&   in_stencil)
 {
     if (validate(in_context_ptr,
                  in_buffer,

@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglBlendFunc(GLenum sfactor,
-                                 GLenum dfactor)
+void VKGL_APIENTRY OpenGL::vkglBlendFunc(GLenum sfactor,
+                                         GLenum dfactor)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -29,9 +29,9 @@ void VKGL_APIENTRY vkglBlendFunc(GLenum sfactor,
                                      dfactor);
 }
 
-void vkglBlendFunc_execute(VKGL::Context* in_context_ptr,
-                           const GLenum&  in_sfactor,
-                           const GLenum&  in_dfactor)
+static void vkglBlendFunc_execute(VKGL::Context* in_context_ptr,
+                                  const GLenum&  in_sfactor,
+                                  const GLenum&  in_dfactor)
 {
     const auto sfactor_vkgl = VKGL::Utils::get_blend_function_for_gl_enum(in_sfactor);
     const auto dfactor_vkgl = VKGL::Utils::get_blend_function_for_gl_enum(in_dfactor);
@@ -40,9 +40,9 @@ void vkglBlendFunc_execute(VKGL::Context* in_context_ptr,
                                         dfactor_vkgl);
 }
 
-void vkglBlendFunc_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLenum&  in_sfactor,
-                                   const GLenum&  in_dfactor)
+void OpenGL::vkglBlendFunc_with_validation(VKGL::Context* in_context_ptr,
+                                           const GLenum&  in_sfactor,
+                                           const GLenum&  in_dfactor)
 {
     if (validate(in_context_ptr,
                  in_sfactor,

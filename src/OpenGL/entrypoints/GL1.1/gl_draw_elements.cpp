@@ -21,10 +21,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglDrawElements(GLenum      mode,
-                                    GLsizei     count,
-                                    GLenum      type,
-                                    const void* indices)
+void VKGL_APIENTRY OpenGL::vkglDrawElements(GLenum      mode,
+                                            GLsizei     count,
+                                            GLenum      type,
+                                            const void* indices)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -35,11 +35,11 @@ void VKGL_APIENTRY vkglDrawElements(GLenum      mode,
                                         indices);
 }
 
-void vkglDrawElements_execute(VKGL::Context* in_context_ptr,
-                              const GLenum&  in_mode,
-                              const GLsizei& in_count,
-                              const GLenum&  in_type,
-                              const void*    in_indices)
+static void vkglDrawElements_execute(VKGL::Context* in_context_ptr,
+                                     const GLenum&  in_mode,
+                                     const GLsizei& in_count,
+                                     const GLenum&  in_type,
+                                     const void*    in_indices)
 {
     const auto mode_vkgl = VKGL::Utils::get_draw_call_mode_for_gl_enum      (in_mode);
     const auto type_vkgl = VKGL::Utils::get_draw_call_index_type_for_gl_enum(in_type);
@@ -50,11 +50,11 @@ void vkglDrawElements_execute(VKGL::Context* in_context_ptr,
                                   in_indices);
 }
 
-void vkglDrawElements_with_validation(VKGL::Context* in_context_ptr,
-                                      const GLenum&  in_mode,
-                                      const GLsizei& in_count,
-                                      const GLenum&  in_type,
-                                      const void*    in_indices)
+void OpenGL::vkglDrawElements_with_validation(VKGL::Context* in_context_ptr,
+                                              const GLenum&  in_mode,
+                                              const GLsizei& in_count,
+                                              const GLenum&  in_type,
+                                              const void*    in_indices)
 {
     if (validate(in_context_ptr,
                  in_mode,

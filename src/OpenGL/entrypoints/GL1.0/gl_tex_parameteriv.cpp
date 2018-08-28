@@ -21,9 +21,9 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglTexParameteriv(GLenum       target,
-                                      GLenum       pname,
-                                      const GLint* params)
+void VKGL_APIENTRY OpenGL::vkglTexParameteriv(GLenum       target,
+                                              GLenum       pname,
+                                              const GLint* params)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -33,10 +33,10 @@ void VKGL_APIENTRY vkglTexParameteriv(GLenum       target,
                                           params);
 }
 
-void vkglTexParameteriv_execute(VKGL::Context* in_context_ptr,
-                                const GLenum&  in_target,
-                                const GLenum&  in_pname,
-                                const GLint*   in_params_ptr)
+static void vkglTexParameteriv_execute(VKGL::Context* in_context_ptr,
+                                       const GLenum&  in_target,
+                                       const GLenum&  in_pname,
+                                       const GLint*   in_params_ptr)
 {
     const auto pname_vkgl  = VKGL::Utils::get_texture_property_for_gl_enum(in_pname);
     const auto target_vkgl = VKGL::Utils::get_texture_target_for_gl_enum  (in_target);
@@ -47,10 +47,10 @@ void vkglTexParameteriv_execute(VKGL::Context* in_context_ptr,
                                           in_params_ptr);
 }
 
-void vkglTexParameteriv_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLenum&  in_target,
-                                        const GLenum&  in_pname,
-                                        const GLint*   in_params_ptr)
+void OpenGL::vkglTexParameteriv_with_validation(VKGL::Context* in_context_ptr,
+                                                const GLenum&  in_target,
+                                                const GLenum&  in_pname,
+                                                const GLint*   in_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_target,

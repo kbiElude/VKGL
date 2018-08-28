@@ -2,11 +2,11 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+#include "Common/logger.h"
 #include "Common/macros.h"
 #include "GDI32/globals.h"
 #include "Khronos/GL/glcorearb.h"
 #include "Khronos/GL/wglext.h"
-#include "VKGL/logger.h"
 #include "WGL/context.h"
 #include "WGL/globals.h"
 

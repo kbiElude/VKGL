@@ -3,7 +3,7 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Common/debug.h"
-#include "VKGL/logger.h"
+#include "Common/logger.h"
 
 void VKGL::Debug::assert_failed(const char*  in_filename,
                                 unsigned int in_line,

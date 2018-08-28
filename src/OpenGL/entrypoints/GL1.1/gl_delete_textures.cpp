@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglDeleteTextures(GLsizei       n,
-                                      const GLuint* textures)
+void VKGL_APIENTRY OpenGL::vkglDeleteTextures(GLsizei       n,
+                                              const GLuint* textures)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -28,17 +28,17 @@ void VKGL_APIENTRY vkglDeleteTextures(GLsizei       n,
                                           textures);
 }
 
-void vkglDeleteTextures_execute(VKGL::Context* in_context_ptr,
-                                const GLsizei& in_n,
-                                const GLuint*  in_textures)
+static void vkglDeleteTextures_execute(VKGL::Context* in_context_ptr,
+                                       const GLsizei& in_n,
+                                       const GLuint*  in_textures)
 {
     in_context_ptr->delete_textures(in_n,
                                     in_textures);
 }
 
-void vkglDeleteTextures_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLsizei& in_n,
-                                        const GLuint*  in_textures)
+void OpenGL::vkglDeleteTextures_with_validation(VKGL::Context* in_context_ptr,
+                                                const GLsizei& in_n,
+                                                const GLuint*  in_textures)
 {
     if (validate(in_context_ptr,
                  in_n,

@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglBeginConditionalRender(GLuint id,
-                                              GLenum mode)
+void VKGL_APIENTRY OpenGL::vkglBeginConditionalRender(GLuint id,
+                                                      GLenum mode)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -29,9 +29,9 @@ void VKGL_APIENTRY vkglBeginConditionalRender(GLuint id,
                                                   mode);
 }
 
-void vkglBeginConditionalRender_execute(VKGL::Context* in_context_ptr,
-                                        const GLuint&  in_id,
-                                        const GLenum&  in_mode)
+static void vkglBeginConditionalRender_execute(VKGL::Context* in_context_ptr,
+                                               const GLuint&  in_id,
+                                               const GLenum&  in_mode)
 {
     const auto mode_vkgl = VKGL::Utils::get_conditional_render_mode_for_gl_enum(in_mode);
 
@@ -39,9 +39,9 @@ void vkglBeginConditionalRender_execute(VKGL::Context* in_context_ptr,
                                              mode_vkgl);
 }
 
-void vkglBeginConditionalRender_with_validation(VKGL::Context* in_context_ptr,
-                                                const GLuint&  in_id,
-                                                const GLenum&  in_mode)
+void OpenGL::vkglBeginConditionalRender_with_validation(VKGL::Context* in_context_ptr,
+                                                        const GLuint&  in_id,
+                                                        const GLenum&  in_mode)
 {
     if (validate(in_context_ptr,
                  in_id,

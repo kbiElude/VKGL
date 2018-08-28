@@ -23,12 +23,12 @@ static bool validate(VKGL::Context*   in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglVertexAttribPointer(GLuint      index,
-                                           GLint       size,
-                                           GLenum      type,
-                                           GLboolean   normalized,
-                                           GLsizei     stride,
-                                           const void* pointer)
+void VKGL_APIENTRY OpenGL::vkglVertexAttribPointer(GLuint      index,
+                                                   GLint       size,
+                                                   GLenum      type,
+                                                   GLboolean   normalized,
+                                                   GLsizei     stride,
+                                                   const void* pointer)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -41,13 +41,13 @@ void VKGL_APIENTRY vkglVertexAttribPointer(GLuint      index,
                                                pointer);
 }
 
-void vkglVertexAttribPointer_execute(VKGL::Context*   in_context_ptr,
-                                     const GLuint&    in_index,
-                                     const GLint&     in_size,
-                                     const GLenum&    in_type,
-                                     const GLboolean& in_normalized,
-                                     const GLsizei&   in_stride,
-                                     const void*      in_pointer_ptr)
+static void vkglVertexAttribPointer_execute(VKGL::Context*   in_context_ptr,
+                                            const GLuint&    in_index,
+                                            const GLint&     in_size,
+                                            const GLenum&    in_type,
+                                            const GLboolean& in_normalized,
+                                            const GLsizei&   in_stride,
+                                            const void*      in_pointer_ptr)
 {
     const auto type_vkgl = VKGL::Utils::get_variable_type_for_gl_enum(in_type);
 
@@ -60,13 +60,13 @@ void vkglVertexAttribPointer_execute(VKGL::Context*   in_context_ptr,
                                               in_pointer_ptr);
 }
 
-void vkglVertexAttribPointer_with_validation(VKGL::Context*   in_context_ptr,
-                                             const GLuint&    in_index,
-                                             const GLint&     in_size,
-                                             const GLenum&    in_type,
-                                             const GLboolean& in_normalized,
-                                             const GLsizei&   in_stride,
-                                             const void*      in_pointer_ptr)
+void OpenGL::vkglVertexAttribPointer_with_validation(VKGL::Context*   in_context_ptr,
+                                                     const GLuint&    in_index,
+                                                     const GLint&     in_size,
+                                                     const GLenum&    in_type,
+                                                     const GLboolean& in_normalized,
+                                                     const GLsizei&   in_stride,
+                                                     const void*      in_pointer_ptr)
 {
     if (validate(in_context_ptr,
                  in_index,

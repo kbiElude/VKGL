@@ -26,14 +26,14 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglTexImage1D(GLenum      target,
-                                  GLint       level,
-                                  GLint       internalformat,
-                                  GLsizei     width,
-                                  GLint       border,
-                                  GLenum      format,
-                                  GLenum      type,
-                                  const void* pixels)
+void VKGL_APIENTRY OpenGL::vkglTexImage1D(GLenum      target,
+                                          GLint       level,
+                                          GLint       internalformat,
+                                          GLsizei     width,
+                                          GLint       border,
+                                          GLenum      format,
+                                          GLenum      type,
+                                          const void* pixels)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -48,15 +48,15 @@ void VKGL_APIENTRY vkglTexImage1D(GLenum      target,
                                       pixels);
 }
 
-void vkglTexImage1D_execute(VKGL::Context* in_context_ptr,
-                            const GLenum&  in_target,
-                            const GLint&   in_level,
-                            const GLint&   in_internalformat,
-                            const GLsizei& in_width,
-                            const GLint&   in_border,
-                            const GLenum&  in_format,
-                            const GLenum&  in_type,
-                            const void*    in_pixels_ptr)
+static void vkglTexImage1D_execute(VKGL::Context* in_context_ptr,
+                                   const GLenum&  in_target,
+                                   const GLint&   in_level,
+                                   const GLint&   in_internalformat,
+                                   const GLsizei& in_width,
+                                   const GLint&   in_border,
+                                   const GLenum&  in_format,
+                                   const GLenum&  in_type,
+                                   const void*    in_pixels_ptr)
 {
     const auto format_vkgl         = VKGL::Utils::get_pixel_format_for_gl_enum   (in_format);
     const auto internalformat_vkgl = VKGL::Utils::get_internal_format_for_gl_enum(in_internalformat);
@@ -73,15 +73,15 @@ void vkglTexImage1D_execute(VKGL::Context* in_context_ptr,
                                  in_pixels_ptr);
 }
 
-void vkglTexImage1D_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLenum&  in_target,
-                                    const GLint&   in_level,
-                                    const GLint&   in_internalformat,
-                                    const GLsizei& in_width,
-                                    const GLint&   in_border,
-                                    const GLenum&  in_format,
-                                    const GLenum&  in_type,
-                                    const void*    in_pixels_ptr)
+void OpenGL::vkglTexImage1D_with_validation(VKGL::Context* in_context_ptr,
+                                            const GLenum&  in_target,
+                                            const GLint&   in_level,
+                                            const GLint&   in_internalformat,
+                                            const GLsizei& in_width,
+                                            const GLint&   in_border,
+                                            const GLenum&  in_format,
+                                            const GLenum&  in_type,
+                                            const void*    in_pixels_ptr)
 {
     if (validate(in_context_ptr,
                  in_target,

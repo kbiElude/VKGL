@@ -7,15 +7,18 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglColorMask(GLboolean red,
-                                 GLboolean green,
-                                 GLboolean blue,
-                                 GLboolean alpha);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglColorMask(GLboolean red,
+                                     GLboolean green,
+                                     GLboolean blue,
+                                     GLboolean alpha);
 
-void vkglColorMask_with_validation(VKGL::Context*   in_context_ptr,
-                                   const GLboolean& in_red,
-                                   const GLboolean& in_green,
-                                   const GLboolean& in_blue,
-                                   const GLboolean& in_alpha);
+    void vkglColorMask_with_validation(VKGL::Context*   in_context_ptr,
+                                       const GLboolean& in_red,
+                                       const GLboolean& in_green,
+                                       const GLboolean& in_blue,
+                                       const GLboolean& in_alpha);
+}
 
 #endif /* VKGL_GL_COLOR_MASK_H */

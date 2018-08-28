@@ -20,9 +20,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetVertexAttribdv(GLuint    index,
-                                         GLenum    pname,
-                                         GLdouble* params)
+void VKGL_APIENTRY OpenGL::vkglGetVertexAttribdv(GLuint    index,
+                                                 GLenum    pname,
+                                                 GLdouble* params)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -32,10 +32,10 @@ void VKGL_APIENTRY vkglGetVertexAttribdv(GLuint    index,
                                              params);
 }
 
-void vkglGetVertexAttribdv_execute(VKGL::Context* in_context_ptr,
-                                   const GLuint&  in_index,
-                                   const GLenum&  in_pname,
-                                   GLdouble*      out_params_ptr)
+static void vkglGetVertexAttribdv_execute(VKGL::Context* in_context_ptr,
+                                          const GLuint&  in_index,
+                                          const GLenum&  in_pname,
+                                          GLdouble*      out_params_ptr)
 {
     const auto pname_vkgl = VKGL::Utils::get_vertex_attribute_property_for_gl_enum(in_pname);
 
@@ -46,10 +46,10 @@ void vkglGetVertexAttribdv_execute(VKGL::Context* in_context_ptr,
                                                   out_params_ptr);
 }
 
-void vkglGetVertexAttribdv_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLuint&  in_index,
-                                           const GLenum&  in_pname,
-                                           GLdouble*      out_params_ptr)
+void OpenGL::vkglGetVertexAttribdv_with_validation(VKGL::Context* in_context_ptr,
+                                                   const GLuint&  in_index,
+                                                   const GLenum&  in_pname,
+                                                   GLdouble*      out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_index,

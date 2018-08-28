@@ -3,7 +3,7 @@ project (VK_GL)
 
 option(VKGL_DUMP_API_CALLS "Dump API calls to text files (debugging)" ON)
 option(VKGL_INCLUDE_GDI32  "Intercept GDI32 entrypoints"              ON)
-option(VKGL_INCLUDE_OPENGL "Intercept OpenGL entrypoints"             OFF)
+option(VKGL_INCLUDE_OPENGL "Intercept OpenGL entrypoints"             ON)
 option(VKGL_INCLUDE_WGL    "Intercept WGL entrypoints"                ON)
 
 # DO NOT MODIFY BELOW THIS LINE
@@ -31,6 +31,7 @@ file(GLOB LauncherIncludes "${VK_GL_SOURCE_DIR}/include/Launcher/*.h")
 file(GLOB LauncherSources  "${VK_GL_SOURCE_DIR}/src/Launcher/*.cpp")
 
 file(GLOB CommonIncludes "${VK_GL_SOURCE_DIR}/include/Common/*.h")
+file(GLOB CommonSources  "${VK_GL_SOURCE_DIR}/src/Common/*.cpp")
 
 file(GLOB VKGLIncludes "${VK_GL_SOURCE_DIR}/include/VKGL/*.h")
 file(GLOB VKGLSources  "${VK_GL_SOURCE_DIR}/src/VKGL/*.cpp"
@@ -164,7 +165,8 @@ if (VKGL_INCLUDE_WGL)
                            ${WGLIncludes})
 endif ()
 
-add_library(VKGL SHARED ${VKGLIncludes}
+add_library(VKGL SHARED ${CommonSources}
+                        ${VKGLIncludes}
                         ${VKGLSources})
 
 target_link_libraries(Launcher Detours)

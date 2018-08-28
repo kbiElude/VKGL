@@ -17,7 +17,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglValidateProgram(GLuint program)
+void VKGL_APIENTRY OpenGL::vkglValidateProgram(GLuint program)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -25,14 +25,14 @@ void VKGL_APIENTRY vkglValidateProgram(GLuint program)
                                            program);
 }
 
-void vkglValidateProgram_execute(VKGL::Context* in_context_ptr,
-                                const GLuint&  in_program)
+static void vkglValidateProgram_execute(VKGL::Context* in_context_ptr,
+                                        const GLuint&  in_program)
 {
     in_context_ptr->validate_program(in_program);
 }
 
-void vkglValidateProgram_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLuint&  in_program)
+void OpenGL::vkglValidateProgram_with_validation(VKGL::Context* in_context_ptr,
+                                                 const GLuint&  in_program)
 {
     if (validate(in_context_ptr,
                  in_program) )

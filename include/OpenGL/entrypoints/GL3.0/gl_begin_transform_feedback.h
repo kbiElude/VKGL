@@ -7,9 +7,12 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglBeginTransformFeedback(GLenum primitiveMode);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglBeginTransformFeedback(GLenum primitiveMode);
 
-void vkglBeginTransformFeedback_with_validation(VKGL::Context* in_context_ptr,
-                                                const GLenum&  in_primitive_mode);
+    void vkglBeginTransformFeedback_with_validation(VKGL::Context* in_context_ptr,
+                                                    const GLenum&  in_primitive_mode);
+}
 
 #endif /* VKGL_GL_BEGIN_TRANSFORM_FEEDBACK_H */

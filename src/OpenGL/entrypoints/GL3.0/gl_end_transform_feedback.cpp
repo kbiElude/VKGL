@@ -16,7 +16,7 @@ static bool validate(VKGL::Context* in_context_ptr)
     return result;
 }
 
-void VKGL_APIENTRY vkglEndTransformFeedback(void)
+void VKGL_APIENTRY OpenGL::vkglEndTransformFeedback(void)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -24,12 +24,12 @@ void VKGL_APIENTRY vkglEndTransformFeedback(void)
 }
 
 
-void vkglEndTransformFeedback_execute(VKGL::Context* in_context_ptr)
+static void vkglEndTransformFeedback_execute(VKGL::Context* in_context_ptr)
 {
     in_context_ptr->end_transform_feedback();
 }
 
-void vkglEndTransformFeedback_with_validation(VKGL::Context* in_context_ptr)
+void OpenGL::vkglEndTransformFeedback_with_validation(VKGL::Context* in_context_ptr)
 {
     if (validate(in_context_ptr) )
     {

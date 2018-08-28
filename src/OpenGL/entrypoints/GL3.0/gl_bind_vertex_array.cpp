@@ -17,7 +17,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglBindVertexArray(GLuint array)
+void VKGL_APIENTRY OpenGL::vkglBindVertexArray(GLuint array)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -25,14 +25,14 @@ void VKGL_APIENTRY vkglBindVertexArray(GLuint array)
                                            array);
 }
 
-void vkglBindVertexArray_execute(VKGL::Context* in_context_ptr,
-                                 const GLuint&  in_array)
+static void vkglBindVertexArray_execute(VKGL::Context* in_context_ptr,
+                                        const GLuint&  in_array)
 {
     in_context_ptr->bind_vertex_array(in_array);
 }
 
-void vkglBindVertexArray_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLuint&  in_array)
+void OpenGL::vkglBindVertexArray_with_validation(VKGL::Context* in_context_ptr,
+                                                 const GLuint&  in_array)
 {
     if (validate(in_context_ptr,
                  in_array) )

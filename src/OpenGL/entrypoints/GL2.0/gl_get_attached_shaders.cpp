@@ -20,10 +20,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetAttachedShaders(GLuint   program,
-                                          GLsizei  maxCount,
-                                          GLsizei* count,
-                                          GLuint*  shaders)
+void VKGL_APIENTRY OpenGL::vkglGetAttachedShaders(GLuint   program,
+                                                  GLsizei  maxCount,
+                                                  GLsizei* count,
+                                                  GLuint*  shaders)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -34,11 +34,11 @@ void VKGL_APIENTRY vkglGetAttachedShaders(GLuint   program,
                                               shaders);
 }
 
-void vkglGetAttachedShaders_execute(VKGL::Context* in_context_ptr,
-                                    const GLuint&  in_program,
-                                    const GLsizei& in_max_count,
-                                    GLsizei*       out_count_ptr,
-                                    GLuint*        out_shaders_ptr)
+static void vkglGetAttachedShaders_execute(VKGL::Context* in_context_ptr,
+                                           const GLuint&  in_program,
+                                           const GLsizei& in_max_count,
+                                           GLsizei*       out_count_ptr,
+                                           GLuint*        out_shaders_ptr)
 {
     in_context_ptr->get_attached_shaders(in_program,
                                          in_max_count,
@@ -46,11 +46,11 @@ void vkglGetAttachedShaders_execute(VKGL::Context* in_context_ptr,
                                          out_shaders_ptr);
 }
 
-void vkglGetAttachedShaders_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLuint&  in_program,
-                                            const GLsizei& in_max_count,
-                                            GLsizei*       out_count_ptr,
-                                            GLuint*        out_shaders_ptr)
+void OpenGL::vkglGetAttachedShaders_with_validation(VKGL::Context* in_context_ptr,
+                                                    const GLuint&  in_program,
+                                                    const GLsizei& in_max_count,
+                                                    GLsizei*       out_count_ptr,
+                                                    GLuint*        out_shaders_ptr)
 {
     if (validate(in_context_ptr,
                  in_program,

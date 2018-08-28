@@ -18,7 +18,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglClearStencil(GLint s)
+void VKGL_APIENTRY OpenGL::vkglClearStencil(GLint s)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -26,14 +26,14 @@ void VKGL_APIENTRY vkglClearStencil(GLint s)
                                         s);
 }
 
-void vkglClearStencil_execute(VKGL::Context* in_context_ptr,
-                              const GLint&   in_s)
+static void vkglClearStencil_execute(VKGL::Context* in_context_ptr,
+                                     const GLint&   in_s)
 {
     in_context_ptr->set_clear_stencil_value(in_s);
 }
 
-void vkglClearStencil_with_validation(VKGL::Context* in_context_ptr,
-                                      const GLint&   in_s)
+void OpenGL::vkglClearStencil_with_validation(VKGL::Context* in_context_ptr,
+                                              const GLint&   in_s)
 {
     if (validate(in_context_ptr,
                  in_s) )

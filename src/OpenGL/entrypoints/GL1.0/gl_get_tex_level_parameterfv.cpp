@@ -22,10 +22,10 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglGetTexLevelParameterfv(GLenum   target,
-                                              GLint    level,
-                                              GLenum   pname,
-                                              GLfloat* params)
+void VKGL_APIENTRY OpenGL::vkglGetTexLevelParameterfv(GLenum   target,
+                                                      GLint    level,
+                                                      GLenum   pname,
+                                                      GLfloat* params)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -36,11 +36,11 @@ void VKGL_APIENTRY vkglGetTexLevelParameterfv(GLenum   target,
                                                   params);
 }
 
-void vkglGetTexLevelParameterfv_execute(VKGL::Context* in_context_ptr,
-                                        const GLenum&  in_target,
-                                        const GLint&   in_level,
-                                        const GLenum&  in_pname,
-                                        GLfloat*       out_params_ptr)
+static void vkglGetTexLevelParameterfv_execute(VKGL::Context* in_context_ptr,
+                                               const GLenum&  in_target,
+                                               const GLint&   in_level,
+                                               const GLenum&  in_pname,
+                                               GLfloat*       out_params_ptr)
 {
     const auto pname_vkgl  = VKGL::Utils::get_texture_level_property_for_gl_enum(in_pname);
     const auto target_vkgl = VKGL::Utils::get_texture_target_for_gl_enum        (in_target);
@@ -52,11 +52,11 @@ void vkglGetTexLevelParameterfv_execute(VKGL::Context* in_context_ptr,
                                                 out_params_ptr);
 }
 
-void vkglGetTexLevelParameterfv_with_validation(VKGL::Context* in_context_ptr,
-                                                const GLenum&  in_target,
-                                                const GLint&   in_level,
-                                                const GLenum&  in_pname,
-                                                GLfloat*       out_params_ptr)
+void OpenGL::vkglGetTexLevelParameterfv_with_validation(VKGL::Context* in_context_ptr,
+                                                        const GLenum&  in_target,
+                                                        const GLint&   in_level,
+                                                        const GLenum&  in_pname,
+                                                        GLfloat*       out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_target,

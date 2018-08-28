@@ -21,9 +21,9 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglGetVertexAttribPointerv(GLuint index,
-                                               GLenum pname,
-                                               void** pointer)
+void VKGL_APIENTRY OpenGL::vkglGetVertexAttribPointerv(GLuint index,
+                                                       GLenum pname,
+                                                       void** pointer)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -33,10 +33,10 @@ void VKGL_APIENTRY vkglGetVertexAttribPointerv(GLuint index,
                                                   pointer);
 }
 
-void vkglGetVertexAttribPointerv_execute(VKGL::Context* in_context_ptr,
-                                         const GLuint&  in_index,
-                                         const GLenum&  in_pname,
-                                         void**         out_pointer_ptr)
+static void vkglGetVertexAttribPointerv_execute(VKGL::Context* in_context_ptr,
+                                                const GLuint&  in_index,
+                                                const GLenum&  in_pname,
+                                                void**         out_pointer_ptr)
 {
     const auto pname_vkgl = VKGL::Utils::get_vertex_attribute_pointer_property_for_gl_enum(in_pname);
 
@@ -45,10 +45,10 @@ void vkglGetVertexAttribPointerv_execute(VKGL::Context* in_context_ptr,
                                                        out_pointer_ptr);
 }
 
-void vkglGetVertexAttribPointerv_with_validation(VKGL::Context* in_context_ptr,
-                                                 const GLuint&  in_index,
-                                                 const GLenum&  in_pname,
-                                                 void**         out_pointer_ptr)
+void OpenGL::vkglGetVertexAttribPointerv_with_validation(VKGL::Context* in_context_ptr,
+                                                         const GLuint&  in_index,
+                                                         const GLenum&  in_pname,
+                                                         void**         out_pointer_ptr)
 {
     if (validate(in_context_ptr,
                  in_index,

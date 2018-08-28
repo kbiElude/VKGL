@@ -18,8 +18,8 @@ static bool validate(VKGL::Context*    in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglSampleMaski(GLuint     maskNumber,
-                                   GLbitfield mask)
+void VKGL_APIENTRY OpenGL::vkglSampleMaski(GLuint     maskNumber,
+                                           GLbitfield mask)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -28,17 +28,17 @@ void VKGL_APIENTRY vkglSampleMaski(GLuint     maskNumber,
                                        mask);
 }
 
-void vkglSampleMaski_execute(VKGL::Context*    in_context_ptr,
-                             const GLuint&     in_mask_number,
-                             const GLbitfield& in_mask)
+static void vkglSampleMaski_execute(VKGL::Context*    in_context_ptr,
+                                    const GLuint&     in_mask_number,
+                                    const GLbitfield& in_mask)
 {
     in_context_ptr->set_sample_mask(in_mask_number,
                                     in_mask);
 }
 
-void vkglSampleMaski_with_validation(VKGL::Context*    in_context_ptr,
-                                     const GLuint&     in_mask_number,
-                                     const GLbitfield& in_mask)
+void OpenGL::vkglSampleMaski_with_validation(VKGL::Context*    in_context_ptr,
+                                             const GLuint&     in_mask_number,
+                                             const GLbitfield& in_mask)
 {
     if (validate(in_context_ptr,
                  in_mask_number,

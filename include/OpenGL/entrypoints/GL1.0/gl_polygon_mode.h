@@ -7,11 +7,14 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglPolygonMode(GLenum face,
-                                   GLenum mode);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglPolygonMode(GLenum face,
+                                       GLenum mode);
 
-void vkglPolygonMode_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLenum&  in_face,
-                                     const GLenum&  in_mode);
+    void vkglPolygonMode_with_validation(VKGL::Context* in_context_ptr,
+                                         const GLenum&  in_face,
+                                         const GLenum&  in_mode);
+}
 
 #endif /* VKGL_GL_POLYGON_MODE_H */

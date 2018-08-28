@@ -20,9 +20,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetVertexAttribIiv(GLuint index,
-                                          GLenum pname,
-                                          GLint* params)
+void VKGL_APIENTRY OpenGL::vkglGetVertexAttribIiv(GLuint index,
+                                                  GLenum pname,
+                                                  GLint* params)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -32,10 +32,10 @@ void VKGL_APIENTRY vkglGetVertexAttribIiv(GLuint index,
                                               params);
 }
 
-void vkglGetVertexAttribIiv_execute(VKGL::Context* in_context_ptr,
-                                    const GLuint&  in_index,
-                                    const GLenum&  in_pname,
-                                    GLint*         out_params_ptr)
+static void vkglGetVertexAttribIiv_execute(VKGL::Context* in_context_ptr,
+                                           const GLuint&  in_index,
+                                           const GLenum&  in_pname,
+                                           GLint*         out_params_ptr)
 {
     const auto pname_vkgl = VKGL::Utils::get_vertex_attribute_property_for_gl_enum(in_pname);
 
@@ -46,10 +46,10 @@ void vkglGetVertexAttribIiv_execute(VKGL::Context* in_context_ptr,
                                                   out_params_ptr);
 }
 
-void vkglGetVertexAttribIiv_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLuint&  in_index,
-                                            const GLenum&  in_pname,
-                                            GLint*         out_params_ptr)
+void OpenGL::vkglGetVertexAttribIiv_with_validation(VKGL::Context* in_context_ptr,
+                                                    const GLuint&  in_index,
+                                                    const GLenum&  in_pname,
+                                                    GLint*         out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_index,

@@ -21,9 +21,9 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglGetBufferParameteri64v(GLenum   target,
-                                              GLenum   pname,
-                                              GLint64* params)
+void VKGL_APIENTRY OpenGL::vkglGetBufferParameteri64v(GLenum   target,
+                                                      GLenum   pname,
+                                                      GLint64* params)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -33,10 +33,10 @@ void VKGL_APIENTRY vkglGetBufferParameteri64v(GLenum   target,
                                                   params);
 }
 
-void vkglGetBufferParameteri64v_execute(VKGL::Context* in_context_ptr,
-                                        const GLenum&  in_target,
-                                        const GLenum&  in_pname,
-                                        GLint64*       out_params_ptr)
+static void vkglGetBufferParameteri64v_execute(VKGL::Context* in_context_ptr,
+                                               const GLenum&  in_target,
+                                               const GLenum&  in_pname,
+                                               GLint64*       out_params_ptr)
 {
     const auto pname_vkgl  = VKGL::Utils::get_buffer_property_for_gl_enum(in_pname);
     const auto target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum  (in_target);
@@ -48,10 +48,10 @@ void vkglGetBufferParameteri64v_execute(VKGL::Context* in_context_ptr,
                                         out_params_ptr);
 }
 
-void vkglGetBufferParameteri64v_with_validation(VKGL::Context* in_context_ptr,
-                                                const GLenum&  in_target,
-                                                const GLenum&  in_pname,
-                                                GLint64*       out_params_ptr)
+void OpenGL::vkglGetBufferParameteri64v_with_validation(VKGL::Context* in_context_ptr,
+                                                        const GLenum&  in_target,
+                                                        const GLenum&  in_pname,
+                                                        GLint64*       out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_target,

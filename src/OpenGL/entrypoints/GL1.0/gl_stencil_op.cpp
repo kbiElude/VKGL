@@ -21,9 +21,9 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglStencilOp(GLenum fail,
-                                 GLenum zfail,
-                                 GLenum zpass)
+void VKGL_APIENTRY OpenGL::vkglStencilOp(GLenum fail,
+                                         GLenum zfail,
+                                         GLenum zpass)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -33,10 +33,10 @@ void VKGL_APIENTRY vkglStencilOp(GLenum fail,
                                      zpass);
 }
 
-void vkglStencilOp_execute(VKGL::Context* in_context_ptr,
-                           const GLenum&  in_fail,
-                           const GLenum&  in_zfail,
-                           const GLenum&  in_zpass)
+static void vkglStencilOp_execute(VKGL::Context* in_context_ptr,
+                                  const GLenum&  in_fail,
+                                  const GLenum&  in_zfail,
+                                  const GLenum&  in_zpass)
 {
     const auto fail_vkgl  = VKGL::Utils::get_stencil_operation_for_gl_enum(in_fail);
     const auto zfail_vkgl = VKGL::Utils::get_stencil_operation_for_gl_enum(in_zfail);
@@ -47,10 +47,10 @@ void vkglStencilOp_execute(VKGL::Context* in_context_ptr,
                                            zpass_vkgl);
 }
 
-void vkglStencilOp_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLenum&  in_fail,
-                                   const GLenum&  in_zfail,
-                                   const GLenum&  in_zpass)
+void OpenGL::vkglStencilOp_with_validation(VKGL::Context* in_context_ptr,
+                                           const GLenum&  in_fail,
+                                           const GLenum&  in_zfail,
+                                           const GLenum&  in_zpass)
 {
     if (validate(in_context_ptr,
                  in_fail,

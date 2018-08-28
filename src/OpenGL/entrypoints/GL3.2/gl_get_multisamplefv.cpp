@@ -20,9 +20,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetMultisamplefv(GLenum   pname,
-                                        GLuint   index,
-                                        GLfloat* val)
+void VKGL_APIENTRY OpenGL::vkglGetMultisamplefv(GLenum   pname,
+                                                GLuint   index,
+                                                GLfloat* val)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -32,10 +32,10 @@ void VKGL_APIENTRY vkglGetMultisamplefv(GLenum   pname,
                                             val);
 }
 
-void vkglGetMultisamplefv_execute(VKGL::Context* in_context_ptr,
-                                  const GLenum&  in_pname,
-                                  const GLuint&  in_index,
-                                  GLfloat*       out_val_ptr)
+static void vkglGetMultisamplefv_execute(VKGL::Context* in_context_ptr,
+                                         const GLenum&  in_pname,
+                                         const GLuint&  in_index,
+                                         GLfloat*       out_val_ptr)
 {
     vkgl_assert(in_pname == GL_SAMPLE_POSITION);
 
@@ -43,10 +43,10 @@ void vkglGetMultisamplefv_execute(VKGL::Context* in_context_ptr,
                                         out_val_ptr);
 }
 
-void vkglGetMultisamplefv_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLenum&  in_pname,
-                                          const GLuint&  in_index,
-                                          GLfloat*       out_val_ptr)
+void OpenGL::vkglGetMultisamplefv_with_validation(VKGL::Context* in_context_ptr,
+                                                  const GLenum&  in_pname,
+                                                  const GLuint&  in_index,
+                                                  GLfloat*       out_val_ptr)
 {
     if (validate(in_context_ptr,
                  in_pname,

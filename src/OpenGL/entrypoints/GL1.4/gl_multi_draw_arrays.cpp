@@ -21,10 +21,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglMultiDrawArrays(GLenum         mode,
-                                       const GLint*   first,
-                                       const GLsizei* count,
-                                       GLsizei        drawcount)
+void VKGL_APIENTRY OpenGL::vkglMultiDrawArrays(GLenum         mode,
+                                               const GLint*   first,
+                                               const GLsizei* count,
+                                               GLsizei        drawcount)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -35,11 +35,11 @@ void VKGL_APIENTRY vkglMultiDrawArrays(GLenum         mode,
                                            drawcount);
 }
 
-void vkglMultiDrawArrays_execute(VKGL::Context* in_context_ptr,
-                                 const GLenum&  in_mode,
-                                 const GLint*   in_first_ptr,
-                                 const GLsizei* in_count_ptr,
-                                 const GLsizei& in_drawcount)
+static void vkglMultiDrawArrays_execute(VKGL::Context* in_context_ptr,
+                                        const GLenum&  in_mode,
+                                        const GLint*   in_first_ptr,
+                                        const GLsizei* in_count_ptr,
+                                        const GLsizei& in_drawcount)
 {
     const auto mode_vkgl = VKGL::Utils::get_draw_call_mode_for_gl_enum(in_mode);
 
@@ -49,11 +49,11 @@ void vkglMultiDrawArrays_execute(VKGL::Context* in_context_ptr,
                                       in_drawcount);
 }
 
-void vkglMultiDrawArrays_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_mode,
-                                         const GLint*   in_first_ptr,
-                                         const GLsizei* in_count_ptr,
-                                         const GLsizei& in_drawcount)
+void OpenGL::vkglMultiDrawArrays_with_validation(VKGL::Context* in_context_ptr,
+                                                 const GLenum&  in_mode,
+                                                 const GLint*   in_first_ptr,
+                                                 const GLsizei* in_count_ptr,
+                                                 const GLsizei& in_drawcount)
 {
     if (validate(in_context_ptr,
                  in_mode,

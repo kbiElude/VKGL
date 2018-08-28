@@ -22,11 +22,11 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglDrawElementsInstanced(GLenum      mode,
-                                             GLsizei     count,
-                                             GLenum      type,
-                                             const void* indices,
-                                             GLsizei     instancecount)
+void VKGL_APIENTRY OpenGL::vkglDrawElementsInstanced(GLenum      mode,
+                                                     GLsizei     count,
+                                                     GLenum      type,
+                                                     const void* indices,
+                                                     GLsizei     instancecount)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -38,12 +38,12 @@ void VKGL_APIENTRY vkglDrawElementsInstanced(GLenum      mode,
                                                  instancecount);
 }
 
-void vkglDrawElementsInstanced_execute(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_mode,
-                                       const GLsizei& in_count,
-                                       const GLenum&  in_type,
-                                       const void*    in_indices_ptr,
-                                       const GLsizei& in_instancecount)
+static void vkglDrawElementsInstanced_execute(VKGL::Context* in_context_ptr,
+                                              const GLenum&  in_mode,
+                                              const GLsizei& in_count,
+                                              const GLenum&  in_type,
+                                              const void*    in_indices_ptr,
+                                              const GLsizei& in_instancecount)
 {
     const auto mode_vkgl = VKGL::Utils::get_draw_call_mode_for_gl_enum      (in_mode);
     const auto type_vkgl = VKGL::Utils::get_draw_call_index_type_for_gl_enum(in_type);
@@ -55,12 +55,12 @@ void vkglDrawElementsInstanced_execute(VKGL::Context* in_context_ptr,
                                             in_instancecount);
 }
 
-void vkglDrawElementsInstanced_with_validation(VKGL::Context* in_context_ptr,
-                                               const GLenum&  in_mode,
-                                               const GLsizei& in_count,
-                                               const GLenum&  in_type,
-                                               const void*    in_indices_ptr,
-                                               const GLsizei& in_instancecount)
+void OpenGL::vkglDrawElementsInstanced_with_validation(VKGL::Context* in_context_ptr,
+                                                       const GLenum&  in_mode,
+                                                       const GLsizei& in_count,
+                                                       const GLenum&  in_type,
+                                                       const void*    in_indices_ptr,
+                                                       const GLsizei& in_instancecount)
 {
     if (validate(in_context_ptr,
                  in_mode,

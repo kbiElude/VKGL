@@ -17,7 +17,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglCompileShader(GLuint shader)
+void VKGL_APIENTRY OpenGL::vkglCompileShader(GLuint shader)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -25,14 +25,14 @@ void VKGL_APIENTRY vkglCompileShader(GLuint shader)
                                        shader);
 }
 
-void vkglCompileShader_execute(VKGL::Context* in_context_ptr,
-                               const GLuint&  in_shader)
+static void vkglCompileShader_execute(VKGL::Context* in_context_ptr,
+                                      const GLuint&  in_shader)
 {
     in_context_ptr->compile_shader(in_shader);
 }
 
-void vkglCompileShader_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLuint&  in_shader)
+void OpenGL::vkglCompileShader_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLuint&  in_shader)
 {
     if (validate(in_context_ptr,
                  in_shader) )

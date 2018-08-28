@@ -18,7 +18,7 @@ static bool validate(VKGL::Context*    in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglClear(GLbitfield mask)
+void VKGL_APIENTRY OpenGL::vkglClear(GLbitfield mask)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -26,16 +26,16 @@ void VKGL_APIENTRY vkglClear(GLbitfield mask)
                                  mask);
 }
 
-void vkglClear_execute(VKGL::Context*    in_context_ptr,
-                       const GLbitfield& in_mask)
+static void vkglClear_execute(VKGL::Context*    in_context_ptr,
+                              const GLbitfield& in_mask)
 {
     const auto clear_buffer_bits = VKGL::Utils::get_clear_buffer_bits_for_gl_enum(in_mask);
 
     in_context_ptr->clear(clear_buffer_bits);
 }
 
-void vkglClear_with_validation(VKGL::Context*    in_context_ptr,
-                               const GLbitfield& in_mask)
+void OpenGL::vkglClear_with_validation(VKGL::Context*    in_context_ptr,
+                                       const GLbitfield& in_mask)
 {
     if (validate(in_context_ptr,
                  in_mask) )

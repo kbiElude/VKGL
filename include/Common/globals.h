@@ -6,8 +6,8 @@
 #define COMMON_GLOBALS_H
 
 #include "vkgl_config.h"
+#include "Common/logger.h"
 #include "Common/types.h"
-#include "VKGL/logger.h"
 
 #define MAX_PER_FUNC_LOCAL_HELPER_STORAGE_SIZE (4096)
 

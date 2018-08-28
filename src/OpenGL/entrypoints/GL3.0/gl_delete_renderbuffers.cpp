@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglDeleteRenderbuffers(GLsizei      n,
-                                           const GLuint* renderbuffers)
+void VKGL_APIENTRY OpenGL::vkglDeleteRenderbuffers(GLsizei      n,
+                                                   const GLuint* renderbuffers)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -28,17 +28,17 @@ void VKGL_APIENTRY vkglDeleteRenderbuffers(GLsizei      n,
                                                renderbuffers);
 }
 
-void vkglDeleteRenderbuffers_execute(VKGL::Context* in_context_ptr,
-                                     const GLsizei& in_n,
-                                     const GLuint*  in_renderbuffers_ptr)
+static void vkglDeleteRenderbuffers_execute(VKGL::Context* in_context_ptr,
+                                            const GLsizei& in_n,
+                                            const GLuint*  in_renderbuffers_ptr)
 {
     in_context_ptr->delete_renderbuffers(in_n,
                                          in_renderbuffers_ptr);
 }
 
-void vkglDeleteRenderbuffers_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLsizei& in_n,
-                                             const GLuint*  in_renderbuffers_ptr)
+void OpenGL::vkglDeleteRenderbuffers_with_validation(VKGL::Context* in_context_ptr,
+                                                     const GLsizei& in_n,
+                                                     const GLuint*  in_renderbuffers_ptr)
 {
     if (validate(in_context_ptr,
                  in_n,

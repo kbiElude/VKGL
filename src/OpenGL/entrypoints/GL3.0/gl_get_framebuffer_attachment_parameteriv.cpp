@@ -21,10 +21,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetFramebufferAttachmentParameteriv(GLenum target,
-                                                           GLenum attachment,
-                                                           GLenum pname,
-                                                           GLint* params)
+void VKGL_APIENTRY OpenGL::vkglGetFramebufferAttachmentParameteriv(GLenum target,
+                                                                   GLenum attachment,
+                                                                   GLenum pname,
+                                                                   GLint* params)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -35,11 +35,11 @@ void VKGL_APIENTRY vkglGetFramebufferAttachmentParameteriv(GLenum target,
                                                                params);
 }
 
-void vkglGetFramebufferAttachmentParameteriv_execute(VKGL::Context* in_context_ptr,
-                                                     const GLenum&  in_target,
-                                                     const GLenum&  in_attachment,
-                                                     const GLenum&  in_pname,
-                                                     GLint*         out_params_ptr)
+static void vkglGetFramebufferAttachmentParameteriv_execute(VKGL::Context* in_context_ptr,
+                                                            const GLenum&  in_target,
+                                                            const GLenum&  in_attachment,
+                                                            const GLenum&  in_pname,
+                                                            GLint*         out_params_ptr)
 {
     const auto attachment_vkgl = VKGL::Utils::get_framebuffer_attachment_point_for_gl_enum   (in_attachment);
     const auto pname_vkgl      = VKGL::Utils::get_framebuffer_attachment_property_for_gl_enum(in_pname);
@@ -53,11 +53,11 @@ void vkglGetFramebufferAttachmentParameteriv_execute(VKGL::Context* in_context_p
 
 }
 
-void vkglGetFramebufferAttachmentParameteriv_with_validation(VKGL::Context* in_context_ptr,
-                                                             const GLenum&  in_target,
-                                                             const GLenum&  in_attachment,
-                                                             const GLenum&  in_pname,
-                                                             GLint*         out_params_ptr)
+void OpenGL::vkglGetFramebufferAttachmentParameteriv_with_validation(VKGL::Context* in_context_ptr,
+                                                                     const GLenum&  in_target,
+                                                                     const GLenum&  in_attachment,
+                                                                     const GLenum&  in_pname,
+                                                                     GLint*         out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_target,

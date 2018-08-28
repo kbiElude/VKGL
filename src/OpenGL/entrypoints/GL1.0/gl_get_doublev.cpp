@@ -19,9 +19,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-vkglGetDoublev_execute(VKGL::Context* in_context_ptr,
-                       const GLenum&  in_pname,
-                       GLdouble*      out_data_ptr)
+static void vkglGetDoublev_execute(VKGL::Context* in_context_ptr,
+                                   const GLenum&  in_pname,
+                                   GLdouble*      out_data_ptr)
 {
     const auto pname_vkgl = VKGL::Utils::get_context_property_for_gl_enum(in_pname);
 

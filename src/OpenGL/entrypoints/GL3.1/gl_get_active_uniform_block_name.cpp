@@ -22,11 +22,11 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetActiveUniformBlockName(GLuint   program,
-                                                 GLuint   uniformBlockIndex,
-                                                 GLsizei  bufSize,
-                                                 GLsizei* length,
-                                                 GLchar*  uniformBlockName)
+void VKGL_APIENTRY OpenGL::vkglGetActiveUniformBlockName(GLuint   program,
+                                                         GLuint   uniformBlockIndex,
+                                                         GLsizei  bufSize,
+                                                         GLsizei* length,
+                                                         GLchar*  uniformBlockName)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -38,12 +38,12 @@ void VKGL_APIENTRY vkglGetActiveUniformBlockName(GLuint   program,
                                                      uniformBlockName);
 }
 
-void vkglGetActiveUniformBlockName_execute(VKGL::Context* in_context_ptr,
-                                           const GLuint&  in_program,
-                                           const GLuint&  in_uniform_block_index,
-                                           const GLsizei& in_buf_size_ptr,
-                                           GLsizei*       inout_length_ptr,
-                                           GLchar*        out_uniform_block_name_ptr)
+static void vkglGetActiveUniformBlockName_execute(VKGL::Context* in_context_ptr,
+                                                  const GLuint&  in_program,
+                                                  const GLuint&  in_uniform_block_index,
+                                                  const GLsizei& in_buf_size_ptr,
+                                                  GLsizei*       inout_length_ptr,
+                                                  GLchar*        out_uniform_block_name_ptr)
 {
     in_context_ptr->get_active_uniform_block_name(in_program,
                                                   in_uniform_block_index,
@@ -52,12 +52,12 @@ void vkglGetActiveUniformBlockName_execute(VKGL::Context* in_context_ptr,
                                                   out_uniform_block_name_ptr);
 }
 
-void vkglGetActiveUniformBlockName_with_validation(VKGL::Context* in_context_ptr,
-                                                   const GLuint&  in_program,
-                                                   const GLuint&  in_uniform_block_index,
-                                                   const GLsizei& in_buf_size_ptr,
-                                                   GLsizei*       inout_length_ptr,
-                                                   GLchar*        out_uniform_block_name_ptr)
+void OpenGL::vkglGetActiveUniformBlockName_with_validation(VKGL::Context* in_context_ptr,
+                                                           const GLuint&  in_program,
+                                                           const GLuint&  in_uniform_block_index,
+                                                           const GLsizei& in_buf_size_ptr,
+                                                           GLsizei*       inout_length_ptr,
+                                                           GLchar*        out_uniform_block_name_ptr)
 {
     if (validate(in_context_ptr,
                  in_program,

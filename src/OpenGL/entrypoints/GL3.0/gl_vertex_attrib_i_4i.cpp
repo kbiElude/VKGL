@@ -21,11 +21,11 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglVertexAttribI4i(GLuint index,
-                                       GLint  x,
-                                       GLint  y,
-                                       GLint  z,
-                                       GLint  w)
+void VKGL_APIENTRY OpenGL::vkglVertexAttribI4i(GLuint index,
+                                               GLint  x,
+                                               GLint  y,
+                                               GLint  z,
+                                               GLint  w)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -37,12 +37,12 @@ void VKGL_APIENTRY vkglVertexAttribI4i(GLuint index,
                                            w);
 }
 
-void vkglVertexAttribI4i_execute(VKGL::Context* in_context_ptr,
-                                 const GLuint&  in_index,
-                                 const GLint&   in_x,
-                                 const GLint&   in_y,
-                                 const GLint&   in_z,
-                                 const GLint&   in_w)
+static void vkglVertexAttribI4i_execute(VKGL::Context* in_context_ptr,
+                                        const GLuint&  in_index,
+                                        const GLint&   in_x,
+                                        const GLint&   in_y,
+                                        const GLint&   in_z,
+                                        const GLint&   in_w)
 {
     const GLint data[] =
     {
@@ -60,12 +60,12 @@ void vkglVertexAttribI4i_execute(VKGL::Context* in_context_ptr,
                                          data);
 }
 
-void vkglVertexAttribI4i_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLuint&  in_index,
-                                         const GLint&   in_x,
-                                         const GLint&   in_y,
-                                         const GLint&   in_z,
-                                         const GLint&   in_w)
+void OpenGL::vkglVertexAttribI4i_with_validation(VKGL::Context* in_context_ptr,
+                                                 const GLuint&  in_index,
+                                                 const GLint&   in_x,
+                                                 const GLint&   in_y,
+                                                 const GLint&   in_z,
+                                                 const GLint&   in_w)
 {
     if (validate(in_context_ptr,
                  in_index,

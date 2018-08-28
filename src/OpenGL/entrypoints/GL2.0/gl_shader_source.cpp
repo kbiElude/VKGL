@@ -20,10 +20,10 @@ static bool validate(VKGL::Context*       in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglShaderSource(GLuint               shader,
-                                    GLsizei              count,
-                                    const GLchar* const* string,
-                                    const GLint*         length)
+void VKGL_APIENTRY OpenGL::vkglShaderSource(GLuint               shader,
+                                            GLsizei              count,
+                                            const GLchar* const* string,
+                                            const GLint*         length)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -34,11 +34,11 @@ void VKGL_APIENTRY vkglShaderSource(GLuint               shader,
                                         length);
 }
 
-void vkglShaderSource_execute(VKGL::Context*       in_context_ptr,
-                              const GLuint&        in_shader,
-                              const GLsizei&       in_count,
-                              const GLchar* const* in_string_ptr_ptr,
-                              const GLint*         in_length_ptr)
+static void vkglShaderSource_execute(VKGL::Context*       in_context_ptr,
+                                     const GLuint&        in_shader,
+                                     const GLsizei&       in_count,
+                                     const GLchar* const* in_string_ptr_ptr,
+                                     const GLint*         in_length_ptr)
 {
     in_context_ptr->shader_source(in_shader,
                                   in_count,
@@ -46,11 +46,11 @@ void vkglShaderSource_execute(VKGL::Context*       in_context_ptr,
                                   in_length_ptr);
 }
 
-void vkglShaderSource_with_validation(VKGL::Context*       in_context_ptr,
-                                      const GLuint&        in_shader,
-                                      const GLsizei&       in_count,
-                                      const GLchar* const* in_string_ptr_ptr,
-                                      const GLint*         in_length_ptr)
+void OpenGL::vkglShaderSource_with_validation(VKGL::Context*       in_context_ptr,
+                                              const GLuint&        in_shader,
+                                              const GLsizei&       in_count,
+                                              const GLchar* const* in_string_ptr_ptr,
+                                              const GLint*         in_length_ptr)
 {
     if (validate(in_context_ptr,
                  in_shader,

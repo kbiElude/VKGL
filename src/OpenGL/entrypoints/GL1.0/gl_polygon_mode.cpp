@@ -20,8 +20,8 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglPolygonMode(GLenum face,
-                                   GLenum mode)
+void VKGL_APIENTRY OpenGL::vkglPolygonMode(GLenum face,
+                                           GLenum mode)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -30,9 +30,9 @@ void VKGL_APIENTRY vkglPolygonMode(GLenum face,
                                        mode);
 }
 
-void vkglPolygonMode_execute(VKGL::Context* in_context_ptr,
-                            const GLenum&   in_face,
-                            const GLenum&   in_mode)
+static void vkglPolygonMode_execute(VKGL::Context* in_context_ptr,
+                                    const GLenum&   in_face,
+                                    const GLenum&   in_mode)
 {
     const auto mode_vkgl = VKGL::Utils::get_polygon_mode_for_gl_enum(in_mode);
 
@@ -41,9 +41,9 @@ void vkglPolygonMode_execute(VKGL::Context* in_context_ptr,
     in_context_ptr->set_polygon_mode(mode_vkgl);
 }
 
-void vkglPolygonMode_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLenum&  in_face,
-                                     const GLenum&  in_mode)
+void OpenGL::vkglPolygonMode_with_validation(VKGL::Context* in_context_ptr,
+                                             const GLenum&  in_face,
+                                             const GLenum&  in_mode)
 {
     if (validate(in_context_ptr,
                  in_face,

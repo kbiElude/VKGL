@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglDisablei(GLenum target,
-                                GLuint index)
+void VKGL_APIENTRY OpenGL::vkglDisablei(GLenum target,
+                                        GLuint index)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -29,9 +29,9 @@ void VKGL_APIENTRY vkglDisablei(GLenum target,
                                     index);
 }
 
-void vkglDisablei_execute(VKGL::Context* in_context_ptr,
-                          const GLenum&  in_target,
-                          const GLuint&  in_index)
+static void vkglDisablei_execute(VKGL::Context* in_context_ptr,
+                                 const GLenum&  in_target,
+                                 const GLuint&  in_index)
 {
     vkgl_assert(in_target == GL_BLEND);
 
@@ -39,9 +39,9 @@ void vkglDisablei_execute(VKGL::Context* in_context_ptr,
                              in_index);
 }
 
-void vkglDisablei_with_validation(VKGL::Context* in_context_ptr,
-                                  const GLenum&  in_target,
-                                  const GLuint&  in_index)
+void OpenGL::vkglDisablei_with_validation(VKGL::Context* in_context_ptr,
+                                          const GLenum&  in_target,
+                                          const GLuint&  in_index)
 {
     if (validate(in_context_ptr,
                  in_target,

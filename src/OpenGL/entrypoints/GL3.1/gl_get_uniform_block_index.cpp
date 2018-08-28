@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLuint VKGL_APIENTRY vkglGetUniformBlockIndex(GLuint        program,
-                                              const GLchar* uniformBlockName)
+GLuint VKGL_APIENTRY OpenGL::vkglGetUniformBlockIndex(GLuint        program,
+                                                      const GLchar* uniformBlockName)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -28,17 +28,17 @@ GLuint VKGL_APIENTRY vkglGetUniformBlockIndex(GLuint        program,
                                                        uniformBlockName);
 }
 
-GLuint vkglGetUniformBlockIndex_execute(VKGL::Context* in_context_ptr,
-                                        GLuint         in_program,
-                                        const GLchar*  in_uniform_block_name)
+static GLuint vkglGetUniformBlockIndex_execute(VKGL::Context* in_context_ptr,
+                                               GLuint         in_program,
+                                               const GLchar*  in_uniform_block_name)
 {
     return in_context_ptr->get_uniform_block_index(in_program,
                                                    in_uniform_block_name);
 }
 
-GLuint vkglGetUniformBlockIndex_with_validation(VKGL::Context* in_context_ptr,
-                                                GLuint         in_program,
-                                                const GLchar*  in_uniform_block_name)
+GLuint OpenGL::vkglGetUniformBlockIndex_with_validation(VKGL::Context* in_context_ptr,
+                                                        GLuint         in_program,
+                                                        const GLchar*  in_uniform_block_name)
 {
     GLuint result = UINT32_MAX;
 

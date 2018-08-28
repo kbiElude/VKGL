@@ -21,10 +21,10 @@ static bool validate(VKGL::Context*   in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglColorMask(GLboolean red,
-                                 GLboolean green,
-                                 GLboolean blue,
-                                 GLboolean alpha)
+void VKGL_APIENTRY OpenGL::vkglColorMask(GLboolean red,
+                                         GLboolean green,
+                                         GLboolean blue,
+                                         GLboolean alpha)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -35,11 +35,11 @@ void VKGL_APIENTRY vkglColorMask(GLboolean red,
                                      alpha);
 }
 
-void vkglColorMask_execute(VKGL::Context*   in_context_ptr,
-                           const GLboolean& in_red,
-                           const GLboolean& in_green,
-                           const GLboolean& in_blue,
-                           const GLboolean& in_alpha)
+static void vkglColorMask_execute(VKGL::Context*   in_context_ptr,
+                                  const GLboolean& in_red,
+                                  const GLboolean& in_green,
+                                  const GLboolean& in_blue,
+                                  const GLboolean& in_alpha)
 {
     in_context_ptr->set_color_mask( (in_red   == GL_TRUE),
                                     (in_green == GL_TRUE),
@@ -47,11 +47,11 @@ void vkglColorMask_execute(VKGL::Context*   in_context_ptr,
                                     (in_alpha == GL_TRUE) );
 }
 
-void vkglColorMask_with_validation(VKGL::Context*   in_context_ptr,
-                                   const GLboolean& in_red,
-                                   const GLboolean& in_green,
-                                   const GLboolean& in_blue,
-                                   const GLboolean& in_alpha)
+void OpenGL::vkglColorMask_with_validation(VKGL::Context*   in_context_ptr,
+                                           const GLboolean& in_red,
+                                           const GLboolean& in_green,
+                                           const GLboolean& in_blue,
+                                           const GLboolean& in_alpha)
 {
     if (validate(in_context_ptr,
                  in_red,

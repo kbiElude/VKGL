@@ -17,8 +17,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglDrawBuffers(GLsizei       n,
-                                   const GLenum* bufs)
+void VKGL_APIENTRY OpenGL::vkglDrawBuffers(GLsizei       n,
+                                           const GLenum* bufs)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -27,9 +27,9 @@ void VKGL_APIENTRY vkglDrawBuffers(GLsizei       n,
                                        bufs);
 }
 
-void vkglDrawBuffers_execute(VKGL::Context* in_context_ptr,
-                             const GLsizei& in_n,
-                             const GLenum*  in_bufs)
+static void vkglDrawBuffers_execute(VKGL::Context* in_context_ptr,
+                                    const GLsizei& in_n,
+                                    const GLenum*  in_bufs)
 {
     VKGL::DrawBuffer bufs_vkgl[N_MAX_DRAW_BUFFERS];
 
@@ -46,9 +46,9 @@ void vkglDrawBuffers_execute(VKGL::Context* in_context_ptr,
                                  bufs_vkgl);
 }
 
-void vkglDrawBuffers_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLsizei& in_n,
-                                     const GLenum*  in_bufs)
+void OpenGL::vkglDrawBuffers_with_validation(VKGL::Context* in_context_ptr,
+                                             const GLsizei& in_n,
+                                             const GLenum*  in_bufs)
 {
     if (validate(in_context_ptr,
                  in_n,

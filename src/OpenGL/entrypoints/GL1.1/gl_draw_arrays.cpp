@@ -20,9 +20,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglDrawArrays(GLenum  mode,
-                                  GLint   first,
-                                  GLsizei count)
+void VKGL_APIENTRY OpenGL::vkglDrawArrays(GLenum  mode,
+                                          GLint   first,
+                                          GLsizei count)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -32,10 +32,10 @@ void VKGL_APIENTRY vkglDrawArrays(GLenum  mode,
                                       count);
 }
 
-void vkglDrawArrays_execute(VKGL::Context* in_context_ptr,
-                            const GLenum&  in_mode,
-                            const GLint&   in_first,
-                            const GLsizei& in_count)
+static void vkglDrawArrays_execute(VKGL::Context* in_context_ptr,
+                                   const GLenum&  in_mode,
+                                   const GLint&   in_first,
+                                   const GLsizei& in_count)
 {
     const auto mode_vkgl = VKGL::Utils::get_draw_call_mode_for_gl_enum(in_mode);
 
@@ -44,10 +44,10 @@ void vkglDrawArrays_execute(VKGL::Context* in_context_ptr,
                                 in_count);
 }
 
-void vkglDrawArrays_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLenum&  in_mode,
-                                    const GLint&   in_first,
-                                    const GLsizei& in_count)
+void OpenGL::vkglDrawArrays_with_validation(VKGL::Context* in_context_ptr,
+                                            const GLenum&  in_mode,
+                                            const GLint&   in_first,
+                                            const GLsizei& in_count)
 {
     if (validate(in_context_ptr,
                  in_mode,

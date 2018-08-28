@@ -18,7 +18,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-GLboolean VKGL_APIENTRY vkglIsSync(GLsync sync)
+GLboolean VKGL_APIENTRY OpenGL::vkglIsSync(GLsync sync)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -26,14 +26,14 @@ GLboolean VKGL_APIENTRY vkglIsSync(GLsync sync)
                                          sync) == GL_TRUE;
 }
 
-GLboolean vkglIsSync_execute(VKGL::Context* in_context_ptr,
-                             const GLsync&  in_sync)
+static GLboolean vkglIsSync_execute(VKGL::Context* in_context_ptr,
+                                    const GLsync&  in_sync)
 {
     return in_context_ptr->is_sync(in_sync) ? GL_TRUE : GL_FALSE;
 }
 
-GLboolean vkglIsSync_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLsync&  in_sync)
+GLboolean OpenGL::vkglIsSync_with_validation(VKGL::Context* in_context_ptr,
+                                             const GLsync&  in_sync)
 {
     GLboolean result = GL_FALSE;
 

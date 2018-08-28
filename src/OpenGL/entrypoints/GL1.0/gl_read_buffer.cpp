@@ -19,7 +19,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglReadBuffer(GLenum src)
+void VKGL_APIENTRY OpenGL::vkglReadBuffer(GLenum src)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -27,16 +27,16 @@ void VKGL_APIENTRY vkglReadBuffer(GLenum src)
                                       src);
 }
 
-void vkglReadBuffer_execute(VKGL::Context* in_context_ptr,
-                            const GLenum&  in_src)
+static void vkglReadBuffer_execute(VKGL::Context* in_context_ptr,
+                                   const GLenum&  in_src)
 {
     const auto src_vkgl = VKGL::Utils::get_read_buffer_for_gl_enum(in_src);
 
     in_context_ptr->set_read_buffer(src_vkgl);
 }
 
-void vkglReadBuffer_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLenum&  in_src)
+void OpenGL::vkglReadBuffer_with_validation(VKGL::Context* in_context_ptr,
+                                            const GLenum&  in_src)
 {
     if (validate(in_context_ptr,
                  in_src) )

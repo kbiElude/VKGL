@@ -7,9 +7,12 @@
 
 #include "OpenGL/types.h"
 
-GLboolean VKGL_APIENTRY vkglIsVertexArray(GLuint array);
+namespace OpenGL
+{
+    GLboolean VKGL_APIENTRY vkglIsVertexArray(GLuint array);
 
-bool vkglIsVertexArray_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLuint&  in_array);
+    bool vkglIsVertexArray_with_validation(VKGL::Context* in_context_ptr,
+                                           const GLuint&  in_array);
+}
 
 #endif /* VKGL_GL_IS_VERTEX_ARRAY_H */

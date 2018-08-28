@@ -7,13 +7,16 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglGetUniformiv(GLuint program,
-                                    GLint  location,
-                                    GLint* params);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglGetUniformiv(GLuint program,
+                                        GLint  location,
+                                        GLint* params);
 
-void vkglGetUniformiv_with_validation(VKGL::Context* in_context_ptr,
-                                      const GLuint&  in_program,
-                                      const GLint&   in_location,
-                                      GLint*         out_params_ptr);
+    void vkglGetUniformiv_with_validation(VKGL::Context* in_context_ptr,
+                                          const GLuint&  in_program,
+                                          const GLint&   in_location,
+                                          GLint*         out_params_ptr);
+}
 
 #endif /* VKGL_GL_GET_UNIFORMIV_H */

@@ -7,15 +7,18 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglTransformFeedbackVaryings(GLuint               program,
-                                                 GLsizei              count,
-                                                 const GLchar* const* varyings,
-                                                 GLenum               bufferMode);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglTransformFeedbackVaryings(GLuint               program,
+                                                     GLsizei              count,
+                                                     const GLchar* const* varyings,
+                                                     GLenum               bufferMode);
 
-void vkglTransformFeedbackVaryings_with_validation(VKGL::Context*       in_context_ptr,
-                                                   const GLuint&        in_program,
-                                                   const GLsizei&       in_count,
-                                                   const GLchar* const* in_varyings_ptr_ptr,
-                                                   const GLenum&        in_buffer_mode);
+    void vkglTransformFeedbackVaryings_with_validation(VKGL::Context*       in_context_ptr,
+                                                       const GLuint&        in_program,
+                                                       const GLsizei&       in_count,
+                                                       const GLchar* const* in_varyings_ptr_ptr,
+                                                       const GLenum&        in_buffer_mode);
+}
 
 #endif /* VKGL_GL_TRANSFORM_FEEDBACK_VARYINGS_H */

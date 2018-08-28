@@ -21,10 +21,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglStencilFuncSeparate(GLenum face,
-                                           GLenum func,
-                                           GLint  ref,
-                                           GLuint mask)
+void VKGL_APIENTRY OpenGL::vkglStencilFuncSeparate(GLenum face,
+                                                   GLenum func,
+                                                   GLint  ref,
+                                                   GLuint mask)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -35,11 +35,11 @@ void VKGL_APIENTRY vkglStencilFuncSeparate(GLenum face,
                                                mask);
 }
 
-void vkglStencilFuncSeparate_execute(VKGL::Context* in_context_ptr,
-                                     const GLenum&  in_face,
-                                     const GLenum&  in_func,
-                                     const GLint&   in_ref,
-                                     const GLuint&  in_mask)
+static void vkglStencilFuncSeparate_execute(VKGL::Context* in_context_ptr,
+                                            const GLenum&  in_face,
+                                            const GLenum&  in_func,
+                                            const GLint&   in_ref,
+                                            const GLuint&  in_mask)
 {
     const auto face_vkgl = VKGL::Utils::get_stencil_state_face_for_gl_enum(in_face);
     const auto func_vkgl = VKGL::Utils::get_stencil_function_for_gl_enum  (in_func);
@@ -50,11 +50,11 @@ void vkglStencilFuncSeparate_execute(VKGL::Context* in_context_ptr,
                                                   in_mask);
 }
 
-void vkglStencilFuncSeparate_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLenum&  in_face,
-                                             const GLenum&  in_func,
-                                             const GLint&   in_ref,
-                                             const GLuint&  in_mask)
+void OpenGL::vkglStencilFuncSeparate_with_validation(VKGL::Context* in_context_ptr,
+                                                     const GLenum&  in_face,
+                                                     const GLenum&  in_func,
+                                                     const GLint&   in_ref,
+                                                     const GLuint&  in_mask)
 {
     if (validate(in_context_ptr,
                  in_face,

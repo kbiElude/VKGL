@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglPolygonOffset(GLfloat factor,
-                                     GLfloat units)
+void VKGL_APIENTRY OpenGL::vkglPolygonOffset(GLfloat factor,
+                                             GLfloat units)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -28,17 +28,17 @@ void VKGL_APIENTRY vkglPolygonOffset(GLfloat factor,
                                          units);
 }
 
-void vkglPolygonOffset_execute(VKGL::Context* in_context_ptr,
-                               const GLfloat& in_factor,
-                               const GLfloat& in_units)
+static void vkglPolygonOffset_execute(VKGL::Context* in_context_ptr,
+                                      const GLfloat& in_factor,
+                                      const GLfloat& in_units)
 {
     in_context_ptr->set_polygon_offset(in_factor,
                                       in_units);
 }
 
-void vkglPolygonOffset_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLfloat& in_factor,
-                                       const GLfloat& in_units)
+void OpenGL::vkglPolygonOffset_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLfloat& in_factor,
+                                               const GLfloat& in_units)
 {
     vkglPolygonOffset_execute(in_context_ptr,
                               in_factor,

@@ -18,8 +18,8 @@ static bool validate(VKGL::Context*  in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglVertexAttribI4usv(GLuint          index,
-                                         const GLushort* v)
+void VKGL_APIENTRY OpenGL::vkglVertexAttribI4usv(GLuint          index,
+                                                 const GLushort* v)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -28,9 +28,9 @@ void VKGL_APIENTRY vkglVertexAttribI4usv(GLuint          index,
                                              v);
 }
 
-void vkglVertexAttribI4usv_execute(VKGL::Context*  in_context_ptr,
-                                   const GLuint&   in_index,
-                                   const GLushort* in_v_ptr)
+static void vkglVertexAttribI4usv_execute(VKGL::Context*  in_context_ptr,
+                                          const GLuint&   in_index,
+                                          const GLushort* in_v_ptr)
 {
     in_context_ptr->set_vertex_attribute(in_index,
                                          VKGL::GetSetArgumentType::Unsigned_Short,
@@ -40,9 +40,9 @@ void vkglVertexAttribI4usv_execute(VKGL::Context*  in_context_ptr,
                                          in_v_ptr);
 }
 
-void vkglVertexAttribI4usv_with_validation(VKGL::Context*  in_context_ptr,
-                                           const GLuint&   in_index,
-                                           const GLushort* in_v_ptr)
+void OpenGL::vkglVertexAttribI4usv_with_validation(VKGL::Context*  in_context_ptr,
+                                                   const GLuint&   in_index,
+                                                   const GLushort* in_v_ptr)
 {
     if (validate(in_context_ptr,
                  in_index,

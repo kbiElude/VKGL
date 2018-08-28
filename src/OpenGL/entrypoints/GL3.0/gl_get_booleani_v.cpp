@@ -20,9 +20,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetBooleani_v(GLenum     target,
-                                     GLuint     index,
-                                     GLboolean* data)
+void VKGL_APIENTRY OpenGL::vkglGetBooleani_v(GLenum     target,
+                                             GLuint     index,
+                                             GLboolean* data)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -32,10 +32,10 @@ void VKGL_APIENTRY vkglGetBooleani_v(GLenum     target,
                                          data);
 }
 
-void vkglGetBooleani_v_execute(VKGL::Context* in_context_ptr,
-                               const GLenum&  in_target,
-                               const GLuint&  in_index,
-                               GLboolean*     out_data_ptr)
+static void vkglGetBooleani_v_execute(VKGL::Context* in_context_ptr,
+                                      const GLenum&  in_target,
+                                      const GLuint&  in_index,
+                                      GLboolean*     out_data_ptr)
 {
     const VKGL::ContextProperty target_vkgl = VKGL::Utils::get_context_property_for_gl_enum(in_target);
 
@@ -44,10 +44,10 @@ void vkglGetBooleani_v_execute(VKGL::Context* in_context_ptr,
                                           out_data_ptr);
 }
 
-void vkglGetBooleani_v_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_target,
-                                       const GLuint&  in_index,
-                                       GLboolean*     out_data_ptr)
+void OpenGL::vkglGetBooleani_v_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLenum&  in_target,
+                                               const GLuint&  in_index,
+                                               GLboolean*     out_data_ptr)
 {
     if (validate(in_context_ptr,
                  in_target,

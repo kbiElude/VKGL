@@ -26,15 +26,15 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglCompressedTexSubImage2D(GLenum      target,
-                                               GLint       level,
-                                               GLint       xoffset,
-                                               GLint       yoffset,
-                                               GLsizei     width,
-                                               GLsizei     height,
-                                               GLenum      format,
-                                               GLsizei     imageSize,
-                                               const void* data)
+void VKGL_APIENTRY OpenGL::vkglCompressedTexSubImage2D(GLenum      target,
+                                                       GLint       level,
+                                                       GLint       xoffset,
+                                                       GLint       yoffset,
+                                                       GLsizei     width,
+                                                       GLsizei     height,
+                                                       GLenum      format,
+                                                       GLsizei     imageSize,
+                                                       const void* data)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -50,16 +50,16 @@ void VKGL_APIENTRY vkglCompressedTexSubImage2D(GLenum      target,
                                                    data);
 }
 
-void vkglCompressedTexSubImage2D_execute(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_target,
-                                         const GLint&   in_level,
-                                         const GLint&   in_xoffset,
-                                         const GLint&   in_yoffset,
-                                         const GLsizei& in_width,
-                                         const GLsizei& in_height,
-                                         const GLenum&  in_format,
-                                         const GLsizei& in_image_size,
-                                         const void*    in_data)
+static void vkglCompressedTexSubImage2D_execute(VKGL::Context* in_context_ptr,
+                                                const GLenum&  in_target,
+                                                const GLint&   in_level,
+                                                const GLint&   in_xoffset,
+                                                const GLint&   in_yoffset,
+                                                const GLsizei& in_width,
+                                                const GLsizei& in_height,
+                                                const GLenum&  in_format,
+                                                const GLsizei& in_image_size,
+                                                const void*    in_data)
 {
     const auto format_vkgl = VKGL::Utils::get_pixel_format_for_gl_enum  (in_format);
     const auto target_vkgl = VKGL::Utils::get_texture_target_for_gl_enum(in_target);
@@ -75,16 +75,16 @@ void vkglCompressedTexSubImage2D_execute(VKGL::Context* in_context_ptr,
                                                 in_data);
 }
 
-void vkglCompressedTexSubImage2D_with_validation(VKGL::Context* in_context_ptr,
-                                                 const GLenum&  in_target,
-                                                 const GLint&   in_level,
-                                                 const GLint&   in_xoffset,
-                                                 const GLint&   in_yoffset,
-                                                 const GLsizei& in_width,
-                                                 const GLsizei& in_height,
-                                                 const GLenum&  in_format,
-                                                 const GLsizei& in_image_size,
-                                                 const void*    in_data)
+void OpenGL::vkglCompressedTexSubImage2D_with_validation(VKGL::Context* in_context_ptr,
+                                                         const GLenum&  in_target,
+                                                         const GLint&   in_level,
+                                                         const GLint&   in_xoffset,
+                                                         const GLint&   in_yoffset,
+                                                         const GLsizei& in_width,
+                                                         const GLsizei& in_height,
+                                                         const GLenum&  in_format,
+                                                         const GLsizei& in_image_size,
+                                                         const void*    in_data)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 

@@ -21,10 +21,10 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglViewport(GLint   x,
-                                GLint   y,
-                                GLsizei width,
-                                GLsizei height)
+void VKGL_APIENTRY OpenGL::vkglViewport(GLint   x,
+                                        GLint   y,
+                                        GLsizei width,
+                                        GLsizei height)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -35,11 +35,11 @@ void VKGL_APIENTRY vkglViewport(GLint   x,
                                     height);
 }
 
-void vkglViewport_execute(VKGL::Context* in_context_ptr,
-                          const GLint&   in_x,
-                          const GLint&   in_y,
-                          const GLsizei& in_width,
-                          const GLsizei& in_height)
+static void vkglViewport_execute(VKGL::Context* in_context_ptr,
+                                 const GLint&   in_x,
+                                 const GLint&   in_y,
+                                 const GLsizei& in_width,
+                                 const GLsizei& in_height)
 {
     in_context_ptr->set_viewport(in_x,
                                  in_y,
@@ -47,11 +47,11 @@ void vkglViewport_execute(VKGL::Context* in_context_ptr,
                                  in_height);
 }
 
-void vkglViewport_with_validation(VKGL::Context* in_context_ptr,
-                                  const GLint&   in_x,
-                                  const GLint&   in_y,
-                                  const GLsizei& in_width,
-                                  const GLsizei& in_height)
+void OpenGL::vkglViewport_with_validation(VKGL::Context* in_context_ptr,
+                                          const GLint&   in_x,
+                                          const GLint&   in_y,
+                                          const GLsizei& in_width,
+                                          const GLsizei& in_height)
 {
     if (validate(in_context_ptr,
                  in_x,

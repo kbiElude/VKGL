@@ -17,7 +17,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLboolean VKGL_APIENTRY vkglIsFramebuffer(GLuint framebuffer)
+GLboolean VKGL_APIENTRY OpenGL::vkglIsFramebuffer(GLuint framebuffer)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -25,14 +25,14 @@ GLboolean VKGL_APIENTRY vkglIsFramebuffer(GLuint framebuffer)
                                                 framebuffer) == GL_TRUE;
 }
 
-bool vkglIsFramebuffer_execute(VKGL::Context* in_context_ptr,
-                               const GLuint&  in_framebuffer)
+static bool vkglIsFramebuffer_execute(VKGL::Context* in_context_ptr,
+                                      const GLuint&  in_framebuffer)
 {
     return in_context_ptr->is_framebuffer(in_framebuffer) == GL_TRUE;
 }
 
-bool vkglIsFramebuffer_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLuint&  in_framebuffer)
+bool OpenGL::vkglIsFramebuffer_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLuint&  in_framebuffer)
 {
     bool result = false;
 

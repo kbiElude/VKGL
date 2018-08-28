@@ -23,11 +23,11 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglFramebufferTextureLayer(GLenum target,
-                                               GLenum attachment,
-                                               GLuint texture,
-                                               GLint  level,
-                                               GLint  layer)
+void VKGL_APIENTRY OpenGL::vkglFramebufferTextureLayer(GLenum target,
+                                                       GLenum attachment,
+                                                       GLuint texture,
+                                                       GLint  level,
+                                                       GLint  layer)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -39,12 +39,12 @@ void VKGL_APIENTRY vkglFramebufferTextureLayer(GLenum target,
                                                    layer);
 }
 
-void vkglFramebufferTextureLayer_execute(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_target,
-                                         const GLenum&  in_attachment,
-                                         const GLuint&  in_texture,
-                                         const GLint&   in_level,
-                                         const GLint&   in_layer)
+static void vkglFramebufferTextureLayer_execute(VKGL::Context* in_context_ptr,
+                                                const GLenum&  in_target,
+                                                const GLenum&  in_attachment,
+                                                const GLuint&  in_texture,
+                                                const GLint&   in_level,
+                                                const GLint&   in_layer)
 {
     const auto attachment_vkgl = VKGL::Utils::get_framebuffer_attachment_point_for_gl_enum(in_attachment);
     const auto target_vkgl     = VKGL::Utils::get_framebuffer_target_for_gl_enum          (in_target);
@@ -56,12 +56,12 @@ void vkglFramebufferTextureLayer_execute(VKGL::Context* in_context_ptr,
                                               in_layer);
 }
 
-void vkglFramebufferTextureLayer_with_validation(VKGL::Context* in_context_ptr,
-                                                 const GLenum&  in_target,
-                                                 const GLenum&  in_attachment,
-                                                 const GLuint&  in_texture,
-                                                 const GLint&   in_level,
-                                                 const GLint&   in_layer)
+void OpenGL::vkglFramebufferTextureLayer_with_validation(VKGL::Context* in_context_ptr,
+                                                         const GLenum&  in_target,
+                                                         const GLenum&  in_attachment,
+                                                         const GLuint&  in_texture,
+                                                         const GLint&   in_level,
+                                                         const GLint&   in_layer)
 {
     if (validate(in_context_ptr,
                  in_target,

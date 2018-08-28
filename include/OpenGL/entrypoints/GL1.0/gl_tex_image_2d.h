@@ -7,25 +7,28 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglTexImage2D(GLenum      target,
-                                  GLint       level,
-                                  GLint       internalformat,
-                                  GLsizei     width,
-                                  GLsizei     height,
-                                  GLint       border,
-                                  GLenum      format,
-                                  GLenum      type,
-                                  const void* pixels);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglTexImage2D(GLenum      target,
+                                      GLint       level,
+                                      GLint       internalformat,
+                                      GLsizei     width,
+                                      GLsizei     height,
+                                      GLint       border,
+                                      GLenum      format,
+                                      GLenum      type,
+                                      const void* pixels);
 
-void vkglTexImage2D_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLenum&  in_target,
-                                    const GLint&   in_level,
-                                    const GLint&   in_internalformat,
-                                    const GLsizei& in_width,
-                                    const GLsizei& in_height,
-                                    const GLint&   in_border,
-                                    const GLenum&  in_format,
-                                    const GLenum&  in_type,
-                                    const void*    in_pixels_ptr);
+    void vkglTexImage2D_with_validation(VKGL::Context* in_context_ptr,
+                                        const GLenum&  in_target,
+                                        const GLint&   in_level,
+                                        const GLint&   in_internalformat,
+                                        const GLsizei& in_width,
+                                        const GLsizei& in_height,
+                                        const GLint&   in_border,
+                                        const GLenum&  in_format,
+                                        const GLenum&  in_type,
+                                        const void*    in_pixels_ptr);
+}
 
 #endif /* VKGL_GL_TEX_IMAGE_2D_H */

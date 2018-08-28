@@ -20,10 +20,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetShaderSource(GLuint   shader,
-                                       GLsizei  bufSize,
-                                       GLsizei* length,
-                                       GLchar*  source)
+void VKGL_APIENTRY OpenGL::vkglGetShaderSource(GLuint   shader,
+                                               GLsizei  bufSize,
+                                               GLsizei* length,
+                                               GLchar*  source)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -34,11 +34,11 @@ void VKGL_APIENTRY vkglGetShaderSource(GLuint   shader,
                                            source);
 }
 
-void vkglGetShaderSource_execute(VKGL::Context* in_context_ptr,
-                                 const GLuint&  in_shader,
-                                 const GLsizei& in_buf_size,
-                                 GLsizei*       inout_length_ptr,
-                                 GLchar*        out_source_ptr)
+static void vkglGetShaderSource_execute(VKGL::Context* in_context_ptr,
+                                        const GLuint&  in_shader,
+                                        const GLsizei& in_buf_size,
+                                        GLsizei*       inout_length_ptr,
+                                        GLchar*        out_source_ptr)
 {
     in_context_ptr->get_shader_source(in_shader,
                                       in_buf_size,
@@ -46,11 +46,11 @@ void vkglGetShaderSource_execute(VKGL::Context* in_context_ptr,
                                       out_source_ptr);
 }
 
-void vkglGetShaderSource_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLuint&  in_shader,
-                                         const GLsizei& in_buf_size,
-                                         GLsizei*       inout_length_ptr,
-                                         GLchar*        out_source_ptr)
+void OpenGL::vkglGetShaderSource_with_validation(VKGL::Context* in_context_ptr,
+                                                 const GLuint&  in_shader,
+                                                 const GLsizei& in_buf_size,
+                                                 GLsizei*       inout_length_ptr,
+                                                 GLchar*        out_source_ptr)
 {
     if (validate(in_context_ptr,
                  in_shader,

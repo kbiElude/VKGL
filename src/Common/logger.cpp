@@ -4,8 +4,8 @@
  */
 #include "Anvil/include/misc/io.h"
 #include "Common/globals.h"
+#include "Common/logger.h"
 #include "Common/macros.h"
-#include "VKGL/logger.h"
 
 /* TODO: Writes must be flushed asynchronously, every once in a while. Right now,
  *       cached trace data is only written at dll detach time!

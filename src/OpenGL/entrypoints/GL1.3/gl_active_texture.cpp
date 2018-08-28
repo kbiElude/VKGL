@@ -18,7 +18,7 @@ static bool validate(const VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglActiveTexture(GLenum texture)
+void VKGL_APIENTRY OpenGL::vkglActiveTexture(GLenum texture)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -26,16 +26,16 @@ void VKGL_APIENTRY vkglActiveTexture(GLenum texture)
                                          texture);
 }
 
-void vkglActiveTexture_execute(VKGL::Context* in_context_ptr,
-                               const GLenum&  in_texture)
+static void vkglActiveTexture_execute(VKGL::Context* in_context_ptr,
+                                      const GLenum&  in_texture)
 {
     const auto n_texture_unit = in_texture - GL_TEXTURE0;
 
     in_context_ptr->set_active_texture(n_texture_unit);
 }
 
-void vkglActiveTexture_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_texture)
+void OpenGL::vkglActiveTexture_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLenum&  in_texture)
 {
     if (validate(in_context_ptr,
                  in_texture) )

@@ -7,9 +7,12 @@
 
 #include "OpenGL/types.h"
 
-GLboolean VKGL_APIENTRY vkglIsShader(GLuint shader);
+namespace OpenGL
+{
+    GLboolean VKGL_APIENTRY vkglIsShader(GLuint shader);
 
-bool vkglIsShader_with_validation(VKGL::Context* in_context_ptr,
-                                  const GLuint&  in_shader);
+    bool vkglIsShader_with_validation(VKGL::Context* in_context_ptr,
+                                      const GLuint&  in_shader);
+}
 
 #endif /* VKGL_GL_IS_SHADER_H */

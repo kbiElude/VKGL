@@ -7,9 +7,12 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglClearStencil(GLint s);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglClearStencil(GLint s);
 
-void vkglClearStencil_with_validation(VKGL::Context* in_context_ptr,
-                                      const GLint&   in_s);
+    void vkglClearStencil_with_validation(VKGL::Context* in_context_ptr,
+                                          const GLint&   in_s);
+}
 
 #endif /* VKGL_GL_CLEAR_STENCIL_H */

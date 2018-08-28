@@ -7,9 +7,12 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglDeleteProgram(GLuint program);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglDeleteProgram(GLuint program);
 
-void vkglDeleteProgram_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLuint&  in_program);
+    void vkglDeleteProgram_with_validation(VKGL::Context* in_context_ptr,
+                                           const GLuint&  in_program);
+}
 
 #endif /* VKGL_GL_DELETE_PROGRAM_H */

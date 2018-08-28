@@ -24,13 +24,13 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetTransformFeedbackVarying(GLuint   program,
-                                                   GLuint   index,
-                                                   GLsizei  bufSize,
-                                                   GLsizei* length,
-                                                   GLsizei* size,
-                                                   GLenum*  type,
-                                                   GLchar*  name)
+void VKGL_APIENTRY OpenGL::vkglGetTransformFeedbackVarying(GLuint   program,
+                                                           GLuint   index,
+                                                           GLsizei  bufSize,
+                                                           GLsizei* length,
+                                                           GLsizei* size,
+                                                           GLenum*  type,
+                                                           GLchar*  name)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -66,14 +66,14 @@ void vkglGetTransformFeedbackVarying_execute(VKGL::Context* in_context_ptr,
     *out_type_ptr = VKGL::Utils::get_gl_enum_for_variable_type(type_vkgl);
 }
 
-void vkglGetTransformFeedbackVarying_with_validation(VKGL::Context* in_context_ptr,
-                                                     GLuint         in_program,
-                                                     GLuint         in_index,
-                                                     GLsizei        in_buf_size,
-                                                     GLsizei*       out_length_ptr,
-                                                     GLsizei*       out_size_ptr,
-                                                     GLenum*        out_type_ptr,
-                                                     GLchar*        out_name_ptr)
+void OpenGL::vkglGetTransformFeedbackVarying_with_validation(VKGL::Context* in_context_ptr,
+                                                             GLuint         in_program,
+                                                             GLuint         in_index,
+                                                             GLsizei        in_buf_size,
+                                                             GLsizei*       out_length_ptr,
+                                                             GLsizei*       out_size_ptr,
+                                                             GLenum*        out_type_ptr,
+                                                             GLchar*        out_name_ptr)
 {
     if (validate(in_context_ptr,
                  in_program,

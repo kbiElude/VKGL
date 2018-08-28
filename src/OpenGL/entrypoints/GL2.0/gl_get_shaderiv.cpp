@@ -21,9 +21,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetShaderiv(GLuint shader,
-                                   GLenum pname,
-                                   GLint* params)
+void VKGL_APIENTRY OpenGL::vkglGetShaderiv(GLuint shader,
+                                           GLenum pname,
+                                           GLint* params)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -33,10 +33,10 @@ void VKGL_APIENTRY vkglGetShaderiv(GLuint shader,
                                        params);
 }
 
-void vkglGetShaderiv_execute(VKGL::Context* in_context_ptr,
-                             const GLuint&  in_shader,
-                             const GLenum&  in_pname,
-                             GLint*         out_params_ptr)
+static void vkglGetShaderiv_execute(VKGL::Context* in_context_ptr,
+                                    const GLuint&  in_shader,
+                                    const GLenum&  in_pname,
+                                    GLint*         out_params_ptr)
 {
     const auto pname_vkgl = VKGL::Utils::get_shader_property_for_gl_enum(in_pname);
 
@@ -47,10 +47,10 @@ void vkglGetShaderiv_execute(VKGL::Context* in_context_ptr,
                                         out_params_ptr);
 }
 
-void vkglGetShaderiv_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLuint&  in_shader,
-                                     const GLenum&  in_pname,
-                                     GLint*         out_params_ptr)
+void OpenGL::vkglGetShaderiv_with_validation(VKGL::Context* in_context_ptr,
+                                             const GLuint&  in_shader,
+                                             const GLenum&  in_pname,
+                                             GLint*         out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_shader,

@@ -19,9 +19,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglVertexAttribI2ui(GLuint index,
-                                        GLuint x,
-                                        GLuint y)
+void VKGL_APIENTRY OpenGL::vkglVertexAttribI2ui(GLuint index,
+                                                GLuint x,
+                                                GLuint y)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -31,10 +31,10 @@ void VKGL_APIENTRY vkglVertexAttribI2ui(GLuint index,
                                             y);
 }
 
-void vkglVertexAttribI2ui_execute(VKGL::Context* in_context_ptr,
-                                  const GLuint&  in_index,
-                                  const GLuint&  in_x,
-                                  const GLuint&  in_y)
+static void vkglVertexAttribI2ui_execute(VKGL::Context* in_context_ptr,
+                                         const GLuint&  in_index,
+                                         const GLuint&  in_x,
+                                         const GLuint&  in_y)
 {
     const GLuint data[] =
     {
@@ -50,10 +50,10 @@ void vkglVertexAttribI2ui_execute(VKGL::Context* in_context_ptr,
                                          data);
 }
 
-void vkglVertexAttribI2ui_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_index,
-                                          const GLuint&  in_x,
-                                          const GLuint&  in_y)
+void OpenGL::vkglVertexAttribI2ui_with_validation(VKGL::Context* in_context_ptr,
+                                                  const GLuint&  in_index,
+                                                  const GLuint&  in_x,
+                                                  const GLuint&  in_y)
 {
     if (validate(in_context_ptr,
                  in_index,

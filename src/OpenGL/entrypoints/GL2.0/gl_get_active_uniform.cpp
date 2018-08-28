@@ -24,13 +24,13 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetActiveUniform(GLuint   program,
-                                        GLuint   index,
-                                        GLsizei  bufSize,
-                                        GLsizei* length,
-                                        GLint*   size,
-                                        GLenum*  type,
-                                        GLchar*  name)
+void VKGL_APIENTRY OpenGL::vkglGetActiveUniform(GLuint   program,
+                                                GLuint   index,
+                                                GLsizei  bufSize,
+                                                GLsizei* length,
+                                                GLint*   size,
+                                                GLenum*  type,
+                                                GLchar*  name)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -44,14 +44,14 @@ void VKGL_APIENTRY vkglGetActiveUniform(GLuint   program,
                                             name);
 }
 
-void vkglGetActiveUniform_execute(VKGL::Context* in_context_ptr,
-                                  const GLuint&  in_program,
-                                  const GLuint&  in_index,
-                                  const GLsizei& in_buf_size,
-                                  GLsizei*       out_length_ptr,
-                                  GLint*         out_size_ptr,
-                                  GLenum*        out_type_ptr,
-                                  GLchar*        out_name_ptr)
+static void vkglGetActiveUniform_execute(VKGL::Context* in_context_ptr,
+                                         const GLuint&  in_program,
+                                         const GLuint&  in_index,
+                                         const GLsizei& in_buf_size,
+                                         GLsizei*       out_length_ptr,
+                                         GLint*         out_size_ptr,
+                                         GLenum*        out_type_ptr,
+                                         GLchar*        out_name_ptr)
 {
     auto type_vkgl = VKGL::VariableType::Unknown;
 
@@ -66,14 +66,14 @@ void vkglGetActiveUniform_execute(VKGL::Context* in_context_ptr,
     *out_type_ptr = VKGL::Utils::get_gl_enum_for_variable_type(type_vkgl);
 }
 
-void vkglGetActiveUniform_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_program,
-                                          const GLuint&  in_index,
-                                          const GLsizei& in_buf_size,
-                                          GLsizei*       out_length_ptr,
-                                          GLint*         out_size_ptr,
-                                          GLenum*        out_type_ptr,
-                                          GLchar*        out_name_ptr)
+void OpenGL::vkglGetActiveUniform_with_validation(VKGL::Context* in_context_ptr,
+                                                  const GLuint&  in_program,
+                                                  const GLuint&  in_index,
+                                                  const GLsizei& in_buf_size,
+                                                  GLsizei*       out_length_ptr,
+                                                  GLint*         out_size_ptr,
+                                                  GLenum*        out_type_ptr,
+                                                  GLchar*        out_name_ptr)
 {
     if (validate(in_context_ptr,
                  in_program,

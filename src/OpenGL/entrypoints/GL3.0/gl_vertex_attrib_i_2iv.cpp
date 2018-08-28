@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglVertexAttribI2iv(GLuint       index,
-                                        const GLint* v)
+void VKGL_APIENTRY OpenGL::vkglVertexAttribI2iv(GLuint       index,
+                                                const GLint* v)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -28,9 +28,9 @@ void VKGL_APIENTRY vkglVertexAttribI2iv(GLuint       index,
                                             v);
 }
 
-void vkglVertexAttribI2iv_execute(VKGL::Context* in_context_ptr,
-                                  const GLuint&  in_index,
-                                  const GLint*   in_v_ptr)
+static void vkglVertexAttribI2iv_execute(VKGL::Context* in_context_ptr,
+                                         const GLuint&  in_index,
+                                         const GLint*   in_v_ptr)
 {
     in_context_ptr->set_vertex_attribute(in_index,
                                          VKGL::GetSetArgumentType::Int,
@@ -40,9 +40,9 @@ void vkglVertexAttribI2iv_execute(VKGL::Context* in_context_ptr,
                                          in_v_ptr);
 }
 
-void vkglVertexAttribI2iv_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_index,
-                                          const GLint*   in_v_ptr)
+void OpenGL::vkglVertexAttribI2iv_with_validation(VKGL::Context* in_context_ptr,
+                                                  const GLuint&  in_index,
+                                                  const GLint*   in_v_ptr)
 {
     if (validate(in_context_ptr,
                  in_index,

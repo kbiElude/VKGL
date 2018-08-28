@@ -24,13 +24,13 @@ static bool validate(VKGL::Context*   in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglTexImage3DMultisample(GLenum    target,
-                                             GLsizei   samples,
-                                             GLenum    internalformat,
-                                             GLsizei   width,
-                                             GLsizei   height,
-                                             GLsizei   depth,
-                                             GLboolean fixedsamplelocations)
+void VKGL_APIENTRY OpenGL::vkglTexImage3DMultisample(GLenum    target,
+                                                     GLsizei   samples,
+                                                     GLenum    internalformat,
+                                                     GLsizei   width,
+                                                     GLsizei   height,
+                                                     GLsizei   depth,
+                                                     GLboolean fixedsamplelocations)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -44,14 +44,14 @@ void VKGL_APIENTRY vkglTexImage3DMultisample(GLenum    target,
                                                  fixedsamplelocations);
 }
 
-void vkglTexImage3DMultisample_execute(VKGL::Context*   in_context_ptr,
-                                       const GLenum&    in_target,
-                                       const GLsizei&   in_samples,
-                                       const GLenum&    in_internalformat,
-                                       const GLsizei&   in_width,
-                                       const GLsizei&   in_height,
-                                       const GLsizei&   in_depth,
-                                       const GLboolean& in_fixedsamplelocations)
+static void vkglTexImage3DMultisample_execute(VKGL::Context*   in_context_ptr,
+                                              const GLenum&    in_target,
+                                              const GLsizei&   in_samples,
+                                              const GLenum&    in_internalformat,
+                                              const GLsizei&   in_width,
+                                              const GLsizei&   in_height,
+                                              const GLsizei&   in_depth,
+                                              const GLboolean& in_fixedsamplelocations)
 {
     const auto internalformat_vkgl = VKGL::Utils::get_internal_format_for_gl_enum(in_internalformat);
     const auto target_vkgl         = VKGL::Utils::get_texture_target_for_gl_enum (in_target);
@@ -65,14 +65,14 @@ void vkglTexImage3DMultisample_execute(VKGL::Context*   in_context_ptr,
                                              (in_fixedsamplelocations == GL_TRUE) );
 }
 
-void vkglTexImage3DMultisample_with_validation(VKGL::Context*   in_context_ptr,
-                                               const GLenum&    in_target,
-                                               const GLsizei&   in_samples,
-                                               const GLenum&    in_internalformat,
-                                               const GLsizei&   in_width,
-                                               const GLsizei&   in_height,
-                                               const GLsizei&   in_depth,
-                                               const GLboolean& in_fixedsamplelocations)
+void OpenGL::vkglTexImage3DMultisample_with_validation(VKGL::Context*   in_context_ptr,
+                                                       const GLenum&    in_target,
+                                                       const GLsizei&   in_samples,
+                                                       const GLenum&    in_internalformat,
+                                                       const GLsizei&   in_width,
+                                                       const GLsizei&   in_height,
+                                                       const GLsizei&   in_depth,
+                                                       const GLboolean& in_fixedsamplelocations)
 {
     if (validate(in_context_ptr,
                  in_target,

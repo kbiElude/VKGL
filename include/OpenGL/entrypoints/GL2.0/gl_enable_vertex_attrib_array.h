@@ -7,9 +7,12 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglEnableVertexAttribArray(GLuint index);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglEnableVertexAttribArray(GLuint index);
 
-void vkglEnableVertexAttribArray_with_validation(VKGL::Context* in_context_ptr,
-                                                 const GLuint&  in_index);
+    void vkglEnableVertexAttribArray_with_validation(VKGL::Context* in_context_ptr,
+                                                     const GLuint&  in_index);
+}
 
 #endif /* VKGL_GL_ENABLE_VERTEX_ATTRIB_ARRAY_H */

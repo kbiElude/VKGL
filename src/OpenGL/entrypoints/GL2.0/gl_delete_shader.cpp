@@ -17,7 +17,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglDeleteShader(GLuint shader)
+void VKGL_APIENTRY OpenGL::vkglDeleteShader(GLuint shader)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -25,14 +25,14 @@ void VKGL_APIENTRY vkglDeleteShader(GLuint shader)
                                         shader);
 }
 
-void vkglDeleteShader_execute(VKGL::Context* in_context_ptr,
-                              const GLuint&  in_shader)
+static void vkglDeleteShader_execute(VKGL::Context* in_context_ptr,
+                                     const GLuint&  in_shader)
 {
     in_context_ptr->delete_shader(in_shader);
 }
 
-void vkglDeleteShader_with_validation(VKGL::Context* in_context_ptr,
-                                      const GLuint&  in_shader)
+void OpenGL::vkglDeleteShader_with_validation(VKGL::Context* in_context_ptr,
+                                              const GLuint&  in_shader)
 {
     if (validate(in_context_ptr,
                  in_shader) )

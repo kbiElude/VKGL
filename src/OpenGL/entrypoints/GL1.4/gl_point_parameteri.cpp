@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglPointParameteri(GLenum pname,
-                                       GLint  param)
+void VKGL_APIENTRY OpenGL::vkglPointParameteri(GLenum pname,
+                                               GLint  param)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -29,9 +29,9 @@ void VKGL_APIENTRY vkglPointParameteri(GLenum pname,
                                            param);
 }
 
-void vkglPointParameteri_execute(VKGL::Context* in_context_ptr,
-                                 const GLenum&  in_pname,
-                                 const GLint&   in_param)
+static void vkglPointParameteri_execute(VKGL::Context* in_context_ptr,
+                                        const GLenum&  in_pname,
+                                        const GLint&   in_param)
 {
     const auto pname_vkgl = VKGL::Utils::get_point_property_for_gl_enum(in_pname);
 
@@ -40,9 +40,9 @@ void vkglPointParameteri_execute(VKGL::Context* in_context_ptr,
                                       &in_param);
 }
 
-void vkglPointParameteri_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_pname,
-                                         const GLint&   in_param)
+void OpenGL::vkglPointParameteri_with_validation(VKGL::Context* in_context_ptr,
+                                                 const GLenum&  in_pname,
+                                                 const GLint&   in_param)
 {
     if (validate(in_context_ptr,
                  in_pname,

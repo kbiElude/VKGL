@@ -7,9 +7,12 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglBindVertexArray(GLuint array);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglBindVertexArray(GLuint array);
 
-void vkglBindVertexArray_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLuint&  in_array);
+    void vkglBindVertexArray_with_validation(VKGL::Context* in_context_ptr,
+                                             const GLuint&  in_array);
+}
 
 #endif /* VKGL_GL_BIND_VERTEX_ARRAY_H */

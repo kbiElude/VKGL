@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGenTextures(GLsizei n,
-                                   GLuint* textures)
+void VKGL_APIENTRY OpenGL::vkglGenTextures(GLsizei n,
+                                           GLuint* textures)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -28,17 +28,17 @@ void VKGL_APIENTRY vkglGenTextures(GLsizei n,
                                        textures);
 }
 
-void vkglGenTextures_execute(VKGL::Context* in_context_ptr,
-                             const GLsizei& in_n,
-                             GLuint*        in_textures)
+static void vkglGenTextures_execute(VKGL::Context* in_context_ptr,
+                                    const GLsizei& in_n,
+                                    GLuint*        in_textures)
 {
     in_context_ptr->gen_textures(in_n,
                                  in_textures);
 }
 
-void vkglGenTextures_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLsizei& in_n,
-                                     GLuint*        in_textures)
+void OpenGL::vkglGenTextures_with_validation(VKGL::Context* in_context_ptr,
+                                             const GLsizei& in_n,
+                                             GLuint*        in_textures)
 {
     if (validate(in_context_ptr,
                  in_n,

@@ -20,10 +20,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglVertexAttrib3s(GLuint  index,
-                                      GLshort x,
-                                      GLshort y,
-                                      GLshort z)
+void VKGL_APIENTRY OpenGL::vkglVertexAttrib3s(GLuint  index,
+                                              GLshort x,
+                                              GLshort y,
+                                              GLshort z)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -34,11 +34,11 @@ void VKGL_APIENTRY vkglVertexAttrib3s(GLuint  index,
                                           z);
 }
 
-void vkglVertexAttrib3s_execute(VKGL::Context* in_context_ptr,
-                                const GLuint&  in_index,
-                                const GLshort& in_x,
-                                const GLshort& in_y,
-                                const GLshort& in_z)
+static void vkglVertexAttrib3s_execute(VKGL::Context* in_context_ptr,
+                                       const GLuint&  in_index,
+                                       const GLshort& in_x,
+                                       const GLshort& in_y,
+                                       const GLshort& in_z)
 {
     const GLshort data[] =
     {
@@ -55,11 +55,11 @@ void vkglVertexAttrib3s_execute(VKGL::Context* in_context_ptr,
                                          data);
 }
 
-void vkglVertexAttrib3s_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLuint&  in_index,
-                                        const GLshort& in_x,
-                                        const GLshort& in_y,
-                                        const GLshort& in_z)
+void OpenGL::vkglVertexAttrib3s_with_validation(VKGL::Context* in_context_ptr,
+                                                const GLuint&  in_index,
+                                                const GLshort& in_x,
+                                                const GLshort& in_y,
+                                                const GLshort& in_z)
 {
     if (validate(in_context_ptr,
                  in_index,

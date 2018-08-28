@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglDetachShader(GLuint program,
-                                    GLuint shader)
+void VKGL_APIENTRY OpenGL::vkglDetachShader(GLuint program,
+                                            GLuint shader)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -29,17 +29,17 @@ void VKGL_APIENTRY vkglDetachShader(GLuint program,
                                         shader);
 }
 
-void vkglDetachShader_execute(VKGL::Context* in_context_ptr,
-                              const GLuint&  in_program,
-                              const GLuint&  in_shader)
+static void vkglDetachShader_execute(VKGL::Context* in_context_ptr,
+                                     const GLuint&  in_program,
+                                     const GLuint&  in_shader)
 {
     in_context_ptr->detach_shader(in_program,
                                   in_shader);
 }
 
-void vkglDetachShader_with_validation(VKGL::Context* in_context_ptr,
-                                      const GLuint&  in_program,
-                                      const GLuint&  in_shader)
+void OpenGL::vkglDetachShader_with_validation(VKGL::Context* in_context_ptr,
+                                              const GLuint&  in_program,
+                                              const GLuint&  in_shader)
 {
     if (validate(in_context_ptr,
                  in_program,

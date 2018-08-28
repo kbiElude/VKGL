@@ -24,12 +24,12 @@ static bool validate(VKGL::Context*     in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglMultiDrawElementsBaseVertex(GLenum             mode,
-                                                   const GLsizei*     count,
-                                                   GLenum             type,
-                                                   const void* const* indices,
-                                                   GLsizei            drawcount,
-                                                   const GLint*       basevertex)
+void VKGL_APIENTRY OpenGL::vkglMultiDrawElementsBaseVertex(GLenum             mode,
+                                                           const GLsizei*     count,
+                                                           GLenum             type,
+                                                           const void* const* indices,
+                                                           GLsizei            drawcount,
+                                                           const GLint*       basevertex)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -42,13 +42,13 @@ void VKGL_APIENTRY vkglMultiDrawElementsBaseVertex(GLenum             mode,
                                                        basevertex);
 }
 
-void vkglMultiDrawElementsBaseVertex_execute(VKGL::Context*     in_context_ptr,
-                                             const GLenum&      in_mode,
-                                             const GLsizei*     in_count_ptr,
-                                             const GLenum&      in_type,
-                                             const void* const* in_indices_ptr,
-                                             const GLsizei&     in_drawcount,
-                                             const GLint*       in_basevertex_ptr)
+static void vkglMultiDrawElementsBaseVertex_execute(VKGL::Context*     in_context_ptr,
+                                                    const GLenum&      in_mode,
+                                                    const GLsizei*     in_count_ptr,
+                                                    const GLenum&      in_type,
+                                                    const void* const* in_indices_ptr,
+                                                    const GLsizei&     in_drawcount,
+                                                    const GLint*       in_basevertex_ptr)
 {
     const auto mode_vkgl = VKGL::Utils::get_draw_call_mode_for_gl_enum      (in_mode);
     const auto type_vkgl = VKGL::Utils::get_draw_call_index_type_for_gl_enum(in_type);
@@ -61,13 +61,13 @@ void vkglMultiDrawElementsBaseVertex_execute(VKGL::Context*     in_context_ptr,
                                                     in_basevertex_ptr);
 }
 
-void vkglMultiDrawElementsBaseVertex_with_validation(VKGL::Context*     in_context_ptr,
-                                                     const GLenum&      in_mode,
-                                                     const GLsizei*     in_count_ptr,
-                                                     const GLenum&      in_type,
-                                                     const void* const* in_indices_ptr,
-                                                     const GLsizei&     in_drawcount,
-                                                     const GLint*       in_basevertex_ptr)
+void OpenGL::vkglMultiDrawElementsBaseVertex_with_validation(VKGL::Context*     in_context_ptr,
+                                                             const GLenum&      in_mode,
+                                                             const GLsizei*     in_count_ptr,
+                                                             const GLenum&      in_type,
+                                                             const void* const* in_indices_ptr,
+                                                             const GLsizei&     in_drawcount,
+                                                             const GLint*       in_basevertex_ptr)
 {
     if (validate(in_context_ptr,
                  in_mode,

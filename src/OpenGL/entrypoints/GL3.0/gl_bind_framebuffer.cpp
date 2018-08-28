@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglBindFramebuffer(GLenum target,
-                                       GLuint framebuffer)
+void VKGL_APIENTRY OpenGL::vkglBindFramebuffer(GLenum target,
+                                               GLuint framebuffer)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -29,9 +29,9 @@ void VKGL_APIENTRY vkglBindFramebuffer(GLenum target,
                                            framebuffer);
 }
 
-void vkglBindFramebuffer_execute(VKGL::Context* in_context_ptr,
-                                 const GLenum&  in_target,
-                                 const GLuint&  in_framebuffer)
+static void vkglBindFramebuffer_execute(VKGL::Context* in_context_ptr,
+                                        const GLenum&  in_target,
+                                        const GLuint&  in_framebuffer)
 {
     const auto target_vkgl = VKGL::Utils::get_framebuffer_target_for_gl_enum(in_target);
 
@@ -39,9 +39,9 @@ void vkglBindFramebuffer_execute(VKGL::Context* in_context_ptr,
                                      in_framebuffer);
 }
 
-void vkglBindFramebuffer_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_target,
-                                         const GLuint&  in_framebuffer)
+void OpenGL::vkglBindFramebuffer_with_validation(VKGL::Context* in_context_ptr,
+                                                 const GLenum&  in_target,
+                                                 const GLuint&  in_framebuffer)
 {
     if (validate(in_context_ptr,
                  in_target,

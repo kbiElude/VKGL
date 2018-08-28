@@ -18,7 +18,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglBlendEquation(GLenum mode)
+void VKGL_APIENTRY OpenGL::vkglBlendEquation(GLenum mode)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -26,16 +26,16 @@ void VKGL_APIENTRY vkglBlendEquation(GLenum mode)
                                          mode);
 }
 
-void vkglBlendEquation_execute(VKGL::Context* in_context_ptr,
-                               const GLenum&  in_mode)
+static void vkglBlendEquation_execute(VKGL::Context* in_context_ptr,
+                                      const GLenum&  in_mode)
 {
     const auto mode_vkgl = VKGL::Utils::get_blend_equation_for_gl_enum(in_mode);
 
     in_context_ptr->set_blend_equation(mode_vkgl);
 }
 
-void vkglBlendEquation_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_mode)
+void OpenGL::vkglBlendEquation_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLenum&  in_mode)
 {
     if (validate(in_context_ptr,
                  in_mode) )

@@ -20,10 +20,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetShaderInfoLog(GLuint   shader,
-                                        GLsizei  bufSize,
-                                        GLsizei* length,
-                                        GLchar*  infoLog)
+void VKGL_APIENTRY OpenGL::vkglGetShaderInfoLog(GLuint   shader,
+                                                GLsizei  bufSize,
+                                                GLsizei* length,
+                                                GLchar*  infoLog)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -34,11 +34,11 @@ void VKGL_APIENTRY vkglGetShaderInfoLog(GLuint   shader,
                                             infoLog);
 }
 
-void vkglGetShaderInfoLog_execute(VKGL::Context* in_context_ptr,
-                                  const GLuint&  in_shader,
-                                  const GLsizei& in_buf_size,
-                                  GLsizei*       inout_length_ptr,
-                                  GLchar*        out_info_log_ptr)
+static void vkglGetShaderInfoLog_execute(VKGL::Context* in_context_ptr,
+                                         const GLuint&  in_shader,
+                                         const GLsizei& in_buf_size,
+                                         GLsizei*       inout_length_ptr,
+                                         GLchar*        out_info_log_ptr)
 {
     in_context_ptr->get_shader_info_log(in_shader,
                                         in_buf_size,
@@ -46,11 +46,11 @@ void vkglGetShaderInfoLog_execute(VKGL::Context* in_context_ptr,
                                         out_info_log_ptr);
 }
 
-void vkglGetShaderInfoLog_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_shader,
-                                          const GLsizei& in_buf_size,
-                                          GLsizei*       inout_length_ptr,
-                                          GLchar*        out_info_log_ptr)
+void OpenGL::vkglGetShaderInfoLog_with_validation(VKGL::Context* in_context_ptr,
+                                                  const GLuint&  in_shader,
+                                                  const GLsizei& in_buf_size,
+                                                  GLsizei*       inout_length_ptr,
+                                                  GLchar*        out_info_log_ptr)
 {
     if (validate(in_context_ptr,
                  in_shader,

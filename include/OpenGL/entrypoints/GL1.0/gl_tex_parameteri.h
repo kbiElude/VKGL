@@ -7,13 +7,16 @@
 
 #include "OpenGL/types.h"
 
- void VKGL_APIENTRY vkglTexParameteri(GLenum target,
-                                      GLenum pname,
-                                      GLint  param);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglTexParameteri(GLenum target,
+                                         GLenum pname,
+                                         GLint  param);
 
- void vkglTexParameteri_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_target,
-                                       const GLenum&  in_pname,
-                                       const GLint&   in_param);
+    void vkglTexParameteri_with_validation(VKGL::Context* in_context_ptr,
+                                           const GLenum&  in_target,
+                                           const GLenum&  in_pname,
+                                           const GLint&   in_param);
+}
 
 #endif /* VKGL_GL_TEX_PARAMETERI_H */

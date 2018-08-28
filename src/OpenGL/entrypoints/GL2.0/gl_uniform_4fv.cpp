@@ -19,9 +19,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglUniform4fv(GLint          location,
-                                  GLsizei        count,
-                                  const GLfloat* value)
+void VKGL_APIENTRY OpenGL::vkglUniform4fv(GLint          location,
+                                          GLsizei        count,
+                                          const GLfloat* value)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -31,10 +31,10 @@ void VKGL_APIENTRY vkglUniform4fv(GLint          location,
                                       value);
 }
 
-void vkglUniform4fv_execute(VKGL::Context* in_context_ptr,
-                            const GLint&   in_location,
-                            const GLsizei& in_count,
-                            const GLfloat* in_value_ptr)
+static void vkglUniform4fv_execute(VKGL::Context* in_context_ptr,
+                                   const GLint&   in_location,
+                                   const GLsizei& in_count,
+                                   const GLfloat* in_value_ptr)
 {
     in_context_ptr->set_uniform_arrayed(in_location,
                                         VKGL::GetSetArgumentType::Float,
@@ -43,10 +43,10 @@ void vkglUniform4fv_execute(VKGL::Context* in_context_ptr,
                                         in_value_ptr);
 }
 
-void vkglUniform4fv_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLint&   in_location,
-                                    const GLsizei& in_count,
-                                    const GLfloat* in_value_ptr)
+void OpenGL::vkglUniform4fv_with_validation(VKGL::Context* in_context_ptr,
+                                            const GLint&   in_location,
+                                            const GLsizei& in_count,
+                                            const GLfloat* in_value_ptr)
 {
     if (validate(in_context_ptr,
                  in_location,

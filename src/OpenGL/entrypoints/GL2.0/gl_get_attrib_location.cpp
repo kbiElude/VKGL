@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLint VKGL_APIENTRY vkglGetAttribLocation(GLuint        program,
-                                          const GLchar* name)
+GLint VKGL_APIENTRY OpenGL::vkglGetAttribLocation(GLuint        program,
+                                                  const GLchar* name)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -28,17 +28,17 @@ GLint VKGL_APIENTRY vkglGetAttribLocation(GLuint        program,
                                                     name);
 }
 
-GLint vkglGetAttribLocation_execute(VKGL::Context* in_context_ptr,
-                                    const GLuint&  in_program,
-                                    const GLchar*  in_name)
+static GLint vkglGetAttribLocation_execute(VKGL::Context* in_context_ptr,
+                                           const GLuint&  in_program,
+                                           const GLchar*  in_name)
 {
     return in_context_ptr->get_attrib_location(in_program,
                                                in_name);
 }
 
-GLint vkglGetAttribLocation_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLuint&  in_program,
-                                            const GLchar*  in_name)
+GLint OpenGL::vkglGetAttribLocation_with_validation(VKGL::Context* in_context_ptr,
+                                                    const GLuint&  in_program,
+                                                    const GLchar*  in_name)
 {
     GLint result = -1;
 

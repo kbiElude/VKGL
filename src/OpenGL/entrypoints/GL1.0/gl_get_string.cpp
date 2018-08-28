@@ -19,7 +19,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-const GLubyte* APIENTRY vkglGetString(GLenum name)
+const GLubyte* APIENTRY OpenGL::vkglGetString(GLenum name)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -27,8 +27,8 @@ const GLubyte* APIENTRY vkglGetString(GLenum name)
                                             name);
 }
 
-const GLubyte* vkglGetString_execute(VKGL::Context* in_context_ptr,
-                                     const GLenum&  in_name)
+static const GLubyte* vkglGetString_execute(VKGL::Context* in_context_ptr,
+                                            const GLenum&  in_name)
 {
     const auto     name_vkgl  = VKGL::Utils::get_context_property_for_gl_enum(in_name);
     const GLubyte* result_ptr = nullptr;
@@ -40,8 +40,8 @@ const GLubyte* vkglGetString_execute(VKGL::Context* in_context_ptr,
     return result_ptr;
 }
 
-const GLubyte* vkglGetString_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLenum&  in_name)
+const GLubyte* OpenGL::vkglGetString_with_validation(VKGL::Context* in_context_ptr,
+                                                     const GLenum&  in_name)
 {
     const GLubyte* result_ptr = nullptr;
 

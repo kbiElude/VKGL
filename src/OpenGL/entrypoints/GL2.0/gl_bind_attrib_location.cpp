@@ -19,9 +19,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglBindAttribLocation(GLuint        program,
-                                          GLuint        index,
-                                          const GLchar* name)
+void VKGL_APIENTRY OpenGL::vkglBindAttribLocation(GLuint        program,
+                                                  GLuint        index,
+                                                  const GLchar* name)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -31,20 +31,20 @@ void VKGL_APIENTRY vkglBindAttribLocation(GLuint        program,
                                               name);
 }
 
-void vkglBindAttribLocation_execute(VKGL::Context* in_context_ptr,
-                                    const GLuint&  in_program,
-                                    const GLuint&  in_index,
-                                    const GLchar*  in_name)
+static void vkglBindAttribLocation_execute(VKGL::Context* in_context_ptr,
+                                           const GLuint&  in_program,
+                                           const GLuint&  in_index,
+                                           const GLchar*  in_name)
 {
     in_context_ptr->bind_attrib_location(in_program,
                                          in_index,
                                          in_name);
 }
 
-void vkglBindAttribLocation_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLuint&  in_program,
-                                            const GLuint&  in_index,
-                                            const GLchar*  in_name)
+void OpenGL::vkglBindAttribLocation_with_validation(VKGL::Context* in_context_ptr,
+                                                    const GLuint&  in_program,
+                                                    const GLuint&  in_index,
+                                                    const GLchar*  in_name)
 {
     if (validate(in_context_ptr,
                  in_program,

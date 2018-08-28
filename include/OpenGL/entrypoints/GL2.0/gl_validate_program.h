@@ -7,9 +7,12 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglValidateProgram(GLuint program);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglValidateProgram(GLuint program);
 
-void vkglValidateProgram_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLuint&  in_program);
+    void vkglValidateProgram_with_validation(VKGL::Context* in_context_ptr,
+                                             const GLuint&  in_program);
+}
 
 #endif /* VKGL_GL_VALIDATE_PROGRAM_H */

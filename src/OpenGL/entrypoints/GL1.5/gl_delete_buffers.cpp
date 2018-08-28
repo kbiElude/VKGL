@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglDeleteBuffers(GLsizei       n,
-                                     const GLuint* buffers)
+void VKGL_APIENTRY OpenGL::vkglDeleteBuffers(GLsizei       n,
+                                             const GLuint* buffers)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -29,17 +29,17 @@ void VKGL_APIENTRY vkglDeleteBuffers(GLsizei       n,
                                          buffers);
 }
 
-void vkglDeleteBuffers_execute(VKGL::Context* in_context_ptr,
-                               const GLsizei& in_n,
-                               const GLuint*  in_buffers)
+static void vkglDeleteBuffers_execute(VKGL::Context* in_context_ptr,
+                                      const GLsizei& in_n,
+                                      const GLuint*  in_buffers)
 {
     in_context_ptr->delete_buffers(in_n,
                                    in_buffers);
 }
 
-void vkglDeleteBuffers_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLsizei& in_n,
-                                       const GLuint*  in_buffers)
+void OpenGL::vkglDeleteBuffers_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLsizei& in_n,
+                                               const GLuint*  in_buffers)
 {
     if (validate(in_context_ptr,
                  in_n,

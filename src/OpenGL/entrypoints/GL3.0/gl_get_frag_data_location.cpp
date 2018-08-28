@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLint VKGL_APIENTRY vkglGetFragDataLocation(GLuint        program,
-                                            const GLchar* name)
+GLint VKGL_APIENTRY OpenGL::vkglGetFragDataLocation(GLuint        program,
+                                                    const GLchar* name)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -28,17 +28,17 @@ GLint VKGL_APIENTRY vkglGetFragDataLocation(GLuint        program,
                                                       name);
 }
 
-GLint vkglGetFragDataLocation_execute(VKGL::Context* in_context_ptr,
-                                      const GLuint&  in_program,
-                                      const GLchar*  in_name_ptr)
+static GLint vkglGetFragDataLocation_execute(VKGL::Context* in_context_ptr,
+                                             const GLuint&  in_program,
+                                             const GLchar*  in_name_ptr)
 {
     return in_context_ptr->get_frag_data_location(in_program,
                                                   in_name_ptr);
 }
 
-GLint vkglGetFragDataLocation_with_validation(VKGL::Context* in_context_ptr,
-                                              const GLuint&  in_program,
-                                              const GLchar*  in_name_ptr)
+GLint OpenGL::vkglGetFragDataLocation_with_validation(VKGL::Context* in_context_ptr,
+                                                      const GLuint&  in_program,
+                                                      const GLchar*  in_name_ptr)
 {
     GLint result = INT32_MAX;
 

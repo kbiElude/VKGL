@@ -19,7 +19,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglFrontFace(GLenum mode)
+void VKGL_APIENTRY OpenGL::vkglFrontFace(GLenum mode)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -27,16 +27,16 @@ void VKGL_APIENTRY vkglFrontFace(GLenum mode)
                                      mode);
 }
 
-void vkglFrontFace_execute(VKGL::Context* in_context_ptr,
-                           const GLenum&  in_mode)
+static void vkglFrontFace_execute(VKGL::Context* in_context_ptr,
+                                  const GLenum&  in_mode)
 {
     const auto orientation_vkgl = VKGL::Utils::get_front_face_orientation_for_gl_enum(in_mode);
 
     in_context_ptr->set_front_face_orientation(orientation_vkgl);
 }
 
-void vkglFrontFace_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLenum&  in_mode)
+void OpenGL::vkglFrontFace_with_validation(VKGL::Context* in_context_ptr,
+                                           const GLenum&  in_mode)
 {
     if (validate(in_context_ptr,
                  in_mode) )

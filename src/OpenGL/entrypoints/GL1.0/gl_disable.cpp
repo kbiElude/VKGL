@@ -19,7 +19,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglDisable(GLenum cap)
+void VKGL_APIENTRY OpenGL::vkglDisable(GLenum cap)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -27,16 +27,16 @@ void VKGL_APIENTRY vkglDisable(GLenum cap)
                                    cap);
 }
 
-void vkglDisable_execute(VKGL::Context* in_context_ptr,
-                         const GLenum&  in_cap)
+static void vkglDisable_execute(VKGL::Context* in_context_ptr,
+                                const GLenum&  in_cap)
 {
     const auto cap_vkgl = VKGL::Utils::get_nonindexed_capability_for_gl_enum(in_cap);
 
     in_context_ptr->disable(cap_vkgl);
 }
 
-void vkglDisable_with_validation(VKGL::Context* in_context_ptr,
-                                 const GLenum&  in_cap)
+void OpenGL::vkglDisable_with_validation(VKGL::Context* in_context_ptr,
+                                         const GLenum&  in_cap)
 {
     if (validate(in_context_ptr,
                  in_cap) )

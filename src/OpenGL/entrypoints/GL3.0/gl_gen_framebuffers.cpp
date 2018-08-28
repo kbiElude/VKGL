@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGenFramebuffers(GLsizei n,
-                                       GLuint* framebuffers)
+void VKGL_APIENTRY OpenGL::vkglGenFramebuffers(GLsizei n,
+                                               GLuint* framebuffers)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -28,17 +28,17 @@ void VKGL_APIENTRY vkglGenFramebuffers(GLsizei n,
                                            framebuffers);
 }
 
-void vkglGenFramebuffers_execute(VKGL::Context* in_context_ptr,
-                                 const GLsizei& in_n,
-                                 GLuint*        out_framebuffers_ptr)
+static void vkglGenFramebuffers_execute(VKGL::Context* in_context_ptr,
+                                        const GLsizei& in_n,
+                                        GLuint*        out_framebuffers_ptr)
 {
     in_context_ptr->gen_framebuffers(in_n,
                                      out_framebuffers_ptr);
 }
 
-void vkglGenFramebuffers_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLsizei& in_n,
-                                         GLuint*        out_framebuffers_ptr)
+void OpenGL::vkglGenFramebuffers_with_validation(VKGL::Context* in_context_ptr,
+                                                 const GLsizei& in_n,
+                                                 GLuint*        out_framebuffers_ptr)
 {
     if (validate(in_context_ptr,
                  in_n,

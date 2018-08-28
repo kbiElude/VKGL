@@ -17,7 +17,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglDeleteSync(GLsync sync)
+void VKGL_APIENTRY OpenGL::vkglDeleteSync(GLsync sync)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -25,14 +25,14 @@ void VKGL_APIENTRY vkglDeleteSync(GLsync sync)
                                       sync);
 }
 
-void vkglDeleteSync_execute(VKGL::Context* in_context_ptr,
-                            const GLsync&  in_sync)
+static void vkglDeleteSync_execute(VKGL::Context* in_context_ptr,
+                                   const GLsync&  in_sync)
 {
     in_context_ptr->delete_sync(in_sync);
 }
 
-void vkglDeleteSync_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLsync&  in_sync)
+void OpenGL::vkglDeleteSync_with_validation(VKGL::Context* in_context_ptr,
+                                            const GLsync&  in_sync)
 {
     if (validate(in_context_ptr,
                  in_sync) )

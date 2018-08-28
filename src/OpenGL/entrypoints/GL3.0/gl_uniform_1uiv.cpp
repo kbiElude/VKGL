@@ -19,9 +19,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglUniform1uiv(GLint         location,
-                                   GLsizei       count,
-                                   const GLuint* value)
+void VKGL_APIENTRY OpenGL::vkglUniform1uiv(GLint         location,
+                                           GLsizei       count,
+                                           const GLuint* value)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -31,10 +31,10 @@ void VKGL_APIENTRY vkglUniform1uiv(GLint         location,
                                        value);
 }
 
-void vkglUniform1uiv_execute(VKGL::Context* in_context_ptr,
-                             const GLint&   in_location,
-                             const GLsizei& in_count,
-                             const GLuint*  in_value_ptr)
+static void vkglUniform1uiv_execute(VKGL::Context* in_context_ptr,
+                                    const GLint&   in_location,
+                                    const GLsizei& in_count,
+                                    const GLuint*  in_value_ptr)
 {
     in_context_ptr->set_uniform_arrayed(in_location,
                                         VKGL::GetSetArgumentType::Unsigned_Int,
@@ -43,10 +43,10 @@ void vkglUniform1uiv_execute(VKGL::Context* in_context_ptr,
                                         in_value_ptr);
 }
 
-void vkglUniform1uiv_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLint&   in_location,
-                                     const GLsizei& in_count,
-                                     const GLuint*  in_value_ptr)
+void OpenGL::vkglUniform1uiv_with_validation(VKGL::Context* in_context_ptr,
+                                             const GLint&   in_location,
+                                             const GLsizei& in_count,
+                                             const GLuint*  in_value_ptr)
 {
     if (validate(in_context_ptr,
                  in_location,

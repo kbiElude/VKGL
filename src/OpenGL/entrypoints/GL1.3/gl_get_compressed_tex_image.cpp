@@ -20,9 +20,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetCompressedTexImage(GLenum target,
-                                             GLint  level,
-                                             void*  img)
+void VKGL_APIENTRY OpenGL::vkglGetCompressedTexImage(GLenum target,
+                                                     GLint  level,
+                                                     void*  img)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -32,10 +32,10 @@ void VKGL_APIENTRY vkglGetCompressedTexImage(GLenum target,
                                                  img);
 }
 
-void vkglGetCompressedTexImage_execute(VKGL::Context* in_context_ptr,
-                                       GLenum         in_target,
-                                       GLint          in_level,
-                                       void*          in_img)
+static void vkglGetCompressedTexImage_execute(VKGL::Context* in_context_ptr,
+                                              GLenum         in_target,
+                                              GLint          in_level,
+                                              void*          in_img)
 {
     const auto target_vkgl = VKGL::Utils::get_texture_target_for_gl_enum(in_target);
 
@@ -44,10 +44,10 @@ void vkglGetCompressedTexImage_execute(VKGL::Context* in_context_ptr,
                                              in_img);
 }
 
-void vkglGetCompressedTexImage_with_validation(VKGL::Context* in_context_ptr,
-                                               GLenum         in_target,
-                                               GLint          in_level,
-                                               void*          in_img)
+void OpenGL::vkglGetCompressedTexImage_with_validation(VKGL::Context* in_context_ptr,
+                                                       GLenum         in_target,
+                                                       GLint          in_level,
+                                                       void*          in_img)
 {
     if (validate(in_context_ptr,
                  in_target,

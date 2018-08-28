@@ -18,7 +18,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglLineWidth(GLfloat width)
+void VKGL_APIENTRY OpenGL::vkglLineWidth(GLfloat width)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -26,14 +26,14 @@ void VKGL_APIENTRY vkglLineWidth(GLfloat width)
                                      width);
 }
 
-void vkglLineWidth_execute(VKGL::Context* in_context_ptr,
-                           const GLfloat& in_width)
+static void vkglLineWidth_execute(VKGL::Context* in_context_ptr,
+                                  const GLfloat& in_width)
 {
     in_context_ptr->set_line_width(in_width);
 }
 
-void vkglLineWidth_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLfloat& in_width)
+void OpenGL::vkglLineWidth_with_validation(VKGL::Context* in_context_ptr,
+                                           const GLfloat& in_width)
 {
     if (validate(in_context_ptr,
                  in_width) )

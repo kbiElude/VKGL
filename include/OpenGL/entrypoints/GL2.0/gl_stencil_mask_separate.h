@@ -7,11 +7,14 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglStencilMaskSeparate(GLenum face,
-                                           GLuint mask);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglStencilMaskSeparate(GLenum face,
+                                               GLuint mask);
 
-void vkglStencilMaskSeparate_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLenum&  in_face,
-                                             const GLuint&  in_mask);
+    void vkglStencilMaskSeparate_with_validation(VKGL::Context* in_context_ptr,
+                                                 const GLenum&  in_face,
+                                                 const GLuint&  in_mask);
+}
 
 #endif /* VKGL_GL_STENCIL_MASK_SEPARATE_H */

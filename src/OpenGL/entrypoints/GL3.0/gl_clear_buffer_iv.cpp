@@ -20,9 +20,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglClearBufferiv(GLenum       buffer,
-                                     GLint        drawbuffer,
-                                     const GLint* value)
+void VKGL_APIENTRY OpenGL::vkglClearBufferiv(GLenum       buffer,
+                                             GLint        drawbuffer,
+                                             const GLint* value)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -32,10 +32,10 @@ void VKGL_APIENTRY vkglClearBufferiv(GLenum       buffer,
                                          value);
 }
 
-void vkglClearBufferiv_execute(VKGL::Context* in_context_ptr,
-                               const GLenum&  in_buffer,
-                               const GLint&   in_drawbuffer,
-                               const GLint*   in_value_ptr)
+static void vkglClearBufferiv_execute(VKGL::Context* in_context_ptr,
+                                      const GLenum&  in_buffer,
+                                      const GLint&   in_drawbuffer,
+                                      const GLint*   in_value_ptr)
 {
     const auto     buffer_vkgl   = VKGL::Utils::get_clear_buffer_for_gl_enum(in_buffer);
     const uint32_t n_components  = (in_buffer == GL_STENCIL) ? 0             : 4;
@@ -50,10 +50,10 @@ void vkglClearBufferiv_execute(VKGL::Context* in_context_ptr,
                                  stencil_value);
 }
 
-void vkglClearBufferiv_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_buffer,
-                                       const GLint&   in_drawbuffer,
-                                       const GLint*   in_value_ptr)
+void OpenGL::vkglClearBufferiv_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLenum&  in_buffer,
+                                               const GLint&   in_drawbuffer,
+                                               const GLint*   in_value_ptr)
 {
     if (validate(in_context_ptr,
                  in_buffer,

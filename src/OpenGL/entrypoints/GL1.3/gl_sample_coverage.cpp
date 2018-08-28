@@ -19,8 +19,8 @@ static bool validate(VKGL::Context*   in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglSampleCoverage(GLfloat   value,
-                                      GLboolean invert)
+void VKGL_APIENTRY OpenGL::vkglSampleCoverage(GLfloat   value,
+                                              GLboolean invert)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -29,17 +29,17 @@ void VKGL_APIENTRY vkglSampleCoverage(GLfloat   value,
                                           invert);
 }
 
-void vkglSampleCoverage_execute(VKGL::Context*   in_context_ptr,
-                                const GLfloat&   in_value,
-                                const GLboolean& in_invert)
+static void vkglSampleCoverage_execute(VKGL::Context*   in_context_ptr,
+                                       const GLfloat&   in_value,
+                                       const GLboolean& in_invert)
 {
     in_context_ptr->sample_coverage(in_value,
                                     in_invert);
 }
 
-void vkglSampleCoverage_with_validation(VKGL::Context*   in_context_ptr,
-                                        const GLfloat&   in_value,
-                                        const GLboolean& in_invert)
+void OpenGL::vkglSampleCoverage_with_validation(VKGL::Context*   in_context_ptr,
+                                                const GLfloat&   in_value,
+                                                const GLboolean& in_invert)
 {
     if (validate(in_context_ptr,
                  in_value,

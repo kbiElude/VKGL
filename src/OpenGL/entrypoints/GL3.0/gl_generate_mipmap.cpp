@@ -18,7 +18,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGenerateMipmap(GLenum target)
+void VKGL_APIENTRY OpenGL::vkglGenerateMipmap(GLenum target)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -26,16 +26,16 @@ void VKGL_APIENTRY vkglGenerateMipmap(GLenum target)
                                           target);
 }
 
-void vkglGenerateMipmap_execute(VKGL::Context* in_context_ptr,
-                                const GLenum&  in_target)
+static void vkglGenerateMipmap_execute(VKGL::Context* in_context_ptr,
+                                       const GLenum&  in_target)
 {
     const auto target_vkgl = VKGL::Utils::get_mipmap_generation_texture_target_for_gl_enum(in_target);
 
     in_context_ptr->generate_mipmap(target_vkgl);
 }
 
-void vkglGenerateMipmap_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLenum&  in_target)
+void OpenGL::vkglGenerateMipmap_with_validation(VKGL::Context* in_context_ptr,
+                                                const GLenum&  in_target)
 {
     if (validate(in_context_ptr,
                  in_target) )

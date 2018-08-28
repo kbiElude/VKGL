@@ -21,11 +21,11 @@ static bool validate(VKGL::Context*   in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglColorMaski(GLuint    index,
-                                  GLboolean r,
-                                  GLboolean g,
-                                  GLboolean b,
-                                  GLboolean a)
+void VKGL_APIENTRY OpenGL::vkglColorMaski(GLuint    index,
+                                          GLboolean r,
+                                          GLboolean g,
+                                          GLboolean b,
+                                          GLboolean a)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -37,12 +37,12 @@ void VKGL_APIENTRY vkglColorMaski(GLuint    index,
                                       a);
 }
 
-void vkglColorMaski_execute(VKGL::Context*   in_context_ptr,
-                            const GLuint&    in_index,
-                            const GLboolean& in_r,
-                            const GLboolean& in_g,
-                            const GLboolean& in_b,
-                            const GLboolean& in_a)
+static void vkglColorMaski_execute(VKGL::Context*   in_context_ptr,
+                                   const GLuint&    in_index,
+                                   const GLboolean& in_r,
+                                   const GLboolean& in_g,
+                                   const GLboolean& in_b,
+                                   const GLboolean& in_a)
 {
     in_context_ptr->set_color_maski(in_index,
                                     in_r,
@@ -51,12 +51,12 @@ void vkglColorMaski_execute(VKGL::Context*   in_context_ptr,
                                     in_a);
 }
 
-void vkglColorMaski_with_validation(VKGL::Context*   in_context_ptr,
-                                    const GLuint&    in_index,
-                                    const GLboolean& in_r,
-                                    const GLboolean& in_g,
-                                    const GLboolean& in_b,
-                                    const GLboolean& in_a)
+void OpenGL::vkglColorMaski_with_validation(VKGL::Context*   in_context_ptr,
+                                            const GLuint&    in_index,
+                                            const GLboolean& in_r,
+                                            const GLboolean& in_g,
+                                            const GLboolean& in_b,
+                                            const GLboolean& in_a)
 {
     if (validate(in_context_ptr,
                  in_index,

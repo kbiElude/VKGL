@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglBeginQuery(GLenum target,
-                                  GLuint id)
+void VKGL_APIENTRY OpenGL::vkglBeginQuery(GLenum target,
+                                          GLuint id)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -29,9 +29,9 @@ void VKGL_APIENTRY vkglBeginQuery(GLenum target,
                                       id);
 }
 
-void vkglBeginQuery_execute(VKGL::Context* in_context_ptr,
-                            const GLenum&  in_target,
-                            const GLuint&  in_id)
+static void vkglBeginQuery_execute(VKGL::Context* in_context_ptr,
+                                   const GLenum&  in_target,
+                                   const GLuint&  in_id)
 {
     const auto target_vkgl = VKGL::Utils::get_query_target_for_gl_enum(in_target);
 
@@ -39,9 +39,9 @@ void vkglBeginQuery_execute(VKGL::Context* in_context_ptr,
                                 in_id);
 }
 
-void vkglBeginQuery_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLenum&  in_target,
-                                    const GLuint&  in_id)
+void OpenGL::vkglBeginQuery_with_validation(VKGL::Context* in_context_ptr,
+                                            const GLenum&  in_target,
+                                            const GLuint&  in_id)
 {
     if (validate(in_context_ptr,
                  in_target,

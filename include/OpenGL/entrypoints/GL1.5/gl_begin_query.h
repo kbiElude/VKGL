@@ -7,11 +7,14 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglBeginQuery(GLenum target,
-                                  GLuint id);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglBeginQuery(GLenum target,
+                                      GLuint id);
 
-void vkglBeginQuery_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLenum&  in_target,
-                                    const GLuint&  in_id);
+    void vkglBeginQuery_with_validation(VKGL::Context* in_context_ptr,
+                                        const GLenum&  in_target,
+                                        const GLuint&  in_id);
+}
 
 #endif /* VKGL_GL_BEGIN_QUERY_H */

@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglAttachShader(GLuint program,
-                                    GLuint shader)
+void VKGL_APIENTRY OpenGL::vkglAttachShader(GLuint program,
+                                            GLuint shader)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -29,17 +29,17 @@ void VKGL_APIENTRY vkglAttachShader(GLuint program,
                                         shader);
 }
 
-void vkglAttachShader_execute(VKGL::Context* in_context_ptr,
-                              const GLuint&  in_program,
-                              const GLuint&  in_shader)
+static void vkglAttachShader_execute(VKGL::Context* in_context_ptr,
+                                     const GLuint&  in_program,
+                                     const GLuint&  in_shader)
 {
     in_context_ptr->attach_shader(in_program,
                                   in_shader);
 }
 
-void vkglAttachShader_with_validation(VKGL::Context* in_context_ptr,
-                                      const GLuint&  in_program,
-                                      const GLuint&  in_shader)
+void OpenGL::vkglAttachShader_with_validation(VKGL::Context* in_context_ptr,
+                                              const GLuint&  in_program,
+                                              const GLuint&  in_shader)
 {
     if (validate(in_context_ptr,
                  in_program,

@@ -7,14 +7,14 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-GLenum VKGL_APIENTRY vkglGetError(void)
+GLenum VKGL_APIENTRY OpenGL::vkglGetError(void)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     return dispatch_table_ptr->pGLGetError(dispatch_table_ptr->bound_context_ptr);
 }
 
-GLenum vkglGetError_with_validation(VKGL::Context* in_context_ptr)
+GLenum OpenGL::vkglGetError_with_validation(VKGL::Context* in_context_ptr)
 {
     const auto error_vkgl = in_context_ptr->get_error();
 

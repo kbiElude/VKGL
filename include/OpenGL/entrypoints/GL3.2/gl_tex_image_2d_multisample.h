@@ -7,19 +7,22 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglTexImage2DMultisample(GLenum    target,
-                                             GLsizei   samples,
-                                             GLenum    internalformat,
-                                             GLsizei   width,
-                                             GLsizei   height,
-                                             GLboolean fixedsamplelocations);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglTexImage2DMultisample(GLenum    target,
+                                                 GLsizei   samples,
+                                                 GLenum    internalformat,
+                                                 GLsizei   width,
+                                                 GLsizei   height,
+                                                 GLboolean fixedsamplelocations);
 
-void vkglTexImage2DMultisample_with_validation(VKGL::Context*   in_context_ptr,
-                                               const GLenum&    in_target,
-                                               const GLsizei&   in_samples,
-                                               const GLenum&    in_internalformat,
-                                               const GLsizei&   in_width,
-                                               const GLsizei&   in_height,
-                                               const GLboolean& in_fixedsamplelocations);
+    void vkglTexImage2DMultisample_with_validation(VKGL::Context*   in_context_ptr,
+                                                   const GLenum&    in_target,
+                                                   const GLsizei&   in_samples,
+                                                   const GLenum&    in_internalformat,
+                                                   const GLsizei&   in_width,
+                                                   const GLsizei&   in_height,
+                                                   const GLboolean& in_fixedsamplelocations);
+}
 
 #endif /* VKGL_GL_TEX_IMAGE_2D_MULTISAMPLE_H */

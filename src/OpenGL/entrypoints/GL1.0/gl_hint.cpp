@@ -20,8 +20,8 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglHint(GLenum target,
-                            GLenum mode)
+void VKGL_APIENTRY OpenGL::vkglHint(GLenum target,
+                                    GLenum mode)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -30,9 +30,9 @@ void VKGL_APIENTRY vkglHint(GLenum target,
                                 mode);
 }
 
-void vkglHint_execute(VKGL::Context* in_context_ptr,
-                      const GLenum&  in_target,
-                      const GLenum&  in_mode)
+static void vkglHint_execute(VKGL::Context* in_context_ptr,
+                             const GLenum&  in_target,
+                             const GLenum&  in_mode)
 {
     const auto mode_vkgl   = VKGL::Utils::get_hint_mode_for_gl_enum  (in_mode);
     const auto target_vkgl = VKGL::Utils::get_hint_target_for_gl_enum(in_target);
@@ -41,9 +41,9 @@ void vkglHint_execute(VKGL::Context* in_context_ptr,
                              mode_vkgl);
 }
 
-void vkglHint_with_validation(VKGL::Context* in_context_ptr,
-                              const GLenum&  in_target,
-                              const GLenum&  in_mode)
+void OpenGL::vkglHint_with_validation(VKGL::Context* in_context_ptr,
+                                      const GLenum&  in_target,
+                                      const GLenum&  in_mode)
 {
     if (validate(in_context_ptr,
                  in_target,

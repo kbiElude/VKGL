@@ -20,10 +20,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglVertexAttribI3ui(GLuint index,
-                                        GLuint x,
-                                        GLuint y,
-                                        GLuint z)
+void VKGL_APIENTRY OpenGL::vkglVertexAttribI3ui(GLuint index,
+                                                GLuint x,
+                                                GLuint y,
+                                                GLuint z)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -34,11 +34,11 @@ void VKGL_APIENTRY vkglVertexAttribI3ui(GLuint index,
                                             z);
 }
 
-void vkglVertexAttribI3ui_execute(VKGL::Context* in_context_ptr,
-                                  const GLuint&  in_index,
-                                  const GLuint&  in_x,
-                                  const GLuint&  in_y,
-                                  const GLuint&  in_z)
+static void vkglVertexAttribI3ui_execute(VKGL::Context* in_context_ptr,
+                                         const GLuint&  in_index,
+                                         const GLuint&  in_x,
+                                         const GLuint&  in_y,
+                                         const GLuint&  in_z)
 {
     const GLuint data[] =
     {
@@ -55,11 +55,11 @@ void vkglVertexAttribI3ui_execute(VKGL::Context* in_context_ptr,
                                          data);
 }
 
-void vkglVertexAttribI3ui_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_index,
-                                          const GLint&   in_x,
-                                          const GLint&   in_y,
-                                          const GLint&   in_z)
+void OpenGL::vkglVertexAttribI3ui_with_validation(VKGL::Context* in_context_ptr,
+                                                  const GLuint&  in_index,
+                                                  const GLint&   in_x,
+                                                  const GLint&   in_y,
+                                                  const GLint&   in_z)
 {
     if (validate(in_context_ptr,
                  in_index,

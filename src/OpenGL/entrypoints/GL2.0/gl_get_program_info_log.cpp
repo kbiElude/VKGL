@@ -20,10 +20,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetProgramInfoLog(GLuint   program,
-                                         GLsizei  bufSize,
-                                         GLsizei* length,
-                                         GLchar*  infoLog)
+void VKGL_APIENTRY OpenGL::vkglGetProgramInfoLog(GLuint   program,
+                                                 GLsizei  bufSize,
+                                                 GLsizei* length,
+                                                 GLchar*  infoLog)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -34,11 +34,11 @@ void VKGL_APIENTRY vkglGetProgramInfoLog(GLuint   program,
                                              infoLog);
 }
 
-void vkglGetProgramInfoLog_execute(VKGL::Context* in_context_ptr,
-                                   const GLuint&  in_program,
-                                   const GLsizei& in_buf_size,
-                                   GLsizei*       inout_length_ptr,
-                                   GLchar*        out_info_log_ptr)
+static void vkglGetProgramInfoLog_execute(VKGL::Context* in_context_ptr,
+                                          const GLuint&  in_program,
+                                          const GLsizei& in_buf_size,
+                                          GLsizei*       inout_length_ptr,
+                                          GLchar*        out_info_log_ptr)
 {
     in_context_ptr->get_program_info_log(in_program,
                                          in_buf_size,
@@ -46,11 +46,11 @@ void vkglGetProgramInfoLog_execute(VKGL::Context* in_context_ptr,
                                          out_info_log_ptr);
 }
 
-void vkglGetProgramInfoLog_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLuint&  in_program,
-                                           const GLsizei& in_buf_size,
-                                           GLsizei*       inout_length_ptr,
-                                           GLchar*        out_info_log_ptr)
+void OpenGL::vkglGetProgramInfoLog_with_validation(VKGL::Context* in_context_ptr,
+                                                   const GLuint&  in_program,
+                                                   const GLsizei& in_buf_size,
+                                                   GLsizei*       inout_length_ptr,
+                                                   GLchar*        out_info_log_ptr)
 {
     if (validate(in_context_ptr,
                  in_program,

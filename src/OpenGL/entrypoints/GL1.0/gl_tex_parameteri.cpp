@@ -21,9 +21,9 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglTexParameteri(GLenum target,
-                                     GLenum pname,
-                                     GLint  param)
+void VKGL_APIENTRY OpenGL::vkglTexParameteri(GLenum target,
+                                             GLenum pname,
+                                             GLint  param)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -33,10 +33,10 @@ void VKGL_APIENTRY vkglTexParameteri(GLenum target,
                                          param);
 }
 
-void vkglTexParameteri_execute(VKGL::Context* in_context_ptr,
-                               const GLenum&  in_target,
-                               const GLenum&  in_pname,
-                               const GLint&   in_param)
+static void vkglTexParameteri_execute(VKGL::Context* in_context_ptr,
+                                      const GLenum&  in_target,
+                                      const GLenum&  in_pname,
+                                      const GLint&   in_param)
 {
     const auto pname_vkgl  = VKGL::Utils::get_texture_property_for_gl_enum(in_pname);
     const auto target_vkgl = VKGL::Utils::get_texture_target_for_gl_enum  (in_target);
@@ -47,10 +47,10 @@ void vkglTexParameteri_execute(VKGL::Context* in_context_ptr,
                                          &in_param);
 }
 
-void vkglTexParameteri_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_target,
-                                       const GLenum&  in_pname,
-                                       const GLint&   in_param)
+void OpenGL::vkglTexParameteri_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLenum&  in_target,
+                                               const GLenum&  in_pname,
+                                               const GLint&   in_param)
 {
     if (validate(in_context_ptr,
                  in_target,

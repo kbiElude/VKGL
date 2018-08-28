@@ -19,9 +19,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglVertexAttrib2s(GLuint  index,
-                                      GLshort x,
-                                      GLshort y)
+void VKGL_APIENTRY OpenGL::vkglVertexAttrib2s(GLuint  index,
+                                              GLshort x,
+                                              GLshort y)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -31,10 +31,10 @@ void VKGL_APIENTRY vkglVertexAttrib2s(GLuint  index,
                                           y);
 }
 
-void vkglVertexAttrib2s_execute(VKGL::Context* in_context_ptr,
-                                const GLuint&  in_index,
-                                const GLshort& in_x,
-                                const GLshort& in_y)
+static void vkglVertexAttrib2s_execute(VKGL::Context* in_context_ptr,
+                                       const GLuint&  in_index,
+                                       const GLshort& in_x,
+                                       const GLshort& in_y)
 {
     const GLshort data[] =
     {
@@ -50,10 +50,10 @@ void vkglVertexAttrib2s_execute(VKGL::Context* in_context_ptr,
                                          data);
 }
 
-void vkglVertexAttrib2s_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLuint&  in_index,
-                                        const GLshort& in_x,
-                                        const GLshort& in_y)
+void OpenGL::vkglVertexAttrib2s_with_validation(VKGL::Context* in_context_ptr,
+                                                const GLuint&  in_index,
+                                                const GLshort& in_x,
+                                                const GLshort& in_y)
 {
     if (validate(in_context_ptr,
                  in_index,

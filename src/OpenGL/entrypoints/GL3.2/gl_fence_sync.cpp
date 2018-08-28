@@ -19,8 +19,8 @@ static bool validate(VKGL::Context*    in_context_ptr,
     return result;
 }
 
-GLsync VKGL_APIENTRY vkglFenceSync(GLenum     condition,
-                                   GLbitfield flags)
+GLsync VKGL_APIENTRY OpenGL::vkglFenceSync(GLenum     condition,
+                                           GLbitfield flags)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -29,9 +29,9 @@ GLsync VKGL_APIENTRY vkglFenceSync(GLenum     condition,
                                             flags);
 }
 
-GLsync vkglFenceSync_execute(VKGL::Context*    in_context_ptr,
-                             const GLenum&     in_condition,
-                             const GLbitfield& in_flags)
+static GLsync vkglFenceSync_execute(VKGL::Context*    in_context_ptr,
+                                    const GLenum&     in_condition,
+                                    const GLbitfield& in_flags)
 {
     const auto condition_vkgl = VKGL::Utils::get_sync_condition_for_gl_enum(in_condition);
 
@@ -40,9 +40,9 @@ GLsync vkglFenceSync_execute(VKGL::Context*    in_context_ptr,
     return in_context_ptr->fence_sync(condition_vkgl);
 }
 
-GLsync vkglFenceSync_with_validation(VKGL::Context*    in_context_ptr,
-                                     const GLenum&     in_condition,
-                                     const GLbitfield& in_flags)
+GLsync OpenGL::vkglFenceSync_with_validation(VKGL::Context*    in_context_ptr,
+                                             const GLenum&     in_condition,
+                                             const GLbitfield& in_flags)
 {
     GLsync result = nullptr;
 

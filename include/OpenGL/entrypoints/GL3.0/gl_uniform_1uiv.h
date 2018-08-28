@@ -7,13 +7,16 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglUniform1uiv(GLint         location,
-                                   GLsizei       count,
-                                   const GLuint* value);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglUniform1uiv(GLint         location,
+                                       GLsizei       count,
+                                       const GLuint* value);
 
-void vkglUniform1uiv_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLint&   in_location,
-                                     const GLsizei& in_count,
-                                     const GLuint*  in_value_ptr);
+    void vkglUniform1uiv_with_validation(VKGL::Context* in_context_ptr,
+                                         const GLint&   in_location,
+                                         const GLsizei& in_count,
+                                         const GLuint*  in_value_ptr);
+}
 
 #endif /* VKGL_GL_UNIFORM_1UIV_H */

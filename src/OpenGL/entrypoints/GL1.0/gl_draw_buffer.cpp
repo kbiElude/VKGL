@@ -19,7 +19,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglDrawBuffer(GLenum buf)
+void VKGL_APIENTRY OpenGL::vkglDrawBuffer(GLenum buf)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -27,16 +27,16 @@ void VKGL_APIENTRY vkglDrawBuffer(GLenum buf)
                                       buf);
 }
 
-void vkglDrawBuffer_execute(VKGL::Context* in_context_ptr,
-                            const GLenum&  in_buf)
+static void vkglDrawBuffer_execute(VKGL::Context* in_context_ptr,
+                                   const GLenum&  in_buf)
 {
     const auto buffer_vkgl = VKGL::Utils::get_draw_buffer_for_gl_enum(in_buf);
 
     in_context_ptr->set_draw_buffer(buffer_vkgl);
 }
 
-void vkglDrawBuffer_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLenum&  in_buf)
+void OpenGL::vkglDrawBuffer_with_validation(VKGL::Context* in_context_ptr,
+                                            const GLenum&  in_buf)
 {
     if (validate(in_context_ptr,
                  in_buf) )

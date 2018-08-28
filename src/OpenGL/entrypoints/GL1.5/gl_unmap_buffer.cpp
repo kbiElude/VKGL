@@ -18,7 +18,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLboolean VKGL_APIENTRY vkglUnmapBuffer(GLenum target)
+GLboolean VKGL_APIENTRY OpenGL::vkglUnmapBuffer(GLenum target)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -27,16 +27,16 @@ GLboolean VKGL_APIENTRY vkglUnmapBuffer(GLenum target)
                                                       : GL_FALSE;
 }
 
-bool vkglUnmapBuffer_execute(VKGL::Context* in_context_ptr,
-                             const GLenum&  in_target)
+static bool vkglUnmapBuffer_execute(VKGL::Context* in_context_ptr,
+                                    const GLenum&  in_target)
 {
     const auto target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum(in_target);
 
     return in_context_ptr->unmap_buffer(target_vkgl);
 }
 
-bool vkglUnmapBuffer_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLenum&  in_target)
+bool OpenGL::vkglUnmapBuffer_with_validation(VKGL::Context* in_context_ptr,
+                                             const GLenum&  in_target)
 {
     bool result = false;
 

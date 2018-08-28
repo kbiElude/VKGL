@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglBindBuffer(GLenum target,
-                                  GLuint buffer)
+void VKGL_APIENTRY OpenGL::vkglBindBuffer(GLenum target,
+                                          GLuint buffer)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -29,9 +29,9 @@ void VKGL_APIENTRY vkglBindBuffer(GLenum target,
                                       buffer);
 }
 
-void vkglBindBuffer_execute(VKGL::Context* in_context_ptr,
-                            const GLenum&  in_target,
-                            const GLuint&  in_buffer)
+static void vkglBindBuffer_execute(VKGL::Context* in_context_ptr,
+                                   const GLenum&  in_target,
+                                   const GLuint&  in_buffer)
 {
     const auto target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum(in_target);
 
@@ -39,9 +39,9 @@ void vkglBindBuffer_execute(VKGL::Context* in_context_ptr,
                                 in_buffer);
 }
 
-void vkglBindBuffer_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLenum&  in_target,
-                                    const GLuint&  in_buffer)
+void OpenGL::vkglBindBuffer_with_validation(VKGL::Context* in_context_ptr,
+                                            const GLenum&  in_target,
+                                            const GLuint&  in_buffer)
 {
     if (validate(in_context_ptr,
                  in_target,

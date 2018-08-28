@@ -18,8 +18,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglUniform1ui(GLint  location,
-                                  GLuint v0)
+void VKGL_APIENTRY OpenGL::vkglUniform1ui(GLint  location,
+                                          GLuint v0)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -28,9 +28,9 @@ void VKGL_APIENTRY vkglUniform1ui(GLint  location,
                                       v0);
 }
 
-void vkglUniform1ui_execute(VKGL::Context* in_context_ptr,
-                            const GLint&   in_location,
-                            const GLuint&  in_v0)
+static void vkglUniform1ui_execute(VKGL::Context* in_context_ptr,
+                                   const GLint&   in_location,
+                                   const GLuint&  in_v0)
 {
     in_context_ptr->set_uniform(in_location,
                                 VKGL::GetSetArgumentType::Unsigned_Int,
@@ -38,9 +38,9 @@ void vkglUniform1ui_execute(VKGL::Context* in_context_ptr,
                                &in_v0);
 }
 
-void vkglUniform1ui_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLint&    in_location,
-                                   const GLuint&   in_v0)
+void OpenGL::vkglUniform1ui_with_validation(VKGL::Context* in_context_ptr,
+                                            const GLint&    in_location,
+                                            const GLuint&   in_v0)
 {
     if (validate(in_context_ptr,
                  in_location,

@@ -7,11 +7,14 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglSampleMaski(GLuint     maskNumber,
-                                   GLbitfield mask);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglSampleMaski(GLuint     maskNumber,
+                                       GLbitfield mask);
 
-void vkglSampleMaski_with_validation(VKGL::Context*    in_context_ptr,
-                                     const GLuint&     in_mask_number,
-                                     const GLbitfield& in_mask);
+    void vkglSampleMaski_with_validation(VKGL::Context*    in_context_ptr,
+                                         const GLuint&     in_mask_number,
+                                         const GLbitfield& in_mask);
+}
 
 #endif /* VKGL_GL_SAMPLE_MASKI_H */

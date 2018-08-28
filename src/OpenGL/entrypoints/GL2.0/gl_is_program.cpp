@@ -17,7 +17,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLboolean VKGL_APIENTRY vkglIsProgram(GLuint program)
+GLboolean VKGL_APIENTRY OpenGL::vkglIsProgram(GLuint program)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -25,14 +25,14 @@ GLboolean VKGL_APIENTRY vkglIsProgram(GLuint program)
                                             program) == GL_TRUE;
 }
 
-bool vkglIsProgram_execute(VKGL::Context* in_context_ptr,
-                           const GLuint&  in_program)
+static bool vkglIsProgram_execute(VKGL::Context* in_context_ptr,
+                                  const GLuint&  in_program)
 {
     return in_context_ptr->is_program(in_program);
 }
 
-bool vkglIsProgram_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLuint&  in_program)
+bool OpenGL::vkglIsProgram_with_validation(VKGL::Context* in_context_ptr,
+                                           const GLuint&  in_program)
 {
     bool result = false;
 

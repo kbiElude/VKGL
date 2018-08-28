@@ -25,14 +25,14 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglCompressedTexImage2D(GLenum      target,
-                                            GLint       level,
-                                            GLenum      internalformat,
-                                            GLsizei     width,
-                                            GLsizei     height,
-                                            GLint       border,
-                                            GLsizei     imageSize,
-                                            const void* data)
+void VKGL_APIENTRY OpenGL::vkglCompressedTexImage2D(GLenum      target,
+                                                    GLint       level,
+                                                    GLenum      internalformat,
+                                                    GLsizei     width,
+                                                    GLsizei     height,
+                                                    GLint       border,
+                                                    GLsizei     imageSize,
+                                                    const void* data)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -47,15 +47,15 @@ void VKGL_APIENTRY vkglCompressedTexImage2D(GLenum      target,
                                                 data);
 }
 
-void vkglCompressedTexImage2D_execute(VKGL::Context* in_context_ptr,
-                                      const GLenum&  in_target,
-                                      const GLint&   in_level,
-                                      const GLenum&  in_internalformat,
-                                      const GLsizei& in_width,
-                                      const GLsizei& in_height,
-                                      const GLint&   in_border,
-                                      const GLsizei& in_image_size,
-                                      const void*    in_data)
+static void vkglCompressedTexImage2D_execute(VKGL::Context* in_context_ptr,
+                                             const GLenum&  in_target,
+                                             const GLint&   in_level,
+                                             const GLenum&  in_internalformat,
+                                             const GLsizei& in_width,
+                                             const GLsizei& in_height,
+                                             const GLint&   in_border,
+                                             const GLsizei& in_image_size,
+                                             const void*    in_data)
 {
     const auto internalformat_vkgl = VKGL::Utils::get_internal_format_for_gl_enum(in_internalformat);
     const auto target_vkgl         = VKGL::Utils::get_texture_target_for_gl_enum (in_target);
@@ -70,15 +70,15 @@ void vkglCompressedTexImage2D_execute(VKGL::Context* in_context_ptr,
                                             in_data);
 }
 
-void vkglCompressedTexImage2D_with_validation(VKGL::Context* in_context_ptr,
-                                              const GLenum&  in_target,
-                                              const GLint&   in_level,
-                                              const GLenum&  in_internalformat,
-                                              const GLsizei& in_width,
-                                              const GLsizei& in_height,
-                                              const GLint&   in_border,
-                                              const GLsizei& in_image_size,
-                                              const void*    in_data)
+void OpenGL::vkglCompressedTexImage2D_with_validation(VKGL::Context* in_context_ptr,
+                                                      const GLenum&  in_target,
+                                                      const GLint&   in_level,
+                                                      const GLenum&  in_internalformat,
+                                                      const GLsizei& in_width,
+                                                      const GLsizei& in_height,
+                                                      const GLint&   in_border,
+                                                      const GLsizei& in_image_size,
+                                                      const void*    in_data)
 {
     if (validate(in_context_ptr,
                  in_target,

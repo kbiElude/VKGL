@@ -19,7 +19,7 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-GLboolean VKGL_APIENTRY vkglIsEnabled(GLenum cap)
+GLboolean VKGL_APIENTRY OpenGL::vkglIsEnabled(GLenum cap)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -27,8 +27,8 @@ GLboolean VKGL_APIENTRY vkglIsEnabled(GLenum cap)
                                             cap);
 }
 
-GLboolean vkglIsEnabled_execute(VKGL::Context* in_context_ptr,
-                                const GLenum&  in_cap)
+static GLboolean vkglIsEnabled_execute(VKGL::Context* in_context_ptr,
+                                       const GLenum&  in_cap)
 {
     const auto cap_vkgl = VKGL::Utils::get_nonindexed_capability_for_gl_enum(in_cap);
 
@@ -36,8 +36,8 @@ GLboolean vkglIsEnabled_execute(VKGL::Context* in_context_ptr,
                                                    : GL_FALSE;
 }
 
-GLboolean vkglIsEnabled_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLenum&  in_cap)
+GLboolean OpenGL::vkglIsEnabled_with_validation(VKGL::Context* in_context_ptr,
+                                                const GLenum&  in_cap)
 {
     GLboolean result = GL_FALSE;
 

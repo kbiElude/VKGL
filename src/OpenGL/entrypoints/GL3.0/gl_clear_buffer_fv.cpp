@@ -20,9 +20,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglClearBufferfv(GLenum         buffer,
-                                     GLint          drawbuffer,
-                                     const GLfloat* value)
+void VKGL_APIENTRY OpenGL::vkglClearBufferfv(GLenum         buffer,
+                                             GLint          drawbuffer,
+                                             const GLfloat* value)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -32,10 +32,10 @@ void VKGL_APIENTRY vkglClearBufferfv(GLenum         buffer,
                                          value);
 }
 
-void vkglClearBufferfv_execute(VKGL::Context* in_context_ptr,
-                               const GLenum&  in_buffer,
-                               const GLint&   in_drawbuffer,
-                               const GLfloat* in_value_ptr)
+static void vkglClearBufferfv_execute(VKGL::Context* in_context_ptr,
+                                      const GLenum&  in_buffer,
+                                      const GLint&   in_drawbuffer,
+                                      const GLfloat* in_value_ptr)
 {
     const auto     buffer_vkgl  = VKGL::Utils::get_clear_buffer_for_gl_enum(in_buffer);
     const auto     depth_value  = (in_buffer == GL_DEPTH) ? *in_value_ptr : 0.0f;
@@ -50,10 +50,10 @@ void vkglClearBufferfv_execute(VKGL::Context* in_context_ptr,
                                  0);
 }
 
-void vkglClearBufferfv_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_buffer,
-                                       const GLint&   in_drawbuffer,
-                                       const GLfloat* in_value_ptr)
+void OpenGL::vkglClearBufferfv_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLenum&  in_buffer,
+                                               const GLint&   in_drawbuffer,
+                                               const GLfloat* in_value_ptr)
 {
     if (validate(in_context_ptr,
                  in_buffer,

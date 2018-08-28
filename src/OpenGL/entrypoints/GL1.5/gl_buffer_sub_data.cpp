@@ -21,10 +21,10 @@ static bool validate(VKGL::Context*    in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglBufferSubData(GLenum      target,
-                                     GLintptr    offset,
-                                     GLsizeiptr  size,
-                                     const void* data)
+void VKGL_APIENTRY OpenGL::vkglBufferSubData(GLenum      target,
+                                             GLintptr    offset,
+                                             GLsizeiptr  size,
+                                             const void* data)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -35,11 +35,11 @@ void VKGL_APIENTRY vkglBufferSubData(GLenum      target,
                                          data);
 }
 
-void vkglBufferSubData_execute(VKGL::Context*    in_context_ptr,
-                               const GLenum&     in_target,
-                               const GLintptr&   in_offset,
-                               const GLsizeiptr& in_size,
-                               const void*       in_data)
+static void vkglBufferSubData_execute(VKGL::Context*    in_context_ptr,
+                                      const GLenum&     in_target,
+                                      const GLintptr&   in_offset,
+                                      const GLsizeiptr& in_size,
+                                      const void*       in_data)
 {
     const auto target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum(in_target);
 
@@ -49,11 +49,11 @@ void vkglBufferSubData_execute(VKGL::Context*    in_context_ptr,
                                     in_data);
 }
 
-void vkglBufferSubData_with_validation(VKGL::Context*    in_context_ptr,
-                                       const GLenum&     in_target,
-                                       const GLintptr&   in_offset,
-                                       const GLsizeiptr& in_size,
-                                       const void*       in_data)
+void OpenGL::vkglBufferSubData_with_validation(VKGL::Context*    in_context_ptr,
+                                               const GLenum&     in_target,
+                                               const GLintptr&   in_offset,
+                                               const GLsizeiptr& in_size,
+                                               const void*       in_data)
 {
     if (validate(in_context_ptr,
                  in_target,

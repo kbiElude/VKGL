@@ -21,11 +21,11 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglVertexAttrib4s(GLuint  index,
-                                      GLshort x,
-                                      GLshort y,
-                                      GLshort z,
-                                      GLshort w)
+void VKGL_APIENTRY OpenGL::vkglVertexAttrib4s(GLuint  index,
+                                              GLshort x,
+                                              GLshort y,
+                                              GLshort z,
+                                              GLshort w)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -37,12 +37,12 @@ void VKGL_APIENTRY vkglVertexAttrib4s(GLuint  index,
                                           w);
 }
 
-void vkglVertexAttrib4s_execute(VKGL::Context* in_context_ptr,
-                                const GLuint&  in_index,
-                                const GLshort& in_x,
-                                const GLshort& in_y,
-                                const GLshort& in_z,
-                                const GLshort& in_w)
+static void vkglVertexAttrib4s_execute(VKGL::Context* in_context_ptr,
+                                       const GLuint&  in_index,
+                                       const GLshort& in_x,
+                                       const GLshort& in_y,
+                                       const GLshort& in_z,
+                                       const GLshort& in_w)
 {
     const GLshort data[] =
     {
@@ -60,12 +60,12 @@ void vkglVertexAttrib4s_execute(VKGL::Context* in_context_ptr,
                                          data);
 }
 
-void vkglVertexAttrib4s_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLuint&  in_index,
-                                        const GLshort& in_x,
-                                        const GLshort& in_y,
-                                        const GLshort& in_z,
-                                        const GLshort& in_w)
+void OpenGL::vkglVertexAttrib4s_with_validation(VKGL::Context* in_context_ptr,
+                                                const GLuint&  in_index,
+                                                const GLshort& in_x,
+                                                const GLshort& in_y,
+                                                const GLshort& in_z,
+                                                const GLshort& in_w)
 {
     if (validate(in_context_ptr,
                  in_index,

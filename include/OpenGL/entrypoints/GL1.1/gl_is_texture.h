@@ -7,9 +7,12 @@
 
 #include "OpenGL/types.h"
 
-GLboolean VKGL_APIENTRY vkglIsTexture(GLuint texture);
+namespace OpenGL
+{
+    GLboolean VKGL_APIENTRY vkglIsTexture(GLuint texture);
 
-GLboolean vkglIsTexture_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLuint&  in_texture);
+    GLboolean vkglIsTexture_with_validation(VKGL::Context* in_context_ptr,
+                                            const GLuint&  in_texture);
+}
 
 #endif /* VKGL_GL_IS_TEXTURE_H */

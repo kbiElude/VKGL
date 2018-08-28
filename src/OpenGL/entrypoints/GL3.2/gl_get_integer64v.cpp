@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetInteger64v(GLenum   pname,
-                                     GLint64* data)
+void VKGL_APIENTRY OpenGL::vkglGetInteger64v(GLenum   pname,
+                                             GLint64* data)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -29,9 +29,9 @@ void VKGL_APIENTRY vkglGetInteger64v(GLenum   pname,
                                          data);
 }
 
-void vkglGetInteger64v_execute(VKGL::Context* in_context_ptr,
-                               const GLenum&  in_pname,
-                               GLint64*       out_data_ptr)
+static void vkglGetInteger64v_execute(VKGL::Context* in_context_ptr,
+                                      const GLenum&  in_pname,
+                                      GLint64*       out_data_ptr)
 {
     const auto pname_vkgl = VKGL::Utils::get_context_property_for_gl_enum(in_pname);
 
@@ -40,9 +40,9 @@ void vkglGetInteger64v_execute(VKGL::Context* in_context_ptr,
                                   out_data_ptr);
 }
 
-void vkglGetInteger64v_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_pname,
-                                       GLint64*       out_data_ptr)
+void OpenGL::vkglGetInteger64v_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLenum&  in_pname,
+                                               GLint64*       out_data_ptr)
 {
     if (validate(in_context_ptr,
                  in_pname,

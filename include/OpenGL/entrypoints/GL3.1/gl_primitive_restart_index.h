@@ -7,9 +7,12 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglPrimitiveRestartIndex(GLuint index);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglPrimitiveRestartIndex(GLuint index);
 
-void vkglPrimitiveRestartIndex_with_validation(VKGL::Context* in_context_ptr,
-                                               const GLuint&  in_index);
+    void vkglPrimitiveRestartIndex_with_validation(VKGL::Context* in_context_ptr,
+                                                   const GLuint&  in_index);
+}
 
 #endif /* VKGL_GL_PRIMITIVE_RESTART_INDEX_H */

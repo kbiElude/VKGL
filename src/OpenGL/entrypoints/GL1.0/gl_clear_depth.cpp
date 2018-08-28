@@ -18,7 +18,7 @@ static bool validate(VKGL::Context*  in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglClearDepth(GLdouble depth)
+void VKGL_APIENTRY OpenGL::vkglClearDepth(GLdouble depth)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -26,14 +26,14 @@ void VKGL_APIENTRY vkglClearDepth(GLdouble depth)
                                       depth);
 }
 
-void vkglClearDepth_execute(VKGL::Context*  in_context_ptr,
-                            const GLdouble& in_depth)
+static void vkglClearDepth_execute(VKGL::Context*  in_context_ptr,
+                                   const GLdouble& in_depth)
 {
     in_context_ptr->set_clear_depth_value(in_depth);
 }
 
-void vkglClearDepth_with_validation(VKGL::Context*  in_context_ptr,
-                                    const GLdouble& in_depth)
+void OpenGL::vkglClearDepth_with_validation(VKGL::Context*  in_context_ptr,
+                                            const GLdouble& in_depth)
 {
     if (validate(in_context_ptr,
                  in_depth) )

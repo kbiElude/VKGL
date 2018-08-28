@@ -20,9 +20,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetBufferParameteriv(GLenum target,
-                                            GLenum pname,
-                                            GLint* params)
+void VKGL_APIENTRY OpenGL::vkglGetBufferParameteriv(GLenum target,
+                                                    GLenum pname,
+                                                    GLint* params)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -32,10 +32,10 @@ void VKGL_APIENTRY vkglGetBufferParameteriv(GLenum target,
                                                 params);
 }
 
-void vkglGetBufferParameteriv_execute(VKGL::Context* in_context_ptr,
-                                      const GLenum&  in_target,
-                                      const GLenum&  in_pname,
-                                      GLint*         out_params_ptr)
+static void vkglGetBufferParameteriv_execute(VKGL::Context* in_context_ptr,
+                                             const GLenum&  in_target,
+                                             const GLenum&  in_pname,
+                                             GLint*         out_params_ptr)
 {
     const auto pname_vkgl  = VKGL::Utils::get_buffer_property_for_gl_enum(in_pname);
     const auto target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum  (in_target);
@@ -47,10 +47,10 @@ void vkglGetBufferParameteriv_execute(VKGL::Context* in_context_ptr,
                                         out_params_ptr);
 }
 
-void vkglGetBufferParameteriv_with_validation(VKGL::Context* in_context_ptr,
-                                              const GLenum&  in_target,
-                                              const GLenum&  in_pname,
-                                              GLint*         out_params_ptr)
+void OpenGL::vkglGetBufferParameteriv_with_validation(VKGL::Context* in_context_ptr,
+                                                      const GLenum&  in_target,
+                                                      const GLenum&  in_pname,
+                                                      GLint*         out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_target,

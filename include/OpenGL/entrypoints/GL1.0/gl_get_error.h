@@ -7,8 +7,11 @@
 
 #include "OpenGL/types.h"
 
-GLenum VKGL_APIENTRY vkglGetError(void);
+namespace OpenGL
+{
+    GLenum VKGL_APIENTRY vkglGetError(void);
 
-GLenum vkglGetError_with_validation(VKGL::Context* in_context_ptr);
+    GLenum vkglGetError_with_validation(VKGL::Context* in_context_ptr);
+}
 
 #endif /* VKGL_GL_GET_ERROR_H */

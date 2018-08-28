@@ -16,7 +16,7 @@ static bool validate(VKGL::Context* in_context_ptr)
     return result;
 }
 
-void VKGL_APIENTRY vkglEndConditionalRender(void)
+void VKGL_APIENTRY OpenGL::vkglEndConditionalRender(void)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -24,12 +24,12 @@ void VKGL_APIENTRY vkglEndConditionalRender(void)
 }
 
 
-void vkglEndConditionalRender_execute(VKGL::Context* in_context_ptr)
+static void vkglEndConditionalRender_execute(VKGL::Context* in_context_ptr)
 {
     in_context_ptr->end_conditional_render();
 }
 
-void vkglEndConditionalRender_with_validation(VKGL::Context* in_context_ptr)
+void OpenGL::vkglEndConditionalRender_with_validation(VKGL::Context* in_context_ptr)
 {
     if (validate(in_context_ptr) )
     {

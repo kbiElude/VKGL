@@ -7,11 +7,14 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglBindBuffer(GLenum target,
-                                  GLuint buffer);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglBindBuffer(GLenum target,
+                                      GLuint buffer);
 
-void vkglBindBuffer_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLenum&  in_target,
-                                    const GLuint&  in_buffer);
+    void vkglBindBuffer_with_validation(VKGL::Context* in_context_ptr,
+                                        const GLenum&  in_target,
+                                        const GLuint&  in_buffer);
+}
 
 #endif /* VKGL_GL_BIND_BUFFER_H */

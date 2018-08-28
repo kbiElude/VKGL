@@ -21,9 +21,9 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglTexParameterfv(GLenum         target,
-                                      GLenum         pname,
-                                      const GLfloat* params)
+void VKGL_APIENTRY OpenGL::vkglTexParameterfv(GLenum         target,
+                                              GLenum         pname,
+                                              const GLfloat* params)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -33,10 +33,10 @@ void VKGL_APIENTRY vkglTexParameterfv(GLenum         target,
                                           params);
 }
 
-void vkglTexParameterfv_execute(VKGL::Context* in_context_ptr,
-                                const GLenum&  in_target,
-                                const GLenum&  in_pname,
-                                const GLfloat* in_params_ptr)
+static void vkglTexParameterfv_execute(VKGL::Context* in_context_ptr,
+                                       const GLenum&  in_target,
+                                       const GLenum&  in_pname,
+                                       const GLfloat* in_params_ptr)
 {
     const auto pname_vkgl  = VKGL::Utils::get_texture_property_for_gl_enum(in_pname);
     const auto target_vkgl = VKGL::Utils::get_texture_target_for_gl_enum  (in_target);
@@ -47,10 +47,10 @@ void vkglTexParameterfv_execute(VKGL::Context* in_context_ptr,
                                           in_params_ptr);
 }
 
-void vkglTexParameterfv_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLenum&  in_target,
-                                        const GLenum&  in_pname,
-                                        const GLfloat* in_params_ptr)
+void OpenGL::vkglTexParameterfv_with_validation(VKGL::Context* in_context_ptr,
+                                                const GLenum&  in_target,
+                                                const GLenum&  in_pname,
+                                                const GLfloat* in_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_target,

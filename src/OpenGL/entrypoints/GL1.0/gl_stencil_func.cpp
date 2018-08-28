@@ -21,9 +21,9 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglStencilFunc(GLenum func,
-                                   GLint  ref,
-                                   GLuint mask)
+void VKGL_APIENTRY OpenGL::vkglStencilFunc(GLenum func,
+                                           GLint  ref,
+                                           GLuint mask)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -33,10 +33,10 @@ void VKGL_APIENTRY vkglStencilFunc(GLenum func,
                                        mask);
 }
 
-void vkglStencilFunc_execute(VKGL::Context* in_context_ptr,
-                             const GLenum&  in_func,
-                             const GLint&   in_ref,
-                             const GLuint&  in_mask)
+static void vkglStencilFunc_execute(VKGL::Context* in_context_ptr,
+                                    const GLenum&  in_func,
+                                    const GLint&   in_ref,
+                                    const GLuint&  in_mask)
 {
     const auto func_vkgl = VKGL::Utils::get_stencil_function_for_gl_enum(in_func);
 
@@ -45,10 +45,10 @@ void vkglStencilFunc_execute(VKGL::Context* in_context_ptr,
                                          in_mask);
 }
 
-void vkglStencilFunc_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLenum&  in_func,
-                                     const GLint&   in_ref,
-                                     const GLuint&  in_mask)
+void OpenGL::vkglStencilFunc_with_validation(VKGL::Context* in_context_ptr,
+                                             const GLenum&  in_func,
+                                             const GLint&   in_ref,
+                                             const GLuint&  in_mask)
 {
     if (validate(in_context_ptr,
                  in_func,

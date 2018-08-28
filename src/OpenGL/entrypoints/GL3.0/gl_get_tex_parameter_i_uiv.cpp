@@ -20,9 +20,9 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetTexParameterIuiv(GLenum  target,
-                                           GLenum  pname,
-                                           GLuint* params)
+void VKGL_APIENTRY OpenGL::vkglGetTexParameterIuiv(GLenum  target,
+                                                   GLenum  pname,
+                                                   GLuint* params)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -32,10 +32,10 @@ void VKGL_APIENTRY vkglGetTexParameterIuiv(GLenum  target,
                                                params);
 }
 
-void vkglGetTexParameterIuiv_execute(VKGL::Context* in_context_ptr,
-                                     const GLenum&  in_target,
-                                     const GLenum&  in_pname,
-                                     GLuint*        out_params_ptr)
+static void vkglGetTexParameterIuiv_execute(VKGL::Context* in_context_ptr,
+                                            const GLenum&  in_target,
+                                            const GLenum&  in_pname,
+                                            GLuint*        out_params_ptr)
 {
     const auto pname_vkgl  = VKGL::Utils::get_texture_property_for_gl_enum(in_pname);
     const auto target_vkgl = VKGL::Utils::get_texture_target_for_gl_enum (in_target);
@@ -46,10 +46,10 @@ void vkglGetTexParameterIuiv_execute(VKGL::Context* in_context_ptr,
                                           out_params_ptr);
 }
 
-void vkglGetTexParameterIuiv_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLenum&  in_target,
-                                             const GLenum&  in_pname,
-                                             GLuint*        out_params_ptr)
+void OpenGL::vkglGetTexParameterIuiv_with_validation(VKGL::Context* in_context_ptr,
+                                                     const GLenum&  in_target,
+                                                     const GLenum&  in_pname,
+                                                     GLuint*        out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_target,

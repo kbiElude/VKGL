@@ -18,7 +18,7 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLuint VKGL_APIENTRY vkglCreateShader(GLenum type)
+GLuint VKGL_APIENTRY OpenGL::vkglCreateShader(GLenum type)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -26,16 +26,16 @@ GLuint VKGL_APIENTRY vkglCreateShader(GLenum type)
                                                 type);
 }
 
-GLuint vkglCreateShader_execute(VKGL::Context* in_context_ptr,
-                                const GLenum&  in_type)
+static GLuint vkglCreateShader_execute(VKGL::Context* in_context_ptr,
+                                       const GLenum&  in_type)
 {
     const auto type_vkgl = VKGL::Utils::get_shader_type_for_gl_enum(in_type);
 
     return in_context_ptr->create_shader(type_vkgl);
 }
 
-GLuint vkglCreateShader_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLenum&  in_type)
+GLuint OpenGL::vkglCreateShader_with_validation(VKGL::Context* in_context_ptr,
+                                                const GLenum&  in_type)
 {
     GLuint result = 0;
 

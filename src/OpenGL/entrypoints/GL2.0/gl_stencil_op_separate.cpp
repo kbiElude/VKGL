@@ -21,10 +21,10 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglStencilOpSeparate(GLenum face,
-                                         GLenum sfail,
-                                         GLenum dpfail,
-                                         GLenum dppass)
+void VKGL_APIENTRY OpenGL::vkglStencilOpSeparate(GLenum face,
+                                                 GLenum sfail,
+                                                 GLenum dpfail,
+                                                 GLenum dppass)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -35,11 +35,11 @@ void VKGL_APIENTRY vkglStencilOpSeparate(GLenum face,
                                              dppass);
 }
 
-void vkglStencilOpSeparate_execute(VKGL::Context* in_context_ptr,
-                                   const GLenum&  in_face,
-                                   const GLenum&  in_sfail,
-                                   const GLenum&  in_dpfail,
-                                   const GLenum&  in_dppass)
+static void vkglStencilOpSeparate_execute(VKGL::Context* in_context_ptr,
+                                          const GLenum&  in_face,
+                                          const GLenum&  in_sfail,
+                                          const GLenum&  in_dpfail,
+                                          const GLenum&  in_dppass)
 {
     const auto dpfail_vkgl = VKGL::Utils::get_stencil_operation_for_gl_enum (in_dpfail);
     const auto dppass_vkgl = VKGL::Utils::get_stencil_operation_for_gl_enum (in_dppass);
@@ -52,11 +52,11 @@ void vkglStencilOpSeparate_execute(VKGL::Context* in_context_ptr,
                                                     dppass_vkgl);
 }
 
-void vkglStencilOpSeparate_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLenum&  in_face,
-                                           const GLenum&  in_sfail,
-                                           const GLenum&  in_dpfail,
-                                           const GLenum&  in_dppass)
+void OpenGL::vkglStencilOpSeparate_with_validation(VKGL::Context* in_context_ptr,
+                                                   const GLenum&  in_face,
+                                                   const GLenum&  in_sfail,
+                                                   const GLenum&  in_dpfail,
+                                                   const GLenum&  in_dppass)
 {
     if (validate(in_context_ptr,
                  in_face,

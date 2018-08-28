@@ -7,10 +7,14 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglGetIntegerv(GLenum pname,
-                                   GLint* data);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglGetIntegerv(GLenum pname,
+                                       GLint* data);
 
-void vkglGetIntegerv_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLenum&  in_pname,
-                                     GLint*         out_data_ptr);
+    void vkglGetIntegerv_with_validation(VKGL::Context* in_context_ptr,
+                                         const GLenum&  in_pname,
+                                         GLint*         out_data_ptr);
+}
+
 #endif /* VKGL_GL_GET_INTEGERV_H */

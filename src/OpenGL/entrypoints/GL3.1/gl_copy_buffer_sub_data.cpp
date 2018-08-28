@@ -22,11 +22,11 @@ static bool validate(VKGL::Context*    in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglCopyBufferSubData(GLenum     readTarget,
-                                         GLenum     writeTarget,
-                                         GLintptr   readOffset,
-                                         GLintptr   writeOffset,
-                                         GLsizeiptr size)
+void VKGL_APIENTRY OpenGL::vkglCopyBufferSubData(GLenum     readTarget,
+                                                 GLenum     writeTarget,
+                                                 GLintptr   readOffset,
+                                                 GLintptr   writeOffset,
+                                                 GLsizeiptr size)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -38,12 +38,12 @@ void VKGL_APIENTRY vkglCopyBufferSubData(GLenum     readTarget,
                                              size);
 }
 
-void vkglCopyBufferSubData_execute(VKGL::Context*    in_context_ptr,
-                                   const GLenum&     in_read_target,
-                                   const GLenum&     in_write_target,
-                                   const GLintptr&   in_read_offset,
-                                   const GLintptr&   in_write_offset,
-                                   const GLsizeiptr& in_size)
+static void vkglCopyBufferSubData_execute(VKGL::Context*    in_context_ptr,
+                                          const GLenum&     in_read_target,
+                                          const GLenum&     in_write_target,
+                                          const GLintptr&   in_read_offset,
+                                          const GLintptr&   in_write_offset,
+                                          const GLsizeiptr& in_size)
 {
     const auto read_target_vkgl  = VKGL::Utils::get_buffer_target_for_gl_enum(in_read_target);
     const auto write_target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum(in_write_target);
@@ -55,12 +55,12 @@ void vkglCopyBufferSubData_execute(VKGL::Context*    in_context_ptr,
                                          in_size);
 }
 
-void vkglCopyBufferSubData_with_validation(VKGL::Context*    in_context_ptr,
-                                           const GLenum&     in_read_target,
-                                           const GLenum&     in_write_target,
-                                           const GLintptr&   in_read_offset,
-                                           const GLintptr&   in_write_offset,
-                                           const GLsizeiptr& in_size)
+void OpenGL::vkglCopyBufferSubData_with_validation(VKGL::Context*    in_context_ptr,
+                                                   const GLenum&     in_read_target,
+                                                   const GLenum&     in_write_target,
+                                                   const GLintptr&   in_read_offset,
+                                                   const GLintptr&   in_write_offset,
+                                                   const GLsizeiptr& in_size)
 {
     if (validate(in_context_ptr,
                  in_read_target,

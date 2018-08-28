@@ -21,11 +21,11 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglVertexAttrib4Nub(GLuint  index,
-                                        GLubyte x,
-                                        GLubyte y,
-                                        GLubyte z,
-                                        GLubyte w)
+void VKGL_APIENTRY OpenGL::vkglVertexAttrib4Nub(GLuint  index,
+                                                GLubyte x,
+                                                GLubyte y,
+                                                GLubyte z,
+                                                GLubyte w)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -37,12 +37,12 @@ void VKGL_APIENTRY vkglVertexAttrib4Nub(GLuint  index,
                                             w);
 }
 
-void vkglVertexAttrib4Nub_execute(VKGL::Context* in_context_ptr,
-                                  const GLuint&  in_index,
-                                  const GLubyte& in_x,
-                                  const GLubyte& in_y,
-                                  const GLubyte& in_z,
-                                  const GLubyte& in_w)
+static void vkglVertexAttrib4Nub_execute(VKGL::Context* in_context_ptr,
+                                         const GLuint&  in_index,
+                                         const GLubyte& in_x,
+                                         const GLubyte& in_y,
+                                         const GLubyte& in_z,
+                                         const GLubyte& in_w)
 {
     const GLubyte data[] =
     {
@@ -60,12 +60,12 @@ void vkglVertexAttrib4Nub_execute(VKGL::Context* in_context_ptr,
                                          data);
 }
 
-void vkglVertexAttrib4Nub_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_index,
-                                          const GLubyte& in_x,
-                                          const GLubyte& in_y,
-                                          const GLubyte& in_z,
-                                          const GLubyte& in_w)
+void OpenGL::vkglVertexAttrib4Nub_with_validation(VKGL::Context* in_context_ptr,
+                                                  const GLuint&  in_index,
+                                                  const GLubyte& in_x,
+                                                  const GLubyte& in_y,
+                                                  const GLubyte& in_z,
+                                                  const GLubyte& in_w)
 {
     if (validate(in_context_ptr,
                  in_index,

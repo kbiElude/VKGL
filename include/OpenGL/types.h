@@ -25,7 +25,6 @@ namespace VKGL
 }
 
 #include "OpenGL/types_enums.h"
-#include "OpenGL/types_macros.h"
 #include "OpenGL/types_typedefs.h"
 #include "OpenGL/types_structs.h"
 #include "OpenGL/types_interfaces.h"

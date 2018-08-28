@@ -19,8 +19,8 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLboolean VKGL_APIENTRY vkglIsEnabledi(GLenum target,
-                                       GLuint index)
+GLboolean VKGL_APIENTRY OpenGL::vkglIsEnabledi(GLenum target,
+                                               GLuint index)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -29,9 +29,9 @@ GLboolean VKGL_APIENTRY vkglIsEnabledi(GLenum target,
                                              index);
 }
 
-GLboolean vkglIsEnabledi_execute(VKGL::Context* in_context_ptr,
-                                 const GLenum&  in_target,
-                                 const GLuint&  in_index)
+static GLboolean vkglIsEnabledi_execute(VKGL::Context* in_context_ptr,
+                                        const GLenum&  in_target,
+                                        const GLuint&  in_index)
 {
     vkgl_assert(in_target == GL_BLEND);
 
@@ -40,9 +40,9 @@ GLboolean vkglIsEnabledi_execute(VKGL::Context* in_context_ptr,
                                                     : GL_FALSE;
 }
 
-GLboolean vkglIsEnabledi_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_target,
-                                         const GLuint&  in_index)
+GLboolean OpenGL::vkglIsEnabledi_with_validation(VKGL::Context* in_context_ptr,
+                                                 const GLenum&  in_target,
+                                                 const GLuint&  in_index)
 {
     GLboolean result = GL_FALSE;
 

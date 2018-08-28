@@ -26,15 +26,15 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglTexSubImage2D(GLenum      target,
-                                     GLint       level,
-                                     GLint       xoffset,
-                                     GLint       yoffset,
-                                     GLsizei     width,
-                                     GLsizei     height,
-                                     GLenum      format,
-                                     GLenum      type,
-                                     const void* pixels)
+void VKGL_APIENTRY OpenGL::vkglTexSubImage2D(GLenum      target,
+                                             GLint       level,
+                                             GLint       xoffset,
+                                             GLint       yoffset,
+                                             GLsizei     width,
+                                             GLsizei     height,
+                                             GLenum      format,
+                                             GLenum      type,
+                                             const void* pixels)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -50,16 +50,16 @@ void VKGL_APIENTRY vkglTexSubImage2D(GLenum      target,
                                          pixels);
 }
 
-void vkglTexSubImage2D_execute(VKGL::Context* in_context_ptr,
-                               const GLenum&  in_target,
-                               const GLint&   in_level,
-                               const GLint&   in_xoffset,
-                               const GLint&   in_yoffset,
-                               const GLsizei& in_width,
-                               const GLsizei& in_height,
-                               const GLenum&  in_format,
-                               const GLenum&  in_type,
-                               const void*    in_pixels)
+static void vkglTexSubImage2D_execute(VKGL::Context* in_context_ptr,
+                                      const GLenum&  in_target,
+                                      const GLint&   in_level,
+                                      const GLint&   in_xoffset,
+                                      const GLint&   in_yoffset,
+                                      const GLsizei& in_width,
+                                      const GLsizei& in_height,
+                                      const GLenum&  in_format,
+                                      const GLenum&  in_type,
+                                      const void*    in_pixels)
 {
     const auto format_vkgl = VKGL::Utils::get_pixel_format_for_gl_enum  (in_format);
     const auto target_vkgl = VKGL::Utils::get_texture_target_for_gl_enum(in_target);
@@ -76,16 +76,16 @@ void vkglTexSubImage2D_execute(VKGL::Context* in_context_ptr,
                                      in_pixels);
 }
 
-void vkglTexSubImage2D_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_target,
-                                       const GLint&   in_level,
-                                       const GLint&   in_xoffset,
-                                       const GLint&   in_yoffset,
-                                       const GLsizei& in_width,
-                                       const GLsizei& in_height,
-                                       const GLenum&  in_format,
-                                       const GLenum&  in_type,
-                                       const void*    in_pixels)
+void OpenGL::vkglTexSubImage2D_with_validation(VKGL::Context* in_context_ptr,
+                                               const GLenum&  in_target,
+                                               const GLint&   in_level,
+                                               const GLint&   in_xoffset,
+                                               const GLint&   in_yoffset,
+                                               const GLsizei& in_width,
+                                               const GLsizei& in_height,
+                                               const GLenum&  in_format,
+                                               const GLenum&  in_type,
+                                               const void*    in_pixels)
 {
     if (validate(in_context_ptr,
                  in_target,
