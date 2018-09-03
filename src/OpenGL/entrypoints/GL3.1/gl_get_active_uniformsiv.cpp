@@ -7,12 +7,12 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program,
-                     const GLsizei& in_uniform_count,
-                     const GLuint*  in_uniform_indices_ptr,
-                     const GLenum&  in_pname,
-                     GLint*         out_params_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program,
+                     const GLsizei&   in_uniform_count,
+                     const GLuint*    in_uniform_indices_ptr,
+                     const GLenum&    in_pname,
+                     GLint*           out_params_ptr)
 {
     bool result = false;
 
@@ -38,14 +38,14 @@ void VKGL_APIENTRY OpenGL::vkglGetActiveUniformsiv(GLuint        program,
                                                params);
 }
 
-static void vkglGetActiveUniformsiv_execute(VKGL::Context* in_context_ptr,
-                                            const GLuint&  in_program,
-                                            const GLsizei& in_uniform_count,
-                                            const GLuint*  in_uniform_indices_ptr,
-                                            const GLenum&  in_pname,
-                                            GLint*         out_params_ptr)
+static void vkglGetActiveUniformsiv_execute(OpenGL::Context* in_context_ptr,
+                                            const GLuint&    in_program,
+                                            const GLsizei&   in_uniform_count,
+                                            const GLuint*    in_uniform_indices_ptr,
+                                            const GLenum&    in_pname,
+                                            GLint*           out_params_ptr)
 {
-    const auto pname_vkgl = VKGL::Utils::get_uniform_property_for_gl_enum(in_pname);
+    const auto pname_vkgl = OpenGL::Utils::get_uniform_property_for_gl_enum(in_pname);
 
     in_context_ptr->get_active_uniforms(in_program,
                                         in_uniform_count,
@@ -54,12 +54,12 @@ static void vkglGetActiveUniformsiv_execute(VKGL::Context* in_context_ptr,
                                         out_params_ptr);
 }
 
-void OpenGL::vkglGetActiveUniformsiv_with_validation(VKGL::Context* in_context_ptr,
-                                                     const GLuint&  in_program,
-                                                     const GLsizei& in_uniform_count,
-                                                     const GLuint*  in_uniform_indices_ptr,
-                                                     const GLenum&  in_pname,
-                                                     GLint*         out_params_ptr)
+void OpenGL::vkglGetActiveUniformsiv_with_validation(OpenGL::Context* in_context_ptr,
+                                                     const GLuint&    in_program,
+                                                     const GLsizei&   in_uniform_count,
+                                                     const GLuint*    in_uniform_indices_ptr,
+                                                     const GLenum&    in_pname,
+                                                     GLint*           out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_program,

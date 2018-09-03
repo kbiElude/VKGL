@@ -11,8 +11,8 @@ namespace OpenGL
 {
     void VKGL_APIENTRY vkglEnable(GLenum cap);
 
-    void vkglEnable_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLenum&  in_cap);
+    void vkglEnable_with_validation(OpenGL::Context* in_context_ptr,
+                                    const GLenum&    in_cap);
 }
 
 #endif /* VKGL_GL_ENABLE_H */

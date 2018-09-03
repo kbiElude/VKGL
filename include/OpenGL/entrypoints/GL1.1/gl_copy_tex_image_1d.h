@@ -17,14 +17,14 @@ namespace OpenGL
                                           GLsizei width,
                                           GLint   border);
 
-    void vkglCopyTexImage1D_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLenum&  in_target,
-                                            const GLint&   in_level,
-                                            const GLenum&  in_internalformat,
-                                            const GLint&   in_x,
-                                            const GLint&   in_y,
-                                            const GLsizei& in_width,
-                                            const GLint&   in_border);
+    void vkglCopyTexImage1D_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLenum&    in_target,
+                                            const GLint&     in_level,
+                                            const GLenum&    in_internalformat,
+                                            const GLint&     in_x,
+                                            const GLint&     in_y,
+                                            const GLsizei&   in_width,
+                                            const GLint&     in_border);
 }
 
 #endif /* VKGL_GL_COPY_TEX_IMAGE_1D_H */

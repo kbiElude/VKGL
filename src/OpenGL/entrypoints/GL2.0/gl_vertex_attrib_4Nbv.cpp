@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_index,
-                     const GLbyte* in_v_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index,
+                     const GLbyte*    in_v_ptr)
 {
     bool result = false;
 
@@ -28,21 +28,21 @@ void VKGL_APIENTRY OpenGL::vkglVertexAttrib4Nbv(GLuint        index,
                                             v);
 }
 
-static void vkglVertexAttrib4Nbv_execute(VKGL::Context* in_context_ptr,
-                                         const GLuint&  in_index,
-                                         const GLbyte*  in_v_ptr)
+static void vkglVertexAttrib4Nbv_execute(OpenGL::Context* in_context_ptr,
+                                         const GLuint&    in_index,
+                                         const GLbyte*    in_v_ptr)
 {
     in_context_ptr->set_vertex_attribute(in_index,
-                                         VKGL::GetSetArgumentType::Byte,
-                                         VKGL::GetSetArgumentType::Float,
+                                         OpenGL::GetSetArgumentType::Byte,
+                                         OpenGL::GetSetArgumentType::Float,
                                          4,
                                          true, /* in_normalized */
                                          in_v_ptr);
 }
 
-void OpenGL::vkglVertexAttrib4Nbv_with_validation(VKGL::Context* in_context_ptr,
-                                                  const GLuint&  in_index,
-                                                  const GLbyte*  in_v_ptr)
+void OpenGL::vkglVertexAttrib4Nbv_with_validation(OpenGL::Context* in_context_ptr,
+                                                  const GLuint&    in_index,
+                                                  const GLbyte*    in_v_ptr)
 {
     if (validate(in_context_ptr,
                  in_index,

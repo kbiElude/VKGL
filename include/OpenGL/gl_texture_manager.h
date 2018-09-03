@@ -8,7 +8,7 @@
 #include "OpenGL/namespace.h"
 #include "OpenGL/types.h"
 
-namespace VKGL
+namespace OpenGL
 {
     typedef std::unique_ptr<GLTextureManager> GLTextureManagerUniquePtr;
 
@@ -19,16 +19,16 @@ namespace VKGL
 
         static GLTextureManagerUniquePtr create(const IGLLimits* in_limits_ptr);
 
-        void get_texture_level_parameter(const int32_t&                    in_level,
-                                         const VKGL::TextureLevelProperty& in_pname,
-                                         const VKGL::GetSetArgumentType&   in_arg_type,
-                                         void*                             out_params_ptr) const;
-        void get_texture_parameter      (const VKGL::TextureProperty&      in_property,
-                                         const VKGL::GetSetArgumentType&   in_arg_type,
-                                         void*                             out_arg_value_ptr) const;
-        void set_texture_parameter      (const VKGL::TextureProperty&      in_property,
-                                         const VKGL::GetSetArgumentType&   in_arg_type,
-                                         const void*                       in_arg_value_ptr);
+        void get_texture_level_parameter(const int32_t&                      in_level,
+                                         const OpenGL::TextureLevelProperty& in_pname,
+                                         const OpenGL::GetSetArgumentType&   in_arg_type,
+                                         void*                               out_params_ptr) const;
+        void get_texture_parameter      (const OpenGL::TextureProperty&      in_property,
+                                         const OpenGL::GetSetArgumentType&   in_arg_type,
+                                         void*                               out_arg_value_ptr) const;
+        void set_texture_parameter      (const OpenGL::TextureProperty&      in_property,
+                                         const OpenGL::GetSetArgumentType&   in_arg_type,
+                                         const void*                         in_arg_value_ptr);
 
         bool delete_ids  (const uint32_t& in_n_ids,
                           const GLuint*   in_ids_ptr);
@@ -57,8 +57,8 @@ namespace VKGL
         bool init();
 
         /* Private variables */
-        VKGL::NamespaceUniquePtr m_id_manager_ptr;
-        const IGLLimits* const   m_limits_ptr;
+        OpenGL::NamespaceUniquePtr m_id_manager_ptr;
+        const IGLLimits* const     m_limits_ptr;
     };
 }
 #endif /* VKGL_GL_TEXTURE_MANAGER_H */

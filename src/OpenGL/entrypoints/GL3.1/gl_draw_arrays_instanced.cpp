@@ -7,11 +7,11 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_mode,
-                     const GLint&   in_first,
-                     const GLsizei& in_count,
-                     const GLsizei& in_instancecount)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_mode,
+                     const GLint&     in_first,
+                     const GLsizei&   in_count,
+                     const GLsizei&   in_instancecount)
 {
     bool result = false;
 
@@ -35,13 +35,13 @@ void VKGL_APIENTRY OpenGL::vkglDrawArraysInstanced(GLenum  mode,
                                                instancecount);
 }
 
-static void vkglDrawArraysInstanced_execute(VKGL::Context* in_context_ptr,
-                                            const GLenum&  in_mode,
-                                            const GLint&   in_first,
-                                            const GLsizei& in_count,
-                                            const GLsizei& in_instancecount)
+static void vkglDrawArraysInstanced_execute(OpenGL::Context* in_context_ptr,
+                                            const GLenum&    in_mode,
+                                            const GLint&     in_first,
+                                            const GLsizei&   in_count,
+                                            const GLsizei&   in_instancecount)
 {
-    const auto mode_vkgl = VKGL::Utils::get_draw_call_mode_for_gl_enum(in_mode);
+    const auto mode_vkgl = OpenGL::Utils::get_draw_call_mode_for_gl_enum(in_mode);
 
     in_context_ptr->draw_arrays_instanced(mode_vkgl,
                                           in_first,
@@ -49,11 +49,11 @@ static void vkglDrawArraysInstanced_execute(VKGL::Context* in_context_ptr,
                                           in_instancecount);
 }
 
-void OpenGL::vkglDrawArraysInstanced_with_validation(VKGL::Context* in_context_ptr,
-                                                     const GLenum&  in_mode,
-                                                     const GLint&   in_first,
-                                                     const GLsizei& in_count,
-                                                     const GLsizei& in_instancecount)
+void OpenGL::vkglDrawArraysInstanced_with_validation(OpenGL::Context* in_context_ptr,
+                                                     const GLenum&    in_mode,
+                                                     const GLint&     in_first,
+                                                     const GLsizei&   in_count,
+                                                     const GLsizei&   in_instancecount)
 {
     if (validate(in_context_ptr,
                  in_mode,

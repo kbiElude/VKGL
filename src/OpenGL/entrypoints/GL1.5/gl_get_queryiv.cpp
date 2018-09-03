@@ -7,10 +7,10 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLenum&  in_pname,
-                     GLint*         out_params_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLenum&    in_pname,
+                     GLint*           out_params_ptr)
 {
     bool result = false;
 
@@ -32,23 +32,23 @@ void VKGL_APIENTRY OpenGL::vkglGetQueryiv(GLenum target,
                                       params);
 }
 
-static void vkglGetQueryiv_execute(VKGL::Context* in_context_ptr,
-                                   const GLenum&  in_target,
-                                   const GLenum&  in_pname,
-                                   GLint*         out_params_ptr)
+static void vkglGetQueryiv_execute(OpenGL::Context* in_context_ptr,
+                                   const GLenum&    in_target,
+                                   const GLenum&    in_pname,
+                                   GLint*           out_params_ptr)
 {
-    const auto pname_vkgl  = VKGL::Utils::get_query_target_property_for_gl_enum(in_pname);
-    const auto target_vkgl = VKGL::Utils::get_query_target_for_gl_enum         (in_target);
+    const auto pname_vkgl  = OpenGL::Utils::get_query_target_property_for_gl_enum(in_pname);
+    const auto target_vkgl = OpenGL::Utils::get_query_target_for_gl_enum         (in_target);
 
     in_context_ptr->get_query_target_property(target_vkgl,
                                               pname_vkgl,
                                               out_params_ptr);
 }
 
-void OpenGL::vkglGetQueryiv_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLenum&  in_target,
-                                            const GLenum&  in_pname,
-                                            GLint*         out_params_ptr)
+void OpenGL::vkglGetQueryiv_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLenum&    in_target,
+                                            const GLenum&    in_pname,
+                                            GLint*           out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_target,

@@ -13,7 +13,7 @@ namespace OpenGL
                                                   GLintptr   offset,
                                                   GLsizeiptr length);
 
-    void vkglFlushMappedBufferRange_with_validation(VKGL::Context*    in_context_ptr,
+    void vkglFlushMappedBufferRange_with_validation(OpenGL::Context*  in_context_ptr,
                                                     const GLenum&     in_target,
                                                     const GLintptr&   in_offset,
                                                     const GLsizeiptr& in_length);

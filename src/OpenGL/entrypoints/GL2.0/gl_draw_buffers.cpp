@@ -5,9 +5,9 @@
 
 #define N_MAX_DRAW_BUFFERS (32)
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLsizei& in_n,
-                     const GLenum*  in_bufs)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLsizei&   in_n,
+                     const GLenum*    in_bufs)
 {
     bool result = false;
 
@@ -27,11 +27,11 @@ void VKGL_APIENTRY OpenGL::vkglDrawBuffers(GLsizei       n,
                                        bufs);
 }
 
-static void vkglDrawBuffers_execute(VKGL::Context* in_context_ptr,
-                                    const GLsizei& in_n,
-                                    const GLenum*  in_bufs)
+static void vkglDrawBuffers_execute(OpenGL::Context* in_context_ptr,
+                                    const GLsizei&   in_n,
+                                    const GLenum*    in_bufs)
 {
-    VKGL::DrawBuffer bufs_vkgl[N_MAX_DRAW_BUFFERS];
+    OpenGL::DrawBuffer bufs_vkgl[N_MAX_DRAW_BUFFERS];
 
     vkgl_assert(in_n < N_MAX_DRAW_BUFFERS);
 
@@ -39,16 +39,16 @@ static void vkglDrawBuffers_execute(VKGL::Context* in_context_ptr,
                   n < in_n;
                 ++n)
     {
-        bufs_vkgl[n] = VKGL::Utils::get_draw_buffer_for_gl_enum(in_bufs[n]);
+        bufs_vkgl[n] = OpenGL::Utils::get_draw_buffer_for_gl_enum(in_bufs[n]);
     }
 
     in_context_ptr->draw_buffers(in_n,
                                  bufs_vkgl);
 }
 
-void OpenGL::vkglDrawBuffers_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLsizei& in_n,
-                                             const GLenum*  in_bufs)
+void OpenGL::vkglDrawBuffers_with_validation(OpenGL::Context* in_context_ptr,
+                                             const GLsizei&   in_n,
+                                             const GLenum*    in_bufs)
 {
     if (validate(in_context_ptr,
                  in_n,

@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLuint&  in_texture)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLuint&    in_texture)
 {
     bool result = false;
 
@@ -29,19 +29,19 @@ void VKGL_APIENTRY OpenGL::vkglBindTexture(GLenum target,
                                        texture);
 }
 
-static void vkglBindTexture_execute(VKGL::Context* in_context_ptr,
-                                    const GLenum&  in_target,
-                                    const GLuint&  in_texture)
+static void vkglBindTexture_execute(OpenGL::Context* in_context_ptr,
+                                    const GLenum&    in_target,
+                                    const GLuint&    in_texture)
 {
-    const auto target_vkgl = VKGL::Utils::get_texture_target_for_gl_enum(in_texture);
+    const auto target_vkgl = OpenGL::Utils::get_texture_target_for_gl_enum(in_texture);
 
     in_context_ptr->bind_texture(target_vkgl,
                                  in_texture);
 }
 
-void OpenGL::vkglBindTexture_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLenum&  in_target,
-                                             const GLuint&  in_texture)
+void OpenGL::vkglBindTexture_with_validation(OpenGL::Context* in_context_ptr,
+                                             const GLenum&    in_target,
+                                             const GLuint&    in_texture)
 {
     if (validate(in_context_ptr,
                  in_target,

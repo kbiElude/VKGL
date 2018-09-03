@@ -7,12 +7,12 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLint&   in_level,
-                     const GLenum&  in_format,
-                     const GLenum&  in_type,
-                     void*          out_pixels_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLint&     in_level,
+                     const GLenum&    in_format,
+                     const GLenum&    in_type,
+                     void*            out_pixels_ptr)
 {
     bool result = false;
 
@@ -39,16 +39,16 @@ void VKGL_APIENTRY OpenGL::vkglGetTexImage(GLenum target,
                                        pixels);
 }
 
-static void vkglGetTexImage_execute(VKGL::Context* in_context_ptr,
-                                    const GLenum&  in_target,
-                                    const GLint&   in_level,
-                                    const GLenum&  in_format,
-                                    const GLenum&  in_type,
-                                    void*          out_pixels_ptr)
+static void vkglGetTexImage_execute(OpenGL::Context* in_context_ptr,
+                                    const GLenum&    in_target,
+                                    const GLint&     in_level,
+                                    const GLenum&    in_format,
+                                    const GLenum&    in_type,
+                                    void*            out_pixels_ptr)
 {
-    const auto target_vkgl       = VKGL::Utils::get_texture_target_for_gl_enum(in_target);
-    const auto pixel_format_vkgl = VKGL::Utils::get_pixel_format_for_gl_enum  (in_format);
-    const auto pixel_type_vkgl   = VKGL::Utils::get_pixel_type_for_gl_enum    (in_type);
+    const auto target_vkgl       = OpenGL::Utils::get_texture_target_for_gl_enum(in_target);
+    const auto pixel_format_vkgl = OpenGL::Utils::get_pixel_format_for_gl_enum  (in_format);
+    const auto pixel_type_vkgl   = OpenGL::Utils::get_pixel_type_for_gl_enum    (in_type);
 
     in_context_ptr->get_texture_image(target_vkgl,
                                       in_level,
@@ -57,12 +57,12 @@ static void vkglGetTexImage_execute(VKGL::Context* in_context_ptr,
                                       out_pixels_ptr);
 }
 
-void OpenGL::vkglGetTexImage_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLenum&  in_target,
-                                             const GLint&   in_level,
-                                             const GLenum&  in_format,
-                                             const GLenum&  in_type,
-                                             void*          out_pixels_ptr)
+void OpenGL::vkglGetTexImage_with_validation(OpenGL::Context* in_context_ptr,
+                                             const GLenum&    in_target,
+                                             const GLint&     in_level,
+                                             const GLenum&    in_format,
+                                             const GLenum&    in_type,
+                                             void*            out_pixels_ptr)
 {
     if (validate(in_context_ptr,
                  in_target,

@@ -7,8 +7,8 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target)
 {
     bool result = false;
 
@@ -26,16 +26,16 @@ void VKGL_APIENTRY OpenGL::vkglGenerateMipmap(GLenum target)
                                           target);
 }
 
-static void vkglGenerateMipmap_execute(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_target)
+static void vkglGenerateMipmap_execute(OpenGL::Context* in_context_ptr,
+                                       const GLenum&    in_target)
 {
-    const auto target_vkgl = VKGL::Utils::get_mipmap_generation_texture_target_for_gl_enum(in_target);
+    const auto target_vkgl = OpenGL::Utils::get_mipmap_generation_texture_target_for_gl_enum(in_target);
 
     in_context_ptr->generate_mipmap(target_vkgl);
 }
 
-void OpenGL::vkglGenerateMipmap_with_validation(VKGL::Context* in_context_ptr,
-                                                const GLenum&  in_target)
+void OpenGL::vkglGenerateMipmap_with_validation(OpenGL::Context* in_context_ptr,
+                                                const GLenum&    in_target)
 {
     if (validate(in_context_ptr,
                  in_target) )

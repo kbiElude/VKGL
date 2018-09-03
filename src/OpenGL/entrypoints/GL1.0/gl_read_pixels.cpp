@@ -7,14 +7,14 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLint&   in_x,
-                     const GLint&   in_y,
-                     const GLsizei& in_width,
-                     const GLsizei& in_height,
-                     const GLenum&  in_format,
-                     const GLenum&  in_type,
-                     void*          out_pixels_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLint&     in_x,
+                     const GLint&     in_y,
+                     const GLsizei&   in_width,
+                     const GLsizei&   in_height,
+                     const GLenum&    in_format,
+                     const GLenum&    in_type,
+                     void*            out_pixels_ptr)
 {
     bool result = false;
 
@@ -45,17 +45,17 @@ void VKGL_APIENTRY OpenGL::vkglReadPixels(GLint   x,
                                       pixels);
 }
 
-static void vkglReadPixels_execute(VKGL::Context* in_context_ptr,
-                                   const GLint&   in_x,
-                                   const GLint&   in_y,
-                                   const GLsizei& in_width,
-                                   const GLsizei& in_height,
-                                   const GLenum&  in_format,
-                                   const GLenum&  in_type,
-                                   void*          out_pixels_ptr)
+static void vkglReadPixels_execute(OpenGL::Context* in_context_ptr,
+                                   const GLint&     in_x,
+                                   const GLint&     in_y,
+                                   const GLsizei&   in_width,
+                                   const GLsizei&   in_height,
+                                   const GLenum&    in_format,
+                                   const GLenum&    in_type,
+                                   void*            out_pixels_ptr)
 {
-    const auto format_vkgl = VKGL::Utils::get_pixel_format_for_gl_enum(in_format);
-    const auto type_vkgl   = VKGL::Utils::get_pixel_type_for_gl_enum  (in_type);
+    const auto format_vkgl = OpenGL::Utils::get_pixel_format_for_gl_enum(in_format);
+    const auto type_vkgl   = OpenGL::Utils::get_pixel_type_for_gl_enum  (in_type);
 
     in_context_ptr->read_pixels(in_x,
                                 in_y,
@@ -66,14 +66,14 @@ static void vkglReadPixels_execute(VKGL::Context* in_context_ptr,
                                 out_pixels_ptr);
 }
 
-void OpenGL::vkglReadPixels_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLint&   in_x,
-                                            const GLint&   in_y,
-                                            const GLsizei& in_width,
-                                            const GLsizei& in_height,
-                                            const GLenum&  in_format,
-                                            const GLenum&  in_type,
-                                            void*          out_pixels_ptr)
+void OpenGL::vkglReadPixels_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLint&     in_x,
+                                            const GLint&     in_y,
+                                            const GLsizei&   in_width,
+                                            const GLsizei&   in_height,
+                                            const GLenum&    in_format,
+                                            const GLenum&    in_type,
+                                            void*            out_pixels_ptr)
 {
     if (validate(in_context_ptr,
                  in_x,

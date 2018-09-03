@@ -7,8 +7,8 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target)
 {
     bool result = false;
 
@@ -26,16 +26,16 @@ void VKGL_APIENTRY OpenGL::vkglEndQuery(GLenum target)
                                     target);
 }
 
-static void vkglEndQuery_execute(VKGL::Context* in_context_ptr,
-                                 const GLenum&  in_target)
+static void vkglEndQuery_execute(OpenGL::Context* in_context_ptr,
+                                 const GLenum&    in_target)
 {
-    const auto target_vkgl = VKGL::Utils::get_query_target_for_gl_enum(in_target);
+    const auto target_vkgl = OpenGL::Utils::get_query_target_for_gl_enum(in_target);
 
     in_context_ptr->end_query(target_vkgl);
 }
 
-void OpenGL::vkglEndQuery_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLenum&  in_target)
+void OpenGL::vkglEndQuery_with_validation(OpenGL::Context* in_context_ptr,
+                                          const GLenum&    in_target)
 {
     if (validate(in_context_ptr,
                  in_target) )

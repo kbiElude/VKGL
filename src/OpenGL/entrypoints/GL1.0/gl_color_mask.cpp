@@ -6,7 +6,7 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context*   in_context_ptr,
+static bool validate(OpenGL::Context* in_context_ptr,
                      const GLboolean& in_red,
                      const GLboolean& in_green,
                      const GLboolean& in_blue,
@@ -35,7 +35,7 @@ void VKGL_APIENTRY OpenGL::vkglColorMask(GLboolean red,
                                      alpha);
 }
 
-static void vkglColorMask_execute(VKGL::Context*   in_context_ptr,
+static void vkglColorMask_execute(OpenGL::Context* in_context_ptr,
                                   const GLboolean& in_red,
                                   const GLboolean& in_green,
                                   const GLboolean& in_blue,
@@ -47,7 +47,7 @@ static void vkglColorMask_execute(VKGL::Context*   in_context_ptr,
                                     (in_alpha == GL_TRUE) );
 }
 
-void OpenGL::vkglColorMask_with_validation(VKGL::Context*   in_context_ptr,
+void OpenGL::vkglColorMask_with_validation(OpenGL::Context* in_context_ptr,
                                            const GLboolean& in_red,
                                            const GLboolean& in_green,
                                            const GLboolean& in_blue,

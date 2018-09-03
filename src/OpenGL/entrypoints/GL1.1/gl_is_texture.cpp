@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_texture)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_texture)
 {
     bool result = false;
 
@@ -25,14 +25,14 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsTexture(GLuint texture)
                                             texture);
 }
 
-static GLboolean vkglIsTexture_execute(VKGL::Context* in_context_ptr,
-                                       const GLuint&  in_texture)
+static GLboolean vkglIsTexture_execute(OpenGL::Context* in_context_ptr,
+                                       const GLuint&    in_texture)
 {
     return (in_context_ptr->is_texture(in_texture) ) ? GL_TRUE : GL_FALSE;
 }
 
-GLboolean OpenGL::vkglIsTexture_with_validation(VKGL::Context* in_context_ptr,
-                                                const GLuint&  in_texture)
+GLboolean OpenGL::vkglIsTexture_with_validation(OpenGL::Context* in_context_ptr,
+                                                const GLuint&    in_texture)
 {
     if (validate(in_context_ptr,
                  in_texture) )

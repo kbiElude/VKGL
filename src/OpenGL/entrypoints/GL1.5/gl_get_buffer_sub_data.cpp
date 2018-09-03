@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*    in_context_ptr,
+static bool validate(OpenGL::Context*  in_context_ptr,
                      const GLenum&     in_target,
                      const GLintptr&   in_offset,
                      const GLsizeiptr& in_size,
@@ -35,13 +35,13 @@ void VKGL_APIENTRY OpenGL::vkglGetBufferSubData(GLenum     target,
                                             data);
 }
 
-static void vkglGetBufferSubData_execute(VKGL::Context*    in_context_ptr,
+static void vkglGetBufferSubData_execute(OpenGL::Context*  in_context_ptr,
                                          const GLenum&     in_target,
                                          const GLintptr&   in_offset,
                                          const GLsizeiptr& in_size,
                                          void*             in_data)
 {
-    const auto target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum(in_target);
+    const auto target_vkgl = OpenGL::Utils::get_buffer_target_for_gl_enum(in_target);
 
     in_context_ptr->get_buffer_sub_data(target_vkgl,
                                         in_offset,
@@ -49,7 +49,7 @@ static void vkglGetBufferSubData_execute(VKGL::Context*    in_context_ptr,
                                         in_data);
 }
 
-void OpenGL::vkglGetBufferSubData_with_validation(VKGL::Context*    in_context_ptr,
+void OpenGL::vkglGetBufferSubData_with_validation(OpenGL::Context*  in_context_ptr,
                                                   const GLenum&     in_target,
                                                   const GLintptr&   in_offset,
                                                   const GLsizeiptr& in_size,

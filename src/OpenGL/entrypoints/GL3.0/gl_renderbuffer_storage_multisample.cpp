@@ -7,12 +7,12 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLsizei& in_samples,
-                     const GLenum&  in_internalformat,
-                     const GLsizei& in_width,
-                     const GLsizei& in_height)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLsizei&   in_samples,
+                     const GLenum&    in_internalformat,
+                     const GLsizei&   in_width,
+                     const GLsizei&   in_height)
 {
     bool result = false;
 
@@ -38,15 +38,15 @@ void VKGL_APIENTRY OpenGL::vkglRenderbufferStorageMultisample(GLenum  target,
                                                           height);
 }
 
-static void vkglRenderbufferStorageMultisample_execute(VKGL::Context* in_context_ptr,
-                                                       const GLenum&  in_target,
-                                                       const GLsizei& in_samples,
-                                                       const GLenum&  in_internalformat,
-                                                       const GLsizei& in_width,
-                                                       const GLsizei& in_height)
+static void vkglRenderbufferStorageMultisample_execute(OpenGL::Context* in_context_ptr,
+                                                       const GLenum&    in_target,
+                                                       const GLsizei&   in_samples,
+                                                       const GLenum&    in_internalformat,
+                                                       const GLsizei&   in_width,
+                                                       const GLsizei&   in_height)
 {
-    const auto internalformat_vkgl = VKGL::Utils::get_internal_format_for_gl_enum    (in_internalformat);
-    const auto target_vkgl         = VKGL::Utils::get_renderbuffer_target_for_gl_enum(in_target);
+    const auto internalformat_vkgl = OpenGL::Utils::get_internal_format_for_gl_enum    (in_internalformat);
+    const auto target_vkgl         = OpenGL::Utils::get_renderbuffer_target_for_gl_enum(in_target);
 
     in_context_ptr->renderbuffer_storage_multisample(target_vkgl,
                                                      in_samples,
@@ -55,12 +55,12 @@ static void vkglRenderbufferStorageMultisample_execute(VKGL::Context* in_context
                                                      in_height);
 }
 
-void OpenGL::vkglRenderbufferStorageMultisample_with_validation(VKGL::Context* in_context_ptr,
-                                                                const GLenum&  in_target,
-                                                                const GLsizei& in_samples,
-                                                                const GLenum&  in_internalformat,
-                                                                const GLsizei& in_width,
-                                                                const GLsizei& in_height)
+void OpenGL::vkglRenderbufferStorageMultisample_with_validation(OpenGL::Context* in_context_ptr,
+                                                                const GLenum&    in_target,
+                                                                const GLsizei&   in_samples,
+                                                                const GLenum&    in_internalformat,
+                                                                const GLsizei&   in_width,
+                                                                const GLsizei&   in_height)
 {
     if (validate(in_context_ptr,
                  in_target,

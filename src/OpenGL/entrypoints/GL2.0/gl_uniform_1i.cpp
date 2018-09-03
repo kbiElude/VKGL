@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLint&   in_location,
-                     const GLint&   in_v0)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLint&     in_location,
+                     const GLint&     in_v0)
 {
     bool result = false;
 
@@ -28,19 +28,19 @@ void VKGL_APIENTRY OpenGL::vkglUniform1i(GLint location,
                                      v0);
 }
 
-static void vkglUniform1i_execute(VKGL::Context* in_context_ptr,
-                                  const GLint&   in_location,
-                                  const GLint&   in_v0)
+static void vkglUniform1i_execute(OpenGL::Context* in_context_ptr,
+                                  const GLint&     in_location,
+                                  const GLint&     in_v0)
 {
     in_context_ptr->set_uniform(in_location,
-                                VKGL::GetSetArgumentType::Int,
+                                OpenGL::GetSetArgumentType::Int,
                                 1,
                                &in_v0);
 }
 
-void OpenGL::vkglUniform1i_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLint&   in_location,
-                                           const GLint&   in_v0)
+void OpenGL::vkglUniform1i_with_validation(OpenGL::Context* in_context_ptr,
+                                           const GLint&     in_location,
+                                           const GLint&     in_v0)
 {
     if (validate(in_context_ptr,
                  in_location,

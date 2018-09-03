@@ -12,9 +12,9 @@ namespace OpenGL
     void VKGL_APIENTRY vkglHint(GLenum target,
                                 GLenum mode);
 
-    void vkglHint_with_validation(VKGL::Context* in_context_ptr,
-                                  const GLenum&  in_target,
-                                  const GLenum&  in_mode);
+    void vkglHint_with_validation(OpenGL::Context* in_context_ptr,
+                                  const GLenum&    in_target,
+                                  const GLenum&    in_mode);
 }
 
 #endif /* VKGL_GL_HINT_H */

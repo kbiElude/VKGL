@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLsync&  in_sync)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLsync&    in_sync)
 {
     bool result = false;
 
@@ -25,14 +25,14 @@ void VKGL_APIENTRY OpenGL::vkglDeleteSync(GLsync sync)
                                       sync);
 }
 
-static void vkglDeleteSync_execute(VKGL::Context* in_context_ptr,
-                                   const GLsync&  in_sync)
+static void vkglDeleteSync_execute(OpenGL::Context* in_context_ptr,
+                                   const GLsync&    in_sync)
 {
     in_context_ptr->delete_sync(in_sync);
 }
 
-void OpenGL::vkglDeleteSync_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLsync&  in_sync)
+void OpenGL::vkglDeleteSync_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLsync&    in_sync)
 {
     if (validate(in_context_ptr,
                  in_sync) )

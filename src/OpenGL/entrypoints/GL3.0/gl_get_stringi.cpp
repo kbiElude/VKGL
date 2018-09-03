@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_name,
-                     const GLuint&  in_index)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_name,
+                     const GLuint&    in_index)
 {
     bool result = false;
 
@@ -29,24 +29,24 @@ const GLubyte *APIENTRY OpenGL::vkglGetStringi(GLenum name,
                                              index);
 }
 
-static const GLubyte* vkglGetStringi_execute(VKGL::Context* in_context_ptr,
-                                             const GLenum&  in_name,
-                                             const GLuint&  in_index)
+static const GLubyte* vkglGetStringi_execute(OpenGL::Context* in_context_ptr,
+                                             const GLenum&    in_name,
+                                             const GLuint&    in_index)
 {
-    const auto     name_vkgl  = VKGL::Utils::get_context_property_for_gl_enum(in_name);
+    const auto     name_vkgl  = OpenGL::Utils::get_context_property_for_gl_enum(in_name);
     const GLubyte* result_ptr = nullptr;
 
     in_context_ptr->get_parameter_indexed(name_vkgl,
-                                          VKGL::GetSetArgumentType::String,
+                                          OpenGL::GetSetArgumentType::String,
                                           in_index,
                                          &result_ptr);
 
     return result_ptr;
 }
 
-const GLubyte* OpenGL::vkglGetStringi_with_validation(VKGL::Context* in_context_ptr,
-                                                      const GLenum&  in_name,
-                                                      const GLuint&  in_index)
+const GLubyte* OpenGL::vkglGetStringi_with_validation(OpenGL::Context* in_context_ptr,
+                                                      const GLenum&    in_name,
+                                                      const GLuint&    in_index)
 {
     const GLubyte* result_ptr = nullptr;
 

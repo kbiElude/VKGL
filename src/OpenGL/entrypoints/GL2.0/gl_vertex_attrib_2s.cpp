@@ -6,10 +6,10 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_index,
-                     const GLshort& in_x,
-                     const GLshort& in_y)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index,
+                     const GLshort&   in_x,
+                     const GLshort&   in_y)
 {
     bool result = false;
 
@@ -31,10 +31,10 @@ void VKGL_APIENTRY OpenGL::vkglVertexAttrib2s(GLuint  index,
                                           y);
 }
 
-static void vkglVertexAttrib2s_execute(VKGL::Context* in_context_ptr,
-                                       const GLuint&  in_index,
-                                       const GLshort& in_x,
-                                       const GLshort& in_y)
+static void vkglVertexAttrib2s_execute(OpenGL::Context* in_context_ptr,
+                                       const GLuint&    in_index,
+                                       const GLshort&   in_x,
+                                       const GLshort&   in_y)
 {
     const GLshort data[] =
     {
@@ -43,17 +43,17 @@ static void vkglVertexAttrib2s_execute(VKGL::Context* in_context_ptr,
     };
 
     in_context_ptr->set_vertex_attribute(in_index,
-                                         VKGL::GetSetArgumentType::Short,
-                                         VKGL::GetSetArgumentType::Float,
+                                         OpenGL::GetSetArgumentType::Short,
+                                         OpenGL::GetSetArgumentType::Float,
                                          2,
                                          false, /* in_normalized */
                                          data);
 }
 
-void OpenGL::vkglVertexAttrib2s_with_validation(VKGL::Context* in_context_ptr,
-                                                const GLuint&  in_index,
-                                                const GLshort& in_x,
-                                                const GLshort& in_y)
+void OpenGL::vkglVertexAttrib2s_with_validation(OpenGL::Context* in_context_ptr,
+                                                const GLuint&    in_index,
+                                                const GLshort&   in_x,
+                                                const GLshort&   in_y)
 {
     if (validate(in_context_ptr,
                  in_index,

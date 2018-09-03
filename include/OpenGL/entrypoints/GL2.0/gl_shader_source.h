@@ -14,7 +14,7 @@ namespace OpenGL
                                         const GLchar* const* string,
                                         const GLint*         length);
 
-    void vkglShaderSource_with_validation(VKGL::Context*       in_context_ptr,
+    void vkglShaderSource_with_validation(OpenGL::Context*     in_context_ptr,
                                           const GLuint&        in_shader,
                                           const GLsizei&       in_count,
                                           const GLchar* const* in_string_ptr_ptr,

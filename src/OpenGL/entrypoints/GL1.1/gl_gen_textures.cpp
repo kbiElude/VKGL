@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLsizei& in_n,
-                     GLuint*        in_textures)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLsizei&   in_n,
+                     GLuint*          in_textures)
 {
     bool result = false;
 
@@ -28,17 +28,17 @@ void VKGL_APIENTRY OpenGL::vkglGenTextures(GLsizei n,
                                        textures);
 }
 
-static void vkglGenTextures_execute(VKGL::Context* in_context_ptr,
-                                    const GLsizei& in_n,
-                                    GLuint*        in_textures)
+static void vkglGenTextures_execute(OpenGL::Context* in_context_ptr,
+                                    const GLsizei&   in_n,
+                                    GLuint*          in_textures)
 {
     in_context_ptr->gen_textures(in_n,
                                  in_textures);
 }
 
-void OpenGL::vkglGenTextures_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLsizei& in_n,
-                                             GLuint*        in_textures)
+void OpenGL::vkglGenTextures_with_validation(OpenGL::Context* in_context_ptr,
+                                             const GLsizei&   in_n,
+                                             GLuint*          in_textures)
 {
     if (validate(in_context_ptr,
                  in_n,

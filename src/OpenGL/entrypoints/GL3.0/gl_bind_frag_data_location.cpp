@@ -7,10 +7,10 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program,
-                     const GLuint&  in_color,
-                     const GLchar*  in_name)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program,
+                     const GLuint&    in_color,
+                     const GLchar*    in_name)
 {
     bool result = false;
 
@@ -32,20 +32,20 @@ void VKGL_APIENTRY OpenGL::vkglBindFragDataLocation(GLuint        program,
                                                 name);
 }
 
-static void vkglBindFragDataLocation_execute(VKGL::Context* in_context_ptr,
-                                             const GLuint&  in_program,
-                                             const GLuint&  in_color,
-                                             const GLchar*  in_name)
+static void vkglBindFragDataLocation_execute(OpenGL::Context* in_context_ptr,
+                                             const GLuint&    in_program,
+                                             const GLuint&    in_color,
+                                             const GLchar*    in_name)
 {
     in_context_ptr->bind_frag_data_location(in_program,
                                             in_color,
                                             in_name);
 }
 
-void OpenGL::vkglBindFragDataLocation_with_validation(VKGL::Context* in_context_ptr,
-                                                      const GLuint&  in_program,
-                                                      const GLuint&  in_color,
-                                                      const GLchar*  in_name)
+void OpenGL::vkglBindFragDataLocation_with_validation(OpenGL::Context* in_context_ptr,
+                                                      const GLuint&    in_program,
+                                                      const GLuint&    in_color,
+                                                      const GLchar*    in_name)
 {
     if (validate(in_context_ptr,
                  in_program,

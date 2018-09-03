@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*     in_context_ptr,
+static bool validate(OpenGL::Context*   in_context_ptr,
                      const GLenum&      in_mode,
                      const GLsizei*     in_count_ptr,
                      const GLenum&      in_type,
@@ -42,7 +42,7 @@ void VKGL_APIENTRY OpenGL::vkglMultiDrawElementsBaseVertex(GLenum             mo
                                                        basevertex);
 }
 
-static void vkglMultiDrawElementsBaseVertex_execute(VKGL::Context*     in_context_ptr,
+static void vkglMultiDrawElementsBaseVertex_execute(OpenGL::Context*   in_context_ptr,
                                                     const GLenum&      in_mode,
                                                     const GLsizei*     in_count_ptr,
                                                     const GLenum&      in_type,
@@ -50,8 +50,8 @@ static void vkglMultiDrawElementsBaseVertex_execute(VKGL::Context*     in_contex
                                                     const GLsizei&     in_drawcount,
                                                     const GLint*       in_basevertex_ptr)
 {
-    const auto mode_vkgl = VKGL::Utils::get_draw_call_mode_for_gl_enum      (in_mode);
-    const auto type_vkgl = VKGL::Utils::get_draw_call_index_type_for_gl_enum(in_type);
+    const auto mode_vkgl = OpenGL::Utils::get_draw_call_mode_for_gl_enum      (in_mode);
+    const auto type_vkgl = OpenGL::Utils::get_draw_call_index_type_for_gl_enum(in_type);
 
     in_context_ptr->multi_draw_elements_base_vertex(mode_vkgl,
                                                     in_count_ptr,
@@ -61,7 +61,7 @@ static void vkglMultiDrawElementsBaseVertex_execute(VKGL::Context*     in_contex
                                                     in_basevertex_ptr);
 }
 
-void OpenGL::vkglMultiDrawElementsBaseVertex_with_validation(VKGL::Context*     in_context_ptr,
+void OpenGL::vkglMultiDrawElementsBaseVertex_with_validation(OpenGL::Context*   in_context_ptr,
                                                              const GLenum&      in_mode,
                                                              const GLsizei*     in_count_ptr,
                                                              const GLenum&      in_type,

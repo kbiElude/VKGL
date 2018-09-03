@@ -13,10 +13,10 @@ namespace OpenGL
                                                  GLint  level,
                                                  void*  img);
 
-    void vkglGetCompressedTexImage_with_validation(VKGL::Context* in_context_ptr,
-                                                   GLenum         in_target,
-                                                   GLint          in_level,
-                                                   void*          in_img);
+    void vkglGetCompressedTexImage_with_validation(OpenGL::Context* in_context_ptr,
+                                                   GLenum           in_target,
+                                                   GLint            in_level,
+                                                   void*            in_img);
 }
 
 #endif /* VKGL_GL_GET_COMPRESSED_TEX_IMAGE_H */

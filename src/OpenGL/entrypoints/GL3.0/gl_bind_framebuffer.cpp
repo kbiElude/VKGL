@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLuint&  in_framebuffer)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLuint&    in_framebuffer)
 {
     bool result = false;
 
@@ -29,19 +29,19 @@ void VKGL_APIENTRY OpenGL::vkglBindFramebuffer(GLenum target,
                                            framebuffer);
 }
 
-static void vkglBindFramebuffer_execute(VKGL::Context* in_context_ptr,
-                                        const GLenum&  in_target,
-                                        const GLuint&  in_framebuffer)
+static void vkglBindFramebuffer_execute(OpenGL::Context* in_context_ptr,
+                                        const GLenum&    in_target,
+                                        const GLuint&    in_framebuffer)
 {
-    const auto target_vkgl = VKGL::Utils::get_framebuffer_target_for_gl_enum(in_target);
+    const auto target_vkgl = OpenGL::Utils::get_framebuffer_target_for_gl_enum(in_target);
 
     in_context_ptr->bind_framebuffer(target_vkgl,
                                      in_framebuffer);
 }
 
-void OpenGL::vkglBindFramebuffer_with_validation(VKGL::Context* in_context_ptr,
-                                                 const GLenum&  in_target,
-                                                 const GLuint&  in_framebuffer)
+void OpenGL::vkglBindFramebuffer_with_validation(OpenGL::Context* in_context_ptr,
+                                                 const GLenum&    in_target,
+                                                 const GLuint&    in_framebuffer)
 {
     if (validate(in_context_ptr,
                  in_target,

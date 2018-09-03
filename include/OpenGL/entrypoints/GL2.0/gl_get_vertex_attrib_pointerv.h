@@ -13,10 +13,10 @@ namespace OpenGL
                                                    GLenum pname,
                                                    void** pointer);
 
-    void vkglGetVertexAttribPointerv_with_validation(VKGL::Context* in_context_ptr,
-                                                     const GLuint&  in_index,
-                                                     const GLenum&  in_pname,
-                                                     void**         out_pointer_ptr);
+    void vkglGetVertexAttribPointerv_with_validation(OpenGL::Context* in_context_ptr,
+                                                     const GLuint&    in_index,
+                                                     const GLenum&    in_pname,
+                                                     void**           out_pointer_ptr);
 }
 
 #endif /* VKGL_GL_GET_VERTEX_ATTRIB_POINTERV_H */

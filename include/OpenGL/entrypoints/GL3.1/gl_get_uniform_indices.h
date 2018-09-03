@@ -14,7 +14,7 @@ namespace OpenGL
                                              const GLchar* const* uniformNames,
                                              GLuint*              uniformIndices);
 
-    void vkglGetUniformIndices_with_validation(VKGL::Context*       in_context_ptr,
+    void vkglGetUniformIndices_with_validation(OpenGL::Context*     in_context_ptr,
                                                const GLuint&        in_program,
                                                const GLsizei&       in_uniform_count,
                                                const GLchar* const* in_uniform_names_ptr_ptr,

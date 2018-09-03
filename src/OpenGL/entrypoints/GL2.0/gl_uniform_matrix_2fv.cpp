@@ -6,7 +6,7 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context*   in_context_ptr,
+static bool validate(OpenGL::Context* in_context_ptr,
                      const GLint&     in_location,
                      const GLsizei&   in_count,
                      const GLboolean& in_transpose,
@@ -34,14 +34,14 @@ void VKGL_APIENTRY OpenGL::vkglUniformMatrix2fv(GLint          location,
                                             value);
 }
 
-static void vkglUniformMatrix2fv_execute(VKGL::Context*   in_context_ptr,
+static void vkglUniformMatrix2fv_execute(OpenGL::Context* in_context_ptr,
                                          const GLint&     in_location,
                                          const GLsizei&   in_count,
                                          const GLboolean& in_transpose,
                                          const GLfloat*   in_value_ptr)
 {
     in_context_ptr->set_uniform_matrix_arrayed(in_location,
-                                               VKGL::GetSetArgumentType::Float,
+                                               OpenGL::GetSetArgumentType::Float,
                                                2,
                                                2,
                                                in_count,
@@ -49,7 +49,7 @@ static void vkglUniformMatrix2fv_execute(VKGL::Context*   in_context_ptr,
                                                in_value_ptr);
 }
 
-void OpenGL::vkglUniformMatrix2fv_with_validation(VKGL::Context*   in_context_ptr,
+void OpenGL::vkglUniformMatrix2fv_with_validation(OpenGL::Context* in_context_ptr,
                                                   const GLint&     in_location,
                                                   const GLsizei&   in_count,
                                                   const GLboolean& in_transpose,

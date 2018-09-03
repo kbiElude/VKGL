@@ -11,8 +11,8 @@ namespace OpenGL
 {
     void VKGL_APIENTRY vkglGenerateMipmap(GLenum target);
 
-    void vkglGenerateMipmap_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLenum&  in_target);
+    void vkglGenerateMipmap_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLenum&    in_target);
 }
 
 #endif /* VKGL_GL_GENERATE_MIPMAP_H */

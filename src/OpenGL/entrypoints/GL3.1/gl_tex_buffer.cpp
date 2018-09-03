@@ -7,10 +7,10 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLenum&  in_internalformat,
-                     const GLuint&  in_buffer)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLenum&    in_internalformat,
+                     const GLuint&    in_buffer)
 {
     bool result = false;
 
@@ -32,12 +32,12 @@ void VKGL_APIENTRY OpenGL::vkglTexBuffer(GLenum target,
                                      buffer);
 }
 
-static void vkglTexBuffer_execute(VKGL::Context* in_context_ptr,
-                                  const GLenum&  in_target,
-                                  const GLenum&  in_internalformat,
-                                  const GLuint&  in_buffer)
+static void vkglTexBuffer_execute(OpenGL::Context* in_context_ptr,
+                                  const GLenum&    in_target,
+                                  const GLenum&    in_internalformat,
+                                  const GLuint&    in_buffer)
 {
-    const auto internalformat_vkgl = VKGL::Utils::get_internal_format_for_gl_enum(in_internalformat);
+    const auto internalformat_vkgl = OpenGL::Utils::get_internal_format_for_gl_enum(in_internalformat);
 
     vkgl_assert(in_target == GL_TEXTURE_BUFFER);
 
@@ -45,10 +45,10 @@ static void vkglTexBuffer_execute(VKGL::Context* in_context_ptr,
                                in_buffer);
 }
 
-void OpenGL::vkglTexBuffer_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLenum&  in_target,
-                                           const GLenum&  in_internalformat,
-                                           const GLuint&  in_buffer)
+void OpenGL::vkglTexBuffer_with_validation(OpenGL::Context* in_context_ptr,
+                                           const GLenum&    in_target,
+                                           const GLenum&    in_internalformat,
+                                           const GLuint&    in_buffer)
 {
     if (validate(in_context_ptr,
                  in_target,

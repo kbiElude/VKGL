@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLfloat& in_width)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLfloat&   in_width)
 {
     bool result = false;
 
@@ -26,14 +26,14 @@ void VKGL_APIENTRY OpenGL::vkglLineWidth(GLfloat width)
                                      width);
 }
 
-static void vkglLineWidth_execute(VKGL::Context* in_context_ptr,
-                                  const GLfloat& in_width)
+static void vkglLineWidth_execute(OpenGL::Context* in_context_ptr,
+                                  const GLfloat&   in_width)
 {
     in_context_ptr->set_line_width(in_width);
 }
 
-void OpenGL::vkglLineWidth_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLfloat& in_width)
+void OpenGL::vkglLineWidth_with_validation(OpenGL::Context* in_context_ptr,
+                                           const GLfloat&   in_width)
 {
     if (validate(in_context_ptr,
                  in_width) )

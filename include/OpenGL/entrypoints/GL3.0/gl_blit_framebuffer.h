@@ -20,7 +20,7 @@ namespace OpenGL
                                            GLbitfield mask,
                                            GLenum     filter);
 
-    void vkglBlitFramebuffer_with_validation(VKGL::Context*    in_context_ptr,
+    void vkglBlitFramebuffer_with_validation(OpenGL::Context*  in_context_ptr,
                                              const GLint&      in_src_x0,
                                              const GLint&      in_src_y0,
                                              const GLint&      in_src_x1,

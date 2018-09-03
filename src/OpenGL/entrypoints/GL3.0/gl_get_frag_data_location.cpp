@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program,
-                     const GLchar*  in_name_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program,
+                     const GLchar*    in_name_ptr)
 {
     bool result = false;
 
@@ -28,17 +28,17 @@ GLint VKGL_APIENTRY OpenGL::vkglGetFragDataLocation(GLuint        program,
                                                       name);
 }
 
-static GLint vkglGetFragDataLocation_execute(VKGL::Context* in_context_ptr,
-                                             const GLuint&  in_program,
-                                             const GLchar*  in_name_ptr)
+static GLint vkglGetFragDataLocation_execute(OpenGL::Context* in_context_ptr,
+                                             const GLuint&    in_program,
+                                             const GLchar*    in_name_ptr)
 {
     return in_context_ptr->get_frag_data_location(in_program,
                                                   in_name_ptr);
 }
 
-GLint OpenGL::vkglGetFragDataLocation_with_validation(VKGL::Context* in_context_ptr,
-                                                      const GLuint&  in_program,
-                                                      const GLchar*  in_name_ptr)
+GLint OpenGL::vkglGetFragDataLocation_with_validation(OpenGL::Context* in_context_ptr,
+                                                      const GLuint&    in_program,
+                                                      const GLchar*    in_name_ptr)
 {
     GLint result = INT32_MAX;
 

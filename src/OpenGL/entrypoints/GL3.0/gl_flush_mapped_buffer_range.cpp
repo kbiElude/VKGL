@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*    in_context_ptr,
+static bool validate(OpenGL::Context*  in_context_ptr,
                      const GLenum&     in_target,
                      const GLintptr&   in_offset,
                      const GLsizeiptr& in_length)
@@ -32,19 +32,19 @@ void VKGL_APIENTRY OpenGL::vkglFlushMappedBufferRange(GLenum     target,
                                                   length);
 }
 
-static void vkglFlushMappedBufferRange_execute(VKGL::Context*    in_context_ptr,
+static void vkglFlushMappedBufferRange_execute(OpenGL::Context*  in_context_ptr,
                                                const GLenum&     in_target,
                                                const GLintptr&   in_offset,
                                                const GLsizeiptr& in_length)
 {
-    const auto target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum(in_target);
+    const auto target_vkgl = OpenGL::Utils::get_buffer_target_for_gl_enum(in_target);
 
     in_context_ptr->flush_mapped_buffer_range(target_vkgl,
                                               in_offset,
                                               in_length);
 }
 
-void OpenGL::vkglFlushMappedBufferRange_with_validation(VKGL::Context*    in_context_ptr,
+void OpenGL::vkglFlushMappedBufferRange_with_validation(OpenGL::Context*  in_context_ptr,
                                                         const GLenum&     in_target,
                                                         const GLintptr&   in_offset,
                                                         const GLsizeiptr& in_length)

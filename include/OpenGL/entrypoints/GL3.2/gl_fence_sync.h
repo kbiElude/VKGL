@@ -12,7 +12,7 @@ namespace OpenGL
     GLsync VKGL_APIENTRY vkglFenceSync(GLenum     condition,
                                        GLbitfield flags);
 
-    GLsync vkglFenceSync_with_validation(VKGL::Context*    in_context_ptr,
+    GLsync vkglFenceSync_with_validation(OpenGL::Context*  in_context_ptr,
                                          const GLenum&     in_condition,
                                          const GLbitfield& in_flags);
 }

@@ -11,8 +11,8 @@ namespace OpenGL
 {
     GLboolean VKGL_APIENTRY vkglIsFramebuffer(GLuint framebuffer);
 
-    bool vkglIsFramebuffer_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLuint&  in_framebuffer);
+    bool vkglIsFramebuffer_with_validation(OpenGL::Context* in_context_ptr,
+                                           const GLuint&    in_framebuffer);
 }
 
 #endif /* VKGL_GL_IS_FRAMEBUFFER_H */

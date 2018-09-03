@@ -13,10 +13,10 @@ namespace OpenGL
                                              GLenum  pname,
                                              GLuint* params);
 
-    void vkglGetQueryObjectuiv_with_validation(VKGL::Context* in_context_ptr,
-                                               const GLuint&  in_id,
-                                               const GLenum&  in_pname,
-                                               GLuint*        out_params_ptr);
+    void vkglGetQueryObjectuiv_with_validation(OpenGL::Context* in_context_ptr,
+                                               const GLuint&    in_id,
+                                               const GLenum&    in_pname,
+                                               GLuint*          out_params_ptr);
 }
 
 #endif /* VKGL_GL_GET_QUERY_OBJECTUIV_H */

@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLsizei& in_n,
-                     GLuint*        out_framebuffers_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLsizei&   in_n,
+                     GLuint*          out_framebuffers_ptr)
 {
     bool result = false;
 
@@ -28,17 +28,17 @@ void VKGL_APIENTRY OpenGL::vkglGenFramebuffers(GLsizei n,
                                            framebuffers);
 }
 
-static void vkglGenFramebuffers_execute(VKGL::Context* in_context_ptr,
-                                        const GLsizei& in_n,
-                                        GLuint*        out_framebuffers_ptr)
+static void vkglGenFramebuffers_execute(OpenGL::Context* in_context_ptr,
+                                        const GLsizei&   in_n,
+                                        GLuint*          out_framebuffers_ptr)
 {
     in_context_ptr->gen_framebuffers(in_n,
                                      out_framebuffers_ptr);
 }
 
-void OpenGL::vkglGenFramebuffers_with_validation(VKGL::Context* in_context_ptr,
-                                                 const GLsizei& in_n,
-                                                 GLuint*        out_framebuffers_ptr)
+void OpenGL::vkglGenFramebuffers_with_validation(OpenGL::Context* in_context_ptr,
+                                                 const GLsizei&   in_n,
+                                                 GLuint*          out_framebuffers_ptr)
 {
     if (validate(in_context_ptr,
                  in_n,

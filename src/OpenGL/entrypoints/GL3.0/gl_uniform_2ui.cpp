@@ -6,10 +6,10 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLint&   in_location,
-                     const GLuint&  in_v0,
-                     const GLuint&  in_v1)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLint&     in_location,
+                     const GLuint&    in_v0,
+                     const GLuint&    in_v1)
 {
     bool result = false;
 
@@ -31,10 +31,10 @@ void VKGL_APIENTRY OpenGL::vkglUniform2ui(GLint  location,
                                       v1);
 }
 
-static void vkglUniform2ui_execute(VKGL::Context* in_context_ptr,
-                                   const GLint&   in_location,
-                                   const GLuint&  in_v0,
-                                   const GLuint&  in_v1)
+static void vkglUniform2ui_execute(OpenGL::Context* in_context_ptr,
+                                   const GLint&     in_location,
+                                   const GLuint&    in_v0,
+                                   const GLuint&    in_v1)
 {
     const GLuint data[] =
     {
@@ -43,15 +43,15 @@ static void vkglUniform2ui_execute(VKGL::Context* in_context_ptr,
     };
 
     in_context_ptr->set_uniform(in_location,
-                                VKGL::GetSetArgumentType::Unsigned_Int,
+                                OpenGL::GetSetArgumentType::Unsigned_Int,
                                 2,
                                 data);
 }
 
-void OpenGL::vkglUniform2ui_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLint&   in_location,
-                                            const GLuint&  in_v0,
-                                            const GLuint&  in_v1)
+void OpenGL::vkglUniform2ui_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLint&     in_location,
+                                            const GLuint&    in_v0,
+                                            const GLuint&    in_v1)
 {
     if (validate(in_context_ptr,
                  in_location,

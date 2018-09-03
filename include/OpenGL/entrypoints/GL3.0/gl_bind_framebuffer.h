@@ -12,9 +12,9 @@ namespace OpenGL
     void VKGL_APIENTRY vkglBindFramebuffer(GLenum target,
                                            GLuint framebuffer);
 
-    void vkglBindFramebuffer_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLenum&  in_target,
-                                             const GLuint&  in_framebuffer);
+    void vkglBindFramebuffer_with_validation(OpenGL::Context* in_context_ptr,
+                                             const GLenum&    in_target,
+                                             const GLuint&    in_framebuffer);
 }
 
 #endif /* VKGL_GL_BIND_FRAMEBUFFER_H */

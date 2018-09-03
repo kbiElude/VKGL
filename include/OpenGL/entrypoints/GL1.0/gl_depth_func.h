@@ -11,8 +11,8 @@ namespace OpenGL
 {
     void VKGL_APIENTRY vkglDepthFunc(GLenum func);
 
-    void vkglDepthFunc_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_func);
+    void vkglDepthFunc_with_validation(OpenGL::Context* in_context_ptr,
+                                       const GLenum&    in_func);
 }
 
 #endif /* VKGL_GL_DEPTH_FUNC_H */

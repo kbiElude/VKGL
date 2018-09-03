@@ -11,8 +11,8 @@ namespace OpenGL
 {
     GLenum VKGL_APIENTRY vkglCheckFramebufferStatus(GLenum target);
 
-    GLenum vkglCheckFramebufferStatus_with_validation(VKGL::Context* in_context_ptr,
-                                                      const GLenum&  in_target);
+    GLenum vkglCheckFramebufferStatus_with_validation(OpenGL::Context* in_context_ptr,
+                                                      const GLenum&    in_target);
 }
 
 #endif /* VKGL_GL_CHECK_FRAMEBUFFER_STATUS_H */

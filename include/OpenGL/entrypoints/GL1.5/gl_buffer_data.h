@@ -14,7 +14,7 @@ namespace OpenGL
                                       const void* data,
                                       GLenum      usage);
 
-    void vkglBufferData_with_validation(VKGL::Context*    in_context_ptr,
+    void vkglBufferData_with_validation(OpenGL::Context*  in_context_ptr,
                                         const GLenum&     in_target,
                                         const GLsizeiptr& in_size,
                                         const void*       in_data,

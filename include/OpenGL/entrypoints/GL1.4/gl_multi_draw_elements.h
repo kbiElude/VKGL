@@ -15,7 +15,7 @@ namespace OpenGL
                                              const void* const* indices,
                                              GLsizei            drawcount);
 
-    void vkglMultiDrawElements_with_validation(VKGL::Context*     in_context_ptr,
+    void vkglMultiDrawElements_with_validation(OpenGL::Context*   in_context_ptr,
                                                const GLenum&      in_mode,
                                                const GLsizei*     in_count_ptr,
                                                const GLenum&      in_type,

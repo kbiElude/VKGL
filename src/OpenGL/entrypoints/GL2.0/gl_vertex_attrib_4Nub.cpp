@@ -6,12 +6,12 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_index,
-                     const GLubyte& in_x,
-                     const GLubyte& in_y,
-                     const GLubyte& in_z,
-                     const GLubyte& in_w)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index,
+                     const GLubyte&   in_x,
+                     const GLubyte&   in_y,
+                     const GLubyte&   in_z,
+                     const GLubyte&   in_w)
 {
     bool result = false;
 
@@ -37,12 +37,12 @@ void VKGL_APIENTRY OpenGL::vkglVertexAttrib4Nub(GLuint  index,
                                             w);
 }
 
-static void vkglVertexAttrib4Nub_execute(VKGL::Context* in_context_ptr,
-                                         const GLuint&  in_index,
-                                         const GLubyte& in_x,
-                                         const GLubyte& in_y,
-                                         const GLubyte& in_z,
-                                         const GLubyte& in_w)
+static void vkglVertexAttrib4Nub_execute(OpenGL::Context* in_context_ptr,
+                                         const GLuint&    in_index,
+                                         const GLubyte&   in_x,
+                                         const GLubyte&   in_y,
+                                         const GLubyte&   in_z,
+                                         const GLubyte&   in_w)
 {
     const GLubyte data[] =
     {
@@ -53,19 +53,19 @@ static void vkglVertexAttrib4Nub_execute(VKGL::Context* in_context_ptr,
     };
 
     in_context_ptr->set_vertex_attribute(in_index,
-                                         VKGL::GetSetArgumentType::Unsigned_Byte,
-                                         VKGL::GetSetArgumentType::Float,
+                                         OpenGL::GetSetArgumentType::Unsigned_Byte,
+                                         OpenGL::GetSetArgumentType::Float,
                                          4,
                                          true, /* in_normalized */
                                          data);
 }
 
-void OpenGL::vkglVertexAttrib4Nub_with_validation(VKGL::Context* in_context_ptr,
-                                                  const GLuint&  in_index,
-                                                  const GLubyte& in_x,
-                                                  const GLubyte& in_y,
-                                                  const GLubyte& in_z,
-                                                  const GLubyte& in_w)
+void OpenGL::vkglVertexAttrib4Nub_with_validation(OpenGL::Context* in_context_ptr,
+                                                  const GLuint&    in_index,
+                                                  const GLubyte&   in_x,
+                                                  const GLubyte&   in_y,
+                                                  const GLubyte&   in_z,
+                                                  const GLubyte&   in_w)
 {
     if (validate(in_context_ptr,
                  in_index,

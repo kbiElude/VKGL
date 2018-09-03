@@ -11,8 +11,8 @@ namespace OpenGL
 {
     void VKGL_APIENTRY vkglClearDepth(GLdouble depth);
 
-    void vkglClearDepth_with_validation(VKGL::Context*  in_context_ptr,
-                                        const GLdouble& in_depth);
+    void vkglClearDepth_with_validation(OpenGL::Context* in_context_ptr,
+                                        const GLdouble&  in_depth);
 }
 
 #endif /* VKGL_GL_CLEAR_DEPTH_H */

@@ -13,10 +13,10 @@ namespace OpenGL
                                            GLenum       pname,
                                            const GLint* params);
 
-    void vkglTexParameterIiv_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLenum&  in_target,
-                                             const GLenum&  in_pname,
-                                             const GLint*   in_params_ptr);
+    void vkglTexParameterIiv_with_validation(OpenGL::Context* in_context_ptr,
+                                             const GLenum&    in_target,
+                                             const GLenum&    in_pname,
+                                             const GLint*     in_params_ptr);
 }
 
 #endif /* VKGL_GL_TEX_PARAMETER_I_IV_H */

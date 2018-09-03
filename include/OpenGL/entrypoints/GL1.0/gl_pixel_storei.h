@@ -12,9 +12,9 @@ namespace OpenGL
     void VKGL_APIENTRY vkglPixelStorei(GLenum pname,
                                        GLint  param);
 
-    void vkglPixelStorei_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_pname,
-                                         const GLint&   in_param);
+    void vkglPixelStorei_with_validation(OpenGL::Context* in_context_ptr,
+                                         const GLenum&    in_pname,
+                                         const GLint&     in_param);
 }
 
 #endif /* VKGL_GL_PIXEL_STOREI_H */

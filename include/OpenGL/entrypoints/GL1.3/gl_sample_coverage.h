@@ -12,7 +12,7 @@ namespace OpenGL
     void VKGL_APIENTRY vkglSampleCoverage(GLfloat   value,
                                           GLboolean invert);
 
-    void vkglSampleCoverage_with_validation(VKGL::Context*   in_context_ptr,
+    void vkglSampleCoverage_with_validation(OpenGL::Context* in_context_ptr,
                                             const GLfloat&   in_value,
                                             const GLboolean& in_invert);
 }

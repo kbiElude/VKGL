@@ -14,7 +14,7 @@ namespace OpenGL
                                      GLboolean blue,
                                      GLboolean alpha);
 
-    void vkglColorMask_with_validation(VKGL::Context*   in_context_ptr,
+    void vkglColorMask_with_validation(OpenGL::Context* in_context_ptr,
                                        const GLboolean& in_red,
                                        const GLboolean& in_green,
                                        const GLboolean& in_blue,

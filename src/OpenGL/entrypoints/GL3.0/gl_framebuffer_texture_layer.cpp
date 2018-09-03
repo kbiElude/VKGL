@@ -7,12 +7,12 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLenum&  in_attachment,
-                     const GLuint&  in_texture,
-                     const GLint&   in_level,
-                     const GLint&   in_layer)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLenum&    in_attachment,
+                     const GLuint&    in_texture,
+                     const GLint&     in_level,
+                     const GLint&     in_layer)
 {
     bool result = false;
 
@@ -39,15 +39,15 @@ void VKGL_APIENTRY OpenGL::vkglFramebufferTextureLayer(GLenum target,
                                                    layer);
 }
 
-static void vkglFramebufferTextureLayer_execute(VKGL::Context* in_context_ptr,
-                                                const GLenum&  in_target,
-                                                const GLenum&  in_attachment,
-                                                const GLuint&  in_texture,
-                                                const GLint&   in_level,
-                                                const GLint&   in_layer)
+static void vkglFramebufferTextureLayer_execute(OpenGL::Context* in_context_ptr,
+                                                const GLenum&    in_target,
+                                                const GLenum&    in_attachment,
+                                                const GLuint&    in_texture,
+                                                const GLint&     in_level,
+                                                const GLint&     in_layer)
 {
-    const auto attachment_vkgl = VKGL::Utils::get_framebuffer_attachment_point_for_gl_enum(in_attachment);
-    const auto target_vkgl     = VKGL::Utils::get_framebuffer_target_for_gl_enum          (in_target);
+    const auto attachment_vkgl = OpenGL::Utils::get_framebuffer_attachment_point_for_gl_enum(in_attachment);
+    const auto target_vkgl     = OpenGL::Utils::get_framebuffer_target_for_gl_enum          (in_target);
 
     in_context_ptr->framebuffer_texture_layer(target_vkgl,
                                               attachment_vkgl,
@@ -56,12 +56,12 @@ static void vkglFramebufferTextureLayer_execute(VKGL::Context* in_context_ptr,
                                               in_layer);
 }
 
-void OpenGL::vkglFramebufferTextureLayer_with_validation(VKGL::Context* in_context_ptr,
-                                                         const GLenum&  in_target,
-                                                         const GLenum&  in_attachment,
-                                                         const GLuint&  in_texture,
-                                                         const GLint&   in_level,
-                                                         const GLint&   in_layer)
+void OpenGL::vkglFramebufferTextureLayer_with_validation(OpenGL::Context* in_context_ptr,
+                                                         const GLenum&    in_target,
+                                                         const GLenum&    in_attachment,
+                                                         const GLuint&    in_texture,
+                                                         const GLint&     in_level,
+                                                         const GLint&     in_layer)
 {
     if (validate(in_context_ptr,
                  in_target,
@@ -71,7 +71,7 @@ void OpenGL::vkglFramebufferTextureLayer_with_validation(VKGL::Context* in_conte
                  in_layer) )
     {
         vkglFramebufferTextureLayer_execute(in_context_ptr,
-                                            in_tatotalrget,
+                                            in_target,
                                             in_attachment,
                                             in_texture,
                                             in_level,

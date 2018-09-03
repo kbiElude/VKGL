@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*     in_context_ptr,
+static bool validate(OpenGL::Context*   in_context_ptr,
                      const GLenum&      in_mode,
                      const GLsizei*     in_count_ptr,
                      const GLenum&      in_type,
@@ -38,15 +38,15 @@ void VKGL_APIENTRY OpenGL::vkglMultiDrawElements(GLenum             mode,
                                              drawcount);
 }
 
-static void vkglMultiDrawElements_execute(VKGL::Context*     in_context_ptr,
+static void vkglMultiDrawElements_execute(OpenGL::Context*   in_context_ptr,
                                           const GLenum&      in_mode,
                                           const GLsizei*     in_count_ptr,
                                           const GLenum&      in_type,
                                           const void* const* in_indices_ptr,
                                           const GLsizei&     in_drawcount)
 {
-    const auto mode_vkgl = VKGL::Utils::get_draw_call_mode_for_gl_enum      (in_mode);
-    const auto type_vkgl = VKGL::Utils::get_draw_call_index_type_for_gl_enum(in_type);
+    const auto mode_vkgl = OpenGL::Utils::get_draw_call_mode_for_gl_enum      (in_mode);
+    const auto type_vkgl = OpenGL::Utils::get_draw_call_index_type_for_gl_enum(in_type);
 
     in_context_ptr->multi_draw_elements(mode_vkgl,
                                         in_count_ptr,
@@ -55,7 +55,7 @@ static void vkglMultiDrawElements_execute(VKGL::Context*     in_context_ptr,
                                         in_drawcount);
 }
 
-void OpenGL::vkglMultiDrawElements_with_validation(VKGL::Context*     in_context_ptr,
+void OpenGL::vkglMultiDrawElements_with_validation(OpenGL::Context*   in_context_ptr,
                                                    const GLenum&      in_mode,
                                                    const GLsizei*     in_count_ptr,
                                                    const GLenum&      in_type,

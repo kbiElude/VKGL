@@ -7,10 +7,10 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_index,
-                     const GLenum&  in_pname,
-                     void**         out_pointer_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index,
+                     const GLenum&    in_pname,
+                     void**           out_pointer_ptr)
 {
     bool result = false;
 
@@ -33,22 +33,22 @@ void VKGL_APIENTRY OpenGL::vkglGetVertexAttribPointerv(GLuint index,
                                                   pointer);
 }
 
-static void vkglGetVertexAttribPointerv_execute(VKGL::Context* in_context_ptr,
-                                                const GLuint&  in_index,
-                                                const GLenum&  in_pname,
-                                                void**         out_pointer_ptr)
+static void vkglGetVertexAttribPointerv_execute(OpenGL::Context* in_context_ptr,
+                                                const GLuint&    in_index,
+                                                const GLenum&    in_pname,
+                                                void**           out_pointer_ptr)
 {
-    const auto pname_vkgl = VKGL::Utils::get_vertex_attribute_pointer_property_for_gl_enum(in_pname);
+    const auto pname_vkgl = OpenGL::Utils::get_vertex_attribute_pointer_property_for_gl_enum(in_pname);
 
     in_context_ptr->get_vertex_attrib_pointer_property(in_index,
                                                        pname_vkgl,
                                                        out_pointer_ptr);
 }
 
-void OpenGL::vkglGetVertexAttribPointerv_with_validation(VKGL::Context* in_context_ptr,
-                                                         const GLuint&  in_index,
-                                                         const GLenum&  in_pname,
-                                                         void**         out_pointer_ptr)
+void OpenGL::vkglGetVertexAttribPointerv_with_validation(OpenGL::Context* in_context_ptr,
+                                                         const GLuint&    in_index,
+                                                         const GLenum&    in_pname,
+                                                         void**           out_pointer_ptr)
 {
     if (validate(in_context_ptr,
                  in_index,

@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context*  in_context_ptr,
-                     const GLdouble& in_depth)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLdouble&  in_depth)
 {
     bool result = false;
 
@@ -26,14 +26,14 @@ void VKGL_APIENTRY OpenGL::vkglClearDepth(GLdouble depth)
                                       depth);
 }
 
-static void vkglClearDepth_execute(VKGL::Context*  in_context_ptr,
-                                   const GLdouble& in_depth)
+static void vkglClearDepth_execute(OpenGL::Context* in_context_ptr,
+                                   const GLdouble&  in_depth)
 {
     in_context_ptr->set_clear_depth_value(in_depth);
 }
 
-void OpenGL::vkglClearDepth_with_validation(VKGL::Context*  in_context_ptr,
-                                            const GLdouble& in_depth)
+void OpenGL::vkglClearDepth_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLdouble&  in_depth)
 {
     if (validate(in_context_ptr,
                  in_depth) )

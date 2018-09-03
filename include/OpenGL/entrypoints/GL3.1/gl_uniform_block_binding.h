@@ -13,10 +13,10 @@ namespace OpenGL
                                                GLuint uniformBlockIndex,
                                                GLuint uniformBlockBinding);
 
-    void vkglUniformBlockBinding_with_validation(VKGL::Context* in_context_ptr,
-                                                 const GLuint&  in_program,
-                                                 const GLuint&  in_uniform_block_index,
-                                                 const GLuint&  in_uniform_block_binding);
+    void vkglUniformBlockBinding_with_validation(OpenGL::Context* in_context_ptr,
+                                                 const GLuint&    in_program,
+                                                 const GLuint&    in_uniform_block_index,
+                                                 const GLuint&    in_uniform_block_binding);
 }
 
 #endif /* VKGL_GL_UNIFORM_BLOCK_BINDING_H */

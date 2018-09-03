@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*    in_context_ptr,
+static bool validate(OpenGL::Context*  in_context_ptr,
                      const GLsync&     in_sync,
                      const GLbitfield& in_flags,
                      const GLuint64&   in_timeout)
@@ -32,7 +32,7 @@ void VKGL_APIENTRY OpenGL::vkglWaitSync(GLsync     sync,
                                     timeout);
 }
 
-static void vkglWaitSync_execute(VKGL::Context*    in_context_ptr,
+static void vkglWaitSync_execute(OpenGL::Context*  in_context_ptr,
                                  const GLsync&     in_sync,
                                  const GLbitfield& in_flags,
                                  const GLuint64&   in_timeout)
@@ -43,7 +43,7 @@ static void vkglWaitSync_execute(VKGL::Context*    in_context_ptr,
                               in_timeout);
 }
 
-void OpenGL::vkglWaitSync_with_validation(VKGL::Context*    in_context_ptr,
+void OpenGL::vkglWaitSync_with_validation(OpenGL::Context*  in_context_ptr,
                                           const GLsync&     in_sync,
                                           const GLbitfield& in_flags,
                                           const GLuint64&   in_timeout)

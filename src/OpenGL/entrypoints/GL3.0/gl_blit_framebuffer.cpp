@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*    in_context_ptr,
+static bool validate(OpenGL::Context*  in_context_ptr,
                      const GLint&      in_src_x0,
                      const GLint&      in_src_y0,
                      const GLint&      in_src_x1,
@@ -53,7 +53,7 @@ void VKGL_APIENTRY OpenGL::vkglBlitFramebuffer(GLint      srcX0,
                                            filter);
 }
 
-static void vkglBlitFramebuffer_execute(VKGL::Context*    in_context_ptr,
+static void vkglBlitFramebuffer_execute(OpenGL::Context*  in_context_ptr,
                                         const GLint&      in_src_x0,
                                         const GLint&      in_src_y0,
                                         const GLint&      in_src_x1,
@@ -65,8 +65,8 @@ static void vkglBlitFramebuffer_execute(VKGL::Context*    in_context_ptr,
                                         const GLbitfield& in_mask,
                                         const GLenum&     in_filter)
 {
-    const auto filter_vkgl = VKGL::Utils::get_blit_filter_for_gl_enum   (in_filter);
-    const auto mask_vkgl   = VKGL::Utils::get_blit_mask_bits_for_gl_enum(in_mask);
+    const auto filter_vkgl = OpenGL::Utils::get_blit_filter_for_gl_enum   (in_filter);
+    const auto mask_vkgl   = OpenGL::Utils::get_blit_mask_bits_for_gl_enum(in_mask);
 
     in_context_ptr->blit_framebuffer(in_src_x0,
                                      in_src_y0,
@@ -80,7 +80,7 @@ static void vkglBlitFramebuffer_execute(VKGL::Context*    in_context_ptr,
                                      filter_vkgl);
 }
 
-void OpenGL::vkglBlitFramebuffer_with_validation(VKGL::Context*    in_context_ptr,
+void OpenGL::vkglBlitFramebuffer_with_validation(OpenGL::Context*  in_context_ptr,
                                                  const GLint&      in_src_x0,
                                                  const GLint&      in_src_y0,
                                                  const GLint&      in_src_x1,

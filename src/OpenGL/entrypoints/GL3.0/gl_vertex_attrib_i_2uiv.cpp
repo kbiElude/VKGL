@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_index,
-                     const GLuint*  in_v_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index,
+                     const GLuint*    in_v_ptr)
 {
     bool result = false;
 
@@ -28,21 +28,21 @@ void VKGL_APIENTRY OpenGL::vkglVertexAttribI2uiv(GLuint       index,
                                              v);
 }
 
-static void vkglVertexAttribI2uiv_execute(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_index,
-                                          const GLuint*  in_v_ptr)
+static void vkglVertexAttribI2uiv_execute(OpenGL::Context* in_context_ptr,
+                                          const GLuint&    in_index,
+                                          const GLuint*    in_v_ptr)
 {
     in_context_ptr->set_vertex_attribute(in_index,
-                                         VKGL::GetSetArgumentType::Unsigned_Int,
-                                         VKGL::GetSetArgumentType::Unsigned_Int,
+                                         OpenGL::GetSetArgumentType::Unsigned_Int,
+                                         OpenGL::GetSetArgumentType::Unsigned_Int,
                                          2,
                                          false, /* in_normalized */
                                          in_v_ptr);
 }
 
-void OpenGL::vkglVertexAttribI2uiv_with_validation(VKGL::Context* in_context_ptr,
-                                                   const GLuint&  in_index,
-                                                   const GLuint*  in_v_ptr)
+void OpenGL::vkglVertexAttribI2uiv_with_validation(OpenGL::Context* in_context_ptr,
+                                                   const GLuint&    in_index,
+                                                   const GLuint*    in_v_ptr)
 {
     if (validate(in_context_ptr,
                  in_index,

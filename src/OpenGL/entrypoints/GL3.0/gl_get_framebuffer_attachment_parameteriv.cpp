@@ -7,11 +7,11 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLenum&  in_attachment,
-                     const GLenum&  in_pname,
-                     GLint*         out_params_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLenum&    in_attachment,
+                     const GLenum&    in_pname,
+                     GLint*           out_params_ptr)
 {
     bool result = false;
 
@@ -35,29 +35,29 @@ void VKGL_APIENTRY OpenGL::vkglGetFramebufferAttachmentParameteriv(GLenum target
                                                                params);
 }
 
-static void vkglGetFramebufferAttachmentParameteriv_execute(VKGL::Context* in_context_ptr,
-                                                            const GLenum&  in_target,
-                                                            const GLenum&  in_attachment,
-                                                            const GLenum&  in_pname,
-                                                            GLint*         out_params_ptr)
+static void vkglGetFramebufferAttachmentParameteriv_execute(OpenGL::Context* in_context_ptr,
+                                                            const GLenum&    in_target,
+                                                            const GLenum&    in_attachment,
+                                                            const GLenum&    in_pname,
+                                                            GLint*           out_params_ptr)
 {
-    const auto attachment_vkgl = VKGL::Utils::get_framebuffer_attachment_point_for_gl_enum   (in_attachment);
-    const auto pname_vkgl      = VKGL::Utils::get_framebuffer_attachment_property_for_gl_enum(in_pname);
-    const auto target_vkgl     = VKGL::Utils::get_framebuffer_target_for_gl_enum             (in_target);
+    const auto attachment_vkgl = OpenGL::Utils::get_framebuffer_attachment_point_for_gl_enum   (in_attachment);
+    const auto pname_vkgl      = OpenGL::Utils::get_framebuffer_attachment_property_for_gl_enum(in_pname);
+    const auto target_vkgl     = OpenGL::Utils::get_framebuffer_target_for_gl_enum             (in_target);
 
     in_context_ptr->get_framebuffer_attachment_property(target_vkgl,
                                                         attachment_vkgl,
                                                         pname_vkgl,
-                                                        VKGL::GetSetArgumentType::Int,
+                                                        OpenGL::GetSetArgumentType::Int,
                                                         out_params_ptr);
 
 }
 
-void OpenGL::vkglGetFramebufferAttachmentParameteriv_with_validation(VKGL::Context* in_context_ptr,
-                                                                     const GLenum&  in_target,
-                                                                     const GLenum&  in_attachment,
-                                                                     const GLenum&  in_pname,
-                                                                     GLint*         out_params_ptr)
+void OpenGL::vkglGetFramebufferAttachmentParameteriv_with_validation(OpenGL::Context* in_context_ptr,
+                                                                     const GLenum&    in_target,
+                                                                     const GLenum&    in_attachment,
+                                                                     const GLenum&    in_pname,
+                                                                     GLint*           out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_target,

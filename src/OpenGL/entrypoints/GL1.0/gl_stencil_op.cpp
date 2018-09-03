@@ -7,10 +7,10 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_fail,
-                     const GLenum&  in_zfail,
-                     const GLenum&  in_zpass)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_fail,
+                     const GLenum&    in_zfail,
+                     const GLenum&    in_zpass)
 {
     bool result = false;
 
@@ -33,24 +33,24 @@ void VKGL_APIENTRY OpenGL::vkglStencilOp(GLenum fail,
                                      zpass);
 }
 
-static void vkglStencilOp_execute(VKGL::Context* in_context_ptr,
-                                  const GLenum&  in_fail,
-                                  const GLenum&  in_zfail,
-                                  const GLenum&  in_zpass)
+static void vkglStencilOp_execute(OpenGL::Context* in_context_ptr,
+                                  const GLenum&    in_fail,
+                                  const GLenum&    in_zfail,
+                                  const GLenum&    in_zpass)
 {
-    const auto fail_vkgl  = VKGL::Utils::get_stencil_operation_for_gl_enum(in_fail);
-    const auto zfail_vkgl = VKGL::Utils::get_stencil_operation_for_gl_enum(in_zfail);
-    const auto zpass_vkgl = VKGL::Utils::get_stencil_operation_for_gl_enum(in_zpass);
+    const auto fail_vkgl  = OpenGL::Utils::get_stencil_operation_for_gl_enum(in_fail);
+    const auto zfail_vkgl = OpenGL::Utils::get_stencil_operation_for_gl_enum(in_zfail);
+    const auto zpass_vkgl = OpenGL::Utils::get_stencil_operation_for_gl_enum(in_zpass);
 
     in_context_ptr->set_stencil_operations(fail_vkgl,
                                            zfail_vkgl,
                                            zpass_vkgl);
 }
 
-void OpenGL::vkglStencilOp_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLenum&  in_fail,
-                                           const GLenum&  in_zfail,
-                                           const GLenum&  in_zpass)
+void OpenGL::vkglStencilOp_with_validation(OpenGL::Context* in_context_ptr,
+                                           const GLenum&    in_fail,
+                                           const GLenum&    in_zfail,
+                                           const GLenum&    in_zpass)
 {
     if (validate(in_context_ptr,
                  in_fail,

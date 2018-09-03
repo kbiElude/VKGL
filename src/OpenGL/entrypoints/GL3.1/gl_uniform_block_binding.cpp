@@ -6,10 +6,10 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program,
-                     const GLuint&  in_uniform_block_index,
-                     const GLuint&  in_uniform_block_binding)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program,
+                     const GLuint&    in_uniform_block_index,
+                     const GLuint&    in_uniform_block_binding)
 {
     bool result = false;
 
@@ -31,20 +31,20 @@ void VKGL_APIENTRY OpenGL::vkglUniformBlockBinding(GLuint program,
                                                uniformBlockBinding);
 }
 
-static void vkglUniformBlockBinding_execute(VKGL::Context* in_context_ptr,
-                                            const GLuint&  in_program,
-                                            const GLuint&  in_uniform_block_index,
-                                            const GLuint&  in_uniform_block_binding)
+static void vkglUniformBlockBinding_execute(OpenGL::Context* in_context_ptr,
+                                            const GLuint&    in_program,
+                                            const GLuint&    in_uniform_block_index,
+                                            const GLuint&    in_uniform_block_binding)
 {
     in_context_ptr->uniform_block_binding(in_program,
                                           in_uniform_block_index,
                                           in_uniform_block_binding);
 }
 
-void OpenGL::vkglUniformBlockBinding_with_validation(VKGL::Context* in_context_ptr,
-                                                     const GLuint&  in_program,
-                                                     const GLuint&  in_uniform_block_index,
-                                                     const GLuint&  in_uniform_block_binding)
+void OpenGL::vkglUniformBlockBinding_with_validation(OpenGL::Context* in_context_ptr,
+                                                     const GLuint&    in_program,
+                                                     const GLuint&    in_uniform_block_index,
+                                                     const GLuint&    in_uniform_block_binding)
 {
     if (validate(in_context_ptr,
                  in_program,

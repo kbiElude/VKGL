@@ -6,7 +6,7 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context*       in_context_ptr,
+static bool validate(OpenGL::Context*     in_context_ptr,
                      const GLuint&        in_program,
                      const GLsizei&       in_uniform_count,
                      const GLchar* const* in_uniform_names_ptr_ptr,
@@ -34,7 +34,7 @@ void VKGL_APIENTRY OpenGL::vkglGetUniformIndices(GLuint               program,
                                              uniformIndices);
 }
 
-static void vkglGetUniformIndices_execute(VKGL::Context*       in_context_ptr,
+static void vkglGetUniformIndices_execute(OpenGL::Context*     in_context_ptr,
                                           const GLuint&        in_program,
                                           const GLsizei&       in_uniform_count,
                                           const GLchar* const* in_uniform_names_ptr_ptr,
@@ -46,7 +46,7 @@ static void vkglGetUniformIndices_execute(VKGL::Context*       in_context_ptr,
                                         out_uniform_indices_ptr);
 }
 
-void OpenGL::vkglGetUniformIndices_with_validation(VKGL::Context*       in_context_ptr,
+void OpenGL::vkglGetUniformIndices_with_validation(OpenGL::Context*     in_context_ptr,
                                                    const GLuint&        in_program,
                                                    const GLsizei&       in_uniform_count,
                                                    const GLchar* const* in_uniform_names_ptr_ptr,

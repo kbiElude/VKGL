@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_pname,
-                     const GLint*   in_params)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_pname,
+                     const GLint*     in_params)
 {
     bool result = false;
 
@@ -29,20 +29,20 @@ void VKGL_APIENTRY OpenGL::vkglPointParameteriv(GLenum       pname,
                                             params);
 }
 
-static void vkglPointParameteriv_execute(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_pname,
-                                         const GLint*   in_params)
+static void vkglPointParameteriv_execute(OpenGL::Context* in_context_ptr,
+                                         const GLenum&    in_pname,
+                                         const GLint*     in_params)
 {
-    const auto pname_vkgl = VKGL::Utils::get_point_property_for_gl_enum(in_pname);
+    const auto pname_vkgl = OpenGL::Utils::get_point_property_for_gl_enum(in_pname);
 
     in_context_ptr->set_point_property(pname_vkgl,
-                                       VKGL::GetSetArgumentType::Int,
+                                       OpenGL::GetSetArgumentType::Int,
                                        in_params);
 }
 
-void OpenGL::vkglPointParameteriv_with_validation(VKGL::Context* in_context_ptr,
-                                                  const GLenum&  in_pname,
-                                                  const GLint*   in_params)
+void OpenGL::vkglPointParameteriv_with_validation(OpenGL::Context* in_context_ptr,
+                                                  const GLenum&    in_pname,
+                                                  const GLint*     in_params)
 {
     if (validate(in_context_ptr,
                  in_pname,

@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*    in_context_ptr,
+static bool validate(OpenGL::Context*  in_context_ptr,
                      const GLsync&     in_sync,
                      const GLbitfield& in_flags,
                      const GLuint64&   in_timeout)
@@ -32,20 +32,20 @@ GLenum VKGL_APIENTRY OpenGL::vkglClientWaitSync(GLsync     sync,
                                           timeout);
 }
 
-static GLenum vkglClientWaitSync_execute(VKGL::Context*    in_context_ptr,
+static GLenum vkglClientWaitSync_execute(OpenGL::Context*  in_context_ptr,
                                          const GLsync&     in_sync,
                                          const GLbitfield& in_flags,
                                          const GLuint64&   in_timeout)
 {
-    const auto flags_vkgl = VKGL::Utils::get_wait_sync_bits_for_gl_enum(in_flags);
-    const auto result     = in_context_ptr->client_wait_sync           (in_sync,
-                                                                        flags_vkgl,
-                                                                        in_timeout);
+    const auto flags_vkgl = OpenGL::Utils::get_wait_sync_bits_for_gl_enum(in_flags);
+    const auto result     = in_context_ptr->client_wait_sync             (in_sync,
+                                                                          flags_vkgl,
+                                                                          in_timeout);
 
-    return VKGL::Utils::get_gl_enum_for_wait_result(result);
+    return OpenGL::Utils::get_gl_enum_for_wait_result(result);
 }
 
-GLenum OpenGL::vkglClientWaitSync_with_validation(VKGL::Context*    in_context_ptr,
+GLenum OpenGL::vkglClientWaitSync_with_validation(OpenGL::Context*  in_context_ptr,
                                                   const GLsync&     in_sync,
                                                   const GLbitfield& in_flags,
                                                   const GLuint64&   in_timeout)

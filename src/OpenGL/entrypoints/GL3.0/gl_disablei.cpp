@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLuint&  in_index)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLuint&    in_index)
 {
     bool result = false;
 
@@ -29,19 +29,19 @@ void VKGL_APIENTRY OpenGL::vkglDisablei(GLenum target,
                                     index);
 }
 
-static void vkglDisablei_execute(VKGL::Context* in_context_ptr,
-                                 const GLenum&  in_target,
-                                 const GLuint&  in_index)
+static void vkglDisablei_execute(OpenGL::Context* in_context_ptr,
+                                 const GLenum&    in_target,
+                                 const GLuint&    in_index)
 {
     vkgl_assert(in_target == GL_BLEND);
 
-    in_context_ptr->disablei(VKGL::Capability::Blend,
+    in_context_ptr->disablei(OpenGL::Capability::Blend,
                              in_index);
 }
 
-void OpenGL::vkglDisablei_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLenum&  in_target,
-                                          const GLuint&  in_index)
+void OpenGL::vkglDisablei_with_validation(OpenGL::Context* in_context_ptr,
+                                          const GLenum&    in_target,
+                                          const GLuint&    in_index)
 {
     if (validate(in_context_ptr,
                  in_target,

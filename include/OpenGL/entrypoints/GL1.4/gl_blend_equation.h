@@ -11,8 +11,8 @@ namespace OpenGL
 {
     void VKGL_APIENTRY vkglBlendEquation(GLenum mode);
 
-    void vkglBlendEquation_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLenum&  in_mode);
+    void vkglBlendEquation_with_validation(OpenGL::Context* in_context_ptr,
+                                           const GLenum&    in_mode);
 }
 
 #endif /* VKGL_GL_BLEND_EQUATION_H */

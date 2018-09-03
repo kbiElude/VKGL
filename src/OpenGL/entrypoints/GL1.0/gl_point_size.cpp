@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLfloat& in_size)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLfloat&   in_size)
 {
     bool result = false;
 
@@ -26,14 +26,14 @@ void VKGL_APIENTRY OpenGL::vkglPointSize(GLfloat size)
                                      size);
 }
 
-static void vkglPointSize_execute(VKGL::Context* in_context_ptr,
-                                  const GLfloat& in_size)
+static void vkglPointSize_execute(OpenGL::Context* in_context_ptr,
+                                  const GLfloat&   in_size)
 {
     in_context_ptr->set_point_size(in_size);
 }
 
-void OpenGL::vkglPointSize_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLfloat& in_size)
+void OpenGL::vkglPointSize_with_validation(OpenGL::Context* in_context_ptr,
+                                           const GLfloat&   in_size)
 {
     if (validate(in_context_ptr,
                  in_size) )

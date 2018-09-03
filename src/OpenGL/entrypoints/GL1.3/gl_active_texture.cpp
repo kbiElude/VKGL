@@ -7,8 +7,8 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(const VKGL::Context* in_context_ptr,
-                     const GLenum&        in_texture)
+static bool validate(const OpenGL::Context* in_context_ptr,
+                     const GLenum&          in_texture)
 {
     bool result = false;
 
@@ -26,16 +26,16 @@ void VKGL_APIENTRY OpenGL::vkglActiveTexture(GLenum texture)
                                          texture);
 }
 
-static void vkglActiveTexture_execute(VKGL::Context* in_context_ptr,
-                                      const GLenum&  in_texture)
+static void vkglActiveTexture_execute(OpenGL::Context* in_context_ptr,
+                                      const GLenum&    in_texture)
 {
     const auto n_texture_unit = in_texture - GL_TEXTURE0;
 
     in_context_ptr->set_active_texture(n_texture_unit);
 }
 
-void OpenGL::vkglActiveTexture_with_validation(VKGL::Context* in_context_ptr,
-                                               const GLenum&  in_texture)
+void OpenGL::vkglActiveTexture_with_validation(OpenGL::Context* in_context_ptr,
+                                               const GLenum&    in_texture)
 {
     if (validate(in_context_ptr,
                  in_texture) )

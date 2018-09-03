@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_pname,
-                     GLint64*       out_data_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_pname,
+                     GLint64*         out_data_ptr)
 {
     bool result = false;
 
@@ -29,20 +29,20 @@ void VKGL_APIENTRY OpenGL::vkglGetInteger64v(GLenum   pname,
                                          data);
 }
 
-static void vkglGetInteger64v_execute(VKGL::Context* in_context_ptr,
-                                      const GLenum&  in_pname,
-                                      GLint64*       out_data_ptr)
+static void vkglGetInteger64v_execute(OpenGL::Context* in_context_ptr,
+                                      const GLenum&    in_pname,
+                                      GLint64*         out_data_ptr)
 {
-    const auto pname_vkgl = VKGL::Utils::get_context_property_for_gl_enum(in_pname);
+    const auto pname_vkgl = OpenGL::Utils::get_context_property_for_gl_enum(in_pname);
 
     in_context_ptr->get_parameter(pname_vkgl,
-                                  VKGL::GetSetArgumentType::Int64,
+                                  OpenGL::GetSetArgumentType::Int64,
                                   out_data_ptr);
 }
 
-void OpenGL::vkglGetInteger64v_with_validation(VKGL::Context* in_context_ptr,
-                                               const GLenum&  in_pname,
-                                               GLint64*       out_data_ptr)
+void OpenGL::vkglGetInteger64v_with_validation(OpenGL::Context* in_context_ptr,
+                                               const GLenum&    in_pname,
+                                               GLint64*         out_data_ptr)
 {
     if (validate(in_context_ptr,
                  in_pname,

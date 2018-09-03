@@ -7,13 +7,13 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLenum&  in_attachment,
-                     const GLenum&  in_textarget,
-                     const GLuint&  in_texture,
-                     const GLint&   in_level,
-                     const GLint&   in_zoffset)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLenum&    in_attachment,
+                     const GLenum&    in_textarget,
+                     const GLuint&    in_texture,
+                     const GLint&     in_level,
+                     const GLint&     in_zoffset)
 {
     bool result = false;
 
@@ -41,17 +41,17 @@ void VKGL_APIENTRY OpenGL::vkglFramebufferTexture3D(GLenum target,
                                                 zoffset);
 }
 
-static void vkglFramebufferTexture3D_execute(VKGL::Context* in_context_ptr,
-                                             const GLenum&  in_target,
-                                             const GLenum&  in_attachment,
-                                             const GLenum&  in_textarget,
-                                             const GLuint&  in_texture,
-                                             const GLint&   in_level,
-                                             const GLint&   in_zoffset)
+static void vkglFramebufferTexture3D_execute(OpenGL::Context* in_context_ptr,
+                                             const GLenum&    in_target,
+                                             const GLenum&    in_attachment,
+                                             const GLenum&    in_textarget,
+                                             const GLuint&    in_texture,
+                                             const GLint&     in_level,
+                                             const GLint&     in_zoffset)
 {
-    const auto attachment_vkgl = VKGL::Utils::get_framebuffer_attachment_point_for_gl_enum(in_attachment);
-    const auto target_vkgl     = VKGL::Utils::get_framebuffer_target_for_gl_enum          (in_target);
-    const auto textarget_vkgl  = VKGL::Utils::get_texture_target_for_gl_enum              (in_textarget);
+    const auto attachment_vkgl = OpenGL::Utils::get_framebuffer_attachment_point_for_gl_enum(in_attachment);
+    const auto target_vkgl     = OpenGL::Utils::get_framebuffer_target_for_gl_enum          (in_target);
+    const auto textarget_vkgl  = OpenGL::Utils::get_texture_target_for_gl_enum              (in_textarget);
 
     in_context_ptr->framebuffer_texture_3D(target_vkgl,
                                            attachment_vkgl,
@@ -61,13 +61,13 @@ static void vkglFramebufferTexture3D_execute(VKGL::Context* in_context_ptr,
                                            in_zoffset);
 }
 
-void OpenGL::vkglFramebufferTexture3D_with_validation(VKGL::Context* in_context_ptr,
-                                                      const GLenum&  in_target,
-                                                      const GLenum&  in_attachment,
-                                                      const GLenum&  in_textarget,
-                                                      const GLuint&  in_texture,
-                                                      const GLint&   in_level,
-                                                      const GLint&   in_zoffset)
+void OpenGL::vkglFramebufferTexture3D_with_validation(OpenGL::Context* in_context_ptr,
+                                                      const GLenum&    in_target,
+                                                      const GLenum&    in_attachment,
+                                                      const GLenum&    in_textarget,
+                                                      const GLuint&    in_texture,
+                                                      const GLint&     in_level,
+                                                      const GLint&     in_zoffset)
 {
     if (validate(in_context_ptr,
                  in_target,

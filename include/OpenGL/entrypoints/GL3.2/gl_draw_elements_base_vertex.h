@@ -15,12 +15,12 @@ namespace OpenGL
                                                   const void* indices,
                                                   GLint       basevertex);
 
-    void vkglDrawElementsBaseVertex_with_validation(VKGL::Context* in_context_ptr,
-                                                    const GLenum&  in_mode,
-                                                    const GLsizei& in_count,
-                                                    const GLenum&  in_type,
-                                                    const void*    in_indices,
-                                                    const GLint&   in_basevertex);
+    void vkglDrawElementsBaseVertex_with_validation(OpenGL::Context* in_context_ptr,
+                                                    const GLenum&    in_mode,
+                                                    const GLsizei&   in_count,
+                                                    const GLenum&    in_type,
+                                                    const void*      in_indices,
+                                                    const GLint&     in_basevertex);
 }
 
 #endif /* VKGL_GL_DRAW_ELEMENTS_BASE_VERTEX_H */

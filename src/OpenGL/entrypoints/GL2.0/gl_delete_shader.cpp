@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_shader)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_shader)
 {
     bool result = false;
 
@@ -25,14 +25,14 @@ void VKGL_APIENTRY OpenGL::vkglDeleteShader(GLuint shader)
                                         shader);
 }
 
-static void vkglDeleteShader_execute(VKGL::Context* in_context_ptr,
-                                     const GLuint&  in_shader)
+static void vkglDeleteShader_execute(OpenGL::Context* in_context_ptr,
+                                     const GLuint&    in_shader)
 {
     in_context_ptr->delete_shader(in_shader);
 }
 
-void OpenGL::vkglDeleteShader_with_validation(VKGL::Context* in_context_ptr,
-                                              const GLuint&  in_shader)
+void OpenGL::vkglDeleteShader_with_validation(OpenGL::Context* in_context_ptr,
+                                              const GLuint&    in_shader)
 {
     if (validate(in_context_ptr,
                  in_shader) )

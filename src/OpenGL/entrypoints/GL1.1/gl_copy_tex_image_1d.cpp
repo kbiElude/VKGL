@@ -7,14 +7,14 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLint&   in_level,
-                     const GLenum&  in_internalformat,
-                     const GLint&   in_x,
-                     const GLint&   in_y,
-                     const GLsizei& in_width,
-                     const GLint&   in_border)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLint&     in_level,
+                     const GLenum&    in_internalformat,
+                     const GLint&     in_x,
+                     const GLint&     in_y,
+                     const GLsizei&   in_width,
+                     const GLint&     in_border)
 {
     bool result = false;
 
@@ -44,17 +44,17 @@ void VKGL_APIENTRY OpenGL::vkglCopyTexImage1D(GLenum  target,
                                           border);
 }
 
-static void vkglCopyTexImage1D_execute(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_target,
-                                       const GLint&   in_level,
-                                       const GLenum&  in_internalformat,
-                                       const GLint&   in_x,
-                                       const GLint&   in_y,
-                                       const GLsizei& in_width,
-                                       const GLint&   in_border)
+static void vkglCopyTexImage1D_execute(OpenGL::Context* in_context_ptr,
+                                       const GLenum&    in_target,
+                                       const GLint&     in_level,
+                                       const GLenum&    in_internalformat,
+                                       const GLint&     in_x,
+                                       const GLint&     in_y,
+                                       const GLsizei&   in_width,
+                                       const GLint&     in_border)
 {
-    const auto internalformat_vkgl = VKGL::Utils::get_internal_format_for_gl_enum(in_internalformat);
-    const auto target_vkgl         = VKGL::Utils::get_texture_target_for_gl_enum (in_target);
+    const auto internalformat_vkgl = OpenGL::Utils::get_internal_format_for_gl_enum(in_internalformat);
+    const auto target_vkgl         = OpenGL::Utils::get_texture_target_for_gl_enum (in_target);
 
     in_context_ptr->copy_tex_image_1d(target_vkgl,
                                       in_level,
@@ -65,14 +65,14 @@ static void vkglCopyTexImage1D_execute(VKGL::Context* in_context_ptr,
                                       in_border);
 }
 
-void OpenGL::vkglCopyTexImage1D_with_validation(VKGL::Context* in_context_ptr,
-                                                const GLenum&  in_target,
-                                                const GLint&   in_level,
-                                                const GLenum&  in_internalformat,
-                                                const GLint&   in_x,
-                                                const GLint&   in_y,
-                                                const GLsizei& in_width,
-                                                const GLint&   in_border)
+void OpenGL::vkglCopyTexImage1D_with_validation(OpenGL::Context* in_context_ptr,
+                                                const GLenum&    in_target,
+                                                const GLint&     in_level,
+                                                const GLenum&    in_internalformat,
+                                                const GLint&     in_x,
+                                                const GLint&     in_y,
+                                                const GLsizei&   in_width,
+                                                const GLint&     in_border)
 {
     if (validate(in_context_ptr,
                  in_target,

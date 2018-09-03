@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*       in_context_ptr,
+static bool validate(OpenGL::Context*    in_context_ptr,
                     const GLuint&        in_program,
                     const GLsizei&       in_count,
                     const GLchar* const* in_varyings_ptr_ptr,
@@ -35,13 +35,13 @@ void VKGL_APIENTRY OpenGL::vkglTransformFeedbackVaryings(GLuint               pr
                                                      bufferMode);
 }
 
-static void vkglTransformFeedbackVaryings_execute(VKGL::Context*       in_context_ptr,
+static void vkglTransformFeedbackVaryings_execute(OpenGL::Context*     in_context_ptr,
                                                   const GLuint&        in_program,
                                                   const GLsizei&       in_count,
                                                   const GLchar* const* in_varyings_ptr_ptr,
                                                   const GLenum&        in_buffer_mode)
 {
-    const auto buffer_mode_vkgl = VKGL::Utils::get_transform_feedback_buffer_mode_for_gl_enum(in_buffer_mode);
+    const auto buffer_mode_vkgl = OpenGL::Utils::get_transform_feedback_buffer_mode_for_gl_enum(in_buffer_mode);
 
     in_context_ptr->transform_feedback_varyings(in_program,
                                                 in_count,
@@ -49,7 +49,7 @@ static void vkglTransformFeedbackVaryings_execute(VKGL::Context*       in_contex
                                                 in_buffer_mode);
 }
 
-void OpenGL::vkglTransformFeedbackVaryings_with_validation(VKGL::Context*       in_context_ptr,
+void OpenGL::vkglTransformFeedbackVaryings_with_validation(OpenGL::Context*     in_context_ptr,
                                                            const GLuint&        in_program,
                                                            const GLsizei&       in_count,
                                                            const GLchar* const* in_varyings_ptr_ptr,

@@ -7,13 +7,13 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLint&   in_level,
-                     const GLint&   in_xoffset,
-                     const GLint&   in_x,
-                     const GLint&   in_y,
-                     const GLsizei& in_width)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLint&     in_level,
+                     const GLint&     in_xoffset,
+                     const GLint&     in_x,
+                     const GLint&     in_y,
+                     const GLsizei&   in_width)
 {
     bool result = false;
 
@@ -41,15 +41,15 @@ void VKGL_APIENTRY OpenGL::vkglCopyTexSubImage1D(GLenum  target,
                                              width);
 }
 
-static void vkglCopyTexSubImage1D_execute(VKGL::Context* in_context_ptr,
-                                          const GLenum&  in_target,
-                                          const GLint&   in_level,
-                                          const GLint&   in_xoffset,
-                                          const GLint&   in_x,
-                                          const GLint&   in_y,
-                                          const GLsizei& in_width)
+static void vkglCopyTexSubImage1D_execute(OpenGL::Context* in_context_ptr,
+                                          const GLenum&    in_target,
+                                          const GLint&     in_level,
+                                          const GLint&     in_xoffset,
+                                          const GLint&     in_x,
+                                          const GLint&     in_y,
+                                          const GLsizei&   in_width)
 {
-    const auto target_vkgl = VKGL::Utils::get_texture_target_for_gl_enum(in_target);
+    const auto target_vkgl = OpenGL::Utils::get_texture_target_for_gl_enum(in_target);
 
     in_context_ptr->copy_tex_sub_image_1d(target_vkgl,
                                           in_level,
@@ -59,13 +59,13 @@ static void vkglCopyTexSubImage1D_execute(VKGL::Context* in_context_ptr,
                                           in_width);
 }
 
-void OpenGL::vkglCopyTexSubImage1D_with_validation(VKGL::Context* in_context_ptr,
-                                                   const GLenum&  in_target,
-                                                   const GLint&   in_level,
-                                                   const GLint&   in_xoffset,
-                                                   const GLint&   in_x,
-                                                   const GLint&   in_y,
-                                                   const GLsizei& in_width)
+void OpenGL::vkglCopyTexSubImage1D_with_validation(OpenGL::Context* in_context_ptr,
+                                                   const GLenum&    in_target,
+                                                   const GLint&     in_level,
+                                                   const GLint&     in_xoffset,
+                                                   const GLint&     in_x,
+                                                   const GLint&     in_y,
+                                                   const GLsizei&   in_width)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 

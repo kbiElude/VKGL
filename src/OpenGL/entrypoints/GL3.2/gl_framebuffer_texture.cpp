@@ -7,11 +7,11 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLenum&  in_attachment,
-                     const GLuint&  in_texture,
-                     const GLint&   in_level)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLenum&    in_attachment,
+                     const GLuint&    in_texture,
+                     const GLint&     in_level)
 {
     bool result = false;
 
@@ -35,14 +35,14 @@ void VKGL_APIENTRY OpenGL::vkglFramebufferTexture(GLenum target,
                                               level);
 }
 
-static void vkglFramebufferTexture_execute(VKGL::Context* in_context_ptr,
-                                           const GLenum&  in_target,
-                                           const GLenum&  in_attachment,
-                                           const GLuint&  in_texture,
-                                           const GLint&   in_level)
+static void vkglFramebufferTexture_execute(OpenGL::Context* in_context_ptr,
+                                           const GLenum&    in_target,
+                                           const GLenum&    in_attachment,
+                                           const GLuint&    in_texture,
+                                           const GLint&     in_level)
 {
-    const auto attachment_vkgl = VKGL::Utils::get_framebuffer_attachment_point_for_gl_enum(in_attachment);
-    const auto target_vkgl     = VKGL::Utils::get_framebuffer_target_for_gl_enum          (in_target);
+    const auto attachment_vkgl = OpenGL::Utils::get_framebuffer_attachment_point_for_gl_enum(in_attachment);
+    const auto target_vkgl     = OpenGL::Utils::get_framebuffer_target_for_gl_enum          (in_target);
 
     in_context_ptr->framebuffer_texture(target_vkgl,
                                         attachment_vkgl,
@@ -50,11 +50,11 @@ static void vkglFramebufferTexture_execute(VKGL::Context* in_context_ptr,
                                         in_level);
 }
 
-void OpenGL::vkglFramebufferTexture_with_validation(VKGL::Context* in_context_ptr,
-                                                    const GLenum&  in_target,
-                                                    const GLenum&  in_attachment,
-                                                    const GLuint&  in_texture,
-                                                    const GLint&   in_level)
+void OpenGL::vkglFramebufferTexture_with_validation(OpenGL::Context* in_context_ptr,
+                                                    const GLenum&    in_target,
+                                                    const GLenum&    in_attachment,
+                                                    const GLuint&    in_texture,
+                                                    const GLint&     in_level)
 {
     if (validate(in_context_ptr,
                  in_target,

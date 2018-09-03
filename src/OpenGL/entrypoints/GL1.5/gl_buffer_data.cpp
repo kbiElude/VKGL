@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*    in_context_ptr,
+static bool validate(OpenGL::Context*  in_context_ptr,
                      const GLenum&     in_target,
                      const GLsizeiptr& in_size,
                      const void*       in_data,
@@ -35,14 +35,14 @@ void VKGL_APIENTRY OpenGL::vkglBufferData(GLenum      target,
                                       usage);
 }
 
-static void vkglBufferData_execute(VKGL::Context*    in_context_ptr,
+static void vkglBufferData_execute(OpenGL::Context*  in_context_ptr,
                                    const GLenum&     in_target,
                                    const GLsizeiptr& in_size,
                                    const void*       in_data,
                                    const GLenum&     in_usage)
 {
-    const auto target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum(in_target);
-    const auto usage_vkgl  = VKGL::Utils::get_buffer_usage_for_gl_enum (in_usage);
+    const auto target_vkgl = OpenGL::Utils::get_buffer_target_for_gl_enum(in_target);
+    const auto usage_vkgl  = OpenGL::Utils::get_buffer_usage_for_gl_enum (in_usage);
 
     in_context_ptr->buffer_data(target_vkgl,
                                 in_size,
@@ -50,7 +50,7 @@ static void vkglBufferData_execute(VKGL::Context*    in_context_ptr,
                                 usage_vkgl);
 }
 
-void OpenGL::vkglBufferData_with_validation(VKGL::Context*    in_context_ptr,
+void OpenGL::vkglBufferData_with_validation(OpenGL::Context*  in_context_ptr,
                                             const GLenum&     in_target,
                                             const GLsizeiptr& in_size,
                                             const void*       in_data,

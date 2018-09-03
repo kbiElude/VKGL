@@ -6,10 +6,10 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLint&   in_location,
-                     const GLsizei& in_count,
-                     const GLuint*  in_value_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLint&     in_location,
+                     const GLsizei&   in_count,
+                     const GLuint*    in_value_ptr)
 {
     bool result = false;
 
@@ -31,22 +31,22 @@ void VKGL_APIENTRY OpenGL::vkglUniform4uiv(GLint         location,
                                        value);
 }
 
-static void vkglUniform4uiv_execute(VKGL::Context* in_context_ptr,
-                                    const GLint&   in_location,
-                                    const GLsizei& in_count,
-                                    const GLuint*  in_value_ptr)
+static void vkglUniform4uiv_execute(OpenGL::Context* in_context_ptr,
+                                    const GLint&     in_location,
+                                    const GLsizei&   in_count,
+                                    const GLuint*    in_value_ptr)
 {
     in_context_ptr->set_uniform_arrayed(in_location,
-                                        VKGL::GetSetArgumentType::Unsigned_Int,
+                                        OpenGL::GetSetArgumentType::Unsigned_Int,
                                         4,
                                         in_count,
                                         in_value_ptr);
 }
 
-void OpenGL::vkglUniform4uiv_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLint&   in_location,
-                                             const GLsizei& in_count,
-                                             const GLuint*  in_value_ptr)
+void OpenGL::vkglUniform4uiv_with_validation(OpenGL::Context* in_context_ptr,
+                                             const GLint&     in_location,
+                                             const GLsizei&   in_count,
+                                             const GLuint*    in_value_ptr)
 {
     if (validate(in_context_ptr,
                  in_location,

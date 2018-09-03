@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*    in_context_ptr,
+static bool validate(OpenGL::Context*  in_context_ptr,
                      const GLenum&     in_condition,
                      const GLbitfield& in_flags)
 {
@@ -29,18 +29,18 @@ GLsync VKGL_APIENTRY OpenGL::vkglFenceSync(GLenum     condition,
                                             flags);
 }
 
-static GLsync vkglFenceSync_execute(VKGL::Context*    in_context_ptr,
+static GLsync vkglFenceSync_execute(OpenGL::Context*  in_context_ptr,
                                     const GLenum&     in_condition,
                                     const GLbitfield& in_flags)
 {
-    const auto condition_vkgl = VKGL::Utils::get_sync_condition_for_gl_enum(in_condition);
+    const auto condition_vkgl = OpenGL::Utils::get_sync_condition_for_gl_enum(in_condition);
 
     vkgl_assert(in_flags == 0);
 
     return in_context_ptr->fence_sync(condition_vkgl);
 }
 
-GLsync OpenGL::vkglFenceSync_with_validation(VKGL::Context*    in_context_ptr,
+GLsync OpenGL::vkglFenceSync_with_validation(OpenGL::Context*  in_context_ptr,
                                              const GLenum&     in_condition,
                                              const GLbitfield& in_flags)
 {

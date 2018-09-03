@@ -7,8 +7,8 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_primitive_mode)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_primitive_mode)
 {
     bool result = false;
 
@@ -26,16 +26,16 @@ void VKGL_APIENTRY OpenGL::vkglBeginTransformFeedback(GLenum primitiveMode)
                                                   primitiveMode);
 }
 
-static void vkglBeginTransformFeedback_execute(VKGL::Context* in_context_ptr,
-                                               const GLenum&  in_primitive_mode)
+static void vkglBeginTransformFeedback_execute(OpenGL::Context* in_context_ptr,
+                                               const GLenum&    in_primitive_mode)
 {
-    const auto primitive_mode_vkgl = VKGL::Utils::get_transform_feedback_primitive_mode_for_gl_enum(in_primitive_mode);
+    const auto primitive_mode_vkgl = OpenGL::Utils::get_transform_feedback_primitive_mode_for_gl_enum(in_primitive_mode);
 
     in_context_ptr->begin_transform_feedback(primitive_mode_vkgl);
 }
 
-void OpenGL::vkglBeginTransformFeedback_with_validation(VKGL::Context* in_context_ptr,
-                                                        const GLenum&  in_primitive_mode)
+void OpenGL::vkglBeginTransformFeedback_with_validation(OpenGL::Context* in_context_ptr,
+                                                        const GLenum&    in_primitive_mode)
 {
     if (validate(in_context_ptr,
                  in_primitive_mode) )

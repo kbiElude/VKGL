@@ -7,10 +7,10 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     GLenum         in_target,
-                     GLint          in_level,
-                     void*          in_img)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     GLenum           in_target,
+                     GLint            in_level,
+                     void*            in_img)
 {
     bool result = false;
 
@@ -32,22 +32,22 @@ void VKGL_APIENTRY OpenGL::vkglGetCompressedTexImage(GLenum target,
                                                  img);
 }
 
-static void vkglGetCompressedTexImage_execute(VKGL::Context* in_context_ptr,
-                                              GLenum         in_target,
-                                              GLint          in_level,
-                                              void*          in_img)
+static void vkglGetCompressedTexImage_execute(OpenGL::Context* in_context_ptr,
+                                              GLenum           in_target,
+                                              GLint            in_level,
+                                              void*            in_img)
 {
-    const auto target_vkgl = VKGL::Utils::get_texture_target_for_gl_enum(in_target);
+    const auto target_vkgl = OpenGL::Utils::get_texture_target_for_gl_enum(in_target);
 
     in_context_ptr->get_compressed_tex_image(target_vkgl,
                                              in_level,
                                              in_img);
 }
 
-void OpenGL::vkglGetCompressedTexImage_with_validation(VKGL::Context* in_context_ptr,
-                                                       GLenum         in_target,
-                                                       GLint          in_level,
-                                                       void*          in_img)
+void OpenGL::vkglGetCompressedTexImage_with_validation(OpenGL::Context* in_context_ptr,
+                                                       GLenum           in_target,
+                                                       GLint            in_level,
+                                                       void*            in_img)
 {
     if (validate(in_context_ptr,
                  in_target,

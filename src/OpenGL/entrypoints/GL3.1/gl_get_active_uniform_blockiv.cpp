@@ -7,11 +7,11 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program,
-                     const GLuint&  in_uniform_block_index,
-                     const GLenum&  in_pname,
-                     GLint*         out_params_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program,
+                     const GLuint&    in_uniform_block_index,
+                     const GLenum&    in_pname,
+                     GLint*           out_params_ptr)
 {
     bool result = false;
 
@@ -35,26 +35,26 @@ void VKGL_APIENTRY OpenGL::vkglGetActiveUniformBlockiv(GLuint program,
                                                    params);
 }
 
-static void vkglGetActiveUniformBlockiv_execute(VKGL::Context* in_context_ptr,
-                                                const GLuint&  in_program,
-                                                const GLuint&  in_uniform_block_index,
-                                                const GLenum&  in_pname,
-                                                GLint*         out_params_ptr)
+static void vkglGetActiveUniformBlockiv_execute(OpenGL::Context* in_context_ptr,
+                                                const GLuint&    in_program,
+                                                const GLuint&    in_uniform_block_index,
+                                                const GLenum&    in_pname,
+                                                GLint*           out_params_ptr)
 {
-    const auto pname_vkgl = VKGL::Utils::get_uniform_block_property_for_gl_enum(in_pname);
+    const auto pname_vkgl = OpenGL::Utils::get_uniform_block_property_for_gl_enum(in_pname);
 
     in_context_ptr->get_active_uniform_block_property(in_program,
                                                       in_uniform_block_index,
                                                       pname_vkgl,
-                                                      VKGL::GetSetArgumentType::Int,
+                                                      OpenGL::GetSetArgumentType::Int,
                                                       out_params_ptr);
 }
 
-void OpenGL::vkglGetActiveUniformBlockiv_with_validation(VKGL::Context* in_context_ptr,
-                                                         const GLuint&  in_program,
-                                                         const GLuint&  in_uniform_block_index,
-                                                         const GLenum&  in_pname,
-                                                         GLint*         out_params_ptr)
+void OpenGL::vkglGetActiveUniformBlockiv_with_validation(OpenGL::Context* in_context_ptr,
+                                                         const GLuint&    in_program,
+                                                         const GLuint&    in_uniform_block_index,
+                                                         const GLenum&    in_pname,
+                                                         GLint*           out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_program,

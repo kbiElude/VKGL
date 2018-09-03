@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program)
 {
     bool result = false;
 
@@ -25,14 +25,14 @@ void VKGL_APIENTRY OpenGL::vkglValidateProgram(GLuint program)
                                            program);
 }
 
-static void vkglValidateProgram_execute(VKGL::Context* in_context_ptr,
-                                        const GLuint&  in_program)
+static void vkglValidateProgram_execute(OpenGL::Context* in_context_ptr,
+                                        const GLuint&    in_program)
 {
     in_context_ptr->validate_program(in_program);
 }
 
-void OpenGL::vkglValidateProgram_with_validation(VKGL::Context* in_context_ptr,
-                                                 const GLuint&  in_program)
+void OpenGL::vkglValidateProgram_with_validation(OpenGL::Context* in_context_ptr,
+                                                 const GLuint&    in_program)
 {
     if (validate(in_context_ptr,
                  in_program) )

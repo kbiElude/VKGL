@@ -16,7 +16,7 @@ namespace OpenGL
                                                        GLsizei            drawcount,
                                                        const GLint*       basevertex);
 
-    void vkglMultiDrawElementsBaseVertex_with_validation(VKGL::Context*     in_context_ptr,
+    void vkglMultiDrawElementsBaseVertex_with_validation(OpenGL::Context*   in_context_ptr,
                                                          const GLenum&      in_mode,
                                                          const GLsizei*     in_count_ptr,
                                                          const GLenum&      in_type,

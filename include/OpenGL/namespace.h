@@ -8,7 +8,7 @@
 #include "OpenGL/types.h"
 
 
-namespace VKGL
+namespace OpenGL
 {
     class Namespace
     {

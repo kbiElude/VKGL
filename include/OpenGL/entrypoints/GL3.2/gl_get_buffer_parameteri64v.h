@@ -13,10 +13,10 @@ namespace OpenGL
                                                   GLenum   pname,
                                                   GLint64* params);
 
-    void vkglGetBufferParameteri64v_with_validation(VKGL::Context* in_context_ptr,
-                                                    const GLenum&  in_target,
-                                                    const GLenum&  in_pname,
-                                                    GLint64*       out_params_ptr);
+    void vkglGetBufferParameteri64v_with_validation(OpenGL::Context* in_context_ptr,
+                                                    const GLenum&    in_target,
+                                                    const GLenum&    in_pname,
+                                                    GLint64*         out_params_ptr);
 }
 
 #endif /* VKGL_GL_GET_BUFFER_PARAMETERI64V_H */

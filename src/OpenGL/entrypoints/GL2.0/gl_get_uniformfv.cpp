@@ -6,10 +6,10 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program,
-                     const GLint&   in_location,
-                     GLfloat*       out_params_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program,
+                     const GLint&     in_location,
+                     GLfloat*         out_params_ptr)
 {
     bool result = false;
 
@@ -31,21 +31,21 @@ void VKGL_APIENTRY OpenGL::vkglGetUniformfv(GLuint   program,
                                         params);
 }
 
-static void vkglGetUniformfv_execute(VKGL::Context* in_context_ptr,
-                                     const GLuint&  in_program,
-                                     const GLint&   in_location,
-                                     GLfloat*       out_params_ptr)
+static void vkglGetUniformfv_execute(OpenGL::Context* in_context_ptr,
+                                     const GLuint&    in_program,
+                                     const GLint&     in_location,
+                                     GLfloat*         out_params_ptr)
 {
     in_context_ptr->get_uniform_value(in_program,
                                       in_location,
-                                      VKGL::GetSetArgumentType::Float,
+                                      OpenGL::GetSetArgumentType::Float,
                                       out_params_ptr);
 }
 
-void OpenGL::vkglGetUniformfv_with_validation(VKGL::Context* in_context_ptr,
-                                              const GLuint&  in_program,
-                                              const GLint&   in_location,
-                                              GLfloat*       out_params_ptr)
+void OpenGL::vkglGetUniformfv_with_validation(OpenGL::Context* in_context_ptr,
+                                              const GLuint&    in_program,
+                                              const GLint&     in_location,
+                                              GLfloat*         out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_program,

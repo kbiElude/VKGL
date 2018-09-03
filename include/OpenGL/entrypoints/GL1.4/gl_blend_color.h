@@ -14,11 +14,11 @@ namespace OpenGL
                                       GLfloat blue,
                                       GLfloat alpha);
 
-    void vkglBlendColor_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLfloat& in_red,
-                                        const GLfloat& in_green,
-                                        const GLfloat& in_blue,
-                                        const GLfloat& in_alpha);
+    void vkglBlendColor_with_validation(OpenGL::Context* in_context_ptr,
+                                        const GLfloat&   in_red,
+                                        const GLfloat&   in_green,
+                                        const GLfloat&   in_blue,
+                                        const GLfloat&   in_alpha);
 }
 
 #endif /* VKGL_GL_BLEND_COLOR_H */

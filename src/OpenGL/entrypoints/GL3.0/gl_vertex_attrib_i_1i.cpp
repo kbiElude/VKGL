@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_index,
-                     const GLint&   in_x)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index,
+                     const GLint&     in_x)
 {
     bool result = false;
 
@@ -28,21 +28,21 @@ void VKGL_APIENTRY OpenGL::vkglVertexAttribI1i(GLuint index,
                                            x);
 }
 
-static void vkglVertexAttribI1i_execute(VKGL::Context* in_context_ptr,
-                                        const GLuint&  in_index,
-                                        const GLint&   in_x)
+static void vkglVertexAttribI1i_execute(OpenGL::Context* in_context_ptr,
+                                        const GLuint&    in_index,
+                                        const GLint&     in_x)
 {
     in_context_ptr->set_vertex_attribute(in_index,
-                                         VKGL::GetSetArgumentType::Float,
-                                         VKGL::GetSetArgumentType::Int,
+                                         OpenGL::GetSetArgumentType::Float,
+                                         OpenGL::GetSetArgumentType::Int,
                                          1,
                                          false, /* in_normalized */
                                         &in_x);
 }
 
-void OpenGL::vkglVertexAttribI1i_with_validation(VKGL::Context* in_context_ptr,
-                                                 const GLuint&  in_index,
-                                                 const GLint&   in_x)
+void OpenGL::vkglVertexAttribI1i_with_validation(OpenGL::Context* in_context_ptr,
+                                                 const GLuint&    in_index,
+                                                 const GLint&     in_x)
 {
     if (validate(in_context_ptr,
                  in_index,

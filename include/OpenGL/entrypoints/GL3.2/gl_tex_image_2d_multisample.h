@@ -16,7 +16,7 @@ namespace OpenGL
                                                  GLsizei   height,
                                                  GLboolean fixedsamplelocations);
 
-    void vkglTexImage2DMultisample_with_validation(VKGL::Context*   in_context_ptr,
+    void vkglTexImage2DMultisample_with_validation(OpenGL::Context* in_context_ptr,
                                                    const GLenum&    in_target,
                                                    const GLsizei&   in_samples,
                                                    const GLenum&    in_internalformat,

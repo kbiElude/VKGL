@@ -6,7 +6,7 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr)
+static bool validate(OpenGL::Context* in_context_ptr)
 {
     bool result = false;
 
@@ -24,12 +24,12 @@ void VKGL_APIENTRY OpenGL::vkglEndConditionalRender(void)
 }
 
 
-static void vkglEndConditionalRender_execute(VKGL::Context* in_context_ptr)
+static void vkglEndConditionalRender_execute(OpenGL::Context* in_context_ptr)
 {
     in_context_ptr->end_conditional_render();
 }
 
-void OpenGL::vkglEndConditionalRender_with_validation(VKGL::Context* in_context_ptr)
+void OpenGL::vkglEndConditionalRender_with_validation(OpenGL::Context* in_context_ptr)
 {
     if (validate(in_context_ptr) )
     {

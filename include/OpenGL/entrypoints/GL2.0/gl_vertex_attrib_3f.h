@@ -14,11 +14,11 @@ namespace OpenGL
                                           GLfloat y,
                                           GLfloat z);
 
-    void vkglVertexAttrib3f_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLuint&  in_index,
-                                            const GLfloat& in_x,
-                                            const GLfloat& in_y,
-                                            const GLfloat& in_z);
+    void vkglVertexAttrib3f_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLuint&    in_index,
+                                            const GLfloat&   in_x,
+                                            const GLfloat&   in_y,
+                                            const GLfloat&   in_z);
 }
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_3F_H */

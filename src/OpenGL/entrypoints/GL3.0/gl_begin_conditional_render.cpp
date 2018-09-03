@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_id,
-                     const GLenum&  in_mode)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_id,
+                     const GLenum&    in_mode)
 {
     bool result = false;
 
@@ -29,19 +29,19 @@ void VKGL_APIENTRY OpenGL::vkglBeginConditionalRender(GLuint id,
                                                   mode);
 }
 
-static void vkglBeginConditionalRender_execute(VKGL::Context* in_context_ptr,
-                                               const GLuint&  in_id,
-                                               const GLenum&  in_mode)
+static void vkglBeginConditionalRender_execute(OpenGL::Context* in_context_ptr,
+                                               const GLuint&    in_id,
+                                               const GLenum&    in_mode)
 {
-    const auto mode_vkgl = VKGL::Utils::get_conditional_render_mode_for_gl_enum(in_mode);
+    const auto mode_vkgl = OpenGL::Utils::get_conditional_render_mode_for_gl_enum(in_mode);
 
     in_context_ptr->begin_conditional_render(in_id,
                                              mode_vkgl);
 }
 
-void OpenGL::vkglBeginConditionalRender_with_validation(VKGL::Context* in_context_ptr,
-                                                        const GLuint&  in_id,
-                                                        const GLenum&  in_mode)
+void OpenGL::vkglBeginConditionalRender_with_validation(OpenGL::Context* in_context_ptr,
+                                                        const GLuint&    in_id,
+                                                        const GLenum&    in_mode)
 {
     if (validate(in_context_ptr,
                  in_id,

@@ -6,7 +6,7 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context*       in_context_ptr,
+static bool validate(OpenGL::Context*     in_context_ptr,
                      const GLuint&        in_shader,
                      const GLsizei&       in_count,
                      const GLchar* const* in_string_ptr_ptr,
@@ -34,7 +34,7 @@ void VKGL_APIENTRY OpenGL::vkglShaderSource(GLuint               shader,
                                         length);
 }
 
-static void vkglShaderSource_execute(VKGL::Context*       in_context_ptr,
+static void vkglShaderSource_execute(OpenGL::Context*     in_context_ptr,
                                      const GLuint&        in_shader,
                                      const GLsizei&       in_count,
                                      const GLchar* const* in_string_ptr_ptr,
@@ -46,7 +46,7 @@ static void vkglShaderSource_execute(VKGL::Context*       in_context_ptr,
                                   in_length_ptr);
 }
 
-void OpenGL::vkglShaderSource_with_validation(VKGL::Context*       in_context_ptr,
+void OpenGL::vkglShaderSource_with_validation(OpenGL::Context*     in_context_ptr,
                                               const GLuint&        in_shader,
                                               const GLsizei&       in_count,
                                               const GLchar* const* in_string_ptr_ptr,

@@ -7,11 +7,11 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_buffer,
-                     const GLint&   in_drawbuffer,
-                     const GLfloat& in_depth,
-                     const GLint&   in_stencil)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_buffer,
+                     const GLint&     in_drawbuffer,
+                     const GLfloat&   in_depth,
+                     const GLint&     in_stencil)
 {
     bool result = false;
 
@@ -35,28 +35,28 @@ void VKGL_APIENTRY OpenGL::vkglClearBufferfi(GLenum  buffer,
                                          stencil);
 }
 
-static void vkglClearBufferfi_execute(VKGL::Context* in_context_ptr,
-                                      const GLenum&  in_buffer,
-                                      const GLint&   in_drawbuffer,
-                                      const GLfloat& in_depth,
-                                      const GLint&   in_stencil)
+static void vkglClearBufferfi_execute(OpenGL::Context* in_context_ptr,
+                                      const GLenum&    in_buffer,
+                                      const GLint&     in_drawbuffer,
+                                      const GLfloat&   in_depth,
+                                      const GLint&     in_stencil)
 {
-    const auto buffer_vkgl = VKGL::Utils::get_clear_buffer_for_gl_enum(in_buffer);
+    const auto buffer_vkgl = OpenGL::Utils::get_clear_buffer_for_gl_enum(in_buffer);
 
     in_context_ptr->clear_buffer(buffer_vkgl,
                                  in_drawbuffer,
-                                 VKGL::GetSetArgumentType::Unknown,
+                                 OpenGL::GetSetArgumentType::Unknown,
                                  0,
                                  nullptr,
                                  in_depth,
                                  in_stencil);
 }
 
-void OpenGL::vkglClearBufferfi_with_validation(VKGL::Context* in_context_ptr,
-                                               const GLenum&  in_buffer,
-                                               const GLint&   in_drawbuffer,
-                                               const GLfloat& in_depth,
-                                               const GLint&   in_stencil)
+void OpenGL::vkglClearBufferfi_with_validation(OpenGL::Context* in_context_ptr,
+                                               const GLenum&    in_buffer,
+                                               const GLint&     in_drawbuffer,
+                                               const GLfloat&   in_depth,
+                                               const GLint&     in_stencil)
 {
     if (validate(in_context_ptr,
                  in_buffer,

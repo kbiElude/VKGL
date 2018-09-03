@@ -11,8 +11,8 @@ namespace OpenGL
 {
     void VKGL_APIENTRY vkglReadBuffer(GLenum src);
 
-    void vkglReadBuffer_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLenum&  in_src);
+    void vkglReadBuffer_with_validation(OpenGL::Context* in_context_ptr,
+                                        const GLenum&    in_src);
 }
 
 #endif /* VKGL_GL_READ_BUFFER_H */

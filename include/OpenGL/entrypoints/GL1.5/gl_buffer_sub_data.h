@@ -14,7 +14,7 @@ namespace OpenGL
                                          GLsizeiptr  size,
                                          const void* data);
 
-    void vkglBufferSubData_with_validation(VKGL::Context*    in_context_ptr,
+    void vkglBufferSubData_with_validation(OpenGL::Context*  in_context_ptr,
                                            const GLenum&     in_target,
                                            const GLintptr&   in_offset,
                                            const GLsizeiptr& in_size,

@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*   in_context_ptr,
+static bool validate(OpenGL::Context* in_context_ptr,
                      const GLuint&    in_index,
                      const GLint&     in_size,
                      const GLenum&    in_type,
@@ -39,25 +39,25 @@ void VKGL_APIENTRY OpenGL::vkglVertexAttribIPointer(GLuint      index,
                                                 pointer);
 }
 
-static void vkglVertexAttribIPointer_execute(VKGL::Context*   in_context_ptr,
+static void vkglVertexAttribIPointer_execute(OpenGL::Context* in_context_ptr,
                                              const GLuint&    in_index,
                                              const GLint&     in_size,
                                              const GLenum&    in_type,
                                              const GLsizei&   in_stride,
                                              const void*      in_pointer_ptr)
 {
-    const auto type_vkgl = VKGL::Utils::get_variable_type_for_gl_enum(in_type);
+    const auto type_vkgl = OpenGL::Utils::get_variable_type_for_gl_enum(in_type);
 
     in_context_ptr->set_vertex_attrib_pointer(in_index,
                                               in_size,
                                               type_vkgl,
-                                              VKGL::GetSetArgumentType::Int,
+                                              OpenGL::GetSetArgumentType::Int,
                                               false, /* in_normalized */
                                               in_stride,
                                               in_pointer_ptr);
 }
 
-void OpenGL::vkglVertexAttribIPointer_with_validation(VKGL::Context*   in_context_ptr,
+void OpenGL::vkglVertexAttribIPointer_with_validation(OpenGL::Context* in_context_ptr,
                                                       const GLuint&    in_index,
                                                       const GLint&     in_size,
                                                       const GLenum&    in_type,

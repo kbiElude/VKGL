@@ -6,7 +6,7 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr)
+static bool validate(OpenGL::Context* in_context_ptr)
 {
     bool result = false;
 
@@ -23,12 +23,12 @@ GLuint VKGL_APIENTRY OpenGL::vkglCreateProgram()
     return dispatch_table_ptr->pGLCreateProgram(dispatch_table_ptr->bound_context_ptr);
 }
 
-static GLuint vkglCreateProgram_execute(VKGL::Context* in_context_ptr)
+static GLuint vkglCreateProgram_execute(OpenGL::Context* in_context_ptr)
 {
     return in_context_ptr->create_program();
 }
 
-GLuint OpenGL::vkglCreateProgram_with_validation(VKGL::Context* in_context_ptr)
+GLuint OpenGL::vkglCreateProgram_with_validation(OpenGL::Context* in_context_ptr)
 {
     GLuint result = 0;
 

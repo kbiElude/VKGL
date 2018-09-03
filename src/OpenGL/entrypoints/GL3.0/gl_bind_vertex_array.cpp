@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_array)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_array)
 {
     bool result = false;
 
@@ -25,14 +25,14 @@ void VKGL_APIENTRY OpenGL::vkglBindVertexArray(GLuint array)
                                            array);
 }
 
-static void vkglBindVertexArray_execute(VKGL::Context* in_context_ptr,
-                                        const GLuint&  in_array)
+static void vkglBindVertexArray_execute(OpenGL::Context* in_context_ptr,
+                                        const GLuint&    in_array)
 {
     in_context_ptr->bind_vertex_array(in_array);
 }
 
-void OpenGL::vkglBindVertexArray_with_validation(VKGL::Context* in_context_ptr,
-                                                 const GLuint&  in_array)
+void OpenGL::vkglBindVertexArray_with_validation(OpenGL::Context* in_context_ptr,
+                                                 const GLuint&    in_array)
 {
     if (validate(in_context_ptr,
                  in_array) )

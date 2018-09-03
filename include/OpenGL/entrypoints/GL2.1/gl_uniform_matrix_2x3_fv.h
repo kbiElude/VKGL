@@ -14,7 +14,7 @@ namespace OpenGL
                                               GLboolean      transpose,
                                               const GLfloat* value);
 
-    void vkglUniformMatrix2x3fv_with_validation(VKGL::Context*   in_context_ptr,
+    void vkglUniformMatrix2x3fv_with_validation(OpenGL::Context* in_context_ptr,
                                                 const GLint&     in_location,
                                                 const GLsizei&   in_count,
                                                 const GLboolean& in_transpose,

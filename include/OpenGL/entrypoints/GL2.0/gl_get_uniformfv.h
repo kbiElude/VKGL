@@ -13,10 +13,10 @@ namespace OpenGL
                                         GLint    location,
                                         GLfloat* params);
 
-    void vkglGetUniformfv_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_program,
-                                          const GLint&   in_location,
-                                          GLfloat*       out_params_ptr);
+    void vkglGetUniformfv_with_validation(OpenGL::Context* in_context_ptr,
+                                          const GLuint&    in_program,
+                                          const GLint&     in_location,
+                                          GLfloat*         out_params_ptr);
 }
 
 #endif /* VKGL_GL_GET_UNIFORMFV_H */

@@ -7,8 +7,8 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_name)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_name)
 {
     bool result = false;
 
@@ -27,21 +27,21 @@ const GLubyte* APIENTRY OpenGL::vkglGetString(GLenum name)
                                             name);
 }
 
-static const GLubyte* vkglGetString_execute(VKGL::Context* in_context_ptr,
-                                            const GLenum&  in_name)
+static const GLubyte* vkglGetString_execute(OpenGL::Context* in_context_ptr,
+                                            const GLenum&    in_name)
 {
-    const auto     name_vkgl  = VKGL::Utils::get_context_property_for_gl_enum(in_name);
+    const auto     name_vkgl  = OpenGL::Utils::get_context_property_for_gl_enum(in_name);
     const GLubyte* result_ptr = nullptr;
 
     in_context_ptr->get_parameter(name_vkgl,
-                                  VKGL::GetSetArgumentType::String,
+                                  OpenGL::GetSetArgumentType::String,
                                  &result_ptr);
 
     return result_ptr;
 }
 
-const GLubyte* OpenGL::vkglGetString_with_validation(VKGL::Context* in_context_ptr,
-                                                     const GLenum&  in_name)
+const GLubyte* OpenGL::vkglGetString_with_validation(OpenGL::Context* in_context_ptr,
+                                                     const GLenum&    in_name)
 {
     const GLubyte* result_ptr = nullptr;
 

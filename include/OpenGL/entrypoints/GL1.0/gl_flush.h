@@ -11,7 +11,7 @@ namespace OpenGL
 {
     void VKGL_APIENTRY vkglFlush(void);
 
-    void vkglFlush_with_validation(VKGL::Context* in_context_ptr);
+    void vkglFlush_with_validation(OpenGL::Context* in_context_ptr);
 }
 
 #endif /* VKGL_GL_FLUSH_H */

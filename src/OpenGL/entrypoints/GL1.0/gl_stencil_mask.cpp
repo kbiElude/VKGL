@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_mask)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_mask)
 {
     bool result = false;
 
@@ -26,14 +26,14 @@ void VKGL_APIENTRY OpenGL::vkglStencilMask(GLuint mask)
                                        mask);
 }
 
-static void vkglStencilMask_execute(VKGL::Context* in_context_ptr,
-                                    const GLuint&  in_mask)
+static void vkglStencilMask_execute(OpenGL::Context* in_context_ptr,
+                                    const GLuint&    in_mask)
 {
     in_context_ptr->set_stencil_mask(in_mask);
 }
 
-void OpenGL::vkglStencilMask_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLuint&  in_mask)
+void OpenGL::vkglStencilMask_with_validation(OpenGL::Context* in_context_ptr,
+                                             const GLuint&    in_mask)
 {
     if (validate(in_context_ptr,
                  in_mask) )

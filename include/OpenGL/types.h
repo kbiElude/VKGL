@@ -13,7 +13,7 @@
 
 #define VKGL_APIENTRY KHRONOS_APIENTRY
 
-namespace VKGL
+namespace OpenGL
 {
     /* Forward declarations */
     class Context;

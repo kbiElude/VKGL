@@ -6,7 +6,7 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context*   in_context_ptr,
+static bool validate(OpenGL::Context* in_context_ptr,
                      const GLboolean& in_flag)
 {
     bool result = false;
@@ -26,13 +26,13 @@ void VKGL_APIENTRY OpenGL::vkglDepthMask(GLboolean flag)
                                      flag);
 }
 
-static void vkglDepthMask_execute(VKGL::Context*   in_context_ptr,
+static void vkglDepthMask_execute(OpenGL::Context* in_context_ptr,
                                   const GLboolean& in_flag)
 {
     in_context_ptr->set_depth_mask( (in_flag == GL_TRUE) );
 }
 
-void OpenGL::vkglDepthMask_with_validation(VKGL::Context*   in_context_ptr,
+void OpenGL::vkglDepthMask_with_validation(OpenGL::Context* in_context_ptr,
                                            const GLboolean& in_flag)
 {
     if (validate(in_context_ptr,

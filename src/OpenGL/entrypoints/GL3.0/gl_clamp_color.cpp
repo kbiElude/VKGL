@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLenum&  in_clamp)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLenum&    in_clamp)
 {
     bool result = false;
 
@@ -29,18 +29,18 @@ void VKGL_APIENTRY OpenGL::vkglClampColor(GLenum target,
                                       clamp);
 }
 
-static void vkglClampColor_execute(VKGL::Context* in_context_ptr,
-                                   const GLenum&  in_target,
-                                   const GLenum&  in_clamp)
+static void vkglClampColor_execute(OpenGL::Context* in_context_ptr,
+                                   const GLenum&    in_target,
+                                   const GLenum&    in_clamp)
 {
     vkgl_assert(in_target == GL_CLAMP_READ_COLOR);
 
     in_context_ptr->set_clamp_color( (in_clamp == GL_TRUE) ? true : false);
 }
 
-void OpenGL::vkglClampColor_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLenum&  in_target,
-                                            const GLenum&  in_clamp)
+void OpenGL::vkglClampColor_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLenum&    in_target,
+                                            const GLenum&    in_clamp)
 {
     if (validate(in_context_ptr,
                  in_target,

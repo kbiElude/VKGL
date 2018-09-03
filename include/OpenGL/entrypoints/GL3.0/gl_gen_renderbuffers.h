@@ -12,9 +12,9 @@ namespace OpenGL
     void VKGL_APIENTRY vkglGenRenderbuffers(GLsizei n,
                                             GLuint* renderbuffers);
 
-    void vkglGenRenderbuffers_with_validation(VKGL::Context* in_context_ptr,
-                                              const GLsizei& in_n,
-                                              GLuint*        out_renderbuffers_ptr);
+    void vkglGenRenderbuffers_with_validation(OpenGL::Context* in_context_ptr,
+                                              const GLsizei&   in_n,
+                                              GLuint*          out_renderbuffers_ptr);
 }
 
 #endif /* VKGL_GL_GEN_RENDERBUFFERS_H */

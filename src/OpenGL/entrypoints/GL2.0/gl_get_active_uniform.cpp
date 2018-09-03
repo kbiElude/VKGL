@@ -7,14 +7,14 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program,
-                     const GLuint&  in_index,
-                     const GLsizei& in_buf_size,
-                     GLsizei*       out_length_ptr,
-                     GLint*         out_size_ptr,
-                     GLenum*        out_type_ptr,
-                     GLchar*        out_name_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program,
+                     const GLuint&    in_index,
+                     const GLsizei&   in_buf_size,
+                     GLsizei*         out_length_ptr,
+                     GLint*           out_size_ptr,
+                     GLenum*          out_type_ptr,
+                     GLchar*          out_name_ptr)
 {
     bool result = false;
 
@@ -44,16 +44,16 @@ void VKGL_APIENTRY OpenGL::vkglGetActiveUniform(GLuint   program,
                                             name);
 }
 
-static void vkglGetActiveUniform_execute(VKGL::Context* in_context_ptr,
-                                         const GLuint&  in_program,
-                                         const GLuint&  in_index,
-                                         const GLsizei& in_buf_size,
-                                         GLsizei*       out_length_ptr,
-                                         GLint*         out_size_ptr,
-                                         GLenum*        out_type_ptr,
-                                         GLchar*        out_name_ptr)
+static void vkglGetActiveUniform_execute(OpenGL::Context* in_context_ptr,
+                                         const GLuint&    in_program,
+                                         const GLuint&    in_index,
+                                         const GLsizei&   in_buf_size,
+                                         GLsizei*         out_length_ptr,
+                                         GLint*           out_size_ptr,
+                                         GLenum*          out_type_ptr,
+                                         GLchar*          out_name_ptr)
 {
-    auto type_vkgl = VKGL::VariableType::Unknown;
+    auto type_vkgl = OpenGL::VariableType::Unknown;
 
     in_context_ptr->get_active_uniform(in_program,
                                        in_index,
@@ -63,17 +63,17 @@ static void vkglGetActiveUniform_execute(VKGL::Context* in_context_ptr,
                                       &type_vkgl,
                                        out_name_ptr)
 
-    *out_type_ptr = VKGL::Utils::get_gl_enum_for_variable_type(type_vkgl);
+    *out_type_ptr = OpenGL::Utils::get_gl_enum_for_variable_type(type_vkgl);
 }
 
-void OpenGL::vkglGetActiveUniform_with_validation(VKGL::Context* in_context_ptr,
-                                                  const GLuint&  in_program,
-                                                  const GLuint&  in_index,
-                                                  const GLsizei& in_buf_size,
-                                                  GLsizei*       out_length_ptr,
-                                                  GLint*         out_size_ptr,
-                                                  GLenum*        out_type_ptr,
-                                                  GLchar*        out_name_ptr)
+void OpenGL::vkglGetActiveUniform_with_validation(OpenGL::Context* in_context_ptr,
+                                                  const GLuint&    in_program,
+                                                  const GLuint&    in_index,
+                                                  const GLsizei&   in_buf_size,
+                                                  GLsizei*         out_length_ptr,
+                                                  GLint*           out_size_ptr,
+                                                  GLenum*          out_type_ptr,
+                                                  GLchar*          out_name_ptr)
 {
     if (validate(in_context_ptr,
                  in_program,

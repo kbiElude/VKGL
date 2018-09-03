@@ -13,10 +13,10 @@ namespace OpenGL
                                              GLenum   pname,
                                              GLfloat* params);
 
-    void vkglGetVertexAttribfv_with_validation(VKGL::Context* in_context_ptr,
-                                               const GLuint&  in_index,
-                                               const GLenum&  in_pname,
-                                               GLfloat*       out_params_ptr);
+    void vkglGetVertexAttribfv_with_validation(OpenGL::Context* in_context_ptr,
+                                               const GLuint&    in_index,
+                                               const GLenum&    in_pname,
+                                               GLfloat*         out_params_ptr);
 }
 
 #endif /* VKGL_GL_GET_VERTEX_ATTRIBFV_H */

@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_shader)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_shader)
 {
     bool result = false;
 
@@ -25,14 +25,14 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsShader(GLuint shader)
                                            shader) == GL_TRUE;
 }
 
-static bool vkglIsShader_execute(VKGL::Context* in_context_ptr,
-                                 const GLuint&  in_shader)
+static bool vkglIsShader_execute(OpenGL::Context* in_context_ptr,
+                                 const GLuint&    in_shader)
 {
     return in_context_ptr->is_shader(in_shader);
 }
 
-bool OpenGL::vkglIsShader_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_shader)
+bool OpenGL::vkglIsShader_with_validation(OpenGL::Context* in_context_ptr,
+                                          const GLuint&    in_shader)
 {
     bool result = false;
 

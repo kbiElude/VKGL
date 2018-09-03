@@ -8,10 +8,10 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_pshader,
-                     const GLenum&  in_pname,
-                     GLint*         out_params_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_pshader,
+                     const GLenum&    in_pname,
+                     GLint*           out_params_ptr)
 {
     bool result = false;
 
@@ -33,24 +33,24 @@ void VKGL_APIENTRY OpenGL::vkglGetShaderiv(GLuint shader,
                                        params);
 }
 
-static void vkglGetShaderiv_execute(VKGL::Context* in_context_ptr,
-                                    const GLuint&  in_shader,
-                                    const GLenum&  in_pname,
-                                    GLint*         out_params_ptr)
+static void vkglGetShaderiv_execute(OpenGL::Context* in_context_ptr,
+                                    const GLuint&    in_shader,
+                                    const GLenum&    in_pname,
+                                    GLint*           out_params_ptr)
 {
-    const auto pname_vkgl = VKGL::Utils::get_shader_property_for_gl_enum(in_pname);
+    const auto pname_vkgl = OpenGL::Utils::get_shader_property_for_gl_enum(in_pname);
 
     in_context_ptr->get_shader_property(in_shader,
                                         pname_vkgl,
-                                        VKGL::GetSetArgumentType::Int,
+                                        OpenGL::GetSetArgumentType::Int,
                                         1,
                                         out_params_ptr);
 }
 
-void OpenGL::vkglGetShaderiv_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLuint&  in_shader,
-                                             const GLenum&  in_pname,
-                                             GLint*         out_params_ptr)
+void OpenGL::vkglGetShaderiv_with_validation(OpenGL::Context* in_context_ptr,
+                                             const GLuint&    in_shader,
+                                             const GLenum&    in_pname,
+                                             GLint*           out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_shader,

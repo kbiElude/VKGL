@@ -7,8 +7,8 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_type)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_type)
 {
     bool result = false;
 
@@ -26,16 +26,16 @@ GLuint VKGL_APIENTRY OpenGL::vkglCreateShader(GLenum type)
                                                 type);
 }
 
-static GLuint vkglCreateShader_execute(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_type)
+static GLuint vkglCreateShader_execute(OpenGL::Context* in_context_ptr,
+                                       const GLenum&    in_type)
 {
-    const auto type_vkgl = VKGL::Utils::get_shader_type_for_gl_enum(in_type);
+    const auto type_vkgl = OpenGL::Utils::get_shader_type_for_gl_enum(in_type);
 
     return in_context_ptr->create_shader(type_vkgl);
 }
 
-GLuint OpenGL::vkglCreateShader_with_validation(VKGL::Context* in_context_ptr,
-                                                const GLenum&  in_type)
+GLuint OpenGL::vkglCreateShader_with_validation(OpenGL::Context* in_context_ptr,
+                                                const GLenum&    in_type)
 {
     GLuint result = 0;
 

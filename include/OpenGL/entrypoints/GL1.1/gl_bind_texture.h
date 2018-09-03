@@ -12,9 +12,9 @@ namespace OpenGL
     void VKGL_APIENTRY vkglBindTexture(GLenum target,
                                        GLuint texture);
 
-    void vkglBindTexture_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_target,
-                                         const GLuint&  in_texture);
+    void vkglBindTexture_with_validation(OpenGL::Context* in_context_ptr,
+                                         const GLenum&    in_target,
+                                         const GLuint&    in_texture);
 }
 
 #endif /* VKGL_GL_BIND_TEXTURE_H */

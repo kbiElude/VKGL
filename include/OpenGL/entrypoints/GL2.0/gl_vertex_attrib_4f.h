@@ -15,12 +15,12 @@ namespace OpenGL
                                           GLfloat z,
                                           GLfloat w);
 
-    void vkglVertexAttrib4f_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLuint&  in_index,
-                                            const GLfloat& in_x,
-                                            const GLfloat& in_y,
-                                            const GLfloat& in_z,
-                                            const GLfloat& in_w);
+    void vkglVertexAttrib4f_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLuint&    in_index,
+                                            const GLfloat&   in_x,
+                                            const GLfloat&   in_y,
+                                            const GLfloat&   in_z,
+                                            const GLfloat&   in_w);
 }
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_4F_H */

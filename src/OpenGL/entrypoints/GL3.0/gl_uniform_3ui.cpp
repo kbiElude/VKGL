@@ -6,11 +6,11 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLint&   in_location,
-                     const GLuint&  in_v0,
-                     const GLuint&  in_v1,
-                     const GLuint&  in_v2)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLint&     in_location,
+                     const GLuint&    in_v0,
+                     const GLuint&    in_v1,
+                     const GLuint&    in_v2)
 {
     bool result = false;
 
@@ -34,11 +34,11 @@ void VKGL_APIENTRY OpenGL::vkglUniform3ui(GLint  location,
                                       v2);
 }
 
-static void vkglUniform3ui_execute(VKGL::Context* in_context_ptr,
-                                   const GLint&   in_location,
-                                   const GLuint&  in_v0,
-                                   const GLuint&  in_v1,
-                                   const GLuint&  in_v2)
+static void vkglUniform3ui_execute(OpenGL::Context* in_context_ptr,
+                                   const GLint&     in_location,
+                                   const GLuint&    in_v0,
+                                   const GLuint&    in_v1,
+                                   const GLuint&    in_v2)
 {
     const GLuint data[] =
     {
@@ -48,16 +48,16 @@ static void vkglUniform3ui_execute(VKGL::Context* in_context_ptr,
     };
 
     in_context_ptr->set_uniform(in_location,
-                                VKGL::GetSetArgumentType::Unsigned_Int,
+                                OpenGL::GetSetArgumentType::Unsigned_Int,
                                 3,
                                 data);
 }
 
-void OpenGL::vkglUniform3ui_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLint&   in_location,
-                                            const GLuint&  in_v0,
-                                            const GLuint&  in_v1,
-                                            const GLuint&  in_v2)
+void OpenGL::vkglUniform3ui_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLint&     in_location,
+                                            const GLuint&    in_v0,
+                                            const GLuint&    in_v1,
+                                            const GLuint&    in_v2)
 {
     if (validate(in_context_ptr,
                  in_location,

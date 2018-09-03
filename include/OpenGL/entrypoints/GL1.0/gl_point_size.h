@@ -11,8 +11,8 @@ namespace OpenGL
 {
     void VKGL_APIENTRY vkglPointSize(GLfloat size);
 
-    void vkglPointSize_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLfloat& in_size);
+    void vkglPointSize_with_validation(OpenGL::Context* in_context_ptr,
+                                       const GLfloat&   in_size);
 }
 
 #endif /* VKGL_GL_POINT_SIZE_H */

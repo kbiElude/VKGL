@@ -13,10 +13,10 @@ namespace OpenGL
                                           GLfloat x,
                                           GLfloat y);
 
-    void vkglVertexAttrib2f_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLuint&  in_index,
-                                            const GLfloat& in_x,
-                                            const GLfloat& in_y);
+    void vkglVertexAttrib2f_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLuint&    in_index,
+                                            const GLfloat&   in_x,
+                                            const GLfloat&   in_y);
 }
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_2F_H */

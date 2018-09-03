@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLfloat& in_factor,
-                     const GLfloat& in_units)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLfloat&   in_factor,
+                     const GLfloat&   in_units)
 {
     bool result = false;
 
@@ -28,17 +28,17 @@ void VKGL_APIENTRY OpenGL::vkglPolygonOffset(GLfloat factor,
                                          units);
 }
 
-static void vkglPolygonOffset_execute(VKGL::Context* in_context_ptr,
-                                      const GLfloat& in_factor,
-                                      const GLfloat& in_units)
+static void vkglPolygonOffset_execute(OpenGL::Context* in_context_ptr,
+                                      const GLfloat&   in_factor,
+                                      const GLfloat&   in_units)
 {
     in_context_ptr->set_polygon_offset(in_factor,
                                       in_units);
 }
 
-void OpenGL::vkglPolygonOffset_with_validation(VKGL::Context* in_context_ptr,
-                                               const GLfloat& in_factor,
-                                               const GLfloat& in_units)
+void OpenGL::vkglPolygonOffset_with_validation(OpenGL::Context* in_context_ptr,
+                                               const GLfloat&   in_factor,
+                                               const GLfloat&   in_units)
 {
     vkglPolygonOffset_execute(in_context_ptr,
                               in_factor,

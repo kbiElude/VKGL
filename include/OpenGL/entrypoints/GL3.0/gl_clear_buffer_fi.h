@@ -14,11 +14,11 @@ namespace OpenGL
                                          GLfloat depth,
                                          GLint   stencil);
 
-    void vkglClearBufferfi_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLenum&  in_buffer,
-                                           const GLint&   in_drawbuffer,
-                                           const GLfloat& in_depth,
-                                           const GLint&   in_stencil);
+    void vkglClearBufferfi_with_validation(OpenGL::Context* in_context_ptr,
+                                           const GLenum&    in_buffer,
+                                           const GLint&     in_drawbuffer,
+                                           const GLfloat&   in_depth,
+                                           const GLint&     in_stencil);
 }
 
 #endif /* VKGL_GL_CLEAR_BUFFER_FI_H */

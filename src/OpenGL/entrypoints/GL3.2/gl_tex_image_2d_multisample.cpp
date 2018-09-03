@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*   in_context_ptr,
+static bool validate(OpenGL::Context* in_context_ptr,
                      const GLenum&    in_target,
                      const GLsizei&   in_samples,
                      const GLenum&    in_internalformat,
@@ -42,7 +42,7 @@ void VKGL_APIENTRY OpenGL::vkglTexImage2DMultisample(GLenum    target,
                                                  fixedsamplelocations);
 }
 
-static void vkglTexImage2DMultisample_execute(VKGL::Context*   in_context_ptr,
+static void vkglTexImage2DMultisample_execute(OpenGL::Context* in_context_ptr,
                                               const GLenum&    in_target,
                                               const GLsizei&   in_samples,
                                               const GLenum&    in_internalformat,
@@ -50,8 +50,8 @@ static void vkglTexImage2DMultisample_execute(VKGL::Context*   in_context_ptr,
                                               const GLsizei&   in_height,
                                               const GLboolean& in_fixedsamplelocations)
 {
-    const auto internalformat_vkgl = VKGL::Utils::get_internal_format_for_gl_enum(in_internalformat);
-    const auto target_vkgl         = VKGL::Utils::get_texture_target_for_gl_enum (in_target);
+    const auto internalformat_vkgl = OpenGL::Utils::get_internal_format_for_gl_enum(in_internalformat);
+    const auto target_vkgl         = OpenGL::Utils::get_texture_target_for_gl_enum (in_target);
 
     in_context_ptr->tex_image_2d_multisample(target_vkgl,
                                              in_samples,
@@ -61,7 +61,7 @@ static void vkglTexImage2DMultisample_execute(VKGL::Context*   in_context_ptr,
                                              (in_fixedsamplelocations == GL_TRUE) );
 }
 
-void OpenGL::vkglTexImage2DMultisample_with_validation(VKGL::Context*   in_context_ptr,
+void OpenGL::vkglTexImage2DMultisample_with_validation(OpenGL::Context* in_context_ptr,
                                                        const GLenum&    in_target,
                                                        const GLsizei&   in_samples,
                                                        const GLenum&    in_internalformat,

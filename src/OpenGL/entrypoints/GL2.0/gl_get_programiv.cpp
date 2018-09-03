@@ -7,10 +7,10 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program,
-                     const GLenum&  in_pname,
-                     GLint*         out_params_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program,
+                     const GLenum&    in_pname,
+                     GLint*           out_params_ptr)
 {
     bool result = false;
 
@@ -32,24 +32,24 @@ void VKGL_APIENTRY OpenGL::vkglGetProgramiv(GLuint program,
                                         params);
 }
 
-static void vkglGetProgramiv_execute(VKGL::Context* in_context_ptr,
-                                     const GLuint&  in_program,
-                                     const GLenum&  in_pname,
-                                     GLint*         out_params_ptr)
+static void vkglGetProgramiv_execute(OpenGL::Context* in_context_ptr,
+                                     const GLuint&    in_program,
+                                     const GLenum&    in_pname,
+                                     GLint*           out_params_ptr)
 {
-    const auto pname_vkgl = VKGL::Utils::get_program_property_for_gl_enum(in_pname);
+    const auto pname_vkgl = OpenGL::Utils::get_program_property_for_gl_enum(in_pname);
 
     in_context_ptr->get_program_property(in_program,
                                          pname_vkgl,
-                                         VKGL::GetSetArgumentType::Int,
+                                         OpenGL::GetSetArgumentType::Int,
                                          1,
                                          out_params_ptr);
 }
 
-void OpenGL::vkglGetProgramiv_with_validation(VKGL::Context* in_context_ptr,
-                                              const GLuint&  in_program,
-                                              const GLenum&  in_pname,
-                                              GLint*         out_params_ptr)
+void OpenGL::vkglGetProgramiv_with_validation(OpenGL::Context* in_context_ptr,
+                                              const GLuint&    in_program,
+                                              const GLenum&    in_pname,
+                                              GLint*           out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_program,

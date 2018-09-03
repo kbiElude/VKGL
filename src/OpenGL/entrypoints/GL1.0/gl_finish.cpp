@@ -13,7 +13,7 @@ void VKGL_APIENTRY OpenGL::vkglFinish(void)
     dispatch_table_ptr->pGLFinish(dispatch_table_ptr->bound_context_ptr);
 }
 
-void OpenGL::vkglFinish_with_validation(VKGL::Context* in_context_ptr)
+void OpenGL::vkglFinish_with_validation(OpenGL::Context* in_context_ptr)
 {
     in_context_ptr->finish();
 }

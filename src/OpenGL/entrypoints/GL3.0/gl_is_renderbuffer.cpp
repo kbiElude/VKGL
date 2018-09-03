@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_renderbuffer)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_renderbuffer)
 {
     bool result = false;
 
@@ -25,14 +25,14 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsRenderbuffer(GLuint renderbuffer)
                                                  renderbuffer) == GL_TRUE;
 }
 
-static bool vkglIsRenderbuffer_execute(VKGL::Context* in_context_ptr,
-                                       const GLuint&  in_renderbuffer)
+static bool vkglIsRenderbuffer_execute(OpenGL::Context* in_context_ptr,
+                                       const GLuint&    in_renderbuffer)
 {
     return in_context_ptr->is_renderbuffer(in_renderbuffer) == GL_TRUE;
 }
 
-bool OpenGL::vkglIsRenderbuffer_with_validation(VKGL::Context* in_context_ptr,
-                                                const GLuint&  in_renderbuffer)
+bool OpenGL::vkglIsRenderbuffer_with_validation(OpenGL::Context* in_context_ptr,
+                                                const GLuint&    in_renderbuffer)
 {
     bool result = false;
 

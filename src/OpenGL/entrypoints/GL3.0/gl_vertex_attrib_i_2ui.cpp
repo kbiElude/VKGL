@@ -6,10 +6,10 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_index,
-                     const GLuint&  in_x,
-                     const GLuint&  in_y)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index,
+                     const GLuint&    in_x,
+                     const GLuint&    in_y)
 {
     bool result = false;
 
@@ -31,10 +31,10 @@ void VKGL_APIENTRY OpenGL::vkglVertexAttribI2ui(GLuint index,
                                             y);
 }
 
-static void vkglVertexAttribI2ui_execute(VKGL::Context* in_context_ptr,
-                                         const GLuint&  in_index,
-                                         const GLuint&  in_x,
-                                         const GLuint&  in_y)
+static void vkglVertexAttribI2ui_execute(OpenGL::Context* in_context_ptr,
+                                         const GLuint&    in_index,
+                                         const GLuint&    in_x,
+                                         const GLuint&    in_y)
 {
     const GLuint data[] =
     {
@@ -43,17 +43,17 @@ static void vkglVertexAttribI2ui_execute(VKGL::Context* in_context_ptr,
     };
 
     in_context_ptr->set_vertex_attribute(in_index,
-                                         VKGL::GetSetArgumentType::Unsigned_Int,
-                                         VKGL::GetSetArgumentType::Unsigned_Int,
+                                         OpenGL::GetSetArgumentType::Unsigned_Int,
+                                         OpenGL::GetSetArgumentType::Unsigned_Int,
                                          2,
                                          false, /* in_normalized */
                                          data);
 }
 
-void OpenGL::vkglVertexAttribI2ui_with_validation(VKGL::Context* in_context_ptr,
-                                                  const GLuint&  in_index,
-                                                  const GLuint&  in_x,
-                                                  const GLuint&  in_y)
+void OpenGL::vkglVertexAttribI2ui_with_validation(OpenGL::Context* in_context_ptr,
+                                                  const GLuint&    in_index,
+                                                  const GLuint&    in_x,
+                                                  const GLuint&    in_y)
 {
     if (validate(in_context_ptr,
                  in_index,

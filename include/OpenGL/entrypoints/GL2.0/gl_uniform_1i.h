@@ -12,9 +12,9 @@ namespace OpenGL
     void VKGL_APIENTRY vkglUniform1i(GLint location,
                                      GLint v0);
 
-    void vkglUniform1i_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLint&   in_location,
-                                       const GLint&   in_v0);
+    void vkglUniform1i_with_validation(OpenGL::Context* in_context_ptr,
+                                       const GLint&     in_location,
+                                       const GLint&     in_v0);
 }
 
 #endif /* VKGL_GL_UNIFORM_1I_H */

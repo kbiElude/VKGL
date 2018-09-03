@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_index)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index)
 {
     bool result = false;
 
@@ -25,14 +25,14 @@ void VKGL_APIENTRY OpenGL::vkglPrimitiveRestartIndex(GLuint index)
                                                  index);
 }
 
-static void vkglPrimitiveRestartIndex_execute(VKGL::Context* in_context_ptr,
-                                              const GLuint&  in_index)
+static void vkglPrimitiveRestartIndex_execute(OpenGL::Context* in_context_ptr,
+                                              const GLuint&    in_index)
 {
     in_context_ptr->set_primitive_restart_index(in_index);
 }
 
-void OpenGL::vkglPrimitiveRestartIndex_with_validation(VKGL::Context* in_context_ptr,
-                                                       const GLuint&  in_index)
+void OpenGL::vkglPrimitiveRestartIndex_with_validation(OpenGL::Context* in_context_ptr,
+                                                       const GLuint&    in_index)
 {
     if (validate(in_context_ptr,
                  in_index) )

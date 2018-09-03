@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLenum&  in_mode)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLenum&    in_mode)
 {
     bool result = false;
 
@@ -30,20 +30,20 @@ void VKGL_APIENTRY OpenGL::vkglHint(GLenum target,
                                 mode);
 }
 
-static void vkglHint_execute(VKGL::Context* in_context_ptr,
-                             const GLenum&  in_target,
-                             const GLenum&  in_mode)
+static void vkglHint_execute(OpenGL::Context* in_context_ptr,
+                             const GLenum&    in_target,
+                             const GLenum&    in_mode)
 {
-    const auto mode_vkgl   = VKGL::Utils::get_hint_mode_for_gl_enum  (in_mode);
-    const auto target_vkgl = VKGL::Utils::get_hint_target_for_gl_enum(in_target);
+    const auto mode_vkgl   = OpenGL::Utils::get_hint_mode_for_gl_enum  (in_mode);
+    const auto target_vkgl = OpenGL::Utils::get_hint_target_for_gl_enum(in_target);
 
     in_context_ptr->set_hint(target_vkgl,
                              mode_vkgl);
 }
 
-void OpenGL::vkglHint_with_validation(VKGL::Context* in_context_ptr,
-                                      const GLenum&  in_target,
-                                      const GLenum&  in_mode)
+void OpenGL::vkglHint_with_validation(OpenGL::Context* in_context_ptr,
+                                      const GLenum&    in_target,
+                                      const GLenum&    in_mode)
 {
     if (validate(in_context_ptr,
                  in_target,

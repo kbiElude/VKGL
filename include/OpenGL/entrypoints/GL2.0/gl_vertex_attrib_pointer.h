@@ -16,7 +16,7 @@ namespace OpenGL
                                                GLsizei     stride,
                                                const void* pointer);
 
-    void vkglVertexAttribPointer_with_validation(VKGL::Context*   in_context_ptr,
+    void vkglVertexAttribPointer_with_validation(OpenGL::Context* in_context_ptr,
                                                  const GLuint&    in_index,
                                                  const GLint&     in_size,
                                                  const GLenum&    in_type,

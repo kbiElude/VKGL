@@ -11,7 +11,7 @@ namespace OpenGL
 {
     void VKGL_APIENTRY vkglFinish(void);
 
-    void vkglFinish_with_validation(VKGL::Context* in_context_ptr);
+    void vkglFinish_with_validation(OpenGL::Context* in_context_ptr);
 }
 
 #endif /* VKGL_GL_FINISH_H */

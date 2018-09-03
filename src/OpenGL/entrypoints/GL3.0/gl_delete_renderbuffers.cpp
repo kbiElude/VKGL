@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLsizei& in_n,
-                     const GLuint*  in_renderbuffers_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLsizei&   in_n,
+                     const GLuint*    in_renderbuffers_ptr)
 {
     bool result = false;
 
@@ -28,17 +28,17 @@ void VKGL_APIENTRY OpenGL::vkglDeleteRenderbuffers(GLsizei      n,
                                                renderbuffers);
 }
 
-static void vkglDeleteRenderbuffers_execute(VKGL::Context* in_context_ptr,
-                                            const GLsizei& in_n,
-                                            const GLuint*  in_renderbuffers_ptr)
+static void vkglDeleteRenderbuffers_execute(OpenGL::Context* in_context_ptr,
+                                            const GLsizei&   in_n,
+                                            const GLuint*    in_renderbuffers_ptr)
 {
     in_context_ptr->delete_renderbuffers(in_n,
                                          in_renderbuffers_ptr);
 }
 
-void OpenGL::vkglDeleteRenderbuffers_with_validation(VKGL::Context* in_context_ptr,
-                                                     const GLsizei& in_n,
-                                                     const GLuint*  in_renderbuffers_ptr)
+void OpenGL::vkglDeleteRenderbuffers_with_validation(OpenGL::Context* in_context_ptr,
+                                                     const GLsizei&   in_n,
+                                                     const GLuint*    in_renderbuffers_ptr)
 {
     if (validate(in_context_ptr,
                  in_n,

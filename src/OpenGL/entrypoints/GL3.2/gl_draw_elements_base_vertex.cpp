@@ -7,12 +7,12 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_mode,
-                     const GLsizei& in_count,
-                     const GLenum&  in_type,
-                     const void*    in_indices,
-                     const GLint&   in_basevertex)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_mode,
+                     const GLsizei&   in_count,
+                     const GLenum&    in_type,
+                     const void*      in_indices,
+                     const GLint&     in_basevertex)
 {
     bool result = false;
 
@@ -38,15 +38,15 @@ void VKGL_APIENTRY OpenGL::vkglDrawElementsBaseVertex(GLenum      mode,
                                                   basevertex);
 }
 
-static void vkglDrawElementsBaseVertex_execute(VKGL::Context* in_context_ptr,
-                                               const GLenum&  in_mode,
-                                               const GLsizei& in_count,
-                                               const GLenum&  in_type,
-                                               const void*    in_indices,
-                                               const GLint&   in_basevertex)
+static void vkglDrawElementsBaseVertex_execute(OpenGL::Context* in_context_ptr,
+                                               const GLenum&    in_mode,
+                                               const GLsizei&   in_count,
+                                               const GLenum&    in_type,
+                                               const void*      in_indices,
+                                               const GLint&     in_basevertex)
 {
-    const auto mode_vkgl = VKGL::Utils::get_draw_call_mode_for_gl_enum      (in_mode);
-    const auto type_vkgl = VKGL::Utils::get_draw_call_index_type_for_gl_enum(in_type);
+    const auto mode_vkgl = OpenGL::Utils::get_draw_call_mode_for_gl_enum      (in_mode);
+    const auto type_vkgl = OpenGL::Utils::get_draw_call_index_type_for_gl_enum(in_type);
 
     in_context_ptr->draw_elements_base_vertex(mode_vkgl,
                                              in_count,
@@ -55,12 +55,12 @@ static void vkglDrawElementsBaseVertex_execute(VKGL::Context* in_context_ptr,
                                              in_basevertex);
 }
 
-void OpenGL::vkglDrawElementsBaseVertex_with_validation(VKGL::Context* in_context_ptr,
-                                                        const GLenum&  in_mode,
-                                                        const GLsizei& in_count,
-                                                        const GLenum&  in_type,
-                                                        const void*    in_indices,
-                                                        const GLint&   in_basevertex)
+void OpenGL::vkglDrawElementsBaseVertex_with_validation(OpenGL::Context* in_context_ptr,
+                                                        const GLenum&    in_mode,
+                                                        const GLsizei&   in_count,
+                                                        const GLenum&    in_type,
+                                                        const void*      in_indices,
+                                                        const GLint&     in_basevertex)
 {
     if (validate(in_context_ptr,
                  in_mode,

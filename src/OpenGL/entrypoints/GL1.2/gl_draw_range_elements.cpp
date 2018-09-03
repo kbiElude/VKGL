@@ -7,13 +7,13 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_mode,
-                     const GLuint&  in_start,
-                     const GLuint&  in_end,
-                     const GLsizei& in_count,
-                     const GLenum&  in_type,
-                     const void*    in_indices)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_mode,
+                     const GLuint&    in_start,
+                     const GLuint&    in_end,
+                     const GLsizei&   in_count,
+                     const GLenum&    in_type,
+                     const void*      in_indices)
 {
     bool result = false;
 
@@ -23,16 +23,16 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-static void vkglDrawRangeElements_execute(VKGL::Context* in_context_ptr,
-                                          const GLenum&  in_mode,
-                                          const GLuint&  in_start,
-                                          const GLuint&  in_end,
-                                          const GLsizei& in_count,
-                                          const GLenum&  in_type,
-                                          const void*    in_indices)
+static void vkglDrawRangeElements_execute(OpenGL::Context* in_context_ptr,
+                                          const GLenum&    in_mode,
+                                          const GLuint&    in_start,
+                                          const GLuint&    in_end,
+                                          const GLsizei&   in_count,
+                                          const GLenum&    in_type,
+                                          const void*      in_indices)
 {
-    const auto mode_vkgl = VKGL::Utils::get_draw_call_mode_for_gl_enum      (in_mode);
-    const auto type_vkgl = VKGL::Utils::get_draw_call_index_type_for_gl_enum(in_type);
+    const auto mode_vkgl = OpenGL::Utils::get_draw_call_mode_for_gl_enum      (in_mode);
+    const auto type_vkgl = OpenGL::Utils::get_draw_call_index_type_for_gl_enum(in_type);
 
     in_context_ptr->draw_range_elements(mode_vkgl,
                                         in_start,
@@ -42,13 +42,13 @@ static void vkglDrawRangeElements_execute(VKGL::Context* in_context_ptr,
                                         in_indices);
 }
 
-void OpenGL::vkglDrawRangeElements_with_validation(VKGL::Context* in_context_ptr,
-                                                   const GLenum&  in_mode,
-                                                   const GLuint&  in_start,
-                                                   const GLuint&  in_end,
-                                                   const GLsizei& in_count,
-                                                   const GLenum&  in_type,
-                                                   const void*    in_indices)
+void OpenGL::vkglDrawRangeElements_with_validation(OpenGL::Context* in_context_ptr,
+                                                   const GLenum&    in_mode,
+                                                   const GLuint&    in_start,
+                                                   const GLuint&    in_end,
+                                                   const GLsizei&   in_count,
+                                                   const GLenum&    in_type,
+                                                   const void*      in_indices)
 {
     if (validate(in_context_ptr,
                  in_mode,

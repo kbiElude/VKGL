@@ -6,11 +6,11 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context*  in_context_ptr,
-                     const GLuint&   in_index,
-                     const GLdouble& in_x,
-                     const GLdouble& in_y,
-                     const GLdouble& in_z)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index,
+                     const GLdouble&  in_x,
+                     const GLdouble&  in_y,
+                     const GLdouble&  in_z)
 {
     bool result = false;
 
@@ -34,11 +34,11 @@ void VKGL_APIENTRY OpenGL::vkglVertexAttrib3d(GLuint   index,
                                           z);
 }
 
-static void vkglVertexAttrib3d_execute(VKGL::Context*  in_context_ptr,
-                                       const GLuint&   in_index,
-                                       const GLdouble& in_x,
-                                       const GLdouble& in_y,
-                                       const GLdouble& in_z)
+static void vkglVertexAttrib3d_execute(OpenGL::Context* in_context_ptr,
+                                       const GLuint&    in_index,
+                                       const GLdouble&  in_x,
+                                       const GLdouble&  in_y,
+                                       const GLdouble&  in_z)
 {
     const double data[] =
     {
@@ -48,18 +48,18 @@ static void vkglVertexAttrib3d_execute(VKGL::Context*  in_context_ptr,
     };
 
     in_context_ptr->set_vertex_attribute(in_index,
-                                         VKGL::GetSetArgumentType::Double,
-                                         VKGL::GetSetArgumentType::Float,
+                                         OpenGL::GetSetArgumentType::Double,
+                                         OpenGL::GetSetArgumentType::Float,
                                          3,
                                          false, /* in_normalized */
                                          data);
 }
 
-void OpenGL::vkglVertexAttrib3d_with_validation(VKGL::Context*  in_context_ptr,
-                                                const GLuint&   in_index,
-                                                const GLdouble& in_x,
-                                                const GLdouble& in_y,
-                                                const GLdouble& in_z)
+void OpenGL::vkglVertexAttrib3d_with_validation(OpenGL::Context* in_context_ptr,
+                                                const GLuint&    in_index,
+                                                const GLdouble&  in_x,
+                                                const GLdouble&  in_y,
+                                                const GLdouble&  in_z)
 {
     if (validate(in_context_ptr,
                  in_index,

@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     GLuint         in_program,
-                     const GLchar*  in_uniform_block_name)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     GLuint           in_program,
+                     const GLchar*    in_uniform_block_name)
 {
     bool result = false;
 
@@ -28,17 +28,17 @@ GLuint VKGL_APIENTRY OpenGL::vkglGetUniformBlockIndex(GLuint        program,
                                                        uniformBlockName);
 }
 
-static GLuint vkglGetUniformBlockIndex_execute(VKGL::Context* in_context_ptr,
-                                               GLuint         in_program,
-                                               const GLchar*  in_uniform_block_name)
+static GLuint vkglGetUniformBlockIndex_execute(OpenGL::Context* in_context_ptr,
+                                               GLuint           in_program,
+                                               const GLchar*    in_uniform_block_name)
 {
     return in_context_ptr->get_uniform_block_index(in_program,
                                                    in_uniform_block_name);
 }
 
-GLuint OpenGL::vkglGetUniformBlockIndex_with_validation(VKGL::Context* in_context_ptr,
-                                                        GLuint         in_program,
-                                                        const GLchar*  in_uniform_block_name)
+GLuint OpenGL::vkglGetUniformBlockIndex_with_validation(OpenGL::Context* in_context_ptr,
+                                                        GLuint           in_program,
+                                                        const GLchar*    in_uniform_block_name)
 {
     GLuint result = UINT32_MAX;
 

@@ -6,11 +6,11 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLint&   in_x,
-                     const GLint&   in_y,
-                     const GLsizei& in_width,
-                     const GLsizei& in_height)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLint&     in_x,
+                     const GLint&     in_y,
+                     const GLsizei&   in_width,
+                     const GLsizei&   in_height)
 {
     bool result = false;
 
@@ -35,11 +35,11 @@ void VKGL_APIENTRY OpenGL::vkglViewport(GLint   x,
                                     height);
 }
 
-static void vkglViewport_execute(VKGL::Context* in_context_ptr,
-                                 const GLint&   in_x,
-                                 const GLint&   in_y,
-                                 const GLsizei& in_width,
-                                 const GLsizei& in_height)
+static void vkglViewport_execute(OpenGL::Context* in_context_ptr,
+                                 const GLint&     in_x,
+                                 const GLint&     in_y,
+                                 const GLsizei&   in_width,
+                                 const GLsizei&   in_height)
 {
     in_context_ptr->set_viewport(in_x,
                                  in_y,
@@ -47,11 +47,11 @@ static void vkglViewport_execute(VKGL::Context* in_context_ptr,
                                  in_height);
 }
 
-void OpenGL::vkglViewport_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLint&   in_x,
-                                          const GLint&   in_y,
-                                          const GLsizei& in_width,
-                                          const GLsizei& in_height)
+void OpenGL::vkglViewport_with_validation(OpenGL::Context* in_context_ptr,
+                                          const GLint&     in_x,
+                                          const GLint&     in_y,
+                                          const GLsizei&   in_width,
+                                          const GLsizei&   in_height)
 {
     if (validate(in_context_ptr,
                  in_x,

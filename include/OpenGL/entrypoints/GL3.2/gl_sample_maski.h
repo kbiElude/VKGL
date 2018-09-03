@@ -12,7 +12,7 @@ namespace OpenGL
     void VKGL_APIENTRY vkglSampleMaski(GLuint     maskNumber,
                                        GLbitfield mask);
 
-    void vkglSampleMaski_with_validation(VKGL::Context*    in_context_ptr,
+    void vkglSampleMaski_with_validation(OpenGL::Context*  in_context_ptr,
                                          const GLuint&     in_mask_number,
                                          const GLbitfield& in_mask);
 }

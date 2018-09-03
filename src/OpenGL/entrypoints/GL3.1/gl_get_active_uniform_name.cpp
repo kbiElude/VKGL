@@ -7,12 +7,12 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program,
-                     const GLuint&  in_uniform_index,
-                     const GLsizei& in_buf_size,
-                     GLsizei*       inout_length_ptr,
-                     GLchar*        out_uniform_name_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program,
+                     const GLuint&    in_uniform_index,
+                     const GLsizei&   in_buf_size,
+                     GLsizei*         inout_length_ptr,
+                     GLchar*          out_uniform_name_ptr)
 {
     bool result = false;
 
@@ -38,12 +38,12 @@ void VKGL_APIENTRY OpenGL::vkglGetActiveUniformName(GLuint   program,
                                                 uniformName);
 }
 
-static void vkglGetActiveUniformName_execute(VKGL::Context* in_context_ptr,
-                                             const GLuint&  in_program,
-                                             const GLuint&  in_uniform_index,
-                                             const GLsizei& in_buf_size,
-                                             GLsizei*       inout_length_ptr,
-                                             GLchar*        out_uniform_name_ptr)
+static void vkglGetActiveUniformName_execute(OpenGL::Context* in_context_ptr,
+                                             const GLuint&    in_program,
+                                             const GLuint&    in_uniform_index,
+                                             const GLsizei&   in_buf_size,
+                                             GLsizei*         inout_length_ptr,
+                                             GLchar*          out_uniform_name_ptr)
 {
     in_context_ptr->get_active_uniform_name(in_program,
                                             in_uniform_index,
@@ -52,12 +52,12 @@ static void vkglGetActiveUniformName_execute(VKGL::Context* in_context_ptr,
                                             out_uniform_name_ptr);
 }
 
-void OpenGL::vkglGetActiveUniformName_with_validation(VKGL::Context* in_context_ptr,
-                                                      const GLuint&  in_program,
-                                                      const GLuint&  in_uniform_index,
-                                                      const GLsizei& in_buf_size,
-                                                      GLsizei*       inout_length_ptr,
-                                                      GLchar*        out_uniform_name_ptr)
+void OpenGL::vkglGetActiveUniformName_with_validation(OpenGL::Context* in_context_ptr,
+                                                      const GLuint&    in_program,
+                                                      const GLuint&    in_uniform_index,
+                                                      const GLsizei&   in_buf_size,
+                                                      GLsizei*         inout_length_ptr,
+                                                      GLchar*          out_uniform_name_ptr)
 {
     if (validate(in_context_ptr,
                  in_program,

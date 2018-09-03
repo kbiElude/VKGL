@@ -16,13 +16,13 @@ namespace OpenGL
                                              GLenum      type,
                                              const void* indices);
 
-    void vkglDrawRangeElements_with_validation(VKGL::Context* in_context_ptr,
-                                               const GLenum&  in_mode,
-                                               const GLuint&  in_start,
-                                               const GLuint&  in_end,
-                                               const GLsizei& in_count,
-                                               const GLenum&  in_type,
-                                               const void*    in_indices);
+    void vkglDrawRangeElements_with_validation(OpenGL::Context* in_context_ptr,
+                                               const GLenum&    in_mode,
+                                               const GLuint&    in_start,
+                                               const GLuint&    in_end,
+                                               const GLsizei&   in_count,
+                                               const GLenum&    in_type,
+                                               const void*      in_indices);
 }
 
 #endif /* VKGL_GL_DRAW_RANGE_ELEMENTS_H */

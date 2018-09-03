@@ -7,10 +7,10 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_buffer,
-                     const GLint&   in_drawbuffer,
-                     const GLint*   in_value_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_buffer,
+                     const GLint&     in_drawbuffer,
+                     const GLint*     in_value_ptr)
 {
     bool result = false;
 
@@ -32,28 +32,28 @@ void VKGL_APIENTRY OpenGL::vkglClearBufferiv(GLenum       buffer,
                                          value);
 }
 
-static void vkglClearBufferiv_execute(VKGL::Context* in_context_ptr,
-                                      const GLenum&  in_buffer,
-                                      const GLint&   in_drawbuffer,
-                                      const GLint*   in_value_ptr)
+static void vkglClearBufferiv_execute(OpenGL::Context* in_context_ptr,
+                                      const GLenum&    in_buffer,
+                                      const GLint&     in_drawbuffer,
+                                      const GLint*     in_value_ptr)
 {
-    const auto     buffer_vkgl   = VKGL::Utils::get_clear_buffer_for_gl_enum(in_buffer);
+    const auto     buffer_vkgl   = OpenGL::Utils::get_clear_buffer_for_gl_enum(in_buffer);
     const uint32_t n_components  = (in_buffer == GL_STENCIL) ? 0             : 4;
     const auto     stencil_value = (in_buffer == GL_STENCIL) ? *in_value_ptr : 0;
 
     in_context_ptr->clear_buffer(buffer_vkgl,
                                  in_drawbuffer,
-                                 VKGL::GetSetArgumentType::Int,
+                                 OpenGL::GetSetArgumentType::Int,
                                  n_components,
                                  in_value_ptr,
                                  0,
                                  stencil_value);
 }
 
-void OpenGL::vkglClearBufferiv_with_validation(VKGL::Context* in_context_ptr,
-                                               const GLenum&  in_buffer,
-                                               const GLint&   in_drawbuffer,
-                                               const GLint*   in_value_ptr)
+void OpenGL::vkglClearBufferiv_with_validation(OpenGL::Context* in_context_ptr,
+                                               const GLenum&    in_buffer,
+                                               const GLint&     in_drawbuffer,
+                                               const GLint*     in_value_ptr)
 {
     if (validate(in_context_ptr,
                  in_buffer,

@@ -7,8 +7,8 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target)
 {
     bool result = false;
 
@@ -27,18 +27,18 @@ GLenum VKGL_APIENTRY OpenGL::vkglCheckFramebufferStatus(GLenum target)
     return result;
 }
 
-static VKGL::FramebufferStatus vkglCheckFramebufferStatus_execute(VKGL::Context* in_context_ptr,
-                                                                  const GLenum&  in_target)
+static OpenGL::FramebufferStatus vkglCheckFramebufferStatus_execute(OpenGL::Context* in_context_ptr,
+                                                                    const GLenum&    in_target)
 {
-    const auto target_vkgl = VKGL::Utils::get_framebuffer_target_for_gl_enum(in_target);
+    const auto target_vkgl = OpenGL::Utils::get_framebuffer_target_for_gl_enum(in_target);
 
     return in_context_ptr->check_framebuffer_status(target_vkgl);
 }
 
-GLenum OpenGL::vkglCheckFramebufferStatus_with_validation(VKGL::Context* in_context_ptr,
-                                                          const GLenum&  in_target)
+GLenum OpenGL::vkglCheckFramebufferStatus_with_validation(OpenGL::Context* in_context_ptr,
+                                                          const GLenum&    in_target)
 {
-    VKGL::FramebufferStatus result = VKGL::FramebufferStatus::Unknown;
+    OpenGL::FramebufferStatus result = OpenGL::FramebufferStatus::Unknown;
 
     if (validate(in_context_ptr,
                  in_target) )
@@ -47,5 +47,5 @@ GLenum OpenGL::vkglCheckFramebufferStatus_with_validation(VKGL::Context* in_cont
                                                     in_target);
     }
 
-    return VKGL::Utils::get_gl_enum_for_framebuffer_status(result);
+    return OpenGL::Utils::get_gl_enum_for_framebuffer_status(result);
 }

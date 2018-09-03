@@ -6,12 +6,12 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLint&   in_location,
-                     const GLfloat& in_v0,
-                     const GLfloat& in_v1,
-                     const GLfloat& in_v2,
-                     const GLfloat& in_v3)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLint&     in_location,
+                     const GLfloat&   in_v0,
+                     const GLfloat&   in_v1,
+                     const GLfloat&   in_v2,
+                     const GLfloat&   in_v3)
 {
     bool result = false;
 
@@ -37,12 +37,12 @@ void VKGL_APIENTRY OpenGL::vkglUniform4f(GLint   location,
                                      v3);
 }
 
-static void vkglUniform4f_execute(VKGL::Context* in_context_ptr,
-                                  const GLint&   in_location,
-                                  const GLfloat& in_v0,
-                                  const GLfloat& in_v1,
-                                  const GLfloat& in_v2,
-                                  const GLfloat& in_v3)
+static void vkglUniform4f_execute(OpenGL::Context* in_context_ptr,
+                                  const GLint&     in_location,
+                                  const GLfloat&   in_v0,
+                                  const GLfloat&   in_v1,
+                                  const GLfloat&   in_v2,
+                                  const GLfloat&   in_v3)
 {
     const GLfloat data[] =
     {
@@ -53,17 +53,17 @@ static void vkglUniform4f_execute(VKGL::Context* in_context_ptr,
     };
 
     in_context_ptr->set_uniform(in_location,
-                                VKGL::GetSetArgumentType::Float,
+                                OpenGL::GetSetArgumentType::Float,
                                 4,
                                 data);
 }
 
-void OpenGL::vkglUniform4f_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLint&   in_location,
-                                           const GLfloat& in_v0,
-                                           const GLfloat& in_v1,
-                                           const GLfloat& in_v2,
-                                           const GLfloat& in_v3)
+void OpenGL::vkglUniform4f_with_validation(OpenGL::Context* in_context_ptr,
+                                           const GLint&     in_location,
+                                           const GLfloat&   in_v0,
+                                           const GLfloat&   in_v1,
+                                           const GLfloat&   in_v2,
+                                           const GLfloat&   in_v3)
 {
     if (validate(in_context_ptr,
                  in_location,

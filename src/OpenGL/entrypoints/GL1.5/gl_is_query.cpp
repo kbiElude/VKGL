@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_id)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_id)
 {
     bool result = false;
 
@@ -28,14 +28,14 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsQuery(GLuint id)
 }
 
 
-static bool vkglIsQuery_execute(VKGL::Context* in_context_ptr,
-                                const GLuint&  in_id)
+static bool vkglIsQuery_execute(OpenGL::Context* in_context_ptr,
+                                const GLuint&    in_id)
 {
     return in_context_ptr->is_query(in_id);
 }
 
-bool OpenGL::vkglIsQuery_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLuint&  in_id)
+bool OpenGL::vkglIsQuery_with_validation(OpenGL::Context* in_context_ptr,
+                                         const GLuint&    in_id)
 {
     bool result = false;
 

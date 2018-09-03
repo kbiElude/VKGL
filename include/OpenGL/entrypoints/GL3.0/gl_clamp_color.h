@@ -12,9 +12,9 @@ namespace OpenGL
     void VKGL_APIENTRY vkglClampColor(GLenum target,
                                       GLenum clamp);
 
-    void vkglClampColor_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLenum&  in_target,
-                                        const GLenum&  in_clamp);
+    void vkglClampColor_with_validation(OpenGL::Context* in_context_ptr,
+                                        const GLenum&    in_target,
+                                        const GLenum&    in_clamp);
 }
 
 #endif /* VKGL_GL_CLAMP_COLOR_H */

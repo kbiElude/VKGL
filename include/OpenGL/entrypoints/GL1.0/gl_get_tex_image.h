@@ -15,12 +15,12 @@ namespace OpenGL
                                        GLenum type,
                                        void*  pixels);
 
-    void vkglGetTexImage_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_target,
-                                         const GLint&   in_level,
-                                         const GLenum&  in_format,
-                                         const GLenum&  in_type,
-                                         void*          out_pixels_ptr);
+    void vkglGetTexImage_with_validation(OpenGL::Context* in_context_ptr,
+                                         const GLenum&    in_target,
+                                         const GLint&     in_level,
+                                         const GLenum&    in_format,
+                                         const GLenum&    in_type,
+                                         void*            out_pixels_ptr);
 }
 
 #endif /* VKGL_GL_GET_TEX_IMAGE_H */

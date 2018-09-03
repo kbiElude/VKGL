@@ -7,8 +7,8 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_cap)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_cap)
 {
     bool result = false;
 
@@ -27,16 +27,16 @@ void VKGL_APIENTRY OpenGL::vkglDisable(GLenum cap)
                                    cap);
 }
 
-static void vkglDisable_execute(VKGL::Context* in_context_ptr,
-                                const GLenum&  in_cap)
+static void vkglDisable_execute(OpenGL::Context* in_context_ptr,
+                                const GLenum&    in_cap)
 {
-    const auto cap_vkgl = VKGL::Utils::get_nonindexed_capability_for_gl_enum(in_cap);
+    const auto cap_vkgl = OpenGL::Utils::get_nonindexed_capability_for_gl_enum(in_cap);
 
     in_context_ptr->disable(cap_vkgl);
 }
 
-void OpenGL::vkglDisable_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_cap)
+void OpenGL::vkglDisable_with_validation(OpenGL::Context* in_context_ptr,
+                                         const GLenum&    in_cap)
 {
     if (validate(in_context_ptr,
                  in_cap) )

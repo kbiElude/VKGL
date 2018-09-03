@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLsizei& in_n,
-                     const GLuint*  in_buffers)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLsizei&   in_n,
+                     const GLuint*    in_buffers)
 {
     bool result = false;
 
@@ -29,17 +29,17 @@ void VKGL_APIENTRY OpenGL::vkglDeleteBuffers(GLsizei       n,
                                          buffers);
 }
 
-static void vkglDeleteBuffers_execute(VKGL::Context* in_context_ptr,
-                                      const GLsizei& in_n,
-                                      const GLuint*  in_buffers)
+static void vkglDeleteBuffers_execute(OpenGL::Context* in_context_ptr,
+                                      const GLsizei&   in_n,
+                                      const GLuint*    in_buffers)
 {
     in_context_ptr->delete_buffers(in_n,
                                    in_buffers);
 }
 
-void OpenGL::vkglDeleteBuffers_with_validation(VKGL::Context* in_context_ptr,
-                                               const GLsizei& in_n,
-                                               const GLuint*  in_buffers)
+void OpenGL::vkglDeleteBuffers_with_validation(OpenGL::Context* in_context_ptr,
+                                               const GLsizei&   in_n,
+                                               const GLuint*    in_buffers)
 {
     if (validate(in_context_ptr,
                  in_n,

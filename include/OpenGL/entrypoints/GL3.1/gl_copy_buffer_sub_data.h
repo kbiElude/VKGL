@@ -15,7 +15,7 @@ namespace OpenGL
                                              GLintptr   writeOffset,
                                              GLsizeiptr size);
 
-    void vkglCopyBufferSubData_with_validation(VKGL::Context*    in_context_ptr,
+    void vkglCopyBufferSubData_with_validation(OpenGL::Context*  in_context_ptr,
                                                const GLenum&     in_read_target,
                                                const GLenum&     in_write_target,
                                                const GLintptr&   in_read_offset,

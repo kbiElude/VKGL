@@ -15,7 +15,7 @@ namespace OpenGL
                                            GLintptr   offset,
                                            GLsizeiptr size);
 
-    void vkglBindBufferRange_with_validation(VKGL::Context*    in_context_ptr,
+    void vkglBindBufferRange_with_validation(OpenGL::Context*  in_context_ptr,
                                              const GLenum&     in_target,
                                              const GLuint&     in_index,
                                              const GLuint&     in_buffer,

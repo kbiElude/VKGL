@@ -7,10 +7,10 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_pname,
-                     const GLuint&  in_index,
-                     GLfloat*       out_val_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_pname,
+                     const GLuint&    in_index,
+                     GLfloat*         out_val_ptr)
 {
     bool result = false;
 
@@ -32,10 +32,10 @@ void VKGL_APIENTRY OpenGL::vkglGetMultisamplefv(GLenum   pname,
                                             val);
 }
 
-static void vkglGetMultisamplefv_execute(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_pname,
-                                         const GLuint&  in_index,
-                                         GLfloat*       out_val_ptr)
+static void vkglGetMultisamplefv_execute(OpenGL::Context* in_context_ptr,
+                                         const GLenum&    in_pname,
+                                         const GLuint&    in_index,
+                                         GLfloat*         out_val_ptr)
 {
     vkgl_assert(in_pname == GL_SAMPLE_POSITION);
 
@@ -43,10 +43,10 @@ static void vkglGetMultisamplefv_execute(VKGL::Context* in_context_ptr,
                                         out_val_ptr);
 }
 
-void OpenGL::vkglGetMultisamplefv_with_validation(VKGL::Context* in_context_ptr,
-                                                  const GLenum&  in_pname,
-                                                  const GLuint&  in_index,
-                                                  GLfloat*       out_val_ptr)
+void OpenGL::vkglGetMultisamplefv_with_validation(OpenGL::Context* in_context_ptr,
+                                                  const GLenum&    in_pname,
+                                                  const GLuint&    in_index,
+                                                  GLfloat*         out_val_ptr)
 {
     if (validate(in_context_ptr,
                  in_pname,

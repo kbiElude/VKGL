@@ -5,7 +5,7 @@
 #ifndef VKGL_TYPES_ENUMS_H
 #define VKGL_TYPES_ENUMS_H
 
-namespace VKGL
+namespace OpenGL
 {
     enum class BlendEquation
     {

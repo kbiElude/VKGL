@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_index,
-                     const GLuint*  in_v_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index,
+                     const GLuint*    in_v_ptr)
 {
     bool result = false;
 
@@ -28,21 +28,21 @@ void VKGL_APIENTRY OpenGL::vkglVertexAttrib4Nuiv(GLuint        index,
                                              v);
 }
 
-static void vkglVertexAttrib4Nuiv_execute(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_index,
-                                          const GLuint*  in_v_ptr)
+static void vkglVertexAttrib4Nuiv_execute(OpenGL::Context* in_context_ptr,
+                                          const GLuint&    in_index,
+                                          const GLuint*    in_v_ptr)
 {
     in_context_ptr->set_vertex_attribute(in_index,
-                                         VKGL::GetSetArgumentType::Unsigned_Int,
-                                         VKGL::GetSetArgumentType::Float,
+                                         OpenGL::GetSetArgumentType::Unsigned_Int,
+                                         OpenGL::GetSetArgumentType::Float,
                                          4,
                                          true, /* in_normalized */
                                          in_v_ptr);
 }
 
-void OpenGL::vkglVertexAttrib4Nuiv_with_validation(VKGL::Context* in_context_ptr,
-                                                   const GLuint&  in_index,
-                                                   const GLuint*  in_v_ptr)
+void OpenGL::vkglVertexAttrib4Nuiv_with_validation(OpenGL::Context* in_context_ptr,
+                                                   const GLuint&    in_index,
+                                                   const GLuint*    in_v_ptr)
 {
     if (validate(in_context_ptr,
                  in_index,

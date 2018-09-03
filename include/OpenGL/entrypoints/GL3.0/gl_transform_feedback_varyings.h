@@ -14,7 +14,7 @@ namespace OpenGL
                                                      const GLchar* const* varyings,
                                                      GLenum               bufferMode);
 
-    void vkglTransformFeedbackVaryings_with_validation(VKGL::Context*       in_context_ptr,
+    void vkglTransformFeedbackVaryings_with_validation(OpenGL::Context*     in_context_ptr,
                                                        const GLuint&        in_program,
                                                        const GLsizei&       in_count,
                                                        const GLchar* const* in_varyings_ptr_ptr,

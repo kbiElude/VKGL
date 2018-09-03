@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLsizei& in_n,
-                     GLuint*        out_arrays_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLsizei&   in_n,
+                     GLuint*          out_arrays_ptr)
 {
     bool result = false;
 
@@ -28,17 +28,17 @@ void VKGL_APIENTRY OpenGL::vkglGenVertexArrays(GLsizei n,
                                            arrays);
 }
 
-static void vkglGenVertexArrays_execute(VKGL::Context* in_context_ptr,
-                                        const GLsizei& in_n,
-                                        GLuint*        out_arrays_ptr)
+static void vkglGenVertexArrays_execute(OpenGL::Context* in_context_ptr,
+                                        const GLsizei&   in_n,
+                                        GLuint*          out_arrays_ptr)
 {
     in_context_ptr->gen_vertex_arrays(in_n,
                                       out_arrays_ptr);
 }
 
-void OpenGL::vkglGenVertexArrays_with_validation(VKGL::Context* in_context_ptr,
-                                                 const GLsizei& in_n,
-                                                 GLuint*        out_arrays_ptr)
+void OpenGL::vkglGenVertexArrays_with_validation(OpenGL::Context* in_context_ptr,
+                                                 const GLsizei&   in_n,
+                                                 GLuint*          out_arrays_ptr)
 {
     if (validate(in_context_ptr,
                  in_n,

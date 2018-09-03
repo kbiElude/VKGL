@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*   in_context_ptr,
+static bool validate(OpenGL::Context* in_context_ptr,
                      const GLfloat&   in_value,
                      const GLboolean& in_invert)
 {
@@ -29,7 +29,7 @@ void VKGL_APIENTRY OpenGL::vkglSampleCoverage(GLfloat   value,
                                           invert);
 }
 
-static void vkglSampleCoverage_execute(VKGL::Context*   in_context_ptr,
+static void vkglSampleCoverage_execute(OpenGL::Context* in_context_ptr,
                                        const GLfloat&   in_value,
                                        const GLboolean& in_invert)
 {
@@ -37,7 +37,7 @@ static void vkglSampleCoverage_execute(VKGL::Context*   in_context_ptr,
                                     in_invert);
 }
 
-void OpenGL::vkglSampleCoverage_with_validation(VKGL::Context*   in_context_ptr,
+void OpenGL::vkglSampleCoverage_with_validation(OpenGL::Context* in_context_ptr,
                                                 const GLfloat&   in_value,
                                                 const GLboolean& in_invert)
 {

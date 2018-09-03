@@ -13,10 +13,10 @@ namespace OpenGL
                                          GLint        drawbuffer,
                                          const GLint* value);
 
-    void vkglClearBufferiv_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLenum&  in_buffer,
-                                           const GLint&   in_drawbuffer,
-                                           const GLint*   in_value_ptr);
+    void vkglClearBufferiv_with_validation(OpenGL::Context* in_context_ptr,
+                                           const GLenum&    in_buffer,
+                                           const GLint&     in_drawbuffer,
+                                           const GLint*     in_value_ptr);
 }
 
 #endif /* VKGL_GL_CLEAR_BUFFER_IV_H */

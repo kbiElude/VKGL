@@ -7,11 +7,11 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLenum&  in_internalformat,
-                     const GLsizei& in_width,
-                     const GLsizei& in_height)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLenum&    in_internalformat,
+                     const GLsizei&   in_width,
+                     const GLsizei&   in_height)
 {
     bool result = false;
 
@@ -35,14 +35,14 @@ void VKGL_APIENTRY OpenGL::vkglRenderbufferStorage(GLenum  target,
                                                height);
 }
 
-static void vkglRenderbufferStorage_execute(VKGL::Context* in_context_ptr,
-                                            const GLenum&  in_target,
-                                            const GLenum&  in_internalformat,
-                                            const GLsizei& in_width,
-                                            const GLsizei& in_height)
+static void vkglRenderbufferStorage_execute(OpenGL::Context* in_context_ptr,
+                                            const GLenum&    in_target,
+                                            const GLenum&    in_internalformat,
+                                            const GLsizei&   in_width,
+                                            const GLsizei&   in_height)
 {
-    const auto internalformat_vkgl = VKGL::Utils::get_internal_format_for_gl_enum    (in_internalformat);
-    const auto target_vkgl         = VKGL::Utils::get_renderbuffer_target_for_gl_enum(in_target);
+    const auto internalformat_vkgl = OpenGL::Utils::get_internal_format_for_gl_enum    (in_internalformat);
+    const auto target_vkgl         = OpenGL::Utils::get_renderbuffer_target_for_gl_enum(in_target);
 
     in_context_ptr->renderbuffer_storage(target_vkgl,
                                          internalformat_vkgl,
@@ -50,11 +50,11 @@ static void vkglRenderbufferStorage_execute(VKGL::Context* in_context_ptr,
                                          in_height);
 }
 
-void OpenGL::vkglRenderbufferStorage_with_validation(VKGL::Context* in_context_ptr,
-                                                     const GLenum&  in_target,
-                                                     const GLenum&  in_internalformat,
-                                                     const GLsizei& in_width,
-                                                     const GLsizei& in_height)
+void OpenGL::vkglRenderbufferStorage_with_validation(OpenGL::Context* in_context_ptr,
+                                                     const GLenum&    in_target,
+                                                     const GLenum&    in_internalformat,
+                                                     const GLsizei&   in_width,
+                                                     const GLsizei&   in_height)
 {
     if (validate(in_context_ptr,
                  in_target,

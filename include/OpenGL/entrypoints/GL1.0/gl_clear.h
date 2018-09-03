@@ -11,7 +11,7 @@ namespace OpenGL
 {
     void VKGL_APIENTRY vkglClear(GLbitfield mask);
 
-    void vkglClear_with_validation(VKGL::Context*    in_context_ptr,
+    void vkglClear_with_validation(OpenGL::Context*  in_context_ptr,
                                    const GLbitfield& in_mask);
 }
 

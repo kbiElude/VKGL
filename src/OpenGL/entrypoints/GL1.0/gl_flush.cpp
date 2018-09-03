@@ -13,7 +13,7 @@ void VKGL_APIENTRY OpenGL::vkglFlush(void)
     dispatch_table_ptr->pGLFlush(dispatch_table_ptr->bound_context_ptr);
 }
 
-void OpenGL::vkglFlush_with_validation(VKGL::Context* in_context_ptr)
+void OpenGL::vkglFlush_with_validation(OpenGL::Context* in_context_ptr)
 {
     in_context_ptr->flush();
 }

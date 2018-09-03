@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program,
-                     const GLchar*  in_name)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program,
+                     const GLchar*    in_name)
 {
     bool result = false;
 
@@ -28,17 +28,17 @@ GLint VKGL_APIENTRY OpenGL::vkglGetAttribLocation(GLuint        program,
                                                     name);
 }
 
-static GLint vkglGetAttribLocation_execute(VKGL::Context* in_context_ptr,
-                                           const GLuint&  in_program,
-                                           const GLchar*  in_name)
+static GLint vkglGetAttribLocation_execute(OpenGL::Context* in_context_ptr,
+                                           const GLuint&    in_program,
+                                           const GLchar*    in_name)
 {
     return in_context_ptr->get_attrib_location(in_program,
                                                in_name);
 }
 
-GLint OpenGL::vkglGetAttribLocation_with_validation(VKGL::Context* in_context_ptr,
-                                                    const GLuint&  in_program,
-                                                    const GLchar*  in_name)
+GLint OpenGL::vkglGetAttribLocation_with_validation(OpenGL::Context* in_context_ptr,
+                                                    const GLuint&    in_program,
+                                                    const GLchar*    in_name)
 {
     GLint result = -1;
 

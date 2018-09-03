@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*    in_context_ptr,
+static bool validate(OpenGL::Context*  in_context_ptr,
                      const GLenum&     in_read_target,
                      const GLenum&     in_write_target,
                      const GLintptr&   in_read_offset,
@@ -38,15 +38,15 @@ void VKGL_APIENTRY OpenGL::vkglCopyBufferSubData(GLenum     readTarget,
                                              size);
 }
 
-static void vkglCopyBufferSubData_execute(VKGL::Context*    in_context_ptr,
+static void vkglCopyBufferSubData_execute(OpenGL::Context*  in_context_ptr,
                                           const GLenum&     in_read_target,
                                           const GLenum&     in_write_target,
                                           const GLintptr&   in_read_offset,
                                           const GLintptr&   in_write_offset,
                                           const GLsizeiptr& in_size)
 {
-    const auto read_target_vkgl  = VKGL::Utils::get_buffer_target_for_gl_enum(in_read_target);
-    const auto write_target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum(in_write_target);
+    const auto read_target_vkgl  = OpenGL::Utils::get_buffer_target_for_gl_enum(in_read_target);
+    const auto write_target_vkgl = OpenGL::Utils::get_buffer_target_for_gl_enum(in_write_target);
 
     in_context_ptr->copy_buffer_sub_data(read_target_vkgl,
                                          write_target_vkgl,
@@ -55,7 +55,7 @@ static void vkglCopyBufferSubData_execute(VKGL::Context*    in_context_ptr,
                                          in_size);
 }
 
-void OpenGL::vkglCopyBufferSubData_with_validation(VKGL::Context*    in_context_ptr,
+void OpenGL::vkglCopyBufferSubData_with_validation(OpenGL::Context*  in_context_ptr,
                                                    const GLenum&     in_read_target,
                                                    const GLenum&     in_write_target,
                                                    const GLintptr&   in_read_offset,
