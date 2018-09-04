@@ -21,6 +21,9 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsProgram(GLuint program)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glIsProgram(program=[%u])",
+               program);
+
     return dispatch_table_ptr->pGLIsProgram(dispatch_table_ptr->bound_context_ptr,
                                             program) == GL_TRUE;
 }

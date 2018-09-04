@@ -29,6 +29,13 @@ void VKGL_APIENTRY OpenGL::vkglVertexAttrib4d(GLuint   index,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glVertexAttrib4d(index=[%u] x=[%.4f] y=[%.4f] z=[%.4f] w=[%.4f])",
+               index,
+               static_cast<float>(x),
+               static_cast<float>(y),
+               static_cast<float>(z),
+               static_cast<float>(w) );
+
     dispatch_table_ptr->pGLVertexAttrib4d(dispatch_table_ptr->bound_context_ptr,
                                           index,
                                           x,

@@ -27,6 +27,13 @@ void VKGL_APIENTRY OpenGL::vkglGetUniformIndices(GLuint               program,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    /* TODO: Make me more useful */
+    VKGL_TRACE("glGetUniformIndices(program=[%u] uniformCount=[%d] uniformNames=[%p] uniformIndices=[%p])",
+               program,
+               static_cast<int32_t>(uniformCount),
+               uniformNames,
+               uniformIndices);
+
     dispatch_table_ptr->pGLGetUniformIndices(dispatch_table_ptr->bound_context_ptr,
                                              program,
                                              uniformCount,

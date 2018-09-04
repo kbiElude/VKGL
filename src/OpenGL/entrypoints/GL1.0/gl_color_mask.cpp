@@ -28,6 +28,12 @@ void VKGL_APIENTRY OpenGL::vkglColorMask(GLboolean red,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glColorMask(red=[%d] green=[%d] blue={%d] alpha=[%d])",
+               (red   == GL_TRUE) ? 1 : 0,
+               (green == GL_TRUE) ? 1 : 0,
+               (blue  == GL_TRUE) ? 1 : 0,
+               (alpha == GL_TRUE) ? 1 : 0);
+
     dispatch_table_ptr->pGLColorMask(dispatch_table_ptr->bound_context_ptr,
                                      red,
                                      green,

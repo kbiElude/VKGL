@@ -23,6 +23,10 @@ void VKGL_APIENTRY OpenGL::vkglSampleMaski(GLuint     maskNumber,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glSampleMaski(maskNumber=[%u] mask=[%x])",
+               maskNumber,
+               mask);
+
     dispatch_table_ptr->pGLSampleMaski(dispatch_table_ptr->bound_context_ptr,
                                        maskNumber,
                                        mask);

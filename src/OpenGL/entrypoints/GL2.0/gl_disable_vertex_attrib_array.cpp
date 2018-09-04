@@ -21,6 +21,9 @@ void VKGL_APIENTRY OpenGL::vkglDisableVertexAttribArray(GLuint index)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDisableVertexAttribArray(index=[%d])",
+               index);
+
     dispatch_table_ptr->pGLDisableVertexAttribArray(dispatch_table_ptr->bound_context_ptr,
                                                     index);
 }

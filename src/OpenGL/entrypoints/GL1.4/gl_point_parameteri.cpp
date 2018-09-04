@@ -24,6 +24,10 @@ void VKGL_APIENTRY OpenGL::vkglPointParameteri(GLenum pname,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glPointParameteri(pname=[%s] param=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               param);
+
     dispatch_table_ptr->pGLPointParameteri(dispatch_table_ptr->bound_context_ptr,
                                            pname,
                                            param);

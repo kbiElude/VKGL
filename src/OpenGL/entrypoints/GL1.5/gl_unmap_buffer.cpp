@@ -22,6 +22,9 @@ GLboolean VKGL_APIENTRY OpenGL::vkglUnmapBuffer(GLenum target)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glUnmapBuffer(target=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target) );
+
     return dispatch_table_ptr->pGLUnmapBuffer(dispatch_table_ptr->bound_context_ptr,
                                               target) ? GL_TRUE
                                                       : GL_FALSE;

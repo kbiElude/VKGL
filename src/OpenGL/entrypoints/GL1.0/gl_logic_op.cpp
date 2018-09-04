@@ -23,6 +23,9 @@ void VKGL_APIENTRY OpenGL::vkglLogicOp(GLenum opcode)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glLogicOp(opcode=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(opcode) );
+
     dispatch_table_ptr->pGLLogicOp(dispatch_table_ptr->bound_context_ptr,
                                    opcode);
 }

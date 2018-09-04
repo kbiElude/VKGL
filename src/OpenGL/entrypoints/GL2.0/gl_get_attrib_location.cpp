@@ -23,6 +23,10 @@ GLint VKGL_APIENTRY OpenGL::vkglGetAttribLocation(GLuint        program,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetAttribLocation(program=[%u] name=[%s])",
+               program,
+               name);
+
     return dispatch_table_ptr->pGLGetAttribLocation(dispatch_table_ptr->bound_context_ptr,
                                                     program,
                                                     name);

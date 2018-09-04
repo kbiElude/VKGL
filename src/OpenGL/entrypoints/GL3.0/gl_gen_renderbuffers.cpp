@@ -23,6 +23,10 @@ void VKGL_APIENTRY OpenGL::vkglGenRenderbuffers(GLsizei n,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGenRenderbuffers(n=[%d] renderbuffers=[%p])",
+               static_cast<int32_t>(n),
+               renderbuffers);
+
     dispatch_table_ptr->pGLGenRenderbuffers(dispatch_table_ptr->bound_context_ptr,
                                             n,
                                             renderbuffers);

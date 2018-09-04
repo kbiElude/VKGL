@@ -29,6 +29,13 @@ void VKGL_APIENTRY OpenGL::vkglVertexAttrib4Nub(GLuint  index,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glVertexAttrib4Nub(index=[%u] x=[%u] y=[%u] z=[%u] w=[%u])",
+               index,
+               static_cast<uint32_t>(x),
+               static_cast<uint32_t>(y),
+               static_cast<uint32_t>(z),
+               static_cast<uint32_t>(w) );
+
     dispatch_table_ptr->pGLVertexAttrib4Nub(dispatch_table_ptr->bound_context_ptr,
                                             index,
                                             x,

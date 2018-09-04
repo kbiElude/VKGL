@@ -30,6 +30,13 @@ void VKGL_APIENTRY OpenGL::vkglGetSynciv(GLsync   sync,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetSynciv(sync=[%p] pname=[%s] bufSize=[%d] length=[%p] values=[%p])",
+               sync,
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               static_cast<int32_t>(bufSize),
+               length,
+               values);
+
     dispatch_table_ptr->pGLGetSynciv(dispatch_table_ptr->bound_context_ptr,
                                      sync,
                                      pname,

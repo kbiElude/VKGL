@@ -23,6 +23,10 @@ void VKGL_APIENTRY OpenGL::vkglDeleteFramebuffers(GLsizei       n,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDeleteFramebuffers(n=[%d] framebuffers=[%p])",
+               static_cast<int32_t>(n),
+               framebuffers);
+
     dispatch_table_ptr->pGLDeleteFramebuffers(dispatch_table_ptr->bound_context_ptr,
                                               n,
                                               framebuffers);

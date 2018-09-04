@@ -40,6 +40,18 @@ void VKGL_APIENTRY OpenGL::vkglBlitFramebuffer(GLint      srcX0,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glBlitFramebuffer(srcX0=[%d] srcY0=[%d] srcX1=[%d] srcY1=[%d] dstX0=[%d] dstY0=[%d] dstX1=[%d] dstY1=[%d] mask=[%s] filter=[%s]",
+               srcX0,
+               srcY0,
+               srcX1,
+               srcY1,
+               dstX0,
+               dstY0,
+               dstX1,
+               dstY1,
+               OpenGL::Utils::get_raw_string_for_gl_bitfield(BitfieldType::Blit_Mask, mask),
+               OpenGL::Utils::get_raw_string_for_gl_enum    (filter) );
+
     dispatch_table_ptr->pGLBlitFramebuffer(dispatch_table_ptr->bound_context_ptr,
                                            srcX0,
                                            srcY0,

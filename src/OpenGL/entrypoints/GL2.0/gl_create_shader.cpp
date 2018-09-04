@@ -22,8 +22,11 @@ GLuint VKGL_APIENTRY OpenGL::vkglCreateShader(GLenum type)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
-    return dispatch_table_ptr->pGLCreateShaderr(dispatch_table_ptr->bound_context_ptr,
-                                                type);
+    VKGL_TRACE("glCreateShader(type=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(type) );
+
+    return dispatch_table_ptr->pGLCreateShader(dispatch_table_ptr->bound_context_ptr,
+                                               type);
 }
 
 static GLuint vkglCreateShader_execute(OpenGL::Context* in_context_ptr,

@@ -21,6 +21,9 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsTexture(GLuint texture)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glIsTexture(texture=[%u])",
+               texture);
+
     return dispatch_table_ptr->pGLIsTexture(dispatch_table_ptr->bound_context_ptr,
                                             texture);
 }

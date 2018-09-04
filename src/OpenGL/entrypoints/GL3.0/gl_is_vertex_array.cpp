@@ -21,6 +21,9 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsVertexArray(GLuint array)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glIsVertexArray(array=[%u])",
+               array);
+
     return dispatch_table_ptr->pGLIsVertexArray(dispatch_table_ptr->bound_context_ptr,
                                                 array) == GL_TRUE;
 }

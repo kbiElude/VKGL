@@ -27,6 +27,13 @@ void VKGL_APIENTRY OpenGL::vkglUniformMatrix4fv(GLint          location,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    /* TODO: Make me more useful */
+    VKGL_TRACE("glUniformMatrix4fv(location=[%d] count=[%d] transpose=[%d] value=[%p])",
+               location,
+               static_cast<int32_t>(count),
+               (transpose == GL_TRUE) ? 1 : 0,
+               value);
+
     dispatch_table_ptr->pGLUniformMatrix4fv(dispatch_table_ptr->bound_context_ptr,
                                             location,
                                             count,

@@ -24,6 +24,10 @@ void VKGL_APIENTRY OpenGL::vkglSampleCoverage(GLfloat   value,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glSampleCoverage(value=[%.4f] invert=[%d])",
+               value,
+               (invert == GL_TRUE) ? 1 : 0);
+
     dispatch_table_ptr->pGLSampleCoverage(dispatch_table_ptr->bound_context_ptr,
                                           value,
                                           invert);

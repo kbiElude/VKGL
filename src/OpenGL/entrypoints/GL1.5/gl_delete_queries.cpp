@@ -24,6 +24,10 @@ void VKGL_APIENTRY OpenGL::vkglDeleteQueries(GLsizei       n,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDeleteQueries(n=[%d] ids=[%p])",
+               static_cast<int32_t>(n),
+               ids);
+
     dispatch_table_ptr->pGLDeleteQueries(dispatch_table_ptr->bound_context_ptr,
                                          n,
                                          ids);

@@ -21,6 +21,9 @@ void VKGL_APIENTRY OpenGL::vkglEnableVertexAttribArray(GLuint index)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glEnableVertexAttribArray(index=[%u])",
+               index);
+
     dispatch_table_ptr->pGLEnableVertexAttribArray(dispatch_table_ptr->bound_context_ptr,
                                                    index);
 }

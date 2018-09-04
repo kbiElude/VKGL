@@ -25,6 +25,11 @@ void VKGL_APIENTRY OpenGL::vkglUniform2ui(GLint  location,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glUniform2ui(location=[%d] v0=[%u] v1=[%u])",
+               location,
+               v0,
+               v1);
+
     dispatch_table_ptr->pGLUniform2ui(dispatch_table_ptr->bound_context_ptr,
                                       location,
                                       v0,

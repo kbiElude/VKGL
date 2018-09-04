@@ -49,6 +49,10 @@ void VKGL_APIENTRY vkglGetDoublev(GLenum    pname,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetDoublev(pname=[%s] data=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               data);
+
     dispatch_table_ptr->pGLGetDoublev(dispatch_table_ptr->bound_context_ptr,
                                       pname,
                                       data);

@@ -24,6 +24,9 @@ void VKGL_APIENTRY OpenGL::vkglBindFramebuffer(GLenum target,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glBindFramebuffer(target=[%s] framebuffer=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               framebuffer);
     dispatch_table_ptr->pGLBindFramebuffer(dispatch_table_ptr->bound_context_ptr,
                                            target,
                                            framebuffer);

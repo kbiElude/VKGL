@@ -22,6 +22,9 @@ void VKGL_APIENTRY OpenGL::vkglStencilMask(GLuint mask)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glStencilMask(mask=[%u])",
+               mask);
+
     dispatch_table_ptr->pGLStencilMask(dispatch_table_ptr->bound_context_ptr,
                                        mask);
 }

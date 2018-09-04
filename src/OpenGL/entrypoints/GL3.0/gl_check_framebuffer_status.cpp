@@ -21,10 +21,12 @@ static bool validate(OpenGL::Context* in_context_ptr,
 GLenum VKGL_APIENTRY OpenGL::vkglCheckFramebufferStatus(GLenum target)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
-    const auto  result             = dispatch_table_ptr->pGLCheckFramebufferStatus(dispatch_table_ptr->bound_context_ptr,
-                                                                                   target);
 
-    return result;
+    VKGL_TRACE("glCheckFramebufferStatus(target=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target) );
+
+    return dispatch_table_ptr->pGLCheckFramebufferStatus(dispatch_table_ptr->bound_context_ptr,
+                                                         target);
 }
 
 static OpenGL::FramebufferStatus vkglCheckFramebufferStatus_execute(OpenGL::Context* in_context_ptr,

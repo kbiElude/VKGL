@@ -26,6 +26,11 @@ void VKGL_APIENTRY OpenGL::vkglWaitSync(GLsync     sync,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glWaitSync(sync=[%p] flags=[%d] timeout=[%lld])",
+               sync,
+               flags,
+               timeout);
+
     dispatch_table_ptr->pGLWaitSync(dispatch_table_ptr->bound_context_ptr,
                                     sync,
                                     flags,

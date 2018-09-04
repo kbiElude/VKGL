@@ -10,6 +10,8 @@ void VKGL_APIENTRY OpenGL::vkglFinish(void)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glFinish()");
+
     dispatch_table_ptr->pGLFinish(dispatch_table_ptr->bound_context_ptr);
 }
 

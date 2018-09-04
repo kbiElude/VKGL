@@ -26,6 +26,11 @@ void VKGL_APIENTRY OpenGL::vkglGetQueryiv(GLenum target,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetQueryiv(target=[%s] pname=[%s] params=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               params);
+
     dispatch_table_ptr->pGLGetQueryiv(dispatch_table_ptr->bound_context_ptr,
                                       target,
                                       pname,

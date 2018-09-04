@@ -34,6 +34,15 @@ void VKGL_APIENTRY OpenGL::vkglGetActiveAttrib(GLuint   program,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetActiveAttrib(program=[%u] index=[%u] bufSize=[%d] length=[%p] size=[%p] type=[%p] name=[%p])",
+               program,
+               index,
+               static_cast<int32_t>(bufSize),
+               length,
+               size,
+               type,
+               name);
+
     dispatch_table_ptr->pGLGetActiveAttrib(dispatch_table_ptr->bound_context_ptr,
                                            program,
                                            index,

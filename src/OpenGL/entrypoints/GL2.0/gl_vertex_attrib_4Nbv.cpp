@@ -23,6 +23,11 @@ void VKGL_APIENTRY OpenGL::vkglVertexAttrib4Nbv(GLuint        index,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    /* TODO: Make me more useful */
+    VKGL_TRACE("glVertexAttrib4Nbv(index=[%u] v=[%p])",
+               index,
+               v);
+
     dispatch_table_ptr->pGLVertexAttrib4Nbv(dispatch_table_ptr->bound_context_ptr,
                                             index,
                                             v);

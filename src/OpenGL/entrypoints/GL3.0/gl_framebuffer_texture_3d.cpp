@@ -32,6 +32,14 @@ void VKGL_APIENTRY OpenGL::vkglFramebufferTexture3D(GLenum target,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glFramebufferTexture3D(target=[%s] attachment=[%s] textarget=[%s] texture=[%u] level=[%d] zoffset=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               OpenGL::Utils::get_raw_string_for_gl_enum(attachment),
+               OpenGL::Utils::get_raw_string_for_gl_enum(textarget),
+               texture,
+               level,
+               zoffset);
+
     dispatch_table_ptr->pGLFramebufferTexture3D(dispatch_table_ptr->bound_context_ptr,
                                                 target,
                                                 attachment,

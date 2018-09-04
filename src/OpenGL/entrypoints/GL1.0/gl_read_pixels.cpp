@@ -35,6 +35,15 @@ void VKGL_APIENTRY OpenGL::vkglReadPixels(GLint   x,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glReadPixels(x=[%d] y=[%d] width=[%d] height=[%d] format=[%s] type=[%s] pixels=[%p])",
+               x,
+               y,
+               static_cast<int32_t>(width),
+               static_cast<int32_t>(height),
+               OpenGL::Utils::get_raw_string_for_gl_enum(format),
+               OpenGL::Utils::get_raw_string_for_gl_enum(type),
+               pixels);
+
     dispatch_table_ptr->pGLReadPixels(dispatch_table_ptr->bound_context_ptr,
                                       x,
                                       y,

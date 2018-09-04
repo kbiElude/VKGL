@@ -30,6 +30,13 @@ void VKGL_APIENTRY OpenGL::vkglGetActiveUniformBlockName(GLuint   program,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetActiveUniformBlockName(program=[%u] uniformBlockIndex=[%u] bufSize=[%d] length=[%p] uniformBlockName=[%p])",
+               program,
+               uniformBlockIndex,
+               static_cast<int32_t>(bufSize),
+               length,
+               uniformBlockName);
+
     dispatch_table_ptr->pGLGetActiveUniformBlockName(dispatch_table_ptr->bound_context_ptr,
                                                      program,
                                                      uniformBlockIndex,

@@ -36,6 +36,16 @@ void VKGL_APIENTRY OpenGL::vkglCopyTexImage2D(GLenum  target,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glCopyTexImage2D(target=[%s] level=[%d] internalformat=[%s] x=[%d] y=[%d] width=[%d] height={%d] border=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               level,
+               OpenGL::Utils::get_raw_string_for_gl_enum(internalformat),
+               x,
+               y,
+               static_cast<int32_t>(width),
+               static_cast<int32_t>(height),
+               border);
+
     dispatch_table_ptr->pGLCopyTexImage2D(dispatch_table_ptr->bound_context_ptr,
                                           target,
                                           level,

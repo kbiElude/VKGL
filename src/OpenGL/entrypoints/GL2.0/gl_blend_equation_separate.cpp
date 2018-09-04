@@ -24,6 +24,10 @@ void VKGL_APIENTRY OpenGL::vkglBlendEquationSeparate(GLenum modeRGB,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glBlendEquationSeparate(modeRGB=[%s] modeAlpha=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(modeRGB),
+               OpenGL::Utils::get_raw_string_for_gl_enum(modeAlpha) );
+
     dispatch_table_ptr->pGLBlendEquationSeparate(dispatch_table_ptr->bound_context_ptr,
                                                  modeRGB,
                                                  modeAlpha);

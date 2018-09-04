@@ -24,6 +24,10 @@ void VKGL_APIENTRY OpenGL::vkglDetachShader(GLuint program,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDetachShader(program=[%d] shader=[%d])",
+               program,
+               shader);
+
     dispatch_table_ptr->pGLDetachShader(dispatch_table_ptr->bound_context_ptr,
                                         program,
                                         shader);

@@ -27,6 +27,11 @@ void VKGL_APIENTRY OpenGL::vkglGetVertexAttribPointerv(GLuint index,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetVertexAttribPointerv(index=[%u] pname=[%s] pointer=[%p])",
+               index,
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               pointer);
+
     dispatch_table_ptr->pGLGetVertexAttribPointer(dispatch_table_ptr->bound_context_ptr,
                                                   index,
                                                   pname,

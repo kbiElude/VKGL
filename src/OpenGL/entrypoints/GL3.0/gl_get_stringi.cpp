@@ -24,6 +24,10 @@ const GLubyte *APIENTRY OpenGL::vkglGetStringi(GLenum name,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetStringi(name=[%s] index=[%u])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(name),
+               index);
+
     return dispatch_table_ptr->pGLGetStringi(dispatch_table_ptr->bound_context_ptr,
                                              name,
                                              index);

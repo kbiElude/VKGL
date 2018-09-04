@@ -26,6 +26,11 @@ void VKGL_APIENTRY OpenGL::vkglGetProgramiv(GLuint program,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetProgramiv(program=[%u] pname=[%s] params=[%p])",
+               program,
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               params);
+
     dispatch_table_ptr->pGLGetProgramiv(dispatch_table_ptr->bound_context_ptr,
                                         program,
                                         pname,

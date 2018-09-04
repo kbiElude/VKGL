@@ -26,6 +26,11 @@ void VKGL_APIENTRY OpenGL::vkglFlushMappedBufferRange(GLenum     target,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glFlushMappedBufferRange(target=[%s] offset=[%d] length=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               static_cast<int32_t>(offset),
+               static_cast<int32_t>(length) );
+
     dispatch_table_ptr->pGLFlushMappedBufferRange(dispatch_table_ptr->bound_context_ptr,
                                                   target,
                                                   offset,

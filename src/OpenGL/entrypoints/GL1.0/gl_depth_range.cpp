@@ -24,6 +24,10 @@ void VKGL_APIENTRY OpenGL::vkglDepthRange(GLdouble n,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDepthRange(n=[%.4f] f=[%.4f])",
+               n,
+               f);
+
     dispatch_table_ptr->pGLDepthRange(dispatch_table_ptr->bound_context_ptr,
                                       n,
                                       f);

@@ -24,6 +24,10 @@ void VKGL_APIENTRY OpenGL::vkglDisablei(GLenum target,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDisablei(target=[%s] index=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               index);
+
     dispatch_table_ptr->pGLDisablei(dispatch_table_ptr->bound_context_ptr,
                                     target,
                                     index);

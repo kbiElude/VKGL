@@ -26,6 +26,11 @@ void VKGL_APIENTRY OpenGL::vkglBindFragDataLocation(GLuint        program,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glBindFragDataLocation(program=[%d] color=[%d] name=[%s])",
+               program,
+               color,
+               name);
+
     dispatch_table_ptr->pGLBindFragDataLocation(dispatch_table_ptr->bound_context_ptr,
                                                 program,
                                                 color,

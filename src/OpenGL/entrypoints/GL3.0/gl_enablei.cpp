@@ -24,6 +24,10 @@ void VKGL_APIENTRY OpenGL::vkglEnablei(GLenum target,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glEnablei(target=[%s] index=[%u])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               index);
+
     dispatch_table_ptr->pGLEnablei(dispatch_table_ptr->bound_context_ptr,
                                    target,
                                    index);

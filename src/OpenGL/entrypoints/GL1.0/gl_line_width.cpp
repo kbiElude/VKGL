@@ -22,6 +22,9 @@ void VKGL_APIENTRY OpenGL::vkglLineWidth(GLfloat width)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glLineWidth(width=[%.4f])",
+               width);
+
     dispatch_table_ptr->pGLLineWidth(dispatch_table_ptr->bound_context_ptr,
                                      width);
 }

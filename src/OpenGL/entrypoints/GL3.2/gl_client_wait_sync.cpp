@@ -26,6 +26,11 @@ GLenum VKGL_APIENTRY OpenGL::vkglClientWaitSync(GLsync     sync,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glClientWaitSync(sync=[%p] flags=[%s] timeout=[%d])",
+               sync,
+               OpenGL::Utils::get_raw_string_for_gl_bitfield(OpenGL::BitfieldType::Wait_Sync_Mask, flags),
+               static_cast<uint32_t>(timeout) );
+
     dispatch_table_ptr->pGLClientWaitSync(dispatch_table_ptr->bound_context_ptr,
                                           sync,
                                           flags,

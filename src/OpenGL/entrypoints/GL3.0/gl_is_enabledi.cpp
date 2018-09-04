@@ -24,6 +24,10 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsEnabledi(GLenum target,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glIsEnabledi(target=[%s] index=[%u])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               index);
+
     return dispatch_table_ptr->pGLIsEnabledi(dispatch_table_ptr->bound_context_ptr,
                                              target,
                                              index);

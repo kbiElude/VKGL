@@ -158,6 +158,11 @@ namespace OpenGL
         GLenum                      get_gl_enum_for_query_target_property(const OpenGL::QueryTargetProperty& in_property);
         OpenGL::QueryTargetProperty get_query_target_property_for_gl_enum(const GLenum&                      in_enum);
 
+        const char* get_raw_string_for_gl_bitfield(const OpenGL::BitfieldType& in_bitfield,
+                                                   const GLenum&               in_Enum);
+
+        const char* get_raw_string_for_gl_enum(const GLenum& in_enum);
+
         GLenum             get_gl_enum_for_read_buffer(const OpenGL::ReadBuffer& in_read_buffer);
         OpenGL::ReadBuffer get_read_buffer_for_gl_enum(const GLenum&             in_enum);
 

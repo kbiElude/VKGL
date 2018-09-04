@@ -77,6 +77,14 @@ void VKGL_APIENTRY OpenGL::vkglDrawRangeElements(GLenum      mode,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDrawElements(mode=[%s] start=[%u] end=[%u] count=[%d] type=[%s] indices=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(mode),
+               start,
+               end,
+               static_cast<int32_t>(count),
+               OpenGL::Utils::get_raw_string_for_gl_enum(type),
+               indices);
+
     dispatch_table_ptr->pGLDrawRangeElements(dispatch_table_ptr->bound_context_ptr,
                                              mode,
                                              start,

@@ -28,6 +28,12 @@ void VKGL_APIENTRY OpenGL::vkglScissor(GLint   x,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glScissor(x=[%d] y=[%d] width=[%d] height=[%d])",
+               x,
+               y,
+               static_cast<int32_t>(width),
+               static_cast<int32_t>(height) );
+
     dispatch_table_ptr->pGLScissor(dispatch_table_ptr->bound_context_ptr,
                                    x,
                                    y,

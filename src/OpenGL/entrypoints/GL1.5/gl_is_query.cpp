@@ -22,6 +22,9 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsQuery(GLuint id)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glIsQuery(id=[%u])",
+               id);
+
     return dispatch_table_ptr->pGLIsQuery(dispatch_table_ptr->bound_context_ptr,
                                           id) ? GL_TRUE
                                               : GL_FALSE;

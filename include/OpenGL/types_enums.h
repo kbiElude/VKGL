@@ -7,6 +7,15 @@
 
 namespace OpenGL
 {
+    enum class BitfieldType
+    {
+        Blit_Mask,           // glBlitFramebuffer()
+        Buffer_Access_Mask,  // glMapBufferRange()
+        Clear_Buffer_Mask,   // glClear()
+        Sync_Condition_Mask, // glFenceSync()
+        Wait_Sync_Mask,      // glClientWaitSync()
+    };
+
     enum class BlendEquation
     {
         Function_Add,

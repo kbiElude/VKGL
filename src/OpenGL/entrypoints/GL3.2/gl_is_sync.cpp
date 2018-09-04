@@ -22,6 +22,9 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsSync(GLsync sync)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glIsSync(sync=[%p])",
+               sync);
+
     return dispatch_table_ptr->pGLIsSync(dispatch_table_ptr->bound_context_ptr,
                                          sync) == GL_TRUE;
 }

@@ -21,6 +21,9 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsFramebuffer(GLuint framebuffer)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glIsFramebuffer(framebuffer=[%u])",
+               framebuffer);
+
     return dispatch_table_ptr->pGLIsFramebuffer(dispatch_table_ptr->bound_context_ptr,
                                                 framebuffer) == GL_TRUE;
 }

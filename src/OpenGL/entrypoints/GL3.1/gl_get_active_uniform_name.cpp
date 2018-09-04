@@ -30,6 +30,13 @@ void VKGL_APIENTRY OpenGL::vkglGetActiveUniformName(GLuint   program,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetActiveUniformName(program=[%u] uniformIndex=[%u] bufSize=[%d] length=[%p] uniformName=[%p])",
+               program,
+               uniformIndex,
+               static_cast<int32_t>(bufSize),
+               length,
+               uniformName);
+
     dispatch_table_ptr->pGLGetActiveUniformName(dispatch_table_ptr->bound_context_ptr,
                                                 program,
                                                 uniformIndex,

@@ -27,6 +27,11 @@ void VKGL_APIENTRY OpenGL::vkglTexParameterf(GLenum  target,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glTexParameterf(target=[%s] pname=[%s] param=[%.4f])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               param);
+
     dispatch_table_ptr->pGLTexParameterf(dispatch_table_ptr->bound_context_ptr,
                                          target,
                                          pname,

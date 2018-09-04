@@ -21,6 +21,9 @@ void VKGL_APIENTRY OpenGL::vkglDeleteShader(GLuint shader)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDeleteShader(shader=[%d])",
+               shader);
+
     dispatch_table_ptr->pGLDeleteShader(dispatch_table_ptr->bound_context_ptr,
                                         shader);
 }

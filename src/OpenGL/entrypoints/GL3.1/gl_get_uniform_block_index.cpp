@@ -23,6 +23,10 @@ GLuint VKGL_APIENTRY OpenGL::vkglGetUniformBlockIndex(GLuint        program,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetUniformBlockIndex(program=[%u] uniformBlockName=[%s])",
+               program,
+               uniformBlockName);
+
     return dispatch_table_ptr->pGLGetUniformBlockIndex(dispatch_table_ptr->bound_context_ptr,
                                                        program,
                                                        uniformBlockName);

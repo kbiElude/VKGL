@@ -31,6 +31,13 @@ void VKGL_APIENTRY OpenGL::vkglVertexAttribIPointer(GLuint      index,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glVertexAttribIPointer(index=[%u] size=[%d] type=[%s] stride=[%d] pointer=[%p])",
+               index,
+               size,
+               OpenGL::Utils::get_raw_string_for_gl_enum(type),
+               static_cast<int32_t>(stride),
+               pointer);
+
     dispatch_table_ptr->pGLVertexAttribIPointer(dispatch_table_ptr->bound_context_ptr,
                                                 index,
                                                 size,

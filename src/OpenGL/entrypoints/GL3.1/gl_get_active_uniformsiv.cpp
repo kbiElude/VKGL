@@ -30,6 +30,13 @@ void VKGL_APIENTRY OpenGL::vkglGetActiveUniformsiv(GLuint        program,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetActiveUniformsiv(program=[%u] uniformCount=[%d] uniformIndices=[%p] pname=[%s] params=[%p])",
+               program,
+               static_cast<int32_t>(uniformCount),
+               uniformIndices,
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               params);
+
     dispatch_table_ptr->pGLGetActiveUniformsiv(dispatch_table_ptr->bound_context_ptr,
                                                program,
                                                uniformCount,

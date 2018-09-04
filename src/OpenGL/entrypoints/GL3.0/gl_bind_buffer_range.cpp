@@ -30,6 +30,13 @@ void VKGL_APIENTRY OpenGL::vkglBindBufferRange(GLenum     target,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glBindBufferRange(target=[%s] index=[%d] buffer=[%d] offset=[%d] size=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               index,
+               buffer,
+               static_cast<uint32_t>(offset),
+               static_cast<uint32_t>(size) );
+
     dispatch_table_ptr->pGLBindBufferRange(dispatch_table_ptr->bound_context_ptr,
                                            target,
                                            index,

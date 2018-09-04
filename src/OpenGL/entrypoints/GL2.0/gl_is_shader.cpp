@@ -21,6 +21,9 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsShader(GLuint shader)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glIsShader(shader=[%u])",
+               shader);
+
     return dispatch_table_ptr->pGLIsShader(dispatch_table_ptr->bound_context_ptr,
                                            shader) == GL_TRUE;
 }

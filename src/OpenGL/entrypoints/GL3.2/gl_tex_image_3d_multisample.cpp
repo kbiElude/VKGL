@@ -34,6 +34,15 @@ void VKGL_APIENTRY OpenGL::vkglTexImage3DMultisample(GLenum    target,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glTexImage3DMultisample(target=[%s] samples=[%d] internalformat=[%s] width=[%d] height=[%d] depth=[%d] fixedsamplelocations=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               static_cast<int32_t>(samples),
+               OpenGL::Utils::get_raw_string_for_gl_enum(internalformat),
+               static_cast<int32_t>(width),
+               static_cast<int32_t>(height),
+               static_cast<int32_t>(depth),
+               (fixedsamplelocations == GL_TRUE) ? 1 : 0);
+
     dispatch_table_ptr->pGLTexImage3DMultisample(dispatch_table_ptr->bound_context_ptr,
                                                  target,
                                                  samples,

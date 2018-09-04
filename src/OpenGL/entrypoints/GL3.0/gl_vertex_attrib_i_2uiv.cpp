@@ -18,10 +18,15 @@ static bool validate(OpenGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY OpenGL::vkglVertexAttribI2uiv(GLuint       index,
+void VKGL_APIENTRY OpenGL::vkglVertexAttribI2uiv(GLuint        index,
                                                  const GLuint* v)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    /* TODO: Make me more useful */
+    VKGL_TRACE("glVertexAttribI2uiv(index=[%u] v=[%p])",
+               index,
+               v);
 
     dispatch_table_ptr->pGLVertexAttribI2uiv(dispatch_table_ptr->bound_context_ptr,
                                              index,

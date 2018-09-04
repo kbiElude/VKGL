@@ -34,6 +34,15 @@ void VKGL_APIENTRY OpenGL::vkglCompressedTexSubImage1D(GLenum      target,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glCompressedTexSubImage1D(target=[%s] level=[%d] xoffset=[%d] width=[%d] format=[%s] imageSize=[%d] data=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               level,
+               xoffset,
+               static_cast<int32_t>(width),
+               OpenGL::Utils::get_raw_string_for_gl_enum(format),
+               static_cast<int32_t>(imageSize),
+               data);
+
     dispatch_table_ptr->pGLCompressedTexSubImage1D(dispatch_table_ptr->bound_context_ptr,
                                                    target,
                                                    level,

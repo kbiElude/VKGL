@@ -25,6 +25,12 @@ void VKGL_APIENTRY OpenGL::vkglUniform3iv(GLint        location,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    /* TODO: Make me more useful */
+    VKGL_TRACE("glUniform3iv(location=[%d] count=[%d] value=[%p])",
+               location,
+               static_cast<int32_t>(count),
+               value);
+
     dispatch_table_ptr->pGLUniform3iv(dispatch_table_ptr->bound_context_ptr,
                                       location,
                                       count,

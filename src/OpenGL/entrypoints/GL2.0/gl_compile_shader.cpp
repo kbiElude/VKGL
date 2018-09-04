@@ -21,6 +21,9 @@ void VKGL_APIENTRY OpenGL::vkglCompileShader(GLuint shader)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glCompileShader(shader=[%d])",
+               shader);
+
     dispatch_table_ptr->pGLCompileShader(dispatch_table_ptr->bound_context_ptr,
                                         shader);
 }

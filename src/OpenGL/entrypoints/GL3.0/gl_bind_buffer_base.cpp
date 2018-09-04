@@ -26,6 +26,11 @@ void VKGL_APIENTRY OpenGL::vkglBindBufferBase(GLenum target,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glBindBufferBase(target=[%s] index=[%d] buffer=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               index,
+               buffer);
+
     dispatch_table_ptr->pGLBindBufferBase(dispatch_table_ptr->bound_context_ptr,
                                           target,
                                           index,

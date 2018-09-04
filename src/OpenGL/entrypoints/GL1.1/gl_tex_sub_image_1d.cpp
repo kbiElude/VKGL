@@ -34,6 +34,15 @@ void VKGL_APIENTRY OpenGL::vkglTexSubImage1D(GLenum      target,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glTexSubImage1D(target=[%s] level=[%d] xoffset=[%d] width=[%d] format=[%s] type=[%s] pixels=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               level,
+               xoffset,
+               static_cast<int32_t>(width),
+               OpenGL::Utils::get_raw_string_for_gl_enum(format),
+               OpenGL::Utils::get_raw_string_for_gl_enum(type),
+               pixels);
+
     dispatch_table_ptr->pGLTexSubImage1D(dispatch_table_ptr->bound_context_ptr,
                                          target,
                                          level,

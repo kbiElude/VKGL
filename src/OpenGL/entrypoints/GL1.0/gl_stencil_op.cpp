@@ -27,6 +27,11 @@ void VKGL_APIENTRY OpenGL::vkglStencilOp(GLenum fail,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glStencilOp(fail=[%s] zfail=[%s] zpass=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(fail),
+               OpenGL::Utils::get_raw_string_for_gl_enum(zfail),
+               OpenGL::Utils::get_raw_string_for_gl_enum(zpass) );
+
     dispatch_table_ptr->pGLStencilOp(dispatch_table_ptr->bound_context_ptr,
                                      fail,
                                      zfail,

@@ -11,6 +11,8 @@ GLenum VKGL_APIENTRY OpenGL::vkglGetError(void)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetError()");
+
     return dispatch_table_ptr->pGLGetError(dispatch_table_ptr->bound_context_ptr);
 }
 

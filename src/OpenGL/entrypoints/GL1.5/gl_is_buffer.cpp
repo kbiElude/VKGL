@@ -21,6 +21,9 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsBuffer(GLuint buffer)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glIsBuffer(buffer=[%u])",
+               buffer);
+
     return dispatch_table_ptr->pGLIsBuffer(dispatch_table_ptr->bound_context_ptr,
                                            buffer) ? GL_TRUE
                                                    : GL_FALSE;

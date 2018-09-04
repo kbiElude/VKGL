@@ -21,6 +21,9 @@ void VKGL_APIENTRY OpenGL::vkglUseProgram(GLuint program)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glUseProgram(program=[%u])",
+               program);
+
     dispatch_table_ptr->pGLUseProgram(dispatch_table_ptr->bound_context_ptr,
                                       program);
 }

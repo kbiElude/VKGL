@@ -26,6 +26,11 @@ void VKGL_APIENTRY OpenGL::vkglTexBuffer(GLenum target,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glTexBuffer(target=[%s] internalformat=[%s] buffer=[%u])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               OpenGL::Utils::get_raw_string_for_gl_enum(internalformat),
+               buffer);
+
     dispatch_table_ptr->pGLTexBuffer(dispatch_table_ptr->bound_context_ptr,
                                      target,
                                      internalformat,

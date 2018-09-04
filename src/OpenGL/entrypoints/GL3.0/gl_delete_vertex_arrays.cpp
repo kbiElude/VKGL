@@ -23,6 +23,10 @@ void VKGL_APIENTRY OpenGL::vkglDeleteVertexArrays(GLsizei       n,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDeleteVertexArrays(n=[%d] arrays=[%p])",
+               static_cast<int32_t>(n),
+               arrays);
+
     dispatch_table_ptr->pGLDeleteVertexArrays(dispatch_table_ptr->bound_context_ptr,
                                               n,
                                               arrays);

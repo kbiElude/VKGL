@@ -27,6 +27,13 @@ void VKGL_APIENTRY OpenGL::vkglShaderSource(GLuint               shader,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    /* TODO: Make me more useful */
+    VKGL_TRACE("glShaderSource(shader=[%u] count=[%d] string=[%p] length=[%p])",
+               shader,
+               static_cast<int32_t>(count),
+               string,
+               length);
+
     dispatch_table_ptr->pGLShaderSource(dispatch_table_ptr->bound_context_ptr,
                                         shader,
                                         count,

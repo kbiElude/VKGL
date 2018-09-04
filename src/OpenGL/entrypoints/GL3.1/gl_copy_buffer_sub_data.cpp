@@ -30,6 +30,13 @@ void VKGL_APIENTRY OpenGL::vkglCopyBufferSubData(GLenum     readTarget,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glCopyBufferSubData(readTarget=[%s] writeTarget=[%s] readOffset=[%d] writeOffset=[%d] size=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(readTarget),
+               OpenGL::Utils::get_raw_string_for_gl_enum(writeTarget),
+               static_cast<int32_t>(readOffset),
+               static_cast<int32_t>(writeOffset),
+               static_cast<int32_t>(size) );
+
     dispatch_table_ptr->pGLCopyBufferSubData(dispatch_table_ptr->bound_context_ptr,
                                              readTarget,
                                              writeTarget,

@@ -21,6 +21,9 @@ void VKGL_APIENTRY OpenGL::vkglDeleteSync(GLsync sync)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDeleteSync(sync=[%p])",
+               sync);
+
     dispatch_table_ptr->pGLDeleteSync(dispatch_table_ptr->bound_context_ptr,
                                       sync);
 }

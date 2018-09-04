@@ -28,6 +28,12 @@ void VKGL_APIENTRY OpenGL::vkglGetActiveUniformBlockiv(GLuint program,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetActiveUniformBlockiv(program=[%u] uniformBlockIndex=[%u] pname=[%s] params=[%p])",
+               program,
+               uniformBlockIndex,
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               params);
+
     dispatch_table_ptr->pGLGetActiveUniformBlockiv(dispatch_table_ptr->bound_context_ptr,
                                                    program,
                                                    uniformBlockIndex,

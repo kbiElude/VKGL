@@ -22,6 +22,9 @@ void VKGL_APIENTRY OpenGL::vkglClearStencil(GLint s)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glClearStencil(s=[%d])",
+               s);
+
     dispatch_table_ptr->pGLClearStencil(dispatch_table_ptr->bound_context_ptr,
                                         s);
 }

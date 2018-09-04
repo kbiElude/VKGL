@@ -29,6 +29,13 @@ void VKGL_APIENTRY OpenGL::vkglColorMaski(GLuint    index,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glColorMaski(index=[%d] r=[%d] g=[%d] b=[%d] a=[%d])",
+               index,
+               (r == GL_TRUE) ? 1 : 0,
+               (g == GL_TRUE) ? 1 : 0,
+               (b == GL_TRUE) ? 1 : 0,
+               (a == GL_TRUE) ? 1 : 0);
+
     dispatch_table_ptr->pGLColorMaski(dispatch_table_ptr->bound_context_ptr,
                                       index,
                                       r,

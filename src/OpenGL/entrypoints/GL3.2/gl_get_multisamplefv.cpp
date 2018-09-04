@@ -26,6 +26,11 @@ void VKGL_APIENTRY OpenGL::vkglGetMultisamplefv(GLenum   pname,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetMultisamplefv(pname=[%s] index=[%u] val=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               index,
+               val);
+
     dispatch_table_ptr->pGLGetMultisamplefv(dispatch_table_ptr->bound_context_ptr,
                                             pname,
                                             index,

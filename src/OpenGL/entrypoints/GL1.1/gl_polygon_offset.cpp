@@ -23,6 +23,10 @@ void VKGL_APIENTRY OpenGL::vkglPolygonOffset(GLfloat factor,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glPolygonOffset(factor=[%.4f] units=[%.4f])",
+               factor,
+               units);
+
     dispatch_table_ptr->pGLPolygonOffset(dispatch_table_ptr->bound_context_ptr,
                                          factor,
                                          units);

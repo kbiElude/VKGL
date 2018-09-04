@@ -21,6 +21,9 @@ void VKGL_APIENTRY OpenGL::vkglValidateProgram(GLuint program)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glValidateProgram(program=[%u])",
+               program);
+
     dispatch_table_ptr->pGLValidateProgram(dispatch_table_ptr->bound_context_ptr,
                                            program);
 }

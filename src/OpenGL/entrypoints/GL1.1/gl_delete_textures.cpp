@@ -23,6 +23,10 @@ void VKGL_APIENTRY OpenGL::vkglDeleteTextures(GLsizei       n,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDeleteTextures(n=[%d] texture=[%p])",
+               static_cast<int32_t>(n),
+               textures);
+
     dispatch_table_ptr->pGLDeleteTextures(dispatch_table_ptr->bound_context_ptr,
                                           n,
                                           textures);

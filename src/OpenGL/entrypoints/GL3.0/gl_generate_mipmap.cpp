@@ -22,6 +22,9 @@ void VKGL_APIENTRY OpenGL::vkglGenerateMipmap(GLenum target)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGenerateMipmap(target=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target) );
+
     dispatch_table_ptr->pGLGenerateMipmap(dispatch_table_ptr->bound_context_ptr,
                                           target);
 }

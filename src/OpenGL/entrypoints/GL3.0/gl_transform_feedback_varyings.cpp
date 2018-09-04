@@ -28,6 +28,13 @@ void VKGL_APIENTRY OpenGL::vkglTransformFeedbackVaryings(GLuint               pr
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    /* TODO: Make me more useful */
+    VKGL_TRACE("glTransformFeedbackVaryings(program=[%u] count=[%d] varyings=[%p] bufferMode=[%s])",
+               program,
+               static_cast<int32_t>(count),
+               varyings,
+               OpenGL::Utils::get_raw_string_for_gl_enum(bufferMode) );
+
     dispatch_table_ptr->pGLTransformFeedbackVaryings(dispatch_table_ptr->bound_context_ptr,
                                                      program,
                                                      count,

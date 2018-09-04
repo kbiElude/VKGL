@@ -22,6 +22,9 @@ void VKGL_APIENTRY OpenGL::vkglBlendEquation(GLenum mode)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glBlendEquation(mode=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(mode) );
+
     dispatch_table_ptr->pGLBlendEquation(dispatch_table_ptr->bound_context_ptr,
                                          mode);
 }

@@ -26,6 +26,11 @@ void VKGL_APIENTRY OpenGL::vkglGetBooleani_v(GLenum     target,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetBooleani_v(target=[%s] index=[%u] data=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               index,
+               data);
+
     dispatch_table_ptr->pGLGetBooleani_v(dispatch_table_ptr->bound_context_ptr,
                                          target,
                                          index,

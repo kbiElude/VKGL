@@ -23,6 +23,9 @@ void VKGL_APIENTRY OpenGL::vkglDepthFunc(GLenum func)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDepthFunc(func=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(func) );
+
     dispatch_table_ptr->pGLDepthFunc(dispatch_table_ptr->bound_context_ptr,
                                      func);
 }

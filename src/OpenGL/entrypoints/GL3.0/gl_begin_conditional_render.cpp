@@ -24,6 +24,10 @@ void VKGL_APIENTRY OpenGL::vkglBeginConditionalRender(GLuint id,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glBeginConditionalRender(id=[%d] mode=[%s])",
+               id,
+               OpenGL::Utils::get_raw_string_for_gl_enum(mode) );
+
     dispatch_table_ptr->pGLBeginConditionalRender(dispatch_table_ptr->bound_context_ptr,
                                                   id,
                                                   mode);

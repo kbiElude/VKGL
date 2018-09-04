@@ -24,6 +24,10 @@ void *APIENTRY OpenGL::vkglMapBuffer(GLenum target,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glMapBuffer(target=[%s] access=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               OpenGL::Utils::get_raw_string_for_gl_enum(access) );
+
     return dispatch_table_ptr->pGLMapBuffer(dispatch_table_ptr->bound_context_ptr,
                                             target,
                                             access);

@@ -20,6 +20,8 @@ void VKGL_APIENTRY OpenGL::vkglEndConditionalRender(void)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glEndConditionalRender()");
+
     dispatch_table_ptr->pGLEndConditionalRender(dispatch_table_ptr->bound_context_ptr);
 }
 

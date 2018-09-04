@@ -24,6 +24,10 @@ void VKGL_APIENTRY OpenGL::vkglBlendFunc(GLenum sfactor,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glBlendFunc(sfactor=[%s] dfactor=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(sfactor),
+               OpenGL::Utils::get_raw_string_for_gl_enum(dfactor) );
+
     dispatch_table_ptr->pGLBlendFunc(dispatch_table_ptr->bound_context_ptr,
                                      sfactor,
                                      dfactor);

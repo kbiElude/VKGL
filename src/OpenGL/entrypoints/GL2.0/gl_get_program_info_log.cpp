@@ -27,6 +27,12 @@ void VKGL_APIENTRY OpenGL::vkglGetProgramInfoLog(GLuint   program,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetProgramInfoLog(program=[%u] bufSize=[%d] length=[%p] infoLog=[%p])",
+               program,
+               static_cast<int32_t>(bufSize),
+               length,
+               infoLog);
+
     dispatch_table_ptr->pGLGetProgramInfoLog(dispatch_table_ptr->bound_context_ptr,
                                              program,
                                              bufSize,

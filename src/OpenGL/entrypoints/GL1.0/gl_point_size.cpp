@@ -22,6 +22,9 @@ void VKGL_APIENTRY OpenGL::vkglPointSize(GLfloat size)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glPointSize(size=[%.4f])",
+               size);
+
     dispatch_table_ptr->pGLPointSize(dispatch_table_ptr->bound_context_ptr,
                                      size);
 }

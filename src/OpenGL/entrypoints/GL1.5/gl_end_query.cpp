@@ -22,6 +22,9 @@ void VKGL_APIENTRY OpenGL::vkglEndQuery(GLenum target)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glEndQuery(query=[%s])",
+               target);
+
     dispatch_table_ptr->pGLEndQuery(dispatch_table_ptr->bound_context_ptr,
                                     target);
 }

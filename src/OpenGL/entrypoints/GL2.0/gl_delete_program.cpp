@@ -21,6 +21,9 @@ void VKGL_APIENTRY OpenGL::vkglDeleteProgram(GLuint program)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDeleteProgram(program=[%d])",
+               program);
+
     dispatch_table_ptr->pGLDeleteProgram(dispatch_table_ptr->bound_context_ptr,
                                          program);
 }

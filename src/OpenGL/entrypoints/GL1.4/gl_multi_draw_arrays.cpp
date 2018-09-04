@@ -28,6 +28,12 @@ void VKGL_APIENTRY OpenGL::vkglMultiDrawArrays(GLenum         mode,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glMultiDrawArrays(mode=[%s] first=[%p] count=[%p] drawcount=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(mode),
+               first,
+               count,
+               static_cast<int32_t>(drawcount) );
+
     dispatch_table_ptr->pGLMultiDrawArrays(dispatch_table_ptr->bound_context_ptr,
                                            mode,
                                            first,

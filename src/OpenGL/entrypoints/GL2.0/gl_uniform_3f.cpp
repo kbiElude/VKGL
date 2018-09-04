@@ -27,6 +27,12 @@ void VKGL_APIENTRY OpenGL::vkglUniform3f(GLint   location,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glUniform3f(location=[%d] v0=[%.4f] v1=[%.4f] v2=[%.4f])",
+               location,
+               v0,
+               v1,
+               v2);
+
     dispatch_table_ptr->pGLUniform3f(dispatch_table_ptr->bound_context_ptr,
                                      location,
                                      v0,

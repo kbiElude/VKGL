@@ -25,6 +25,11 @@ void VKGL_APIENTRY OpenGL::vkglVertexAttrib2f(GLuint  index,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glVertexAttrib2f(index=[%u] x=[%.4f] y=[%.4f])",
+               index,
+               x,
+               y);
+
     dispatch_table_ptr->pGLVertexAttrib2f(dispatch_table_ptr->bound_context_ptr,
                                           index,
                                           x,

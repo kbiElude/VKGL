@@ -22,6 +22,10 @@ void VKGL_APIENTRY OpenGL::vkglDrawBuffers(GLsizei       n,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDrawBuffers(n=[%d] bufs=[%p]",
+               static_cast<int32_t>(n),
+               bufs); /* todo: expand to a list of buf enums */
+
     dispatch_table_ptr->pGLDrawBuffers(dispatch_table_ptr->bound_context_ptr,
                                        n,
                                        bufs);

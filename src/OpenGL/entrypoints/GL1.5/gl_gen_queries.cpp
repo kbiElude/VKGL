@@ -23,6 +23,10 @@ void VKGL_APIENTRY OpenGL::vkglGenQueries(GLsizei n,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGenQueries(n=[%d] id=[%p])",
+               static_cast<int32_t>(n),
+               ids);
+
     dispatch_table_ptr->pGLGenQueries(dispatch_table_ptr->bound_context_ptr,
                                       n,
                                       ids);

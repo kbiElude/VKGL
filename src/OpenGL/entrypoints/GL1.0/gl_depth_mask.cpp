@@ -22,6 +22,9 @@ void VKGL_APIENTRY OpenGL::vkglDepthMask(GLboolean flag)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDepthMask(flag=[%d])",
+               (flag == GL_TRUE) ? 1 : 0);
+
     dispatch_table_ptr->pGLDepthMask(dispatch_table_ptr->bound_context_ptr,
                                      flag);
 }

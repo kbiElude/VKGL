@@ -26,6 +26,11 @@ void VKGL_APIENTRY OpenGL::vkglGetVertexAttribIuiv(GLuint  index,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetVertexAttribIuiv(index=[%u] pname=[%s] params=[%p])",
+               index,
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               params);
+
     dispatch_table_ptr->pGLGetVertexAttribIuiv(dispatch_table_ptr->bound_context_ptr,
                                                index,
                                                pname,

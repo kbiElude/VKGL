@@ -29,6 +29,12 @@ void VKGL_APIENTRY OpenGL::vkglGetTexLevelParameterfv(GLenum   target,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetTexLevelParameterfv(target=[%s] level=[%d] pname=[%s] params=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               level,
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               params);
+
     dispatch_table_ptr->pGLGetTexLevelParameterfv(dispatch_table_ptr->bound_context_ptr,
                                                   target,
                                                   level,

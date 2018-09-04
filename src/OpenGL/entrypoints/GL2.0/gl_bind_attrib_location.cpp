@@ -25,6 +25,11 @@ void VKGL_APIENTRY OpenGL::vkglBindAttribLocation(GLuint        program,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glBindAttribLocation(program=[%d] index=[%d] name=[%s])",
+               program,
+               index,
+               name);
+
     dispatch_table_ptr->pGLBindAttribLocation(dispatch_table_ptr->bound_context_ptr,
                                               program,
                                               index,

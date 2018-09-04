@@ -27,6 +27,12 @@ void VKGL_APIENTRY OpenGL::vkglGetShaderInfoLog(GLuint   shader,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glGetShaderInfoLog(shader=[%u] bufSize=[%d] length=[%p] infoLog=[%p])",
+               shader,
+               static_cast<int32_t>(bufSize),
+               length,
+               infoLog);
+
     dispatch_table_ptr->pGLGetShaderInfoLog(dispatch_table_ptr->bound_context_ptr,
                                             shader,
                                             bufSize,

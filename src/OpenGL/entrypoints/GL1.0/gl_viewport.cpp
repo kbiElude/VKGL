@@ -28,6 +28,12 @@ void VKGL_APIENTRY OpenGL::vkglViewport(GLint   x,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glViewport(x=[%d] y=[%d] width=[%d] height=[%d])",
+               x,
+               y,
+               static_cast<int32_t>(width),
+               static_cast<int32_t>(height) );
+
     dispatch_table_ptr->pGLViewport(dispatch_table_ptr->bound_context_ptr,
                                     x,
                                     y,

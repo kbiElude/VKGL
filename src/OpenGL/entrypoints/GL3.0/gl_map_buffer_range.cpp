@@ -28,6 +28,12 @@ void* APIENTRY OpenGL::vkglMapBufferRange(GLenum     target,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glMapBufferRange(target=[%s] offset=[%d] length=[%d] access=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               static_cast<int32_t>(offset),
+               static_cast<int32_t>(length),
+               OpenGL::Utils::get_raw_string_for_gl_bitfield(OpenGL::BitfieldType::Buffer_Access_Mask, access) );
+
     return dispatch_table_ptr->pGLMapBufferRange(dispatch_table_ptr->bound_context_ptr,
                                                  target,
                                                  offset,

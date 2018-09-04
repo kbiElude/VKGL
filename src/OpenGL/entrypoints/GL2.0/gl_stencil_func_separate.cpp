@@ -28,6 +28,12 @@ void VKGL_APIENTRY OpenGL::vkglStencilFuncSeparate(GLenum face,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glStencilFuncSeparate(face=[%s] func=[%s] ref=[%d] mask=[%u])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(face),
+               OpenGL::Utils::get_raw_string_for_gl_enum(func),
+               ref,
+               mask);
+
     dispatch_table_ptr->pGLStencilFuncSeparate(dispatch_table_ptr->bound_context_ptr,
                                                face,
                                                func,

@@ -20,6 +20,8 @@ GLuint VKGL_APIENTRY OpenGL::vkglCreateProgram()
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glCreateProgram()");
+
     return dispatch_table_ptr->pGLCreateProgram(dispatch_table_ptr->bound_context_ptr);
 }
 

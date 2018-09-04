@@ -32,6 +32,14 @@ void VKGL_APIENTRY OpenGL::vkglDrawElementsInstancedBaseVertex(GLenum      mode,
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDrawElementsInstancedBaseVertex(mode=[%s] count={%d] type=[%s] indices=[%p] instancecount=[%d] basevertex=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(mode),
+               static_cast<int32_t>(count),
+               OpenGL::Utils::get_raw_string_for_gl_enum(type),
+               indices,
+               static_cast<int32_t>(instancecount),
+               basevertex);
+
     dispatch_table_ptr->pGLDrawElementsInstancedBaseVertex(dispatch_table_ptr->bound_context_ptr,
                                                            mode,
                                                            count,

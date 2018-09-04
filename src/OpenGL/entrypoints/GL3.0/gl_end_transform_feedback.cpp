@@ -20,6 +20,8 @@ void VKGL_APIENTRY OpenGL::vkglEndTransformFeedback(void)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glEndTransformFeedback()");
+
     dispatch_table_ptr->pGLEndTransformFeedback(dispatch_table_ptr->bound_context_ptr);
 }
 

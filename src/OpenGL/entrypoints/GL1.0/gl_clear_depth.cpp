@@ -22,6 +22,9 @@ void VKGL_APIENTRY OpenGL::vkglClearDepth(GLdouble depth)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glClearDepth(depth=[%.4f])",
+               static_cast<float>(depth) );
+
     dispatch_table_ptr->pGLClearDepth(dispatch_table_ptr->bound_context_ptr,
                                       depth);
 }

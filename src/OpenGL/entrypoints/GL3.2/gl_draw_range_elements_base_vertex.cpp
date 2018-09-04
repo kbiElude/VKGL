@@ -34,6 +34,15 @@ void VKGL_APIENTRY OpenGL::vkglDrawRangeElementsBaseVertex(GLenum      mode,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glDrawRangeElementsBaseVertex(mode=[%s] start=%u] end=[%u] count=[%d] type=[%s] indices=[%p] basevertex=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(mode),
+               start,
+               end,
+               static_cast<int32_t>(count),
+               OpenGL::Utils::get_raw_string_for_gl_enum(type),
+               indices,
+               basevertex);
+
     dispatch_table_ptr->pGLDrawRangeElementsBaseVertex(dispatch_table_ptr->bound_context_ptr,
                                                        mode,
                                                        start,

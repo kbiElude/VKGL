@@ -25,6 +25,10 @@ void VKGL_APIENTRY OpenGL::vkglPolygonMode(GLenum face,
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glPolygonMode(face=[%s] mode=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(face),
+               OpenGL::Utils::get_raw_string_for_gl_enum(mode) );
+
     dispatch_table_ptr->pGLPolygonMode(dispatch_table_ptr->bound_context_ptr,
                                        face,
                                        mode);

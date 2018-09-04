@@ -21,6 +21,9 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsRenderbuffer(GLuint renderbuffer)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
+    VKGL_TRACE("glIsRenderbuffer(renderbuffer=[%u])",
+               renderbuffer);
+
     return dispatch_table_ptr->pGLIsRenderbuffer(dispatch_table_ptr->bound_context_ptr,
                                                  renderbuffer) == GL_TRUE;
 }
