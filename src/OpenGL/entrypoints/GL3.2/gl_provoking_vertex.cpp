@@ -7,8 +7,8 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_mode)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_mode)
 {
     bool result = false;
 
@@ -18,24 +18,27 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglProvokingVertex(GLenum mode)
+void VKGL_APIENTRY OpenGL::vkglProvokingVertex(GLenum mode)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glProvokingVertex(mode=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(mode) );
 
     dispatch_table_ptr->pGLProvokingVertex(dispatch_table_ptr->bound_context_ptr,
                                            mode);
 }
 
-void vkglProvokingVertex_execute(VKGL::Context* in_context_ptr,
-                                 const GLenum&  in_mode)
+static void vkglProvokingVertex_execute(OpenGL::Context* in_context_ptr,
+                                        const GLenum&    in_mode)
 {
-    const auto mode_vkgl = VKGL::Utils::get_provoking_vertex_convention_for_gl_enum(in_mode);
+    const auto mode_vkgl = OpenGL::Utils::get_provoking_vertex_convention_for_gl_enum(in_mode);
 
     in_context_ptr->set_provoking_vertex(mode_vkgl);
 }
 
-void vkglProvokingVertex_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_mode)
+void OpenGL::vkglProvokingVertex_with_validation(OpenGL::Context* in_context_ptr,
+                                                 const GLenum&    in_mode)
 {
     if (validate(in_context_ptr,
                  in_mode) )

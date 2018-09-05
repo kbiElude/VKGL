@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLuint&  in_index)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLuint&    in_index)
 {
     bool result = false;
 
@@ -19,30 +19,34 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLboolean VKGL_APIENTRY vkglIsEnabledi(GLenum target,
-                                       GLuint index)
+GLboolean VKGL_APIENTRY OpenGL::vkglIsEnabledi(GLenum target,
+                                               GLuint index)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glIsEnabledi(target=[%s] index=[%u])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               index);
 
     return dispatch_table_ptr->pGLIsEnabledi(dispatch_table_ptr->bound_context_ptr,
                                              target,
                                              index);
 }
 
-GLboolean vkglIsEnabledi_execute(VKGL::Context* in_context_ptr,
-                                 const GLenum&  in_target,
-                                 const GLuint&  in_index)
+static GLboolean vkglIsEnabledi_execute(OpenGL::Context* in_context_ptr,
+                                        const GLenum&    in_target,
+                                        const GLuint&    in_index)
 {
     vkgl_assert(in_target == GL_BLEND);
 
-    return (in_context_ptr->is_enabledi(VKGL::Capability::Blend,
+    return (in_context_ptr->is_enabledi(OpenGL::Capability::Blend,
                                         in_index) ) ? GL_TRUE
                                                     : GL_FALSE;
 }
 
-GLboolean vkglIsEnabledi_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_target,
-                                         const GLuint&  in_index)
+GLboolean OpenGL::vkglIsEnabledi_with_validation(OpenGL::Context* in_context_ptr,
+                                                 const GLenum&    in_target,
+                                                 const GLuint&    in_index)
 {
     GLboolean result = GL_FALSE;
 

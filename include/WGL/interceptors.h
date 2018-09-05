@@ -8,6 +8,9 @@
 #include "Common/globals.h"
 #include <vector>
 
-extern std::vector<FunctionInterceptor> get_wgl_function_interceptors();
+namespace WGL
+{
+    extern std::vector<VKGL::FunctionInterceptor> get_function_interceptors();
+}
 
 #endif /* WGL_INTERCEPTORS_H */

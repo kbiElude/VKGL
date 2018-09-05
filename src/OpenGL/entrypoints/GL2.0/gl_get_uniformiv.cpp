@@ -6,10 +6,10 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program,
-                     const GLint&   in_location,
-                     GLint*         out_params_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program,
+                     const GLint&     in_location,
+                     GLint*           out_params_ptr)
 {
     bool result = false;
 
@@ -19,11 +19,16 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetUniformiv(GLuint program,
-                                    GLint  location,
-                                    GLint* params)
+void VKGL_APIENTRY OpenGL::vkglGetUniformiv(GLuint program,
+                                            GLint  location,
+                                            GLint* params)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glGetUniformiv(program=[%u] location=[%d] params=[%p])",
+               program,
+               location,
+               params);
 
     dispatch_table_ptr->pGLGetUniformiv(dispatch_table_ptr->bound_context_ptr,
                                         program,
@@ -31,21 +36,21 @@ void VKGL_APIENTRY vkglGetUniformiv(GLuint program,
                                         params);
 }
 
-void vkglGetUniformiv_execute(VKGL::Context* in_context_ptr,
-                              const GLuint&  in_program,
-                              const GLint&   in_location,
-                              GLint*         out_params_ptr)
+static void vkglGetUniformiv_execute(OpenGL::Context* in_context_ptr,
+                                     const GLuint&    in_program,
+                                     const GLint&     in_location,
+                                     GLint*           out_params_ptr)
 {
     in_context_ptr->get_uniform_value(in_program,
                                       in_location,
-                                      VKGL::GetSetArgumentType::Int,
+                                      OpenGL::GetSetArgumentType::Int,
                                       out_params_ptr);
 }
 
-void vkglGetUniformiv_with_validation(VKGL::Context* in_context_ptr,
-                                      const GLuint&  in_program,
-                                      const GLint&   in_location,
-                                      GLint*         out_params_ptr)
+void OpenGL::vkglGetUniformiv_with_validation(OpenGL::Context* in_context_ptr,
+                                              const GLuint&    in_program,
+                                              const GLint&     in_location,
+                                              GLint*           out_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_program,

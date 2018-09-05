@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*    in_context_ptr,
+static bool validate(OpenGL::Context*  in_context_ptr,
                      const GLsync&     in_sync,
                      const GLbitfield& in_flags,
                      const GLuint64&   in_timeout)
@@ -20,11 +20,16 @@ static bool validate(VKGL::Context*    in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglWaitSync(GLsync     sync,
-                                GLbitfield flags,
-                                GLuint64   timeout)
+void VKGL_APIENTRY OpenGL::vkglWaitSync(GLsync     sync,
+                                        GLbitfield flags,
+                                        GLuint64   timeout)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glWaitSync(sync=[%p] flags=[%d] timeout=[%lld])",
+               sync,
+               flags,
+               timeout);
 
     dispatch_table_ptr->pGLWaitSync(dispatch_table_ptr->bound_context_ptr,
                                     sync,
@@ -32,10 +37,10 @@ void VKGL_APIENTRY vkglWaitSync(GLsync     sync,
                                     timeout);
 }
 
-void vkglWaitSync_execute(VKGL::Context*    in_context_ptr,
-                          const GLsync&     in_sync,
-                          const GLbitfield& in_flags,
-                          const GLuint64&   in_timeout)
+static void vkglWaitSync_execute(OpenGL::Context*  in_context_ptr,
+                                 const GLsync&     in_sync,
+                                 const GLbitfield& in_flags,
+                                 const GLuint64&   in_timeout)
 {
     vkgl_assert(in_flags == 0);
 
@@ -43,10 +48,10 @@ void vkglWaitSync_execute(VKGL::Context*    in_context_ptr,
                               in_timeout);
 }
 
-void vkglWaitSync_with_validation(VKGL::Context*    in_context_ptr,
-                                  const GLsync&     in_sync,
-                                  const GLbitfield& in_flags,
-                                  const GLuint64&   in_timeout)
+void OpenGL::vkglWaitSync_with_validation(OpenGL::Context*  in_context_ptr,
+                                          const GLsync&     in_sync,
+                                          const GLbitfield& in_flags,
+                                          const GLuint64&   in_timeout)
 {
     if (validate(in_context_ptr,
                  in_sync,

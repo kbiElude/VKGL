@@ -7,17 +7,20 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglGetActiveUniformName(GLuint   program,
-                                            GLsizei* length,
-                                            GLuint   uniformIndex,
-                                            GLsizei  bufSize,
-                                            GLchar*  uniformName);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglGetActiveUniformName(GLuint   program,
+                                                GLuint   uniformIndex,
+                                                GLsizei  bufSize,
+                                                GLsizei* length,
+                                                GLchar*  uniformName);
 
-void vkglGetActiveUniformName_with_validation(VKGL::Context* in_context_ptr,
-                                              const GLuint&  in_program,
-                                              const GLuint&  in_uniform_index,
-                                              const GLsizei& in_buf_size,
-                                              GLsizei*       inout_length_ptr,
-                                              GLchar*        out_uniform_name_ptr);
+    void vkglGetActiveUniformName_with_validation(OpenGL::Context* in_context_ptr,
+                                                  const GLuint&    in_program,
+                                                  const GLuint&    in_uniform_index,
+                                                  const GLsizei&   in_buf_size,
+                                                  GLsizei*         inout_length_ptr,
+                                                  GLchar*          out_uniform_name_ptr);
+}
 
 #endif /* VKGL_GL_GET_ACTIVE_UNIFORM_NAME_H */

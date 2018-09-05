@@ -7,13 +7,16 @@
 
 #include "OpenGL/types.h"
 
-GLenum VKGL_APIENTRY vkglClientWaitSync(GLsync     sync,
-                                        GLbitfield flags,
-                                        GLuint64   timeout);
+namespace OpenGL
+{
+    GLenum VKGL_APIENTRY vkglClientWaitSync(GLsync     sync,
+                                            GLbitfield flags,
+                                            GLuint64   timeout);
 
-GLenum vkglClientWaitSync_with_validation(VKGL::Context*    in_context_ptr,
-                                          const GLsync&     in_sync,
-                                          const GLbitfield& in_flags,
-                                          const GLuint64&   in_timeout);
+    GLenum vkglClientWaitSync_with_validation(OpenGL::Context*  in_context_ptr,
+                                              const GLsync&     in_sync,
+                                              const GLbitfield& in_flags,
+                                              const GLuint64&   in_timeout);
+}
 
 #endif /* VKGL_GL_CLIENT_WAIT_SYNC_H */

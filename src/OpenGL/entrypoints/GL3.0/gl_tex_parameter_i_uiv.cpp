@@ -7,10 +7,10 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLenum&  in_pname,
-                     const GLuint*  in_params_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLenum&    in_pname,
+                     const GLuint*    in_params_ptr)
 {
     bool result = false;
 
@@ -20,11 +20,16 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglTexParameterIuiv(GLenum        target,
-                                        GLenum        pname,
-                                        const GLuint* params)
+void VKGL_APIENTRY OpenGL::vkglTexParameterIuiv(GLenum        target,
+                                                GLenum        pname,
+                                                const GLuint* params)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glTexParameterIuiv(target=[%s] pname=[%s] params=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               params);
 
     dispatch_table_ptr->pGLTexParameterIuiv(dispatch_table_ptr->bound_context_ptr,
                                             target,
@@ -32,24 +37,24 @@ void VKGL_APIENTRY vkglTexParameterIuiv(GLenum        target,
                                             params);
 }
 
-void vkglTexParameterIuiv_execute(VKGL::Context* in_context_ptr,
-                                  const GLenum&  in_target,
-                                  const GLenum&  in_pname,
-                                  const GLuint*  in_params_ptr)
+static void vkglTexParameterIuiv_execute(OpenGL::Context* in_context_ptr,
+                                         const GLenum&    in_target,
+                                         const GLenum&    in_pname,
+                                         const GLuint*    in_params_ptr)
 {
-    const auto pname_vkgl  = VKGL::Utils::get_texture_property_for_gl_enum(in_pname);
-    const auto target_vkgl = VKGL::Utils::get_texture_target_for_gl_enum  (in_target);
+    const auto pname_vkgl  = OpenGL::Utils::get_texture_property_for_gl_enum(in_pname);
+    const auto target_vkgl = OpenGL::Utils::get_texture_target_for_gl_enum  (in_target);
 
     in_context_ptr->set_texture_parameter(target_vkgl,
                                           pname_vkgl,
-                                          VKGL::GetSetArgumentType::Unsigned_Int,
+                                          OpenGL::GetSetArgumentType::Unsigned_Int,
                                           in_params_ptr);
 }
 
-void vkglTexParameterIuiv_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLenum&  in_target,
-                                          const GLenum&  in_pname,
-                                          const GLuint*  in_params_ptr)
+void OpenGL::vkglTexParameterIuiv_with_validation(OpenGL::Context* in_context_ptr,
+                                                  const GLenum&    in_target,
+                                                  const GLenum&    in_pname,
+                                                  const GLuint*    in_params_ptr)
 {
     if (validate(in_context_ptr,
                  in_target,

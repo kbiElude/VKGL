@@ -7,8 +7,8 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target)
 {
     bool result = false;
 
@@ -18,27 +18,29 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLenum VKGL_APIENTRY vkglCheckFramebufferStatus(GLenum target)
+GLenum VKGL_APIENTRY OpenGL::vkglCheckFramebufferStatus(GLenum target)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
-    const auto  result             = dispatch_table_ptr->pGLCheckFramebufferStatus(dispatch_table_ptr->bound_context_ptr,
-                                                                                   target);
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
-    return result;
+    VKGL_TRACE("glCheckFramebufferStatus(target=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target) );
+
+    return dispatch_table_ptr->pGLCheckFramebufferStatus(dispatch_table_ptr->bound_context_ptr,
+                                                         target);
 }
 
-VKGL::FramebufferStatus vkglCheckFramebufferStatus_execute(VKGL::Context* in_context_ptr,
-                                                           const GLenum&  in_target)
+static OpenGL::FramebufferStatus vkglCheckFramebufferStatus_execute(OpenGL::Context* in_context_ptr,
+                                                                    const GLenum&    in_target)
 {
-    const auto target_vkgl = VKGL::Utils::get_framebuffer_target_for_gl_enum(in_target);
+    const auto target_vkgl = OpenGL::Utils::get_framebuffer_target_for_gl_enum(in_target);
 
     return in_context_ptr->check_framebuffer_status(target_vkgl);
 }
 
-GLenum vkglCheckFramebufferStatus_with_validation(VKGL::Context* in_context_ptr,
-                                                  const GLenum&  in_target)
+GLenum OpenGL::vkglCheckFramebufferStatus_with_validation(OpenGL::Context* in_context_ptr,
+                                                          const GLenum&    in_target)
 {
-    VKGL::FramebufferStatus result = VKGL::FramebufferStatus::Unknown;
+    OpenGL::FramebufferStatus result = OpenGL::FramebufferStatus::Unknown;
 
     if (validate(in_context_ptr,
                  in_target) )
@@ -47,5 +49,5 @@ GLenum vkglCheckFramebufferStatus_with_validation(VKGL::Context* in_context_ptr,
                                                     in_target);
     }
 
-    return VKGL::Utils::get_gl_enum_for_framebuffer_status(result);
+    return OpenGL::Utils::get_gl_enum_for_framebuffer_status(result);
 }

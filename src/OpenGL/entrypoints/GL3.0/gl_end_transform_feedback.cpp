@@ -6,7 +6,7 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr)
+static bool validate(OpenGL::Context* in_context_ptr)
 {
     bool result = false;
 
@@ -16,20 +16,22 @@ static bool validate(VKGL::Context* in_context_ptr)
     return result;
 }
 
-void VKGL_APIENTRY vkglEndTransformFeedback(void)
+void VKGL_APIENTRY OpenGL::vkglEndTransformFeedback(void)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glEndTransformFeedback()");
 
     dispatch_table_ptr->pGLEndTransformFeedback(dispatch_table_ptr->bound_context_ptr);
 }
 
 
-void vkglEndTransformFeedback_execute(VKGL::Context* in_context_ptr)
+static void vkglEndTransformFeedback_execute(OpenGL::Context* in_context_ptr)
 {
     in_context_ptr->end_transform_feedback();
 }
 
-void vkglEndTransformFeedback_with_validation(VKGL::Context* in_context_ptr)
+void OpenGL::vkglEndTransformFeedback_with_validation(OpenGL::Context* in_context_ptr)
 {
     if (validate(in_context_ptr) )
     {

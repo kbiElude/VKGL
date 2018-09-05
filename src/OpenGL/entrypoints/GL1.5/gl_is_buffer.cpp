@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_buffer)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_buffer)
 {
     bool result = false;
 
@@ -17,23 +17,26 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLboolean VKGL_APIENTRY vkglIsBuffer(GLuint buffer)
+GLboolean VKGL_APIENTRY OpenGL::vkglIsBuffer(GLuint buffer)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glIsBuffer(buffer=[%u])",
+               buffer);
 
     return dispatch_table_ptr->pGLIsBuffer(dispatch_table_ptr->bound_context_ptr,
                                            buffer) ? GL_TRUE
                                                    : GL_FALSE;
 }
 
-bool vkglIsBuffer_execute(VKGL::Context* in_context_ptr,
-                          const GLuint&  in_buffer)
+static bool vkglIsBuffer_execute(OpenGL::Context* in_context_ptr,
+                                 const GLuint&    in_buffer)
 {
     return in_context_ptr->is_buffer(in_buffer);
 }
 
-bool vkglIsBuffer_with_validation(VKGL::Context* in_context_ptr,
-                                  const GLuint&  in_buffer)
+bool OpenGL::vkglIsBuffer_with_validation(OpenGL::Context* in_context_ptr,
+                                          const GLuint&    in_buffer)
 {
     bool result = false;
 

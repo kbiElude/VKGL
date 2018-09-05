@@ -7,9 +7,12 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglFrontFace(GLenum mode);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglFrontFace(GLenum mode);
 
-void vkglFrontFace_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLenum&  in_mode);
+    void vkglFrontFace_with_validation(OpenGL::Context* in_context_ptr,
+                                       const GLenum&    in_mode);
+}
 
 #endif /* VKGL_GL_FRONT_FACE_H */

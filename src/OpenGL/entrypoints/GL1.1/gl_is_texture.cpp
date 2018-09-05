@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_texture)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_texture)
 {
     bool result = false;
 
@@ -17,22 +17,25 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLboolean VKGL_APIENTRY vkglIsTexture(GLuint texture)
+GLboolean VKGL_APIENTRY OpenGL::vkglIsTexture(GLuint texture)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glIsTexture(texture=[%u])",
+               texture);
 
     return dispatch_table_ptr->pGLIsTexture(dispatch_table_ptr->bound_context_ptr,
                                             texture);
 }
 
-GLboolean vkglIsTexture_execute(VKGL::Context* in_context_ptr,
-                                const GLuint&  in_texture)
+static GLboolean vkglIsTexture_execute(OpenGL::Context* in_context_ptr,
+                                       const GLuint&    in_texture)
 {
     return (in_context_ptr->is_texture(in_texture) ) ? GL_TRUE : GL_FALSE;
 }
 
-GLboolean vkglIsTexture_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLuint&  in_texture)
+GLboolean OpenGL::vkglIsTexture_with_validation(OpenGL::Context* in_context_ptr,
+                                                const GLuint&    in_texture)
 {
     if (validate(in_context_ptr,
                  in_texture) )

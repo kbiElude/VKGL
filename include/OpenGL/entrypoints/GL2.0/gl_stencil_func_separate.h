@@ -7,15 +7,18 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglStencilFuncSeparate(GLenum face,
-                                           GLenum func,
-                                           GLint  ref,
-                                           GLuint mask);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglStencilFuncSeparate(GLenum face,
+                                               GLenum func,
+                                               GLint  ref,
+                                               GLuint mask);
 
-void vkglStencilFuncSeparate_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLenum&  in_face,
-                                             const GLenum&  in_func,
-                                             const GLint&   in_ref,
-                                             const GLuint&  in_mask);
+    void vkglStencilFuncSeparate_with_validation(OpenGL::Context* in_context_ptr,
+                                                 const GLenum&    in_face,
+                                                 const GLenum&    in_func,
+                                                 const GLint&     in_ref,
+                                                 const GLuint&    in_mask);
+}
 
 #endif /* VKGL_GL_STENCIL_FUNC_SEPARATE_H */

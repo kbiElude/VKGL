@@ -2,15 +2,16 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+#include "Common/macros.h"
 #include "OpenGL/types.h"
 
-VKGL::ActiveAttributeState::ActiveAttributeState()
+OpenGL::ActiveAttributeState::ActiveAttributeState()
 {
     size = 0;
     type = VariableType::Unknown;
 }
 
-VKGL::ActiveUniformBlock::ActiveUniformBlock()
+OpenGL::ActiveUniformBlock::ActiveUniformBlock()
 {
     binding                       = UINT32_MAX;
     data_size                     = UINT32_MAX;
@@ -19,7 +20,7 @@ VKGL::ActiveUniformBlock::ActiveUniformBlock()
     referenced_by_vertex_shader   = false;
 }
 
-VKGL::ActiveUniformState::ActiveUniformState()
+OpenGL::ActiveUniformState::ActiveUniformState()
 {
     is_row_major          = false;
     location              = UINT32_MAX;
@@ -31,19 +32,19 @@ VKGL::ActiveUniformState::ActiveUniformState()
     uniform_matrix_stride = UINT32_MAX;
 }
 
-VKGL::BufferState::BufferState()
+OpenGL::BufferState::BufferState()
 {
-    access           = VKGL::BufferAccess::Read_Write;
+    access           = OpenGL::BufferAccess::Read_Write;
     map_size         = 0;
     map_start_offset = 0;
     mapped           = false;
     size             = 0;
-    usage            = VKGL::BufferUsage::Static_Draw;
+    usage            = OpenGL::BufferUsage::Static_Draw;
 }
 
-VKGL::ContextState::ContextState(const IGLLimits* in_limits_ptr,
-                                 const int32_t*   in_viewport_ivec4_ptr,
-                                 const int32_t*   in_scissor_box_ivec4_ptr)
+OpenGL::ContextState::ContextState(const IGLLimits* in_limits_ptr,
+                                   const int32_t*   in_viewport_ivec4_ptr,
+                                   const int32_t*   in_scissor_box_ivec4_ptr)
     :texture_image_units                       (in_limits_ptr->get_max_texture_image_units() ),
      user_clip_planes_enabled                  (in_limits_ptr->get_max_clip_distances     (), false)
 {
@@ -62,17 +63,17 @@ VKGL::ContextState::ContextState(const IGLLimits* in_limits_ptr,
     depth_range[1]         = 1.0f;
     is_depth_clamp_enabled = false;
 
-    clamp_read_color = VKGL::ClampReadColorMode::Fixed_Only;
-    provoking_vertex = VKGL::ProvokingVertexConvention::Last;
+    clamp_read_color = OpenGL::ClampReadColorMode::Fixed_Only;
+    provoking_vertex = OpenGL::ProvokingVertexConvention::Last;
 
     is_line_smooth_enabled    = false;
     line_width                = 1.0f;
     point_fade_threshold_size = 1.0f;
     point_size                = 1.0f;
-    point_sprite_coord_origin = VKGL::PointSpriteCoordOrigin::Upper_Left;
+    point_sprite_coord_origin = OpenGL::PointSpriteCoordOrigin::Upper_Left;
 
-    cull_face_mode                  = VKGL::CullMode::Back;
-    front_face                      = VKGL::FrontFaceOrientation::Counter_Clockwise;
+    cull_face_mode                  = OpenGL::CullMode::Back;
+    front_face                      = OpenGL::FrontFaceOrientation::Counter_Clockwise;
     is_cull_face_enabled            = false;
     is_polygon_offset_fill_enabled  = false;
     is_polygon_offset_line_enabled  = false;
@@ -100,14 +101,14 @@ VKGL::ContextState::ContextState(const IGLLimits* in_limits_ptr,
 
     is_scissor_test_enabled          = false;
     is_stencil_test_enabled          = false;
-    stencil_function_back            = VKGL::StencilFunction::Always;
-    stencil_function_front           = VKGL::StencilFunction::Always;
-    stencil_op_fail_back             = VKGL::StencilOperation::Keep;
-    stencil_op_fail_front            = VKGL::StencilOperation::Keep;
-    stencil_op_pass_depth_fail_back  = VKGL::StencilOperation::Keep;
-    stencil_op_pass_depth_fail_front = VKGL::StencilOperation::Keep;
-    stencil_op_pass_depth_pass_back  = VKGL::StencilOperation::Keep;
-    stencil_op_pass_depth_pass_front = VKGL::StencilOperation::Keep;
+    stencil_function_back            = OpenGL::StencilFunction::Always;
+    stencil_function_front           = OpenGL::StencilFunction::Always;
+    stencil_op_fail_back             = OpenGL::StencilOperation::Keep;
+    stencil_op_fail_front            = OpenGL::StencilOperation::Keep;
+    stencil_op_pass_depth_fail_back  = OpenGL::StencilOperation::Keep;
+    stencil_op_pass_depth_fail_front = OpenGL::StencilOperation::Keep;
+    stencil_op_pass_depth_pass_back  = OpenGL::StencilOperation::Keep;
+    stencil_op_pass_depth_pass_front = OpenGL::StencilOperation::Keep;
     stencil_reference_value_back     = 0;
     stencil_reference_value_front    = 0;
     stencil_value_mask_back          = (1 << n_max_stencil_bits) - 1;
@@ -117,19 +118,19 @@ VKGL::ContextState::ContextState(const IGLLimits* in_limits_ptr,
     blend_color[1]                    = 0;
     blend_color[2]                    = 0;
     blend_color[3]                    = 0;
-    blend_equation_alpha              = VKGL::BlendEquation::Function_Add;
-    blend_equation_rgb                = VKGL::BlendEquation::Function_Add;
-    blend_func_dst_alpha              = VKGL::BlendFunction::Zero;
-    blend_func_dst_rgb                = VKGL::BlendFunction::Zero;
-    blend_func_src_alpha              = VKGL::BlendFunction::One;
-    blend_func_src_rgb                = VKGL::BlendFunction::One;
-    depth_function                    = VKGL::DepthFunction::Less;
+    blend_equation_alpha              = OpenGL::BlendEquation::Function_Add;
+    blend_equation_rgb                = OpenGL::BlendEquation::Function_Add;
+    blend_func_dst_alpha              = OpenGL::BlendFunction::Zero;
+    blend_func_dst_rgb                = OpenGL::BlendFunction::Zero;
+    blend_func_src_alpha              = OpenGL::BlendFunction::One;
+    blend_func_src_rgb                = OpenGL::BlendFunction::One;
+    depth_function                    = OpenGL::DepthFunction::Less;
     is_blend_enabled_for_draw_buffers = 0;
     is_color_logic_op_enabled         = false;
     is_depth_test_enabled             = false;
     is_dither_enabled                 = true;
     is_framebuffer_srgb_enabled       = false;
-    logic_op_mode                     = VKGL::LogicOpMode::Copy;
+    logic_op_mode                     = OpenGL::LogicOpMode::Copy;
 
     color_clear_value[0]             = 0;
     color_clear_value[1]             = 0;
@@ -165,10 +166,10 @@ VKGL::ContextState::ContextState(const IGLLimits* in_limits_ptr,
 
     current_program_id = 0;
 
-    hint_fragment_shader_derivative = VKGL::HintMode::Dont_Care;
-    hint_line_smooth                = VKGL::HintMode::Dont_Care;
-    hint_polygon_smooth             = VKGL::HintMode::Dont_Care;
-    hint_texture_compression        = VKGL::HintMode::Dont_Care;
+    hint_fragment_shader_derivative = OpenGL::HintMode::Dont_Care;
+    hint_line_smooth                = OpenGL::HintMode::Dont_Care;
+    hint_polygon_smooth             = OpenGL::HintMode::Dont_Care;
+    hint_texture_compression        = OpenGL::HintMode::Dont_Care;
 
     is_texture_cube_map_seamless_enabled = false;
 
@@ -183,16 +184,16 @@ VKGL::ContextState::ContextState(const IGLLimits* in_limits_ptr,
     polygon_mode                  = PolygonMode::Fill;
 }
 
-VKGL::DispatchTable::DispatchTable()
+OpenGL::DispatchTable::DispatchTable()
 {
     memset(this,
            0,
            sizeof(*this) );
 }
 
-VKGL::FramebufferAttachmentPointState::FramebufferAttachmentPointState()
+OpenGL::FramebufferAttachmentPointState::FramebufferAttachmentPointState()
 {
-    component_type           = VKGL::FramebufferAttachmentComponentType::None;
+    component_type           = OpenGL::FramebufferAttachmentComponentType::None;
     layered                  = false;
     name                     = 0;
     size_alpha               = 0;
@@ -201,14 +202,14 @@ VKGL::FramebufferAttachmentPointState::FramebufferAttachmentPointState()
     size_green               = 0;
     size_red                 = 0;
     size_stencil             = 0;
-    texture_cube_map_face    = VKGL::TextureCubeMapFace::None;
+    texture_cube_map_face    = OpenGL::TextureCubeMapFace::None;
     texture_layer            = 0;
     texture_level            = 0;
-    type                     = VKGL::FramebufferAttachmentObjectType::None;
+    type                     = OpenGL::FramebufferAttachmentObjectType::None;
     uses_srgb_color_encoding = false;
 }
 
-VKGL::FramebufferState::FramebufferState(const uint32_t& in_n_color_attachments)
+OpenGL::FramebufferState::FramebufferState(const uint32_t& in_n_color_attachments)
     :color_attachments           (in_n_color_attachments),
      draw_buffer_per_color_output(in_n_color_attachments)
 {
@@ -219,7 +220,7 @@ VKGL::FramebufferState::FramebufferState(const uint32_t& in_n_color_attachments)
     read_buffer      = 0;
 }
 
-VKGL::ProgramState::ProgramState(const uint32_t& in_n_max_indexed_uniform_buffer_bindings)
+OpenGL::ProgramState::ProgramState(const uint32_t& in_n_max_indexed_uniform_buffer_bindings)
     :uniform_buffer_binding_indexed(in_n_max_indexed_uniform_buffer_bindings)
 {
     active_attribute_max_length           = 0;
@@ -229,24 +230,24 @@ VKGL::ProgramState::ProgramState(const uint32_t& in_n_max_indexed_uniform_buffer
     link_status                           = false;
     n_geometry_vertices_out               = 0;
     n_transform_feedback_varyings         = 0;
-    geometry_input_type                   = VKGL::GeometryInputType::Unknown;
-    geometry_output_type                  = VKGL::GeometryOutputType::Unknown;
-    transform_feedback_buffer_mode        = VKGL::TransformFeedbackBufferMode::Unknown;
+    geometry_input_type                   = OpenGL::GeometryInputType::Unknown;
+    geometry_output_type                  = OpenGL::GeometryOutputType::Unknown;
+    transform_feedback_buffer_mode        = OpenGL::TransformFeedbackBufferMode::Unknown;
     transform_feedback_varying_max_length = 0;
     validate_status                       = false;
 }
 
-VKGL::RangedBufferBinding::RangedBufferBinding()
+OpenGL::RangedBufferBinding::RangedBufferBinding()
 {
     buffer_id    = 0;
     size         = 0;
     start_offset = 0;
 }
 
-VKGL::RenderbufferState::RenderbufferState()
+OpenGL::RenderbufferState::RenderbufferState()
 {
     height          = 0;
-    internal_format = VKGL::InternalFormat::RGBA;
+    internal_format = OpenGL::InternalFormat::RGBA;
     samples         = 0;
     size_alpha      = 0;
     size_blue       = 0;
@@ -257,20 +258,20 @@ VKGL::RenderbufferState::RenderbufferState()
     width           = 0;
 }
 
-VKGL::SamplePosition::SamplePosition()
+OpenGL::SamplePosition::SamplePosition()
 {
     x = FLT_MAX;
     y = FLT_MAX;
 }
 
-VKGL::ShaderState::ShaderState()
+OpenGL::ShaderState::ShaderState()
 {
     compile_status = false;
     delete_status  = false;
-    type           = VKGL::ShaderType::Unknown;
+    type           = OpenGL::ShaderType::Unknown;
 }
 
-VKGL::TextureImageState::TextureImageState(const VKGL::InternalFormat& in_internal_format)
+OpenGL::TextureImageState::TextureImageState(const OpenGL::InternalFormat& in_internal_format)
 {
     binding_texture_buffer_data_store = 0;
     compressed_image_size             = 0;
@@ -282,20 +283,20 @@ VKGL::TextureImageState::TextureImageState(const VKGL::InternalFormat& in_intern
     width                             = 0;
 }
 
-VKGL::TextureState::TextureState(const VKGL::TextureMinFilter& in_min_filter,
-                                 const VKGL::TextureWrapMode&  in_wrap_s,
-                                 const VKGL::TextureWrapMode&  in_wrap_t,
-                                 const VKGL::TextureWrapMode&  in_wrap_r)
+OpenGL::TextureState::TextureState(const OpenGL::TextureMinFilter& in_min_filter,
+                                   const OpenGL::TextureWrapMode&  in_wrap_s,
+                                   const OpenGL::TextureWrapMode&  in_wrap_t,
+                                   const OpenGL::TextureWrapMode&  in_wrap_r)
 {
     base_level       = 0;
     border_color[0]  = 0;
     border_color[1]  = 0;
     border_color[2]  = 0;
     border_color[3]  = 0;
-    compare_function = VKGL::TextureCompareFunction::LEqual;
-    compare_mode     = VKGL::TextureCompareMode::None;
+    compare_function = OpenGL::TextureCompareFunction::LEqual;
+    compare_mode     = OpenGL::TextureCompareMode::None;
     lod_bias         = 0.0f;
-    mag_filter       = VKGL::TextureMagFilter::Linear;
+    mag_filter       = OpenGL::TextureMagFilter::Linear;
     max_level        = 1000;
     max_lod          = 1000.0f;
     min_filter       = in_min_filter;
@@ -305,7 +306,7 @@ VKGL::TextureState::TextureState(const VKGL::TextureMinFilter& in_min_filter,
     wrap_t           = in_wrap_t;
 }
 
-VKGL::TextureUnitState::TextureUnitState()
+OpenGL::TextureUnitState::TextureUnitState()
 {
     binding_1d                   = 0;
     binding_1d_array             = 0;
@@ -319,13 +320,13 @@ VKGL::TextureUnitState::TextureUnitState()
     binding_texture_buffer       = 0;
 }
 
-VKGL::TransformFeedbackVaryingState::TransformFeedbackVaryingState()
+OpenGL::TransformFeedbackVaryingState::TransformFeedbackVaryingState()
 {
     size = 0;
     type = VariableType::Unknown;
 }
 
-VKGL::UniformValue::UniformValue()
+OpenGL::UniformValue::UniformValue()
 {
     ivec4[0] = 0;
     ivec4[1] = 0;
@@ -333,13 +334,13 @@ VKGL::UniformValue::UniformValue()
     ivec4[3] = 0;
 }
 
-VKGL::VertexArrayObjectState::VertexArrayObjectState(const uint32_t& in_n_vertex_attribute_arrays)
+OpenGL::VertexArrayObjectState::VertexArrayObjectState(const uint32_t& in_n_vertex_attribute_arrays)
     :vertex_attribute_arrays(in_n_vertex_attribute_arrays)
 {
     element_array_buffer_binding = 0;
 }
 
-VKGL::VertexAttributeArrayState::VertexAttributeArrayState()
+OpenGL::VertexAttributeArrayState::VertexAttributeArrayState()
 {
     /* As per table 6.4, core GL 3.2 spec */
     buffer_binding = 0;

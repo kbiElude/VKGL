@@ -6,10 +6,10 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLint&   in_location,
-                     const GLsizei& in_count,
-                     const GLint*   in_value_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLint&     in_location,
+                     const GLsizei&   in_count,
+                     const GLint*     in_value_ptr)
 {
     bool result = false;
 
@@ -19,11 +19,17 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglUniform3iv(GLint        location,
-                                  GLsizei      count,
-                                  const GLint* value)
+void VKGL_APIENTRY OpenGL::vkglUniform3iv(GLint        location,
+                                          GLsizei      count,
+                                          const GLint* value)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    /* TODO: Make me more useful */
+    VKGL_TRACE("glUniform3iv(location=[%d] count=[%d] value=[%p])",
+               location,
+               static_cast<int32_t>(count),
+               value);
 
     dispatch_table_ptr->pGLUniform3iv(dispatch_table_ptr->bound_context_ptr,
                                       location,
@@ -31,22 +37,22 @@ void VKGL_APIENTRY vkglUniform3iv(GLint        location,
                                       value);
 }
 
-void vkglUniform3iv_execute(VKGL::Context* in_context_ptr,
-                            const GLint&   in_location,
-                            const GLsizei& in_count,
-                            const GLint*   in_value_ptr)
+static void vkglUniform3iv_execute(OpenGL::Context* in_context_ptr,
+                                   const GLint&     in_location,
+                                   const GLsizei&   in_count,
+                                   const GLint*     in_value_ptr)
 {
     in_context_ptr->set_uniform_arrayed(in_location,
-                                        VKGL::GetSetArgumentType::Int,
+                                        OpenGL::GetSetArgumentType::Int,
                                         3,
                                         in_count,
                                         in_value_ptr);
 }
 
-void vkglUniform3iv_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLint&   in_location,
-                                    const GLsizei& in_count,
-                                    const GLint*   in_value_ptr)
+void OpenGL::vkglUniform3iv_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLint&     in_location,
+                                            const GLsizei&   in_count,
+                                            const GLint*     in_value_ptr)
 {
     if (validate(in_context_ptr,
                  in_location,

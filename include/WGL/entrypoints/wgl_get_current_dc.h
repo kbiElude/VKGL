@@ -7,6 +7,9 @@
 
 #include <windows.h>
 
-HDC WINAPI vkgl_wgl_get_current_dc();
+namespace WGL
+{
+    HDC WINAPI get_current_dc();
+}
 
 #endif /* WGL_GET_CURRENT_DC_H */

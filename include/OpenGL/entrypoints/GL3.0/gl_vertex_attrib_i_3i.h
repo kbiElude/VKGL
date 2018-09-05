@@ -7,15 +7,18 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglVertexAttribI3i(GLuint index,
-                                       GLint  x,
-                                       GLint  y,
-                                       GLint  z);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglVertexAttribI3i(GLuint index,
+                                           GLint  x,
+                                           GLint  y,
+                                           GLint  z);
 
-void vkglVertexAttribI3i_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLuint&  in_index,
-                                         const GLint&   in_x,
-                                         const GLint&   in_y,
-                                         const GLint&   in_z);
+    void vkglVertexAttribI3i_with_validation(OpenGL::Context* in_context_ptr,
+                                             const GLuint&    in_index,
+                                             const GLint&     in_x,
+                                             const GLint&     in_y,
+                                             const GLint&     in_z);
+}
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_I_3I_H */

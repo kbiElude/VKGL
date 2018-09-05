@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_mask)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_mask)
 {
     bool result = false;
 
@@ -18,22 +18,25 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglStencilMask(GLuint mask)
+void VKGL_APIENTRY OpenGL::vkglStencilMask(GLuint mask)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glStencilMask(mask=[%u])",
+               mask);
 
     dispatch_table_ptr->pGLStencilMask(dispatch_table_ptr->bound_context_ptr,
                                        mask);
 }
 
-void vkglStencilMask_execute(VKGL::Context* in_context_ptr,
-                             const GLuint&  in_mask)
+static void vkglStencilMask_execute(OpenGL::Context* in_context_ptr,
+                                    const GLuint&    in_mask)
 {
     in_context_ptr->set_stencil_mask(in_mask);
 }
 
-void vkglStencilMask_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLuint&  in_mask)
+void OpenGL::vkglStencilMask_with_validation(OpenGL::Context* in_context_ptr,
+                                             const GLuint&    in_mask)
 {
     if (validate(in_context_ptr,
                  in_mask) )

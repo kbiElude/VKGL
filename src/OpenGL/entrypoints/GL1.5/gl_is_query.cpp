@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_id)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_id)
 {
     bool result = false;
 
@@ -18,9 +18,12 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-GLboolean VKGL_APIENTRY vkglIsQuery(GLuint id)
+GLboolean VKGL_APIENTRY OpenGL::vkglIsQuery(GLuint id)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glIsQuery(id=[%u])",
+               id);
 
     return dispatch_table_ptr->pGLIsQuery(dispatch_table_ptr->bound_context_ptr,
                                           id) ? GL_TRUE
@@ -28,14 +31,14 @@ GLboolean VKGL_APIENTRY vkglIsQuery(GLuint id)
 }
 
 
-bool vkglIsQuery_execute(VKGL::Context* in_context_ptr,
-                         const GLuint&  in_id)
+static bool vkglIsQuery_execute(OpenGL::Context* in_context_ptr,
+                                const GLuint&    in_id)
 {
     return in_context_ptr->is_query(in_id);
 }
 
-bool vkglIsQuery_with_validation(VKGL::Context* in_context_ptr,
-                                 const GLuint&  in_id)
+bool OpenGL::vkglIsQuery_with_validation(OpenGL::Context* in_context_ptr,
+                                         const GLuint&    in_id)
 {
     bool result = false;
 

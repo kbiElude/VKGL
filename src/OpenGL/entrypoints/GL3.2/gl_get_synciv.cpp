@@ -7,12 +7,12 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     GLsync         in_sync,
-                     GLenum         in_pname,
-                     GLsizei        in_buf_size,
-                     GLsizei*       inout_length_ptr,
-                     GLint*         out_values_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     GLsync           in_sync,
+                     GLenum           in_pname,
+                     GLsizei          in_buf_size,
+                     GLsizei*         inout_length_ptr,
+                     GLint*           out_values_ptr)
 {
     bool result = false;
 
@@ -22,13 +22,20 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetSynciv(GLsync   sync,
-                                 GLenum   pname,
-                                 GLsizei  bufSize,
-                                 GLsizei* length,
-                                 GLint*   values)
+void VKGL_APIENTRY OpenGL::vkglGetSynciv(GLsync   sync,
+                                         GLenum   pname,
+                                         GLsizei  bufSize,
+                                         GLsizei* length,
+                                         GLint*   values)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glGetSynciv(sync=[%p] pname=[%s] bufSize=[%d] length=[%p] values=[%p])",
+               sync,
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               static_cast<int32_t>(bufSize),
+               length,
+               values);
 
     dispatch_table_ptr->pGLGetSynciv(dispatch_table_ptr->bound_context_ptr,
                                      sync,
@@ -38,14 +45,14 @@ void VKGL_APIENTRY vkglGetSynciv(GLsync   sync,
                                      values);
 }
 
-void vkglGetSynciv_execute(VKGL::Context* in_context_ptr,
-                           GLsync         in_sync,
-                           GLenum         in_pname,
-                           GLsizei        in_buf_size,
-                           GLsizei*       inout_length_ptr,
-                           GLint*         out_values_ptr)
+static void vkglGetSynciv_execute(OpenGL::Context* in_context_ptr,
+                                  GLsync           in_sync,
+                                  GLenum           in_pname,
+                                  GLsizei          in_buf_size,
+                                  GLsizei*         inout_length_ptr,
+                                  GLint*           out_values_ptr)
 {
-    const auto pname_vkgl = VKGL::Utils::get_sync_property_for_gl_enum(in_pname);
+    const auto pname_vkgl = OpenGL::Utils::get_sync_property_for_gl_enum(in_pname);
 
     in_context_ptr->get_synciv(in_sync,
                                in_pname,
@@ -54,12 +61,12 @@ void vkglGetSynciv_execute(VKGL::Context* in_context_ptr,
                                out_values_ptr);
 }
 
-void vkglGetSynciv_with_validation(VKGL::Context* in_context_ptr,
-                                   GLsync         in_sync,
-                                   GLenum         in_pname,
-                                   GLsizei        in_buf_size,
-                                   GLsizei*       inout_length_ptr,
-                                   GLint*         out_values_ptr)
+void OpenGL::vkglGetSynciv_with_validation(OpenGL::Context* in_context_ptr,
+                                           GLsync           in_sync,
+                                           GLenum           in_pname,
+                                           GLsizei          in_buf_size,
+                                           GLsizei*         inout_length_ptr,
+                                           GLint*           out_values_ptr)
 {
     if (validate(in_context_ptr,
                  in_sync,

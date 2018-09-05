@@ -7,15 +7,18 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglBufferData(GLenum      target,
-                                  GLsizeiptr  size,
-                                  const void* data,
-                                  GLenum      usage);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglBufferData(GLenum      target,
+                                      GLsizeiptr  size,
+                                      const void* data,
+                                      GLenum      usage);
 
-void vkglBufferData_with_validation(VKGL::Context*    in_context_ptr,
-                                    const GLenum&     in_target,
-                                    const GLsizeiptr& in_size,
-                                    const void*       in_data,
-                                    const GLenum&     in_usage);
+    void vkglBufferData_with_validation(OpenGL::Context*  in_context_ptr,
+                                        const GLenum&     in_target,
+                                        const GLsizeiptr& in_size,
+                                        const void*       in_data,
+                                        const GLenum&     in_usage);
+}
 
 #endif /* VKGL_GL_BUFFER_DATA_H */

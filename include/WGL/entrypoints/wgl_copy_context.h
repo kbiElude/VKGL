@@ -7,8 +7,11 @@
 
 #include <windows.h>
 
-BOOL WINAPI vkgl_wgl_copy_context(HGLRC in_hglrc_source,
-                                  HGLRC in_hglrc_destination,
-                                  UINT  in_mask);
+namespace WGL
+{
+    BOOL WINAPI copy_context(HGLRC in_hglrc_source,
+                             HGLRC in_hglrc_destination,
+                             UINT  in_mask);
+}
 
 #endif /* WGL_COPY_CONTEXT_H */

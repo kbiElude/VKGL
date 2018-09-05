@@ -6,12 +6,12 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_index,
-                     const GLfloat& in_x,
-                     const GLfloat& in_y,
-                     const GLfloat& in_z,
-                     const GLfloat& in_w)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index,
+                     const GLfloat&   in_x,
+                     const GLfloat&   in_y,
+                     const GLfloat&   in_z,
+                     const GLfloat&   in_w)
 {
     bool result = false;
 
@@ -21,13 +21,20 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglVertexAttrib4f(GLuint  index,
-                                      GLfloat x,
-                                      GLfloat y,
-                                      GLfloat z,
-                                      GLfloat w)
+void VKGL_APIENTRY OpenGL::vkglVertexAttrib4f(GLuint  index,
+                                              GLfloat x,
+                                              GLfloat y,
+                                              GLfloat z,
+                                              GLfloat w)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glVertexAttrib4f(index=[%u] x=[%.4f] y=[%.4f] z=[%.4f] w=[%.4f])",
+               index,
+               x,
+               y,
+               z,
+               w);
 
     dispatch_table_ptr->pGLVertexAttrib4f(dispatch_table_ptr->bound_context_ptr,
                                           index,
@@ -37,12 +44,12 @@ void VKGL_APIENTRY vkglVertexAttrib4f(GLuint  index,
                                           w);
 }
 
-void vkglVertexAttrib4f_execute(VKGL::Context* in_context_ptr,
-                                const GLuint&  in_index,
-                                const GLfloat& in_x,
-                                const GLfloat& in_y,
-                                const GLfloat& in_z,
-                                const GLfloat& in_w)
+static void vkglVertexAttrib4f_execute(OpenGL::Context* in_context_ptr,
+                                       const GLuint&    in_index,
+                                       const GLfloat&   in_x,
+                                       const GLfloat&   in_y,
+                                       const GLfloat&   in_z,
+                                       const GLfloat&   in_w)
 {
     const float data[] =
     {
@@ -53,19 +60,19 @@ void vkglVertexAttrib4f_execute(VKGL::Context* in_context_ptr,
     };
 
     in_context_ptr->set_vertex_attribute(in_index,
-                                         VKGL::GetSetArgumentType::Float,
-                                         VKGL::GetSetArgumentType::Float,
+                                         OpenGL::GetSetArgumentType::Float,
+                                         OpenGL::GetSetArgumentType::Float,
                                          4,
                                          false, /* in_normalized */
                                          data);
 }
 
-void vkglVertexAttrib4f_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLuint&  in_index,
-                                        const GLfloat& in_x,
-                                        const GLfloat& in_y,
-                                        const GLfloat& in_z,
-                                        const GLfloat& in_w)
+void OpenGL::vkglVertexAttrib4f_with_validation(OpenGL::Context* in_context_ptr,
+                                                const GLuint&    in_index,
+                                                const GLfloat&   in_x,
+                                                const GLfloat&   in_y,
+                                                const GLfloat&   in_z,
+                                                const GLfloat&   in_w)
 {
     if (validate(in_context_ptr,
                  in_index,

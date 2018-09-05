@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*    in_context_ptr,
+static bool validate(OpenGL::Context*  in_context_ptr,
                      const GLenum&     in_target,
                      const GLintptr&   in_offset,
                      const GLsizeiptr& in_length)
@@ -20,11 +20,16 @@ static bool validate(VKGL::Context*    in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglFlushMappedBufferRange(GLenum     target,
-                                              GLintptr   offset,
-                                              GLsizeiptr length)
+void VKGL_APIENTRY OpenGL::vkglFlushMappedBufferRange(GLenum     target,
+                                                      GLintptr   offset,
+                                                      GLsizeiptr length)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glFlushMappedBufferRange(target=[%s] offset=[%d] length=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               static_cast<int32_t>(offset),
+               static_cast<int32_t>(length) );
 
     dispatch_table_ptr->pGLFlushMappedBufferRange(dispatch_table_ptr->bound_context_ptr,
                                                   target,
@@ -32,22 +37,22 @@ void VKGL_APIENTRY vkglFlushMappedBufferRange(GLenum     target,
                                                   length);
 }
 
-void vkglFlushMappedBufferRange_execute(VKGL::Context*    in_context_ptr,
-                                        const GLenum&     in_target,
-                                        const GLintptr&   in_offset,
-                                        const GLsizeiptr& in_length)
+static void vkglFlushMappedBufferRange_execute(OpenGL::Context*  in_context_ptr,
+                                               const GLenum&     in_target,
+                                               const GLintptr&   in_offset,
+                                               const GLsizeiptr& in_length)
 {
-    const auto target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum(in_target);
+    const auto target_vkgl = OpenGL::Utils::get_buffer_target_for_gl_enum(in_target);
 
     in_context_ptr->flush_mapped_buffer_range(target_vkgl,
                                               in_offset,
                                               in_length);
 }
 
-void vkglFlushMappedBufferRange_with_validation(VKGL::Context*    in_context_ptr,
-                                                const GLenum&     in_target,
-                                                const GLintptr&   in_offset,
-                                                const GLsizeiptr& in_length)
+void OpenGL::vkglFlushMappedBufferRange_with_validation(OpenGL::Context*  in_context_ptr,
+                                                        const GLenum&     in_target,
+                                                        const GLintptr&   in_offset,
+                                                        const GLsizeiptr& in_length)
 {
     if (validate(in_context_ptr,
                  in_target,

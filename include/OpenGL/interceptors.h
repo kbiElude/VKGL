@@ -8,7 +8,10 @@
 #include "Common/globals.h"
 #include <vector>
 
-extern std::vector<FunctionInterceptor>       vkgl_get_function_interceptors    ();
-extern std::unordered_map<std::string, void*> vkgl_get_func_name_to_func_ptr_map();
+namespace OpenGL
+{
+    extern std::vector<VKGL::FunctionInterceptor> get_function_interceptors    ();
+    extern std::unordered_map<std::string, void*> get_func_name_to_func_ptr_map();
+}
 
 #endif /* OPENGL_INTERCEPTORS_H */

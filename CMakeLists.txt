@@ -1,9 +1,10 @@
 cmake_minimum_required (VERSION 2.8)
 project (VK_GL)
 
-option(VKGL_INCLUDE_GDI32  "Intercept GDI32 entrypoints"  ON)
-option(VKGL_INCLUDE_OPENGL "Intercept OpenGL entrypoints" ON)
-option(VKGL_INCLUDE_WGL    "Intercept WGL entrypoints"    ON)
+option(VKGL_DUMP_API_CALLS "Dump API calls to text files (debugging)" ON)
+option(VKGL_INCLUDE_GDI32  "Intercept GDI32 entrypoints"              ON)
+option(VKGL_INCLUDE_OPENGL "Intercept OpenGL entrypoints"             ON)
+option(VKGL_INCLUDE_WGL    "Intercept WGL entrypoints"                ON)
 
 # DO NOT MODIFY BELOW THIS LINE
 configure_file("${VK_GL_SOURCE_DIR}/include/config.h.in" "${VK_GL_BINARY_DIR}/vkgl_config.h")
@@ -20,7 +21,8 @@ endif (MSVC)
 set(CMAKE_INCLUDE_PATH             "${VK_GL_SOURCE_DIR}/include")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${VK_GL_BINARY_DIR}/bin")
 
-include_directories("${VK_GL_BINARY_DIR}"
+include_directories("${Anvil_BINARY_DIR}/include"
+                    "${VK_GL_BINARY_DIR}"
                     "${VK_GL_SOURCE_DIR}/deps"
                     "${VK_GL_SOURCE_DIR}/include"
                     "${VK_GL_SOURCE_DIR}/include/Khronos")
@@ -29,6 +31,7 @@ file(GLOB LauncherIncludes "${VK_GL_SOURCE_DIR}/include/Launcher/*.h")
 file(GLOB LauncherSources  "${VK_GL_SOURCE_DIR}/src/Launcher/*.cpp")
 
 file(GLOB CommonIncludes "${VK_GL_SOURCE_DIR}/include/Common/*.h")
+file(GLOB CommonSources  "${VK_GL_SOURCE_DIR}/src/Common/*.cpp")
 
 file(GLOB VKGLIncludes "${VK_GL_SOURCE_DIR}/include/VKGL/*.h")
 file(GLOB VKGLSources  "${VK_GL_SOURCE_DIR}/src/VKGL/*.cpp"
@@ -145,18 +148,26 @@ if (VKGL_INCLUDE_WGL)
     file(GLOB WGLIncludes "${VK_GL_SOURCE_DIR}/include/WGL/*.h"
                           "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/*.h"
                           "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/WGL_ARB_create_context/*.h"
-                          "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/WGL_ARB_framebuffer_sRGB/*.h")
+                          "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/WGL_ARB_extensions_string/*.h"
+                          "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/WGL_ARB_framebuffer_sRGB/*.h"
+                          "${VK_GL_SOURCE_DIR}/include/WGL/entrypoints/WGL_EXT_swap_control/*.h"
+                          )
     file(GLOB WGLSources  "${VK_GL_SOURCE_DIR}/src/WGL/*.cpp"
                           "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/*.cpp"
                           "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/WGL_ARB_create_context/*.cpp"
-                          "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/WGL_ARB_framebuffer_sRGB/*.cpp")
+                          "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/WGL_ARB_extensions_string/*.cpp"
+                          "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/WGL_ARB_framebuffer_sRGB/*.cpp"
+                          "${VK_GL_SOURCE_DIR}/src/WGL/entrypoints/WGL_EXT_swap_control/*.cpp"
+                          )
 
     add_library(WGL STATIC ${CommonIncludes}
                            ${WGLSources}
                            ${WGLIncludes})
 endif ()
 
-add_library(VKGL SHARED ${VKGLSources})
+add_library(VKGL SHARED ${CommonSources}
+                        ${VKGLIncludes}
+                        ${VKGLSources})
 
 target_link_libraries(Launcher Detours)
 target_link_libraries(VKGL     Anvil Detours)

@@ -7,10 +7,10 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLuint&  in_index,
-                     GLboolean*     out_data_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLuint&    in_index,
+                     GLboolean*       out_data_ptr)
 {
     bool result = false;
 
@@ -20,11 +20,16 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetBooleani_v(GLenum     target,
-                                     GLuint     index,
-                                     GLboolean* data)
+void VKGL_APIENTRY OpenGL::vkglGetBooleani_v(GLenum     target,
+                                             GLuint     index,
+                                             GLboolean* data)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glGetBooleani_v(target=[%s] index=[%u] data=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               index,
+               data);
 
     dispatch_table_ptr->pGLGetBooleani_v(dispatch_table_ptr->bound_context_ptr,
                                          target,
@@ -32,22 +37,22 @@ void VKGL_APIENTRY vkglGetBooleani_v(GLenum     target,
                                          data);
 }
 
-void vkglGetBooleani_v_execute(VKGL::Context* in_context_ptr,
-                               const GLenum&  in_target,
-                               const GLuint&  in_index,
-                               GLboolean*     out_data_ptr)
+static void vkglGetBooleani_v_execute(OpenGL::Context* in_context_ptr,
+                                      const GLenum&    in_target,
+                                      const GLuint&    in_index,
+                                      GLboolean*       out_data_ptr)
 {
-    const VKGL::ContextProperty target_vkgl = VKGL::Utils::get_context_property_for_gl_enum(in_target);
+    const OpenGL::ContextProperty target_vkgl = OpenGL::Utils::get_context_property_for_gl_enum(in_target);
 
     in_context_ptr->get_parameter_indexed(target_vkgl,
-                                          VKGL::GetSetArgumentType::Boolean,
+                                          OpenGL::GetSetArgumentType::Boolean,
                                           out_data_ptr);
 }
 
-void vkglGetBooleani_v_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_target,
-                                       const GLuint&  in_index,
-                                       GLboolean*     out_data_ptr)
+void OpenGL::vkglGetBooleani_v_with_validation(OpenGL::Context* in_context_ptr,
+                                               const GLenum&    in_target,
+                                               const GLuint&    in_index,
+                                               GLboolean*       out_data_ptr)
 {
     if (validate(in_context_ptr,
                  in_target,

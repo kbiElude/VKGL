@@ -7,8 +7,11 @@
 
 #include <Windows.h>
 
-BOOL WINAPI vkgl_set_pixel_format(HDC                          in_hdc,
-                                  int                          in_format,
-                                  CONST PIXELFORMATDESCRIPTOR* in_pixel_format_descriptor_ptr);
+namespace GDI32
+{
+    BOOL WINAPI set_pixel_format(HDC                          in_hdc,
+                                 int                          in_format,
+                                 CONST PIXELFORMATDESCRIPTOR* in_pixel_format_descriptor_ptr);
+}
 
 #endif /* VKGL_SET_PIXEL_FORMAT_H */

@@ -7,23 +7,26 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglCopyTexSubImage2D(GLenum  target,
-                                         GLint   level,
-                                         GLint   xoffset,
-                                         GLint   yoffset,
-                                         GLint   x,
-                                         GLint   y,
-                                         GLsizei width,
-                                         GLsizei height);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglCopyTexSubImage2D(GLenum  target,
+                                             GLint   level,
+                                             GLint   xoffset,
+                                             GLint   yoffset,
+                                             GLint   x,
+                                             GLint   y,
+                                             GLsizei width,
+                                             GLsizei height);
 
-void vkglCopyTexSubImage2D_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLenum&  in_target,
-                                           const GLint&   in_level,
-                                           const GLint&   in_xoffset,
-                                           const GLint&   in_yoffset,
-                                           const GLint&   in_x,
-                                           const GLint&   in_y,
-                                           const GLsizei& in_width,
-                                           const GLsizei& in_height);
+    void vkglCopyTexSubImage2D_with_validation(OpenGL::Context* in_context_ptr,
+                                               const GLenum&    in_target,
+                                               const GLint&     in_level,
+                                               const GLint&     in_xoffset,
+                                               const GLint&     in_yoffset,
+                                               const GLint&     in_x,
+                                               const GLint&     in_y,
+                                               const GLsizei&   in_width,
+                                               const GLsizei&   in_height);
+}
 
 #endif /* VKGL_GL_COPY_TEX_SUB_IMAGE_2D_H */

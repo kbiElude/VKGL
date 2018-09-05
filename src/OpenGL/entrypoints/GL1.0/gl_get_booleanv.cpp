@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_pname,
-                     GLboolean*     out_data_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_pname,
+                     GLboolean*       out_data_ptr)
 {
     bool result = false;
 
@@ -20,30 +20,34 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglGetBooleanv(GLenum     pname,
-                                   GLboolean* data)
+void VKGL_APIENTRY OpenGL::vkglGetBooleanv(GLenum     pname,
+                                           GLboolean* data)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glGetBooleanv(pname=[%s] data=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               data);
 
     dispatch_table_ptr->pGLGetBooleanv(dispatch_table_ptr->bound_context_ptr,
                                        pname,
                                        data);
 }
 
-void vkglGetBooleanv_execute(VKGL::Context* in_context_ptr,
-                             const GLenum&  in_pname,
-                             GLboolean*     out_data_ptr)
+static void vkglGetBooleanv_execute(OpenGL::Context* in_context_ptr,
+                                    const GLenum&    in_pname,
+                                    GLboolean*       out_data_ptr)
 {
-    const VKGL::ContextProperty pname_vkgl = VKGL::Utils::get_context_property_for_gl_enum(in_pname);
+    const OpenGL::ContextProperty pname_vkgl = OpenGL::Utils::get_context_property_for_gl_enum(in_pname);
 
     in_context_ptr->get_parameter(pname_vkgl,
-                                  VKGL::GetSetArgumentType::Boolean,
+                                  OpenGL::GetSetArgumentType::Boolean,
                                   out_data_ptr);
 }
 
-void vkglGetBooleanv_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLenum&  in_pname,
-                                     GLboolean*     out_data_ptr)
+void OpenGL::vkglGetBooleanv_with_validation(OpenGL::Context* in_context_ptr,
+                                             const GLenum&    in_pname,
+                                             GLboolean*       out_data_ptr)
 {
     if (validate(in_context_ptr,
                  in_pname,

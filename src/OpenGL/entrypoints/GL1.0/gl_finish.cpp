@@ -6,14 +6,16 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-void VKGL_APIENTRY vkglFinish(void)
+void VKGL_APIENTRY OpenGL::vkglFinish(void)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glFinish()");
 
     dispatch_table_ptr->pGLFinish(dispatch_table_ptr->bound_context_ptr);
 }
 
-void vkglFinish_with_validation(VKGL::Context* in_context_ptr)
+void OpenGL::vkglFinish_with_validation(OpenGL::Context* in_context_ptr)
 {
     in_context_ptr->finish();
 }

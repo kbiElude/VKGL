@@ -16,13 +16,13 @@
     #include "WGL/interceptors.h"
 #endif
 
-const std::vector<FunctionInterceptor> g_function_interceptors[] =
+const std::vector<VKGL::FunctionInterceptor> g_function_interceptors[] =
 {
 #if defined(VKGL_INCLUDE_GDI32)
-    get_gdi32_function_interceptors(),
+    GDI32::get_function_interceptors(),
 #endif
 #if defined(VKGL_INCLUDE_WGL)
-    get_wgl_function_interceptors(),
+    WGL::get_function_interceptors(),
 #endif
 };
 
@@ -83,6 +83,8 @@ INT APIENTRY DllMain(HMODULE in_module_handle,
     {
         case DLL_PROCESS_ATTACH:
         {
+            VKGL::Logger::init();
+
             handle_attach_detach_event(true); /* in_is_attach_event */
 
             break;
@@ -90,6 +92,8 @@ INT APIENTRY DllMain(HMODULE in_module_handle,
 
         case DLL_PROCESS_DETACH:
         {
+            VKGL::Logger::deinit();
+
             handle_attach_detach_event(false); /* in_is_attach_event */
 
             break;

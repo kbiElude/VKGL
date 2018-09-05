@@ -13,13 +13,7 @@
 
 #define VKGL_APIENTRY KHRONOS_APIENTRY
 
-#if defined(_WIN32)
-    #define VKGL_THREADLOCAL __declspec(thread)
-#else
-    #error todo
-#endif
-
-namespace VKGL
+namespace OpenGL
 {
     /* Forward declarations */
     class Context;
@@ -31,7 +25,6 @@ namespace VKGL
 }
 
 #include "OpenGL/types_enums.h"
-#include "OpenGL/types_macros.h"
 #include "OpenGL/types_typedefs.h"
 #include "OpenGL/types_structs.h"
 #include "OpenGL/types_interfaces.h"

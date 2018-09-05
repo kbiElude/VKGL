@@ -3,15 +3,15 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Common/globals.h"
-#include "WGL/globals.h"
 #include "WGL/entrypoints/wgl_delete_context.h"
+#include "WGL/context.h"
+#include "WGL/globals.h"
 
-BOOL WINAPI vkgl_wgl_delete_context(HGLRC in_hglrc)
+BOOL WINAPI WGL::delete_context(HGLRC in_hglrc)
 {
-    MessageBox(HWND_DESKTOP,
-               "wglDeleteContext() intercepted.",
-               "",
-               MB_OK);
+    VKGL_TRACE("wglDeleteContext(in_hglrc=[%p])",
+               in_hglrc);
 
-    return reinterpret_cast<PFNWGLDELETECONTEXTPROC>(g_cached_wgl_delete_context_func_ptr)(in_hglrc);
+    delete reinterpret_cast<WGL::Context*>(in_hglrc);
+    return TRUE;
 }

@@ -6,10 +6,10 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program,
-                     const GLuint&  in_index,
-                     const GLchar*  in_name)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program,
+                     const GLuint&    in_index,
+                     const GLchar*    in_name)
 {
     bool result = false;
 
@@ -19,11 +19,16 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglBindAttribLocation(GLuint        program,
-                                          GLuint        index,
-                                          const GLchar* name)
+void VKGL_APIENTRY OpenGL::vkglBindAttribLocation(GLuint        program,
+                                                  GLuint        index,
+                                                  const GLchar* name)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glBindAttribLocation(program=[%d] index=[%d] name=[%s])",
+               program,
+               index,
+               name);
 
     dispatch_table_ptr->pGLBindAttribLocation(dispatch_table_ptr->bound_context_ptr,
                                               program,
@@ -31,20 +36,20 @@ void VKGL_APIENTRY vkglBindAttribLocation(GLuint        program,
                                               name);
 }
 
-void vkglBindAttribLocation_execute(VKGL::Context* in_context_ptr,
-                                    const GLuint&  in_program,
-                                    const GLuint&  in_index,
-                                    const GLchar*  in_name)
+static void vkglBindAttribLocation_execute(OpenGL::Context* in_context_ptr,
+                                           const GLuint&    in_program,
+                                           const GLuint&    in_index,
+                                           const GLchar*    in_name)
 {
     in_context_ptr->bind_attrib_location(in_program,
                                          in_index,
                                          in_name);
 }
 
-void vkglBindAttribLocation_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLuint&  in_program,
-                                            const GLuint&  in_index,
-                                            const GLchar*  in_name)
+void OpenGL::vkglBindAttribLocation_with_validation(OpenGL::Context* in_context_ptr,
+                                                    const GLuint&    in_program,
+                                                    const GLuint&    in_index,
+                                                    const GLchar*    in_name)
 {
     if (validate(in_context_ptr,
                  in_program,

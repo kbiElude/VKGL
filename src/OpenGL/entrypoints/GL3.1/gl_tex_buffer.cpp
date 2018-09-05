@@ -7,10 +7,10 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLenum&  in_internalformat,
-                     const GLuint&  in_buffer)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLenum&    in_internalformat,
+                     const GLuint&    in_buffer)
 {
     bool result = false;
 
@@ -20,11 +20,16 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglTexBuffer(GLenum target,
-                                 GLenum internalformat,
-                                 GLuint buffer)
+void VKGL_APIENTRY OpenGL::vkglTexBuffer(GLenum target,
+                                         GLenum internalformat,
+                                         GLuint buffer)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glTexBuffer(target=[%s] internalformat=[%s] buffer=[%u])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               OpenGL::Utils::get_raw_string_for_gl_enum(internalformat),
+               buffer);
 
     dispatch_table_ptr->pGLTexBuffer(dispatch_table_ptr->bound_context_ptr,
                                      target,
@@ -32,12 +37,12 @@ void VKGL_APIENTRY vkglTexBuffer(GLenum target,
                                      buffer);
 }
 
-void vkglTexBuffer_execute(VKGL::Context* in_context_ptr,
-                           const GLenum&  in_target,
-                           const GLenum&  in_internalformat,
-                           const GLuint&  in_buffer)
+static void vkglTexBuffer_execute(OpenGL::Context* in_context_ptr,
+                                  const GLenum&    in_target,
+                                  const GLenum&    in_internalformat,
+                                  const GLuint&    in_buffer)
 {
-    const auto internalformat_vkgl = VKGL::Utils::get_internal_format_for_gl_enum(in_internalformat);
+    const auto internalformat_vkgl = OpenGL::Utils::get_internal_format_for_gl_enum(in_internalformat);
 
     vkgl_assert(in_target == GL_TEXTURE_BUFFER);
 
@@ -45,10 +50,10 @@ void vkglTexBuffer_execute(VKGL::Context* in_context_ptr,
                                in_buffer);
 }
 
-void vkglTexBuffer_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLenum&  in_target,
-                                   const GLenum&  in_internalformat,
-                                   const GLuint&  in_buffer)
+void OpenGL::vkglTexBuffer_with_validation(OpenGL::Context* in_context_ptr,
+                                           const GLenum&    in_target,
+                                           const GLenum&    in_internalformat,
+                                           const GLuint&    in_buffer)
 {
     if (validate(in_context_ptr,
                  in_target,

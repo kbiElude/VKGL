@@ -6,11 +6,11 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_index,
-                     const GLuint&  in_x,
-                     const GLuint&  in_y,
-                     const GLuint&  in_z)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index,
+                     const GLuint&    in_x,
+                     const GLuint&    in_y,
+                     const GLuint&    in_z)
 {
     bool result = false;
 
@@ -20,12 +20,18 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglVertexAttribI3ui(GLuint index,
-                                        GLuint x,
-                                        GLuint y,
-                                        GLuint z)
+void VKGL_APIENTRY OpenGL::vkglVertexAttribI3ui(GLuint index,
+                                                GLuint x,
+                                                GLuint y,
+                                                GLuint z)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glVertexAttribI3ui(index=[%u] x=[%u] y=[%u] z=[%u])",
+               index,
+               x,
+               y,
+               z);
 
     dispatch_table_ptr->pGLVertexAttribI3ui(dispatch_table_ptr->bound_context_ptr,
                                             index,
@@ -34,11 +40,11 @@ void VKGL_APIENTRY vkglVertexAttribI3ui(GLuint index,
                                             z);
 }
 
-void vkglVertexAttribI3ui_execute(VKGL::Context* in_context_ptr,
-                                  const GLuint&  in_index,
-                                  const GLuint&  in_x,
-                                  const GLuint&  in_y,
-                                  const GLuint&  in_z)
+static void vkglVertexAttribI3ui_execute(OpenGL::Context* in_context_ptr,
+                                         const GLuint&    in_index,
+                                         const GLuint&    in_x,
+                                         const GLuint&    in_y,
+                                         const GLuint&    in_z)
 {
     const GLuint data[] =
     {
@@ -48,18 +54,18 @@ void vkglVertexAttribI3ui_execute(VKGL::Context* in_context_ptr,
     };
 
     in_context_ptr->set_vertex_attribute(in_index,
-                                         VKGL::GetSetArgumentType::Unsigned_Int,
-                                         VKGL::GetSetArgumentType::Unsigned_Int,
+                                         OpenGL::GetSetArgumentType::Unsigned_Int,
+                                         OpenGL::GetSetArgumentType::Unsigned_Int,
                                          3,
                                          false, /* in_normalized */
                                          data);
 }
 
-void vkglVertexAttribI3ui_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_index,
-                                          const GLint&   in_x,
-                                          const GLint&   in_y,
-                                          const GLint&   in_z)
+void OpenGL::vkglVertexAttribI3ui_with_validation(OpenGL::Context* in_context_ptr,
+                                                  const GLuint&    in_index,
+                                                  const GLint&     in_x,
+                                                  const GLint&     in_y,
+                                                  const GLint&     in_z)
 {
     if (validate(in_context_ptr,
                  in_index,

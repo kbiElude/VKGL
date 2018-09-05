@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_pname,
-                     GLfloat*       out_data_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_pname,
+                     GLfloat*         out_data_ptr)
 {
     bool result = false;
 
@@ -20,30 +20,34 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglGetFloatv(GLenum   pname,
-                                 GLfloat* data)
+void VKGL_APIENTRY OpenGL::vkglGetFloatv(GLenum   pname,
+                                         GLfloat* data)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glGetFloatv(pname=[%s] data=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               data);
 
     dispatch_table_ptr->pGLGetFloatv(dispatch_table_ptr->bound_context_ptr,
                                      pname,
                                      data);
 }
 
-void vkglGetFloatv_execute(VKGL::Context* in_context_ptr,
-                           const GLenum&  in_pname,
-                           GLfloat*       out_data_ptr)
+static void vkglGetFloatv_execute(OpenGL::Context* in_context_ptr,
+                                  const GLenum&    in_pname,
+                                  GLfloat*         out_data_ptr)
 {
-    const auto pname_vkgl = VKGL::Utils::get_context_property_for_gl_enum(in_pname);
+    const auto pname_vkgl = OpenGL::Utils::get_context_property_for_gl_enum(in_pname);
 
     in_context_ptr->get_parameter(pname_vkgl,
-                                  VKGL::GetSetArgumentType::Float,
+                                  OpenGL::GetSetArgumentType::Float,
                                   out_data_ptr);
 }
 
-void vkglGetFloatv_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLenum&  in_pname,
-                                   GLfloat*       out_data_ptr)
+void OpenGL::vkglGetFloatv_with_validation(OpenGL::Context* in_context_ptr,
+                                           const GLenum&    in_pname,
+                                           GLfloat*         out_data_ptr)
 {
     if (validate(in_context_ptr,
                  in_pname,

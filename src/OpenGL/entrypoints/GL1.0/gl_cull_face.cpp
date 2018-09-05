@@ -7,8 +7,8 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_mode)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_mode)
 {
     bool result = false;
 
@@ -19,24 +19,27 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglCullFace(GLenum mode)
+void VKGL_APIENTRY OpenGL::vkglCullFace(GLenum mode)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glCullFace(mode=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(mode) );
 
     dispatch_table_ptr->pGLCullFace(dispatch_table_ptr->bound_context_ptr,
                                     mode);
 }
 
-void vkglCullFace_execute(VKGL::Context* in_context_ptr,
-                          const GLenum&  in_mode)
+static void vkglCullFace_execute(OpenGL::Context* in_context_ptr,
+                                 const GLenum&    in_mode)
 {
-    const auto mode_vkgl = VKGL::Utils::get_cull_mode_for_gl_enum(in_mode);
+    const auto mode_vkgl = OpenGL::Utils::get_cull_mode_for_gl_enum(in_mode);
 
     in_context_ptr->set_cull_mode(mode_vkgl);
 }
 
-void vkglCullFace_with_validation(VKGL::Context* in_context_ptr,
-                                  const GLenum&  in_mode)
+void OpenGL::vkglCullFace_with_validation(OpenGL::Context* in_context_ptr,
+                                          const GLenum&    in_mode)
 {
     if (validate(in_context_ptr,
                  in_mode) )

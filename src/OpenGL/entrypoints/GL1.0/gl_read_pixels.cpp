@@ -7,14 +7,14 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLint&   in_x,
-                     const GLint&   in_y,
-                     const GLsizei& in_width,
-                     const GLsizei& in_height,
-                     const GLenum&  in_format,
-                     const GLenum&  in_type,
-                     void*          out_pixels_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLint&     in_x,
+                     const GLint&     in_y,
+                     const GLsizei&   in_width,
+                     const GLsizei&   in_height,
+                     const GLenum&    in_format,
+                     const GLenum&    in_type,
+                     void*            out_pixels_ptr)
 {
     bool result = false;
 
@@ -25,15 +25,24 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglReadPixels(GLint   x,
-                                  GLint   y,
-                                  GLsizei width,
-                                  GLsizei height,
-                                  GLenum  format,
-                                  GLenum  type,
-                                  void*   pixels)
+void VKGL_APIENTRY OpenGL::vkglReadPixels(GLint   x,
+                                          GLint   y,
+                                          GLsizei width,
+                                          GLsizei height,
+                                          GLenum  format,
+                                          GLenum  type,
+                                          void*   pixels)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glReadPixels(x=[%d] y=[%d] width=[%d] height=[%d] format=[%s] type=[%s] pixels=[%p])",
+               x,
+               y,
+               static_cast<int32_t>(width),
+               static_cast<int32_t>(height),
+               OpenGL::Utils::get_raw_string_for_gl_enum(format),
+               OpenGL::Utils::get_raw_string_for_gl_enum(type),
+               pixels);
 
     dispatch_table_ptr->pGLReadPixels(dispatch_table_ptr->bound_context_ptr,
                                       x,
@@ -45,17 +54,17 @@ void VKGL_APIENTRY vkglReadPixels(GLint   x,
                                       pixels);
 }
 
-void vkglReadPixels_execute(VKGL::Context* in_context_ptr,
-                            const GLint&   in_x,
-                            const GLint&   in_y,
-                            const GLsizei& in_width,
-                            const GLsizei& in_height,
-                            const GLenum&  in_format,
-                            const GLenum&  in_type,
-                            void*          out_pixels_ptr)
+static void vkglReadPixels_execute(OpenGL::Context* in_context_ptr,
+                                   const GLint&     in_x,
+                                   const GLint&     in_y,
+                                   const GLsizei&   in_width,
+                                   const GLsizei&   in_height,
+                                   const GLenum&    in_format,
+                                   const GLenum&    in_type,
+                                   void*            out_pixels_ptr)
 {
-    const auto format_vkgl = VKGL::Utils::get_pixel_format_for_gl_enum(in_format);
-    const auto type_vkgl   = VKGL::Utils::get_pixel_type_for_gl_enum  (in_type);
+    const auto format_vkgl = OpenGL::Utils::get_pixel_format_for_gl_enum(in_format);
+    const auto type_vkgl   = OpenGL::Utils::get_pixel_type_for_gl_enum  (in_type);
 
     in_context_ptr->read_pixels(in_x,
                                 in_y,
@@ -66,14 +75,14 @@ void vkglReadPixels_execute(VKGL::Context* in_context_ptr,
                                 out_pixels_ptr);
 }
 
-void vkglReadPixels_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLint&   in_x,
-                                    const GLint&   in_y,
-                                    const GLsizei& in_width,
-                                    const GLsizei& in_height,
-                                    const GLenum&  in_format,
-                                    const GLenum&  in_type,
-                                    void*          out_pixels_ptr)
+void OpenGL::vkglReadPixels_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLint&     in_x,
+                                            const GLint&     in_y,
+                                            const GLsizei&   in_width,
+                                            const GLsizei&   in_height,
+                                            const GLenum&    in_format,
+                                            const GLenum&    in_type,
+                                            void*            out_pixels_ptr)
 {
     if (validate(in_context_ptr,
                  in_x,

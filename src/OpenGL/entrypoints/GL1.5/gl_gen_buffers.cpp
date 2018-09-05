@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLsizei& in_n,
-                     GLuint*        out_buffers_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLsizei&   in_n,
+                     GLuint*          out_buffers_ptr)
 {
     bool result = false;
 
@@ -18,27 +18,31 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGenBuffers(GLsizei n,
-                                  GLuint* buffers)
+void VKGL_APIENTRY OpenGL::vkglGenBuffers(GLsizei n,
+                                          GLuint* buffers)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glGenBuffers(n=[%d] buffers=[%p])",
+               static_cast<int32_t>(n),
+               buffers);
 
     dispatch_table_ptr->pGLGenBuffers(dispatch_table_ptr->bound_context_ptr,
                                       n,
                                       buffers);
 }
 
-void vkglGenBuffers_execute(VKGL::Context* in_context_ptr,
-                            const GLsizei& in_n,
-                            GLuint*        out_buffers_ptr)
+static void vkglGenBuffers_execute(OpenGL::Context* in_context_ptr,
+                                   const GLsizei&   in_n,
+                                   GLuint*          out_buffers_ptr)
 {
     in_context_ptr->gen_buffers(in_n,
                                 out_buffers_ptr);
 }
 
-void vkglGenBuffers_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLsizei& in_n,
-                                    GLuint*        out_buffers_ptr)
+void OpenGL::vkglGenBuffers_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLsizei&   in_n,
+                                            GLuint*          out_buffers_ptr)
 {
     if (validate(in_context_ptr,
                  in_n,

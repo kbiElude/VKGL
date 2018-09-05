@@ -6,12 +6,10 @@
 #include "GDI32/entrypoints/swap_buffers.h"
 #include "GDI32/globals.h"
 
-BOOL WINAPI vkgl_swap_buffers(HDC in_hdc)
+BOOL WINAPI GDI32::swap_buffers(HDC in_hdc)
 {
-    MessageBox(HWND_DESKTOP,
-               "SwapBuffers() intercepted.",
-               "",
-               MB_OK);
+    VKGL_TRACE("SwapBuffers(in_hdc=[%p])",
+               in_hdc);
 
-    return reinterpret_cast<PFNSWAPBUFFERSPROC>(g_cached_swap_buffers_func_ptr)(in_hdc);
+    return reinterpret_cast<GDI32::PFNSWAPBUFFERSPROC>(GDI32::g_cached_swap_buffers_func_ptr)(in_hdc);
 }

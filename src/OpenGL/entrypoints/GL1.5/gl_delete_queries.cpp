@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLsizei& in_n,
-                     const GLuint*  in_ids)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLsizei&   in_n,
+                     const GLuint*    in_ids)
 {
     bool result = false;
 
@@ -19,27 +19,31 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglDeleteQueries(GLsizei       n,
-                                     const GLuint* ids)
+void VKGL_APIENTRY OpenGL::vkglDeleteQueries(GLsizei       n,
+                                             const GLuint* ids)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glDeleteQueries(n=[%d] ids=[%p])",
+               static_cast<int32_t>(n),
+               ids);
 
     dispatch_table_ptr->pGLDeleteQueries(dispatch_table_ptr->bound_context_ptr,
                                          n,
                                          ids);
 }
 
-void vkglDeleteQueries_execute(VKGL::Context* in_context_ptr,
-                               const GLsizei& in_n,
-                               const GLuint*  in_ids)
+static void vkglDeleteQueries_execute(OpenGL::Context* in_context_ptr,
+                                      const GLsizei&   in_n,
+                                      const GLuint*    in_ids)
 {
     in_context_ptr->delete_queries(in_n,
                                    in_ids);
 }
 
-void vkglDeleteQueries_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLsizei& in_n,
-                                       const GLuint*  in_ids)
+void OpenGL::vkglDeleteQueries_with_validation(OpenGL::Context* in_context_ptr,
+                                               const GLsizei&   in_n,
+                                               const GLuint*    in_ids)
 {
     if (validate(in_context_ptr,
                   in_n,

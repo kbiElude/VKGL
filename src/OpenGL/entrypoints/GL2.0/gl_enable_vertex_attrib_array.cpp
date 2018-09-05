@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_index)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index)
 {
     bool result = false;
 
@@ -17,22 +17,25 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglEnableVertexAttribArray(GLuint index)
+void VKGL_APIENTRY OpenGL::vkglEnableVertexAttribArray(GLuint index)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glEnableVertexAttribArray(index=[%u])",
+               index);
 
     dispatch_table_ptr->pGLEnableVertexAttribArray(dispatch_table_ptr->bound_context_ptr,
                                                    index);
 }
 
-void vkglEnableVertexAttribArray_execute(VKGL::Context* in_context_ptr,
-                                         const GLuint&  in_index)
+static void vkglEnableVertexAttribArray_execute(OpenGL::Context* in_context_ptr,
+                                                const GLuint&    in_index)
 {
     in_context_ptr->enable_vertex_attrib_array(in_index);
 }
 
-void vkglEnableVertexAttribArray_with_validation(VKGL::Context* in_context_ptr,
-                                                 const GLuint&  in_index)
+void OpenGL::vkglEnableVertexAttribArray_with_validation(OpenGL::Context* in_context_ptr,
+                                                         const GLuint&    in_index)
 {
     if (validate(in_context_ptr,
                  in_index) )

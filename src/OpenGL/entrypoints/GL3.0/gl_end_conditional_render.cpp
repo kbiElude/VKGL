@@ -6,7 +6,7 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr)
+static bool validate(OpenGL::Context* in_context_ptr)
 {
     bool result = false;
 
@@ -16,20 +16,22 @@ static bool validate(VKGL::Context* in_context_ptr)
     return result;
 }
 
-void VKGL_APIENTRY vkglEndConditionalRender(void)
+void VKGL_APIENTRY OpenGL::vkglEndConditionalRender(void)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glEndConditionalRender()");
 
     dispatch_table_ptr->pGLEndConditionalRender(dispatch_table_ptr->bound_context_ptr);
 }
 
 
-void vkglEndConditionalRender_execute(VKGL::Context* in_context_ptr)
+static void vkglEndConditionalRender_execute(OpenGL::Context* in_context_ptr)
 {
     in_context_ptr->end_conditional_render();
 }
 
-void vkglEndConditionalRender_with_validation(VKGL::Context* in_context_ptr)
+void OpenGL::vkglEndConditionalRender_with_validation(OpenGL::Context* in_context_ptr)
 {
     if (validate(in_context_ptr) )
     {

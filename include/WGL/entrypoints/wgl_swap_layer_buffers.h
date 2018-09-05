@@ -7,7 +7,10 @@
 
 #include <windows.h>
 
-BOOL WINAPI vkgl_wgl_swap_layer_buffers(HDC  in_hdc,
-                                        UINT in_planes);
+namespace WGL
+{
+    BOOL WINAPI swap_layer_buffers(HDC  in_hdc,
+                                   UINT in_planes);
+}
 
 #endif /* WGL_SHARE_LISTS_H */

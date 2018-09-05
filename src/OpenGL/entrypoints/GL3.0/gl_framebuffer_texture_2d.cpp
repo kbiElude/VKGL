@@ -7,12 +7,12 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLenum&  in_attachment,
-                     const GLenum&  in_textarget,
-                     const GLuint&  in_texture,
-                     const GLint&   in_level)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLenum&    in_attachment,
+                     const GLenum&    in_textarget,
+                     const GLuint&    in_texture,
+                     const GLint&     in_level)
 {
     bool result = false;
 
@@ -22,13 +22,20 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglFramebufferTexture2D(GLenum target,
-                                            GLenum attachment,
-                                            GLenum textarget,
-                                            GLuint texture,
-                                            GLint  level)
+void VKGL_APIENTRY OpenGL::vkglFramebufferTexture2D(GLenum target,
+                                                    GLenum attachment,
+                                                    GLenum textarget,
+                                                    GLuint texture,
+                                                    GLint  level)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glFramebufferTexture2D(target=[%s] attachment=[%s] textarget=[%s] texture=[%u] level=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               OpenGL::Utils::get_raw_string_for_gl_enum(attachment),
+               OpenGL::Utils::get_raw_string_for_gl_enum(textarget),
+               texture,
+               level);
 
     dispatch_table_ptr->pGLFramebufferTexture2D(dispatch_table_ptr->bound_context_ptr,
                                                 target,
@@ -38,16 +45,16 @@ void VKGL_APIENTRY vkglFramebufferTexture2D(GLenum target,
                                                 level);
 }
 
-void vkglFramebufferTexture2D_execute(VKGL::Context* in_context_ptr,
-                                      const GLenum&  in_target,
-                                      const GLenum&  in_attachment,
-                                      const GLenum&  in_textarget,
-                                      const GLuint&  in_texture,
-                                      const GLint&   in_level)
+static void vkglFramebufferTexture2D_execute(OpenGL::Context* in_context_ptr,
+                                             const GLenum&    in_target,
+                                             const GLenum&    in_attachment,
+                                             const GLenum&    in_textarget,
+                                             const GLuint&    in_texture,
+                                             const GLint&     in_level)
 {
-    const auto attachment_vkgl = VKGL::Utils::get_framebuffer_attachment_point_for_gl_enum(in_attachment);
-    const auto target_vkgl     = VKGL::Utils::get_framebuffer_target_for_gl_enum          (in_target);
-    const auto textarget_vkgl  = VKGL::Utils::get_texture_target_for_gl_enum              (in_textarget);
+    const auto attachment_vkgl = OpenGL::Utils::get_framebuffer_attachment_point_for_gl_enum(in_attachment);
+    const auto target_vkgl     = OpenGL::Utils::get_framebuffer_target_for_gl_enum          (in_target);
+    const auto textarget_vkgl  = OpenGL::Utils::get_texture_target_for_gl_enum              (in_textarget);
 
     in_context_ptr->framebuffer_texture_2D(target_vkgl,
                                            attachment_vkgl,
@@ -56,12 +63,12 @@ void vkglFramebufferTexture2D_execute(VKGL::Context* in_context_ptr,
                                            in_level);
 }
 
-void vkglFramebufferTexture2D_with_validation(VKGL::Context* in_context_ptr,
-                                              const GLenum&  in_target,
-                                              const GLenum&  in_attachment,
-                                              const GLenum&  in_textarget,
-                                              const GLuint&  in_texture,
-                                              const GLint&   in_level)
+void OpenGL::vkglFramebufferTexture2D_with_validation(OpenGL::Context* in_context_ptr,
+                                                      const GLenum&    in_target,
+                                                      const GLenum&    in_attachment,
+                                                      const GLenum&    in_textarget,
+                                                      const GLuint&    in_texture,
+                                                      const GLint&     in_level)
 {
     if (validate(in_context_ptr,
                  in_target,

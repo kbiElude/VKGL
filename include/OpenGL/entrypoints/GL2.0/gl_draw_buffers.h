@@ -7,11 +7,14 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglDrawBuffers(GLsizei       n,
-                                   const GLenum* bufs);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglDrawBuffers(GLsizei       n,
+                                       const GLenum* bufs);
 
-void vkglDrawBuffers_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLsizei& in_n,
-                                     const GLenum*  in_bufs);
+    void vkglDrawBuffers_with_validation(OpenGL::Context* in_context_ptr,
+                                         const GLsizei&   in_n,
+                                         const GLenum*    in_bufs);
+}
 
 #endif /* VKGL_GL_DRAW_BUFFERS_H */

@@ -5,7 +5,7 @@
 #ifndef VKGL_TYPES_STRUCTS_H
 #define VKGL_TYPES_STRUCTS_H
 
-namespace VKGL
+namespace OpenGL
 {
     /* Forward declarations */
     struct VertexAttributeArrayState;
@@ -58,12 +58,12 @@ namespace VKGL
 
     typedef struct BufferState
     {
-        VKGL::BufferAccess access;
-        uint64_t           map_size;
-        uint64_t           map_start_offset;
-        bool               mapped;
-        uint64_t           size;
-        VKGL::BufferUsage  usage;
+        OpenGL::BufferAccess access;
+        uint64_t             map_size;
+        uint64_t             map_start_offset;
+        bool                 mapped;
+        uint64_t             size;
+        OpenGL::BufferUsage  usage;
 
         BufferState();
     } BufferState;
@@ -484,91 +484,91 @@ namespace VKGL
 
     typedef struct ProgramState
     {
-        uint32_t                          active_attribute_max_length;
-        uint32_t                          active_uniform_block_max_length;
-        uint32_t                          active_uniform_max_length;
-        std::vector<ActiveUniformBlock>   active_uniform_blocks;
-        std::vector<ActiveUniformState>   active_uniforms;
-        std::vector<GLuint>               attached_shaders;
-        bool                              delete_status;
-        std::string                       info_log;
-        bool                              link_status;
-        uint32_t                          n_geometry_vertices_out;
-        uint32_t                          n_transform_feedback_varyings;
-        VKGL::GeometryInputType           geometry_input_type;
-        VKGL::GeometryOutputType          geometry_output_type;
-        VKGL::TransformFeedbackBufferMode transform_feedback_buffer_mode;
-        uint32_t                          transform_feedback_varying_max_length;
-        RangedBufferBinding               uniform_buffer_binding_generic;
-        std::vector<RangedBufferBinding>  uniform_buffer_binding_indexed;
-        bool                              validate_status;
+        uint32_t                            active_attribute_max_length;
+        uint32_t                            active_uniform_block_max_length;
+        uint32_t                            active_uniform_max_length;
+        std::vector<ActiveUniformBlock>     active_uniform_blocks;
+        std::vector<ActiveUniformState>     active_uniforms;
+        std::vector<GLuint>                 attached_shaders;
+        bool                                delete_status;
+        std::string                         info_log;
+        bool                                link_status;
+        uint32_t                            n_geometry_vertices_out;
+        uint32_t                            n_transform_feedback_varyings;
+        OpenGL::GeometryInputType           geometry_input_type;
+        OpenGL::GeometryOutputType          geometry_output_type;
+        OpenGL::TransformFeedbackBufferMode transform_feedback_buffer_mode;
+        uint32_t                            transform_feedback_varying_max_length;
+        RangedBufferBinding                 uniform_buffer_binding_generic;
+        std::vector<RangedBufferBinding>    uniform_buffer_binding_indexed;
+        bool                                validate_status;
 
         ProgramState(const uint32_t& in_n_max_indexed_uniform_buffer_bindings);
     } ProgramState;
 
     typedef struct RenderbufferState
     {
-        uint32_t             height;
-        VKGL::InternalFormat internal_format;
-        uint32_t             samples;
-        uint32_t             size_alpha;
-        uint32_t             size_blue;
-        uint32_t             size_depth;
-        uint32_t             size_green;
-        uint32_t             size_red;
-        uint32_t             size_stencil;
-        uint32_t             width;
+        uint32_t               height;
+        OpenGL::InternalFormat internal_format;
+        uint32_t               samples;
+        uint32_t               size_alpha;
+        uint32_t               size_blue;
+        uint32_t               size_depth;
+        uint32_t               size_green;
+        uint32_t               size_red;
+        uint32_t               size_stencil;
+        uint32_t               width;
 
         RenderbufferState();
     } RenderbufferState;
 
     typedef struct ShaderState
     {
-        bool             compile_status;
-        bool             delete_status;
-        std::string      info_log;
-        std::string      source_code;
-        VKGL::ShaderType type;
+        bool               compile_status;
+        bool               delete_status;
+        std::string        info_log;
+        std::string        source_code;
+        OpenGL::ShaderType type;
 
         ShaderState();
     } ShaderState;
 
     typedef struct TextureImageState
     {
-        uint32_t             binding_texture_buffer_data_store;
-        uint32_t             compressed_image_size;
-        bool                 fixed_sample_locations;
-        uint32_t             depth;
-        uint32_t             height;
-        VKGL::InternalFormat internal_format;
-        uint32_t             samples;
-        uint32_t             width;
+        uint32_t               binding_texture_buffer_data_store;
+        uint32_t               compressed_image_size;
+        bool                   fixed_sample_locations;
+        uint32_t               depth;
+        uint32_t               height;
+        OpenGL::InternalFormat internal_format;
+        uint32_t               samples;
+        uint32_t               width;
 
-        explicit TextureImageState(const VKGL::InternalFormat& in_internal_format);
+        explicit TextureImageState(const OpenGL::InternalFormat& in_internal_format);
     } TextureImageState;
 
     typedef std::unique_ptr<TextureImageState> TextureImageStateUniquePtr;
 
     typedef struct TextureState
     {
-        int32_t                      base_level;
-        uint32_t                     border_color[4];
-        VKGL::TextureCompareFunction compare_function;
-        VKGL::TextureCompareMode     compare_mode;
-        float                        lod_bias;
-        VKGL::TextureMagFilter       mag_filter;
-        int32_t                      max_level;
-        float                        max_lod;
-        VKGL::TextureMinFilter       min_filter;
-        float                        min_lod;
-        VKGL::TextureWrapMode        wrap_r;
-        VKGL::TextureWrapMode        wrap_s;
-        VKGL::TextureWrapMode        wrap_t;
+        int32_t                        base_level;
+        uint32_t                       border_color[4];
+        OpenGL::TextureCompareFunction compare_function;
+        OpenGL::TextureCompareMode     compare_mode;
+        float                          lod_bias;
+        OpenGL::TextureMagFilter       mag_filter;
+        int32_t                        max_level;
+        float                          max_lod;
+        OpenGL::TextureMinFilter       min_filter;
+        float                          min_lod;
+        OpenGL::TextureWrapMode        wrap_r;
+        OpenGL::TextureWrapMode        wrap_s;
+        OpenGL::TextureWrapMode        wrap_t;
 
-        explicit TextureState(const VKGL::TextureMinFilter& in_min_filter,
-                              const VKGL::TextureWrapMode&  in_wrap_s,
-                              const VKGL::TextureWrapMode&  in_wrap_t,
-                              const VKGL::TextureWrapMode&  in_wrap_r);
+        explicit TextureState(const OpenGL::TextureMinFilter& in_min_filter,
+                              const OpenGL::TextureWrapMode&  in_wrap_s,
+                              const OpenGL::TextureWrapMode&  in_wrap_t,
+                              const OpenGL::TextureWrapMode&  in_wrap_r);
     } TextureState;
 
     typedef std::unique_ptr<TextureState> TextureStateUniquePtr;
@@ -625,24 +625,24 @@ namespace VKGL
         std::vector<bool> user_clip_planes_enabled;
         int32_t           viewport   [4];
 
-        VKGL::ClampReadColorMode        clamp_read_color;
-        VKGL::ProvokingVertexConvention provoking_vertex;
+        OpenGL::ClampReadColorMode        clamp_read_color;
+        OpenGL::ProvokingVertexConvention provoking_vertex;
 
-        bool                         is_line_smooth_enabled;
-        float                        line_width;
-        float                        point_fade_threshold_size;
-        float                        point_size;
-        VKGL::PointSpriteCoordOrigin point_sprite_coord_origin;
+        bool                           is_line_smooth_enabled;
+        float                          line_width;
+        float                          point_fade_threshold_size;
+        float                          point_size;
+        OpenGL::PointSpriteCoordOrigin point_sprite_coord_origin;
 
-        VKGL::CullMode             cull_face_mode;
-        VKGL::FrontFaceOrientation front_face;
-        bool                       is_cull_face_enabled;
-        bool                       is_polygon_offset_fill_enabled;
-        bool                       is_polygon_offset_line_enabled;
-        bool                       is_polygon_offset_point_enabled;
-        bool                       is_polygon_smooth_enabled;
-        float                      polygon_offset_factor;
-        float                      polygon_offset_units;
+        OpenGL::CullMode             cull_face_mode;
+        OpenGL::FrontFaceOrientation front_face;
+        bool                         is_cull_face_enabled;
+        bool                         is_polygon_offset_fill_enabled;
+        bool                         is_polygon_offset_line_enabled;
+        bool                         is_polygon_offset_point_enabled;
+        bool                         is_polygon_smooth_enabled;
+        float                        polygon_offset_factor;
+        float                        polygon_offset_units;
 
         bool     is_multisample_enabled;
         bool     is_sample_alpha_to_coverage_enabled;
@@ -656,36 +656,36 @@ namespace VKGL
         uint32_t                      active_texture_unit;
         std::vector<TextureUnitState> texture_image_units;
 
-        bool                   is_scissor_test_enabled;
-        bool                   is_stencil_test_enabled;
-        int32_t                scissor_box[4];
-        VKGL::StencilFunction  stencil_function_back;
-        VKGL::StencilFunction  stencil_function_front;
-        VKGL::StencilOperation stencil_op_fail_back;
-        VKGL::StencilOperation stencil_op_fail_front;
-        VKGL::StencilOperation stencil_op_pass_depth_fail_back;
-        VKGL::StencilOperation stencil_op_pass_depth_fail_front;
-        VKGL::StencilOperation stencil_op_pass_depth_pass_back;
-        VKGL::StencilOperation stencil_op_pass_depth_pass_front;
-        int32_t                stencil_reference_value_back;
-        int32_t                stencil_reference_value_front;
-        int32_t                stencil_value_mask_back;
-        int32_t                stencil_value_mask_front;
+        bool                     is_scissor_test_enabled;
+        bool                     is_stencil_test_enabled;
+        int32_t                  scissor_box[4];
+        OpenGL::StencilFunction  stencil_function_back;
+        OpenGL::StencilFunction  stencil_function_front;
+        OpenGL::StencilOperation stencil_op_fail_back;
+        OpenGL::StencilOperation stencil_op_fail_front;
+        OpenGL::StencilOperation stencil_op_pass_depth_fail_back;
+        OpenGL::StencilOperation stencil_op_pass_depth_fail_front;
+        OpenGL::StencilOperation stencil_op_pass_depth_pass_back;
+        OpenGL::StencilOperation stencil_op_pass_depth_pass_front;
+        int32_t                  stencil_reference_value_back;
+        int32_t                  stencil_reference_value_front;
+        int32_t                  stencil_value_mask_back;
+        int32_t                  stencil_value_mask_front;
 
-        float               blend_color[4];
-        VKGL::BlendEquation blend_equation_alpha;
-        VKGL::BlendEquation blend_equation_rgb;
-        VKGL::BlendFunction blend_func_dst_alpha;
-        VKGL::BlendFunction blend_func_dst_rgb;
-        VKGL::BlendFunction blend_func_src_alpha;
-        VKGL::BlendFunction blend_func_src_rgb;
-        VKGL::DepthFunction depth_function;
-        uint32_t            is_blend_enabled_for_draw_buffers; /* n-th bit corresponds to n-th draw buffer */
-        bool                is_color_logic_op_enabled;
-        bool                is_depth_test_enabled;
-        bool                is_dither_enabled;
-        bool                is_framebuffer_srgb_enabled;
-        VKGL::LogicOpMode   logic_op_mode;
+        float                 blend_color[4];
+        OpenGL::BlendEquation blend_equation_alpha;
+        OpenGL::BlendEquation blend_equation_rgb;
+        OpenGL::BlendFunction blend_func_dst_alpha;
+        OpenGL::BlendFunction blend_func_dst_rgb;
+        OpenGL::BlendFunction blend_func_src_alpha;
+        OpenGL::BlendFunction blend_func_src_rgb;
+        OpenGL::DepthFunction depth_function;
+        uint32_t              is_blend_enabled_for_draw_buffers; /* n-th bit corresponds to n-th draw buffer */
+        bool                  is_color_logic_op_enabled;
+        bool                  is_depth_test_enabled;
+        bool                  is_dither_enabled;
+        bool                  is_framebuffer_srgb_enabled;
+        OpenGL::LogicOpMode   logic_op_mode;
 
         float    color_clear_value[4];
         uint32_t color_writemask_for_draw_buffers; /* 4-bits per each draw buffer. */
@@ -718,10 +718,10 @@ namespace VKGL
 
         GLuint current_program_id;
 
-        VKGL::HintMode hint_fragment_shader_derivative;
-        VKGL::HintMode hint_line_smooth;
-        VKGL::HintMode hint_polygon_smooth;
-        VKGL::HintMode hint_texture_compression;
+        OpenGL::HintMode hint_fragment_shader_derivative;
+        OpenGL::HintMode hint_line_smooth;
+        OpenGL::HintMode hint_polygon_smooth;
+        OpenGL::HintMode hint_texture_compression;
 
         bool     is_texture_cube_map_seamless_enabled;
 

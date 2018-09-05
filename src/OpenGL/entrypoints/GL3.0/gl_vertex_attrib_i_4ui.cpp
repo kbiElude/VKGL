@@ -6,12 +6,12 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_index,
-                     const GLuint&  in_x,
-                     const GLuint&  in_y,
-                     const GLuint&  in_z,
-                     const GLuint&  in_w)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index,
+                     const GLuint&    in_x,
+                     const GLuint&    in_y,
+                     const GLuint&    in_z,
+                     const GLuint&    in_w)
 {
     bool result = false;
 
@@ -21,13 +21,20 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglVertexAttribI4ui(GLuint index,
-                                        GLuint x,
-                                        GLuint y,
-                                        GLuint z,
-                                        GLuint w)
+void VKGL_APIENTRY OpenGL::vkglVertexAttribI4ui(GLuint index,
+                                                GLuint x,
+                                                GLuint y,
+                                                GLuint z,
+                                                GLuint w)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glVertexAttribI4ui(index=[%u] x=[%u] y=[%u] z=[%u] w=[%u])",
+               index,
+               x,
+               y,
+               z,
+               w);
 
     dispatch_table_ptr->pGLVertexAttribI4ui(dispatch_table_ptr->bound_context_ptr,
                                             index,
@@ -37,12 +44,12 @@ void VKGL_APIENTRY vkglVertexAttribI4ui(GLuint index,
                                             w);
 }
 
-void vkglVertexAttribI4ui_execute(VKGL::Context* in_context_ptr,
-                                  const GLuint&  in_index,
-                                  const GLuint&  in_x,
-                                  const GLuint&  in_y,
-                                  const GLuint&  in_z,
-                                  const GLuint&  in_w)
+static void vkglVertexAttribI4ui_execute(OpenGL::Context* in_context_ptr,
+                                         const GLuint&    in_index,
+                                         const GLuint&    in_x,
+                                         const GLuint&    in_y,
+                                         const GLuint&    in_z,
+                                         const GLuint&    in_w)
 {
     const GLuint data[] =
     {
@@ -53,19 +60,19 @@ void vkglVertexAttribI4ui_execute(VKGL::Context* in_context_ptr,
     };
 
     in_context_ptr->set_vertex_attribute(in_index,
-                                         VKGL::GetSetArgumentType::Unsigned_Int,
-                                         VKGL::GetSetArgumentType::Unsigned_Int,
+                                         OpenGL::GetSetArgumentType::Unsigned_Int,
+                                         OpenGL::GetSetArgumentType::Unsigned_Int,
                                          4,
                                          false, /* in_normalized */
                                          data);
 }
 
-void vkglVertexAttribI4ui_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_index,
-                                          const GLuint&  in_x,
-                                          const GLuint&  in_y,
-                                          const GLuint&  in_z,
-                                          const GLuint&  in_w)
+void OpenGL::vkglVertexAttribI4ui_with_validation(OpenGL::Context* in_context_ptr,
+                                                  const GLuint&    in_index,
+                                                  const GLuint&    in_x,
+                                                  const GLuint&    in_y,
+                                                  const GLuint&    in_z,
+                                                  const GLuint&    in_w)
 {
     if (validate(in_context_ptr,
                  in_index,

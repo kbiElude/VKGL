@@ -7,6 +7,9 @@
 
 #include <windows.h>
 
-HGLRC WINAPI vkgl_wgl_get_current_context();
+namespace WGL
+{
+    HGLRC WINAPI get_current_context();
+}
 
 #endif /* WGL_GET_CURRENT_CONTEXT_H */

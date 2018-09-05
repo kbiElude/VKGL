@@ -7,10 +7,10 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLuint&  in_index,
-                     const GLuint&  in_buffer)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLuint&    in_index,
+                     const GLuint&    in_buffer)
 {
     bool result = false;
 
@@ -20,11 +20,16 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglBindBufferBase(GLenum target,
-                                      GLuint index,
-                                      GLuint buffer)
+void VKGL_APIENTRY OpenGL::vkglBindBufferBase(GLenum target,
+                                              GLuint index,
+                                              GLuint buffer)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glBindBufferBase(target=[%s] index=[%d] buffer=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               index,
+               buffer);
 
     dispatch_table_ptr->pGLBindBufferBase(dispatch_table_ptr->bound_context_ptr,
                                           target,
@@ -32,22 +37,22 @@ void VKGL_APIENTRY vkglBindBufferBase(GLenum target,
                                           buffer);
 }
 
-void vkglBindBufferBase_execute(VKGL::Context* in_context_ptr,
-                                const GLenum&  in_target,
-                                const GLuint&  in_index,
-                                const GLuint&  in_buffer)
+static void vkglBindBufferBase_execute(OpenGL::Context* in_context_ptr,
+                                       const GLenum&    in_target,
+                                       const GLuint&    in_index,
+                                       const GLuint&    in_buffer)
 {
-    const auto target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum(in_target);
+    const auto target_vkgl = OpenGL::Utils::get_buffer_target_for_gl_enum(in_target);
 
     in_context_ptr->bind_buffer_base(target_vkgl,
                                      in_index,
                                      in_buffer);
 }
 
-void vkglBindBufferBase_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLenum&  in_target,
-                                        const GLuint&  in_index,
-                                        const GLuint&  in_buffer)
+void OpenGL::vkglBindBufferBase_with_validation(OpenGL::Context* in_context_ptr,
+                                                const GLenum&    in_target,
+                                                const GLuint&    in_index,
+                                                const GLuint&    in_buffer)
 {
     if (validate(in_context_ptr,
                  in_target,

@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_shader)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_shader)
 {
     bool result = false;
 
@@ -17,22 +17,25 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLboolean VKGL_APIENTRY vkglIsShader(GLuint shader)
+GLboolean VKGL_APIENTRY OpenGL::vkglIsShader(GLuint shader)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glIsShader(shader=[%u])",
+               shader);
 
     return dispatch_table_ptr->pGLIsShader(dispatch_table_ptr->bound_context_ptr,
                                            shader) == GL_TRUE;
 }
 
-bool vkglIsShader_execute(VKGL::Context* in_context_ptr,
-                          const GLuint&  in_shader)
+static bool vkglIsShader_execute(OpenGL::Context* in_context_ptr,
+                                 const GLuint&    in_shader)
 {
     return in_context_ptr->is_shader(in_shader);
 }
 
-bool vkglIsShader_with_validation(VKGL::Context* in_context_ptr,
-                                  const GLuint&  in_shader)
+bool OpenGL::vkglIsShader_with_validation(OpenGL::Context* in_context_ptr,
+                                          const GLuint&    in_shader)
 {
     bool result = false;
 

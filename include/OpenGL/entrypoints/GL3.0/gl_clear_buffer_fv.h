@@ -7,13 +7,16 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglClearBufferfv(GLenum         buffer,
-                                     GLint          drawbuffer,
-                                     const GLfloat* value);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglClearBufferfv(GLenum         buffer,
+                                         GLint          drawbuffer,
+                                         const GLfloat* value);
 
-void vkglClearBufferfv_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLenum&  in_buffer,
-                                       const GLint&   in_drawbuffer,
-                                       const GLfloat* in_value_ptr);
+    void vkglClearBufferfv_with_validation(OpenGL::Context* in_context_ptr,
+                                           const GLenum&    in_buffer,
+                                           const GLint&     in_drawbuffer,
+                                           const GLfloat*   in_value_ptr);
+}
 
 #endif /* VKGL_GL_CLEAR_BUFFER_FV_H */

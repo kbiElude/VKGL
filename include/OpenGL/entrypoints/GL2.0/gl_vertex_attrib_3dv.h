@@ -7,11 +7,14 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglVertexAttrib3dv(GLuint          index,
-                                       const GLdouble* v);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglVertexAttrib3dv(GLuint          index,
+                                           const GLdouble* v);
 
-void vkglVertexAttrib3dv_with_validation(VKGL::Context*  in_context_ptr,
-                                         const GLuint&   in_index,
-                                         const GLdouble* in_v_ptr);
+    void vkglVertexAttrib3dv_with_validation(OpenGL::Context* in_context_ptr,
+                                             const GLuint&    in_index,
+                                             const GLdouble*  in_v_ptr);
+}
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_3DV_H */

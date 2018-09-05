@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_index,
-                     const GLbyte* in_v_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index,
+                     const GLbyte*    in_v_ptr)
 {
     bool result = false;
 
@@ -18,31 +18,36 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglVertexAttrib4Nbv(GLuint        index,
-                                        const GLbyte* v)
+void VKGL_APIENTRY OpenGL::vkglVertexAttrib4Nbv(GLuint        index,
+                                                const GLbyte* v)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    /* TODO: Make me more useful */
+    VKGL_TRACE("glVertexAttrib4Nbv(index=[%u] v=[%p])",
+               index,
+               v);
 
     dispatch_table_ptr->pGLVertexAttrib4Nbv(dispatch_table_ptr->bound_context_ptr,
                                             index,
                                             v);
 }
 
-void vkglVertexAttrib4Nbv_execute(VKGL::Context* in_context_ptr,
-                                  const GLuint&  in_index,
-                                  const GLbyte*  in_v_ptr)
+static void vkglVertexAttrib4Nbv_execute(OpenGL::Context* in_context_ptr,
+                                         const GLuint&    in_index,
+                                         const GLbyte*    in_v_ptr)
 {
     in_context_ptr->set_vertex_attribute(in_index,
-                                         VKGL::GetSetArgumentType::Byte,
-                                         VKGL::GetSetArgumentType::Float,
+                                         OpenGL::GetSetArgumentType::Byte,
+                                         OpenGL::GetSetArgumentType::Float,
                                          4,
                                          true, /* in_normalized */
                                          in_v_ptr);
 }
 
-void vkglVertexAttrib4Nbv_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_index,
-                                          const GLbyte*  in_v_ptr)
+void OpenGL::vkglVertexAttrib4Nbv_with_validation(OpenGL::Context* in_context_ptr,
+                                                  const GLuint&    in_index,
+                                                  const GLbyte*    in_v_ptr)
 {
     if (validate(in_context_ptr,
                  in_index,

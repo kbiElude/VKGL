@@ -7,11 +7,14 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglVertexAttrib4Nusv(GLuint          index,
-                                         const GLushort* v);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglVertexAttrib4Nusv(GLuint          index,
+                                             const GLushort* v);
 
-void vkglVertexAttrib4Nusv_with_validation(VKGL::Context*  in_context_ptr,
-                                           const GLuint&   in_index,
-                                           const GLushort* in_v_ptr);
+    void vkglVertexAttrib4Nusv_with_validation(OpenGL::Context* in_context_ptr,
+                                               const GLuint&    in_index,
+                                               const GLushort*  in_v_ptr);
+}
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_4NUSV_H */

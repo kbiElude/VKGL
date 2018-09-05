@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_index)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index)
 {
     bool result = false;
 
@@ -17,22 +17,25 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglPrimitiveRestartIndex(GLuint index)
+void VKGL_APIENTRY OpenGL::vkglPrimitiveRestartIndex(GLuint index)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glPrimitiveRestartIndex(index=[%u])",
+               index);
 
     dispatch_table_ptr->pGLPrimitiveRestartIndex(dispatch_table_ptr->bound_context_ptr,
                                                  index);
 }
 
-void vkglPrimitiveRestartIndex_execute(VKGL::Context* in_context_ptr,
-                                       const GLuint&  in_index)
+static void vkglPrimitiveRestartIndex_execute(OpenGL::Context* in_context_ptr,
+                                              const GLuint&    in_index)
 {
     in_context_ptr->set_primitive_restart_index(in_index);
 }
 
-void vkglPrimitiveRestartIndex_with_validation(VKGL::Context* in_context_ptr,
-                                               const GLuint&  in_index)
+void OpenGL::vkglPrimitiveRestartIndex_with_validation(OpenGL::Context* in_context_ptr,
+                                                       const GLuint&    in_index)
 {
     if (validate(in_context_ptr,
                  in_index) )

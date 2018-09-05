@@ -7,9 +7,12 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglProvokingVertex(GLenum mode);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglProvokingVertex(GLenum mode);
 
-void vkglProvokingVertex_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_mode);
+    void vkglProvokingVertex_with_validation(OpenGL::Context* in_context_ptr,
+                                             const GLenum&    in_mode);
+}
 
 #endif /* VKGL_GL_PROVOKING_VERTEX_H */

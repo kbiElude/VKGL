@@ -6,11 +6,11 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLint&   in_x,
-                     const GLint&   in_y,
-                     const GLsizei& in_width,
-                     const GLsizei& in_height)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLint&     in_x,
+                     const GLint&     in_y,
+                     const GLsizei&   in_width,
+                     const GLsizei&   in_height)
 {
     bool result = false;
 
@@ -21,12 +21,18 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglScissor(GLint   x,
-                               GLint   y,
-                               GLsizei width,
-                               GLsizei height)
+void VKGL_APIENTRY OpenGL::vkglScissor(GLint   x,
+                                       GLint   y,
+                                       GLsizei width,
+                                       GLsizei height)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glScissor(x=[%d] y=[%d] width=[%d] height=[%d])",
+               x,
+               y,
+               static_cast<int32_t>(width),
+               static_cast<int32_t>(height) );
 
     dispatch_table_ptr->pGLScissor(dispatch_table_ptr->bound_context_ptr,
                                    x,
@@ -35,11 +41,11 @@ void VKGL_APIENTRY vkglScissor(GLint   x,
                                    height);
 }
 
-void vkglScissor_execute(VKGL::Context* in_context_ptr,
-                         const GLint&   in_x,
-                         const GLint&   in_y,
-                         const GLsizei& in_width,
-                         const GLsizei& in_height)
+static void vkglScissor_execute(OpenGL::Context* in_context_ptr,
+                                const GLint&     in_x,
+                                const GLint&     in_y,
+                                const GLsizei&   in_width,
+                                const GLsizei&   in_height)
 {
     in_context_ptr->set_scissor(in_x,
                                 in_y,
@@ -47,11 +53,11 @@ void vkglScissor_execute(VKGL::Context* in_context_ptr,
                                 in_height);
 }
 
-void vkglScissor_with_validation(VKGL::Context* in_context_ptr,
-                                 const GLint&   in_x,
-                                 const GLint&   in_y,
-                                 const GLsizei& in_width,
-                                 const GLsizei& in_height)
+void OpenGL::vkglScissor_with_validation(OpenGL::Context* in_context_ptr,
+                                         const GLint&     in_x,
+                                         const GLint&     in_y,
+                                         const GLsizei&   in_width,
+                                         const GLsizei&   in_height)
 {
     if (validate(in_context_ptr,
                  in_x,

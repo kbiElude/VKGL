@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_array)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_array)
 {
     bool result = false;
 
@@ -17,22 +17,25 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLboolean VKGL_APIENTRY vkglIsVertexArray(GLuint array)
+GLboolean VKGL_APIENTRY OpenGL::vkglIsVertexArray(GLuint array)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glIsVertexArray(array=[%u])",
+               array);
 
     return dispatch_table_ptr->pGLIsVertexArray(dispatch_table_ptr->bound_context_ptr,
                                                 array) == GL_TRUE;
 }
 
-bool vkglIsVertexArray_execute(VKGL::Context* in_context_ptr,
-                               const GLuint&  in_array)
+static bool vkglIsVertexArray_execute(OpenGL::Context* in_context_ptr,
+                                      const GLuint&    in_array)
 {
     return in_context_ptr->is_vertex_array(in_array) == GL_TRUE;
 }
 
-bool vkglIsVertexArray_with_validation(VKGL::Context* in_context_ptr,
-                                       const GLuint&  in_array)
+bool OpenGL::vkglIsVertexArray_with_validation(OpenGL::Context* in_context_ptr,
+                                               const GLuint&    in_array)
 {
     bool result = false;
 

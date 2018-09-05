@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*    in_context_ptr,
+static bool validate(OpenGL::Context*  in_context_ptr,
                      const GLenum&     in_target,
                      const GLintptr&   in_offset,
                      const GLsizeiptr& in_length,
@@ -21,12 +21,18 @@ static bool validate(VKGL::Context*    in_context_ptr,
     return result;
 }
 
-void* APIENTRY vkglMapBufferRange(GLenum     target,
-                                  GLintptr   offset,
-                                  GLsizeiptr length,
-                                  GLbitfield access)
+void* APIENTRY OpenGL::vkglMapBufferRange(GLenum     target,
+                                          GLintptr   offset,
+                                          GLsizeiptr length,
+                                          GLbitfield access)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glMapBufferRange(target=[%s] offset=[%d] length=[%d] access=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               static_cast<int32_t>(offset),
+               static_cast<int32_t>(length),
+               OpenGL::Utils::get_raw_string_for_gl_bitfield(OpenGL::BitfieldType::Buffer_Access_Mask, access) );
 
     return dispatch_table_ptr->pGLMapBufferRange(dispatch_table_ptr->bound_context_ptr,
                                                  target,
@@ -35,14 +41,14 @@ void* APIENTRY vkglMapBufferRange(GLenum     target,
                                                  access);
 }
 
-void* vkglMapBufferRange_execute(VKGL::Context*    in_context_ptr,
-                                 const GLenum&     in_target,
-                                 const GLintptr&   in_offset,
-                                 const GLsizeiptr& in_length,
-                                 const GLbitfield& in_access)
+static void* vkglMapBufferRange_execute(OpenGL::Context*  in_context_ptr,
+                                        const GLenum&     in_target,
+                                        const GLintptr&   in_offset,
+                                        const GLsizeiptr& in_length,
+                                        const GLbitfield& in_access)
 {
-    const auto access_vkgl = VKGL::Utils::get_buffer_access_for_gl_enum(in_access);
-    const auto target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum(in_target);
+    const auto access_vkgl = OpenGL::Utils::get_buffer_access_for_gl_enum(in_access);
+    const auto target_vkgl = OpenGL::Utils::get_buffer_target_for_gl_enum(in_target);
 
     return in_context_ptr->map_buffer_range(target_vkgl,
                                             in_offset,
@@ -50,11 +56,11 @@ void* vkglMapBufferRange_execute(VKGL::Context*    in_context_ptr,
                                             access_vkgl);
 }
 
-void* vkglMapBufferRange_with_validation(VKGL::Context*    in_context_ptr,
-                                         const GLenum&     in_target,
-                                         const GLintptr&   in_offset,
-                                         const GLsizeiptr& in_length,
-                                         const GLbitfield& in_access)
+void* OpenGL::vkglMapBufferRange_with_validation(OpenGL::Context*  in_context_ptr,
+                                                 const GLenum&     in_target,
+                                                 const GLintptr&   in_offset,
+                                                 const GLsizeiptr& in_length,
+                                                 const GLbitfield& in_access)
 {
     void* result = nullptr;
 

@@ -6,11 +6,11 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLint&   in_location,
-                     const GLfloat& in_v0,
-                     const GLfloat& in_v1,
-                     const GLfloat& in_v2)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLint&     in_location,
+                     const GLfloat&   in_v0,
+                     const GLfloat&   in_v1,
+                     const GLfloat&   in_v2)
 {
     bool result = false;
 
@@ -20,12 +20,18 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglUniform3f(GLint   location,
-                                 GLfloat v0,
-                                 GLfloat v1,
-                                 GLfloat v2)
+void VKGL_APIENTRY OpenGL::vkglUniform3f(GLint   location,
+                                         GLfloat v0,
+                                         GLfloat v1,
+                                         GLfloat v2)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glUniform3f(location=[%d] v0=[%.4f] v1=[%.4f] v2=[%.4f])",
+               location,
+               v0,
+               v1,
+               v2);
 
     dispatch_table_ptr->pGLUniform3f(dispatch_table_ptr->bound_context_ptr,
                                      location,
@@ -34,11 +40,11 @@ void VKGL_APIENTRY vkglUniform3f(GLint   location,
                                      v2);
 }
 
-void vkglUniform3f_execute(VKGL::Context* in_context_ptr,
-                           const GLint&   in_location,
-                           const GLfloat& in_v0,
-                           const GLfloat& in_v1,
-                           const GLfloat& in_v2)
+static void vkglUniform3f_execute(OpenGL::Context* in_context_ptr,
+                                  const GLint&     in_location,
+                                  const GLfloat&   in_v0,
+                                  const GLfloat&   in_v1,
+                                  const GLfloat&   in_v2)
 {
     const GLfloat data[] =
     {
@@ -48,16 +54,16 @@ void vkglUniform3f_execute(VKGL::Context* in_context_ptr,
     };
 
     in_context_ptr->set_uniform(in_location,
-                                VKGL::GetSetArgumentType::Float,
+                                OpenGL::GetSetArgumentType::Float,
                                 3,
                                 data);
 }
 
-void vkglUniform3f_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLint&   in_location,
-                                   const GLfloat& in_v0,
-                                   const GLfloat& in_v1,
-                                   const GLfloat& in_v2)
+void OpenGL::vkglUniform3f_with_validation(OpenGL::Context* in_context_ptr,
+                                           const GLint&     in_location,
+                                           const GLfloat&   in_v0,
+                                           const GLfloat&   in_v1,
+                                           const GLfloat&   in_v2)
 {
     if (validate(in_context_ptr,
                  in_location,

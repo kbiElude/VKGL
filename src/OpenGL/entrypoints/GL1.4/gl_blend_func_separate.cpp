@@ -11,11 +11,11 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_sfactorRGB,
-                     const GLenum&  in_dfactorRGB,
-                     const GLenum&  in_sfactorAlpha,
-                     const GLenum&  in_dfactorAlpha)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_sfactorRGB,
+                     const GLenum&    in_dfactorRGB,
+                     const GLenum&    in_sfactorAlpha,
+                     const GLenum&    in_dfactorAlpha)
 {
     bool result = false;
 
@@ -25,12 +25,18 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglBlendFuncSeparate(GLenum sfactorRGB,
-                                         GLenum dfactorRGB,
-                                         GLenum sfactorAlpha,
-                                         GLenum dfactorAlpha)
+void VKGL_APIENTRY OpenGL::vkglBlendFuncSeparate(GLenum sfactorRGB,
+                                                 GLenum dfactorRGB,
+                                                 GLenum sfactorAlpha,
+                                                 GLenum dfactorAlpha)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glBlendFuncSeparate(sfactorRGB=[%s] dfactorRGB=[%s] sfactorAlpha=[%s] dfactorAlpha=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(sfactorRGB),
+               OpenGL::Utils::get_raw_string_for_gl_enum(dfactorRGB),
+               OpenGL::Utils::get_raw_string_for_gl_enum(sfactorAlpha),
+               OpenGL::Utils::get_raw_string_for_gl_enum(dfactorAlpha) );
 
     dispatch_table_ptr->pGLBlendFuncSeparate(dispatch_table_ptr->bound_context_ptr,
                                              sfactorRGB,
@@ -39,16 +45,16 @@ void VKGL_APIENTRY vkglBlendFuncSeparate(GLenum sfactorRGB,
                                              dfactorAlpha);
 }
 
-void vkglBlendFuncSeparate_execute(VKGL::Context* in_context_ptr,
-                                   const GLenum&  in_sfactorRGB,
-                                   const GLenum&  in_dfactorRGB,
-                                   const GLenum&  in_sfactorAlpha,
-                                   const GLenum&  in_dfactorAlpha)
+static void vkglBlendFuncSeparate_execute(OpenGL::Context* in_context_ptr,
+                                          const GLenum&    in_sfactorRGB,
+                                          const GLenum&    in_dfactorRGB,
+                                          const GLenum&    in_sfactorAlpha,
+                                          const GLenum&    in_dfactorAlpha)
 {
-    const auto dfactor_alpha_vkgl = VKGL::Utils::get_blend_function_for_gl_enum(in_dfactorAlpha);
-    const auto dfactor_rgb_vkgl   = VKGL::Utils::get_blend_function_for_gl_enum(in_dfactorRGB);
-    const auto sfactor_alpha_vkgl = VKGL::Utils::get_blend_function_for_gl_enum(in_sfactorAlpha);
-    const auto sfactor_rgb_vkgl   = VKGL::Utils::get_blend_function_for_gl_enum(in_sfactorRGB);
+    const auto dfactor_alpha_vkgl = OpenGL::Utils::get_blend_function_for_gl_enum(in_dfactorAlpha);
+    const auto dfactor_rgb_vkgl   = OpenGL::Utils::get_blend_function_for_gl_enum(in_dfactorRGB);
+    const auto sfactor_alpha_vkgl = OpenGL::Utils::get_blend_function_for_gl_enum(in_sfactorAlpha);
+    const auto sfactor_rgb_vkgl   = OpenGL::Utils::get_blend_function_for_gl_enum(in_sfactorRGB);
 
     in_context_ptr->set_blend_functions_separate(sfactor_rgb_vkgl,
                                                  dfactor_rgb_vkgl,
@@ -56,11 +62,11 @@ void vkglBlendFuncSeparate_execute(VKGL::Context* in_context_ptr,
                                                  dfactor_alpha_vkgl);
 }
 
-void vkglBlendFuncSeparate_with_validation(VKGL::Context* in_context_ptr,
-                                           const GLenum&  in_sfactorRGB,
-                                           const GLenum&  in_dfactorRGB,
-                                           const GLenum&  in_sfactorAlpha,
-                                           const GLenum&  in_dfactorAlpha)
+void OpenGL::vkglBlendFuncSeparate_with_validation(OpenGL::Context* in_context_ptr,
+                                                   const GLenum&    in_sfactorRGB,
+                                                   const GLenum&    in_dfactorRGB,
+                                                   const GLenum&    in_sfactorAlpha,
+                                                   const GLenum&    in_dfactorAlpha)
 {
     if (validate(in_context_ptr,
                  in_sfactorRGB,

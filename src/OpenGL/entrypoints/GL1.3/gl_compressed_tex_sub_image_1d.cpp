@@ -7,14 +7,14 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLint&   in_level,
-                     const GLint&   in_xoffset,
-                     const GLsizei& in_width,
-                     const GLenum&  in_format,
-                     const GLsizei& in_image_size,
-                     const void*    in_data)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLint&     in_level,
+                     const GLint&     in_xoffset,
+                     const GLsizei&   in_width,
+                     const GLenum&    in_format,
+                     const GLsizei&   in_image_size,
+                     const void*      in_data)
 {
     bool result = false;
 
@@ -24,15 +24,24 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglCompressedTexSubImage1D(GLenum      target,
-                                               GLint       level,
-                                               GLint       xoffset,
-                                               GLsizei     width,
-                                               GLenum      format,
-                                               GLsizei     imageSize,
-                                               const void* data)
+void VKGL_APIENTRY OpenGL::vkglCompressedTexSubImage1D(GLenum      target,
+                                                       GLint       level,
+                                                       GLint       xoffset,
+                                                       GLsizei     width,
+                                                       GLenum      format,
+                                                       GLsizei     imageSize,
+                                                       const void* data)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glCompressedTexSubImage1D(target=[%s] level=[%d] xoffset=[%d] width=[%d] format=[%s] imageSize=[%d] data=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               level,
+               xoffset,
+               static_cast<int32_t>(width),
+               OpenGL::Utils::get_raw_string_for_gl_enum(format),
+               static_cast<int32_t>(imageSize),
+               data);
 
     dispatch_table_ptr->pGLCompressedTexSubImage1D(dispatch_table_ptr->bound_context_ptr,
                                                    target,
@@ -44,17 +53,17 @@ void VKGL_APIENTRY vkglCompressedTexSubImage1D(GLenum      target,
                                                    data);
 }
 
-void vkglCompressedTexSubImage1D_execute(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_target,
-                                         const GLint&   in_level,
-                                         const GLint&   in_xoffset,
-                                         const GLsizei& in_width,
-                                         const GLenum&  in_format,
-                                         const GLsizei& in_image_size,
-                                         const void*    in_data)
+static void vkglCompressedTexSubImage1D_execute(OpenGL::Context* in_context_ptr,
+                                                const GLenum&    in_target,
+                                                const GLint&     in_level,
+                                                const GLint&     in_xoffset,
+                                                const GLsizei&   in_width,
+                                                const GLenum&    in_format,
+                                                const GLsizei&   in_image_size,
+                                                const void*      in_data)
 {
-    const auto format_vkgl = VKGL::Utils::get_pixel_format_for_gl_enum  (in_format);
-    const auto target_vkgl = VKGL::Utils::get_texture_target_for_gl_enum(in_target);
+    const auto format_vkgl = OpenGL::Utils::get_pixel_format_for_gl_enum  (in_format);
+    const auto target_vkgl = OpenGL::Utils::get_texture_target_for_gl_enum(in_target);
 
     in_context_ptr->compressed_tex_sub_image_1d(target_vkgl,
                                                 in_level,
@@ -65,16 +74,16 @@ void vkglCompressedTexSubImage1D_execute(VKGL::Context* in_context_ptr,
                                                 in_data);
 }
 
-void vkglCompressedTexSubImage1D_with_validation(VKGL::Context* in_context_ptr,
-                                                 const GLenum&  in_target,
-                                                 const GLint&   in_level,
-                                                 const GLint&   in_xoffset,
-                                                 const GLsizei& in_width,
-                                                 const GLenum&  in_format,
-                                                 const GLsizei& in_image_size,
-                                                 const void*    in_data)
+void OpenGL::vkglCompressedTexSubImage1D_with_validation(OpenGL::Context* in_context_ptr,
+                                                         const GLenum&    in_target,
+                                                         const GLint&     in_level,
+                                                         const GLint&     in_xoffset,
+                                                         const GLsizei&   in_width,
+                                                         const GLenum&    in_format,
+                                                         const GLsizei&   in_image_size,
+                                                         const void*      in_data)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
     if (validate(in_context_ptr,
                  in_target,

@@ -6,10 +6,10 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLint&   in_location,
-                     const GLuint&  in_v0,
-                     const GLuint&  in_v1)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLint&     in_location,
+                     const GLuint&    in_v0,
+                     const GLuint&    in_v1)
 {
     bool result = false;
 
@@ -19,11 +19,16 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglUniform2ui(GLint  location,
-                                  GLuint v0,
-                                  GLuint v1)
+void VKGL_APIENTRY OpenGL::vkglUniform2ui(GLint  location,
+                                          GLuint v0,
+                                          GLuint v1)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glUniform2ui(location=[%d] v0=[%u] v1=[%u])",
+               location,
+               v0,
+               v1);
 
     dispatch_table_ptr->pGLUniform2ui(dispatch_table_ptr->bound_context_ptr,
                                       location,
@@ -31,10 +36,10 @@ void VKGL_APIENTRY vkglUniform2ui(GLint  location,
                                       v1);
 }
 
-void vkglUniform2ui_execute(VKGL::Context* in_context_ptr,
-                            const GLint&   in_location,
-                            const GLuint&  in_v0,
-                            const GLuint&  in_v1)
+static void vkglUniform2ui_execute(OpenGL::Context* in_context_ptr,
+                                   const GLint&     in_location,
+                                   const GLuint&    in_v0,
+                                   const GLuint&    in_v1)
 {
     const GLuint data[] =
     {
@@ -43,15 +48,15 @@ void vkglUniform2ui_execute(VKGL::Context* in_context_ptr,
     };
 
     in_context_ptr->set_uniform(in_location,
-                                VKGL::GetSetArgumentType::Unsigned_Int,
+                                OpenGL::GetSetArgumentType::Unsigned_Int,
                                 2,
                                 data);
 }
 
-void vkglUniform2ui_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLint&   in_location,
-                                    const GLuint&  in_v0,
-                                    const GLuint&  in_v1)
+void OpenGL::vkglUniform2ui_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLint&     in_location,
+                                            const GLuint&    in_v0,
+                                            const GLuint&    in_v1)
 {
     if (validate(in_context_ptr,
                  in_location,

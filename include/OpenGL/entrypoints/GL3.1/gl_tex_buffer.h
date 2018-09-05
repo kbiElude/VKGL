@@ -7,13 +7,16 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglTexBuffer(GLenum target,
-                                 GLenum internalformat,
-                                 GLuint buffer);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglTexBuffer(GLenum target,
+                                     GLenum internalformat,
+                                     GLuint buffer);
 
-void vkglTexBuffer_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLenum&  in_target,
-                                   const GLenum&  in_internalformat,
-                                   const GLuint&  in_buffer);
+    void vkglTexBuffer_with_validation(OpenGL::Context* in_context_ptr,
+                                       const GLenum&    in_target,
+                                       const GLenum&    in_internalformat,
+                                       const GLuint&    in_buffer);
+}
 
 #endif /* VKGL_GL_TEX_BUFFER_H */

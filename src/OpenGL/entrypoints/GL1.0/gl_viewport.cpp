@@ -6,11 +6,11 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLint&   in_x,
-                     const GLint&   in_y,
-                     const GLsizei& in_width,
-                     const GLsizei& in_height)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLint&     in_x,
+                     const GLint&     in_y,
+                     const GLsizei&   in_width,
+                     const GLsizei&   in_height)
 {
     bool result = false;
 
@@ -21,12 +21,18 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglViewport(GLint   x,
-                                GLint   y,
-                                GLsizei width,
-                                GLsizei height)
+void VKGL_APIENTRY OpenGL::vkglViewport(GLint   x,
+                                        GLint   y,
+                                        GLsizei width,
+                                        GLsizei height)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glViewport(x=[%d] y=[%d] width=[%d] height=[%d])",
+               x,
+               y,
+               static_cast<int32_t>(width),
+               static_cast<int32_t>(height) );
 
     dispatch_table_ptr->pGLViewport(dispatch_table_ptr->bound_context_ptr,
                                     x,
@@ -35,11 +41,11 @@ void VKGL_APIENTRY vkglViewport(GLint   x,
                                     height);
 }
 
-void vkglViewport_execute(VKGL::Context* in_context_ptr,
-                          const GLint&   in_x,
-                          const GLint&   in_y,
-                          const GLsizei& in_width,
-                          const GLsizei& in_height)
+static void vkglViewport_execute(OpenGL::Context* in_context_ptr,
+                                 const GLint&     in_x,
+                                 const GLint&     in_y,
+                                 const GLsizei&   in_width,
+                                 const GLsizei&   in_height)
 {
     in_context_ptr->set_viewport(in_x,
                                  in_y,
@@ -47,11 +53,11 @@ void vkglViewport_execute(VKGL::Context* in_context_ptr,
                                  in_height);
 }
 
-void vkglViewport_with_validation(VKGL::Context* in_context_ptr,
-                                  const GLint&   in_x,
-                                  const GLint&   in_y,
-                                  const GLsizei& in_width,
-                                  const GLsizei& in_height)
+void OpenGL::vkglViewport_with_validation(OpenGL::Context* in_context_ptr,
+                                          const GLint&     in_x,
+                                          const GLint&     in_y,
+                                          const GLsizei&   in_width,
+                                          const GLsizei&   in_height)
 {
     if (validate(in_context_ptr,
                  in_x,

@@ -7,17 +7,17 @@
 
 #include "OpenGL/types.h"
 
-namespace VKGL
+namespace OpenGL
 {
-    class GLLimits : public VKGL::IGLLimits
+    class GLLimits : public OpenGL::IGLLimits
     {
     public:
          GLLimits();
         ~GLLimits();
 
-        void get_parameter(const VKGL::ContextProperty&    in_pname,
-                           const VKGL::GetSetArgumentType& in_arg_type,
-                           void*                           out_arg_value_ptr) const;
+        void get_parameter(const OpenGL::ContextProperty&    in_pname,
+                           const OpenGL::GetSetArgumentType& in_arg_type,
+                           void*                             out_arg_value_ptr) const;
 
         /* IGLLimits interface impl */
 
@@ -26,7 +26,7 @@ namespace VKGL
             return m_aliased_line_width_range;
         }
 
-        const std::vector<VKGL::InternalFormat>& get_compressed_texture_formats() const final
+        const std::vector<OpenGL::InternalFormat>& get_compressed_texture_formats() const final
         {
             return m_compressed_texture_formats;
         }
@@ -315,64 +315,64 @@ namespace VKGL
         /* Private functions */
 
         /* Private variables */
-        float                             m_aliased_line_width_range[2];
-        std::vector<VKGL::InternalFormat> m_compressed_texture_formats;
-        uint32_t                          m_max_3d_texture_size;
-        uint32_t                          m_max_array_texture_layers;
-        uint32_t                          m_max_clip_distances;
-        uint32_t                          m_max_color_attachments;
-        uint32_t                          m_max_color_texture_samples;
-        uint32_t                          m_max_combined_fragment_uniform_components;
-        uint32_t                          m_max_combined_geometry_uniform_components;
-        uint32_t                          m_max_combined_texture_image_units;
-        uint32_t                          m_max_combined_vertex_uniform_components;
-        uint32_t                          m_max_combined_uniform_blocks;
-        uint32_t                          m_max_cube_map_texture_size;
-        uint32_t                          m_max_depth_texture_samples;
-        uint32_t                          m_max_draw_buffers;
-        uint32_t                          m_max_elements_indices;
-        uint32_t                          m_max_elements_vertices;
-        uint32_t                          m_max_fragment_input_components;
-        uint32_t                          m_max_fragment_uniform_blocks;
-        uint32_t                          m_max_fragment_uniform_components;
-        uint32_t                          m_max_geometry_input_components;
-        uint32_t                          m_max_geometry_output_components;
-        uint32_t                          m_max_geometry_output_vertices;
-        uint32_t                          m_max_geometry_texture_image_units;
-        uint32_t                          m_max_geometry_total_output_components;
-        uint32_t                          m_max_geometry_uniform_blocks;
-        uint32_t                          m_max_integer_samples;
-        uint32_t                          m_max_program_texel_offset;
-        uint32_t                          m_max_rectangle_texture_size;
-        uint32_t                          m_max_renderbuffer_size;
-        uint32_t                          m_max_sample_mask_words;
-        uint32_t                          m_max_samples;
-        uint32_t                          m_max_server_wait_timeout;
-        uint32_t                          m_max_texture_buffer_size;
-        uint32_t                          m_max_texture_image_units;
-        float                             m_max_texture_lod_bias;
-        uint32_t                          m_max_texture_size;
-        uint32_t                          m_max_transform_feedback_buffers;
-        uint32_t                          m_max_transform_feedback_interleaved_components;
-        uint32_t                          m_max_transform_feedback_separate_attribs;
-        uint32_t                          m_max_transform_feedback_separate_components;
-        uint32_t                          m_max_uniform_block_size;
-        uint32_t                          m_max_uniform_buffer_bindings;
-        uint32_t                          m_max_varying_components;
-        uint32_t                          m_max_vertex_attribs;
-        uint32_t                          m_max_vertex_output_components;
-        uint32_t                          m_max_vertex_texture_image_units;
-        uint32_t                          m_max_vertex_uniform_blocks;
-        uint32_t                          m_max_vertex_uniform_components;
-        uint32_t                          m_max_viewport_dims[2];
-        int32_t                           m_min_program_texel_offset;
-        float                             m_point_size_granularity;
-        float                             m_point_size_range[2];
-        uint32_t                          m_query_counter_bits;
-        float                             m_smooth_line_width_granularity;
-        float                             m_smooth_line_width_range[2];
-        uint32_t                          m_subpixel_bits;
-        uint32_t                          m_uniform_buffer_offset_alignment;
+        float                               m_aliased_line_width_range[2];
+        std::vector<OpenGL::InternalFormat> m_compressed_texture_formats;
+        uint32_t                            m_max_3d_texture_size;
+        uint32_t                            m_max_array_texture_layers;
+        uint32_t                            m_max_clip_distances;
+        uint32_t                            m_max_color_attachments;
+        uint32_t                            m_max_color_texture_samples;
+        uint32_t                            m_max_combined_fragment_uniform_components;
+        uint32_t                            m_max_combined_geometry_uniform_components;
+        uint32_t                            m_max_combined_texture_image_units;
+        uint32_t                            m_max_combined_vertex_uniform_components;
+        uint32_t                            m_max_combined_uniform_blocks;
+        uint32_t                            m_max_cube_map_texture_size;
+        uint32_t                            m_max_depth_texture_samples;
+        uint32_t                            m_max_draw_buffers;
+        uint32_t                            m_max_elements_indices;
+        uint32_t                            m_max_elements_vertices;
+        uint32_t                            m_max_fragment_input_components;
+        uint32_t                            m_max_fragment_uniform_blocks;
+        uint32_t                            m_max_fragment_uniform_components;
+        uint32_t                            m_max_geometry_input_components;
+        uint32_t                            m_max_geometry_output_components;
+        uint32_t                            m_max_geometry_output_vertices;
+        uint32_t                            m_max_geometry_texture_image_units;
+        uint32_t                            m_max_geometry_total_output_components;
+        uint32_t                            m_max_geometry_uniform_blocks;
+        uint32_t                            m_max_integer_samples;
+        uint32_t                            m_max_program_texel_offset;
+        uint32_t                            m_max_rectangle_texture_size;
+        uint32_t                            m_max_renderbuffer_size;
+        uint32_t                            m_max_sample_mask_words;
+        uint32_t                            m_max_samples;
+        uint32_t                            m_max_server_wait_timeout;
+        uint32_t                            m_max_texture_buffer_size;
+        uint32_t                            m_max_texture_image_units;
+        float                               m_max_texture_lod_bias;
+        uint32_t                            m_max_texture_size;
+        uint32_t                            m_max_transform_feedback_buffers;
+        uint32_t                            m_max_transform_feedback_interleaved_components;
+        uint32_t                            m_max_transform_feedback_separate_attribs;
+        uint32_t                            m_max_transform_feedback_separate_components;
+        uint32_t                            m_max_uniform_block_size;
+        uint32_t                            m_max_uniform_buffer_bindings;
+        uint32_t                            m_max_varying_components;
+        uint32_t                            m_max_vertex_attribs;
+        uint32_t                            m_max_vertex_output_components;
+        uint32_t                            m_max_vertex_texture_image_units;
+        uint32_t                            m_max_vertex_uniform_blocks;
+        uint32_t                            m_max_vertex_uniform_components;
+        uint32_t                            m_max_viewport_dims[2];
+        int32_t                             m_min_program_texel_offset;
+        float                               m_point_size_granularity;
+        float                               m_point_size_range[2];
+        uint32_t                            m_query_counter_bits;
+        float                               m_smooth_line_width_granularity;
+        float                               m_smooth_line_width_range[2];
+        uint32_t                            m_subpixel_bits;
+        uint32_t                            m_uniform_buffer_offset_alignment;
     };
 
     typedef std::unique_ptr<GLLimits> GLLimitsUniquePtr;

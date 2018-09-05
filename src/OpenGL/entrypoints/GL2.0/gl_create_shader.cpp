@@ -7,8 +7,8 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_type)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_type)
 {
     bool result = false;
 
@@ -18,24 +18,27 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLuint VKGL_APIENTRY vkglCreateShader(GLenum type)
+GLuint VKGL_APIENTRY OpenGL::vkglCreateShader(GLenum type)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
-    return dispatch_table_ptr->pGLCreateShaderr(dispatch_table_ptr->bound_context_ptr,
-                                                type);
+    VKGL_TRACE("glCreateShader(type=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(type) );
+
+    return dispatch_table_ptr->pGLCreateShader(dispatch_table_ptr->bound_context_ptr,
+                                               type);
 }
 
-GLuint vkglCreateShader_execute(VKGL::Context* in_context_ptr,
-                                const GLenum&  in_type)
+static GLuint vkglCreateShader_execute(OpenGL::Context* in_context_ptr,
+                                       const GLenum&    in_type)
 {
-    const auto type_vkgl = VKGL::Utils::get_shader_type_for_gl_enum(in_type);
+    const auto type_vkgl = OpenGL::Utils::get_shader_type_for_gl_enum(in_type);
 
     return in_context_ptr->create_shader(type_vkgl);
 }
 
-GLuint vkglCreateShader_with_validation(VKGL::Context* in_context_ptr,
-                                        const GLenum&  in_type)
+GLuint OpenGL::vkglCreateShader_with_validation(OpenGL::Context* in_context_ptr,
+                                                const GLenum&    in_type)
 {
     GLuint result = 0;
 

@@ -8,15 +8,15 @@
 #include "OpenGL/types.h"
 
 
-namespace VKGL
+namespace OpenGL
 {
     namespace Converters
     {
-        void convert(const VKGL::GetSetArgumentType& in_src_type,
-                     const void*                     in_vals_ptr,
-                     const uint32_t&                 in_n_vals,
-                     const VKGL::GetSetArgumentType& in_dst_type,
-                     void*                           out_result_ptr);
+        void convert(const OpenGL::GetSetArgumentType& in_src_type,
+                     const void*                       in_vals_ptr,
+                     const uint32_t&                   in_n_vals,
+                     const OpenGL::GetSetArgumentType& in_dst_type,
+                     void*                             out_result_ptr);
     }
 }
 

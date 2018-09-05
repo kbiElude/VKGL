@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLsizei& in_n,
-                     const GLuint*  in_renderbuffers_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLsizei&   in_n,
+                     const GLuint*    in_renderbuffers_ptr)
 {
     bool result = false;
 
@@ -18,27 +18,31 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglDeleteRenderbuffers(GLsizei      n,
-                                           const GLuint* renderbuffers)
+void VKGL_APIENTRY OpenGL::vkglDeleteRenderbuffers(GLsizei       n,
+                                                   const GLuint* renderbuffers)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glDeleteRenderbuffers(n=[%d] renderbuffers=[%p])",
+               static_cast<int32_t>(n),
+               renderbuffers);
 
     dispatch_table_ptr->pGLDeleteRenderbuffers(dispatch_table_ptr->bound_context_ptr,
                                                n,
                                                renderbuffers);
 }
 
-void vkglDeleteRenderbuffers_execute(VKGL::Context* in_context_ptr,
-                                     const GLsizei& in_n,
-                                     const GLuint*  in_renderbuffers_ptr)
+static void vkglDeleteRenderbuffers_execute(OpenGL::Context* in_context_ptr,
+                                            const GLsizei&   in_n,
+                                            const GLuint*    in_renderbuffers_ptr)
 {
     in_context_ptr->delete_renderbuffers(in_n,
                                          in_renderbuffers_ptr);
 }
 
-void vkglDeleteRenderbuffers_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLsizei& in_n,
-                                             const GLuint*  in_renderbuffers_ptr)
+void OpenGL::vkglDeleteRenderbuffers_with_validation(OpenGL::Context* in_context_ptr,
+                                                     const GLsizei&   in_n,
+                                                     const GLuint*    in_renderbuffers_ptr)
 {
     if (validate(in_context_ptr,
                  in_n,

@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*   in_context_ptr,
+static bool validate(OpenGL::Context* in_context_ptr,
                      const GLfloat&   in_value,
                      const GLboolean& in_invert)
 {
@@ -19,27 +19,31 @@ static bool validate(VKGL::Context*   in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglSampleCoverage(GLfloat   value,
-                                      GLboolean invert)
+void VKGL_APIENTRY OpenGL::vkglSampleCoverage(GLfloat   value,
+                                              GLboolean invert)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glSampleCoverage(value=[%.4f] invert=[%d])",
+               value,
+               (invert == GL_TRUE) ? 1 : 0);
 
     dispatch_table_ptr->pGLSampleCoverage(dispatch_table_ptr->bound_context_ptr,
                                           value,
                                           invert);
 }
 
-void vkglSampleCoverage_execute(VKGL::Context*   in_context_ptr,
-                                const GLfloat&   in_value,
-                                const GLboolean& in_invert)
+static void vkglSampleCoverage_execute(OpenGL::Context* in_context_ptr,
+                                       const GLfloat&   in_value,
+                                       const GLboolean& in_invert)
 {
     in_context_ptr->sample_coverage(in_value,
                                     in_invert);
 }
 
-void vkglSampleCoverage_with_validation(VKGL::Context*   in_context_ptr,
-                                        const GLfloat&   in_value,
-                                        const GLboolean& in_invert)
+void OpenGL::vkglSampleCoverage_with_validation(OpenGL::Context* in_context_ptr,
+                                                const GLfloat&   in_value,
+                                                const GLboolean& in_invert)
 {
     if (validate(in_context_ptr,
                  in_value,

@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLuint&  in_buffer)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLuint&    in_buffer)
 {
     bool result = false;
 
@@ -19,29 +19,33 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglBindBuffer(GLenum target,
-                                  GLuint buffer)
+void VKGL_APIENTRY OpenGL::vkglBindBuffer(GLenum target,
+                                          GLuint buffer)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glBindBuffer(target=[%s] buffer=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               buffer);
 
     dispatch_table_ptr->pGLBindBuffer(dispatch_table_ptr->bound_context_ptr,
                                       target,
                                       buffer);
 }
 
-void vkglBindBuffer_execute(VKGL::Context* in_context_ptr,
-                            const GLenum&  in_target,
-                            const GLuint&  in_buffer)
+static void vkglBindBuffer_execute(OpenGL::Context* in_context_ptr,
+                                   const GLenum&    in_target,
+                                   const GLuint&    in_buffer)
 {
-    const auto target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum(in_target);
+    const auto target_vkgl = OpenGL::Utils::get_buffer_target_for_gl_enum(in_target);
 
     in_context_ptr->bind_buffer(target_vkgl,
                                 in_buffer);
 }
 
-void vkglBindBuffer_with_validation(VKGL::Context* in_context_ptr,
-                                    const GLenum&  in_target,
-                                    const GLuint&  in_buffer)
+void OpenGL::vkglBindBuffer_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLenum&    in_target,
+                                            const GLuint&    in_buffer)
 {
     if (validate(in_context_ptr,
                  in_target,

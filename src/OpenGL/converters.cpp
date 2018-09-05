@@ -2,13 +2,14 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+#include "Common/macros.h"
 #include "OpenGL/converters.h"
 #include "OpenGL/utils_enum.h"
 
-static void convert_from_f32(const void*                     in_vals_ptr,
-                             const uint32_t&                 in_n_vals,
-                             const VKGL::GetSetArgumentType& in_dst_type,
-                             void*                           out_result_ptr)
+static void convert_from_f32(const void*                       in_vals_ptr,
+                             const uint32_t&                   in_n_vals,
+                             const OpenGL::GetSetArgumentType& in_dst_type,
+                             void*                             out_result_ptr)
 {
     const float* in_vals_f32_ptr = reinterpret_cast<const float*>(in_vals_ptr);
 
@@ -18,7 +19,7 @@ static void convert_from_f32(const void*                     in_vals_ptr,
     {
         switch (in_dst_type)
         {
-            case VKGL::GetSetArgumentType::Boolean:
+            case OpenGL::GetSetArgumentType::Boolean:
             {
                 bool* result_ptr = reinterpret_cast<bool*>(out_result_ptr) + n_val;
 
@@ -26,7 +27,7 @@ static void convert_from_f32(const void*                     in_vals_ptr,
                 break;
             }
 
-            case VKGL::GetSetArgumentType::Double:
+            case OpenGL::GetSetArgumentType::Double:
             {
                 double* result_ptr = reinterpret_cast<double*>(out_result_ptr) + n_val;
 
@@ -34,7 +35,7 @@ static void convert_from_f32(const void*                     in_vals_ptr,
                 break;
             }
 
-            case VKGL::GetSetArgumentType::Float:
+            case OpenGL::GetSetArgumentType::Float:
             {
                 float* result_ptr = reinterpret_cast<float*>(out_result_ptr) + n_val;
 
@@ -42,7 +43,7 @@ static void convert_from_f32(const void*                     in_vals_ptr,
                 break;
             }
 
-            case VKGL::GetSetArgumentType::Int:
+            case OpenGL::GetSetArgumentType::Int:
             {
                 int* result_ptr = reinterpret_cast<int*>(out_result_ptr) + n_val;
 
@@ -58,10 +59,10 @@ static void convert_from_f32(const void*                     in_vals_ptr,
     }
 }
 
-static void convert_from_f64(const void*                     in_vals_ptr,
-                             const uint32_t&                 in_n_vals,
-                             const VKGL::GetSetArgumentType& in_dst_type,
-                             void*                           out_result_ptr)
+static void convert_from_f64(const void*                       in_vals_ptr,
+                             const uint32_t&                   in_n_vals,
+                             const OpenGL::GetSetArgumentType& in_dst_type,
+                             void*                             out_result_ptr)
 {
     const double* in_vals_f64_ptr = reinterpret_cast<const double*>(in_vals_ptr);
 
@@ -71,7 +72,7 @@ static void convert_from_f64(const void*                     in_vals_ptr,
     {
         switch (in_dst_type)
         {
-            case VKGL::GetSetArgumentType::Boolean:
+            case OpenGL::GetSetArgumentType::Boolean:
             {
                 bool* result_ptr = reinterpret_cast<bool*>(out_result_ptr) + n_val;
 
@@ -79,7 +80,7 @@ static void convert_from_f64(const void*                     in_vals_ptr,
                 break;
             }
 
-            case VKGL::GetSetArgumentType::Double:
+            case OpenGL::GetSetArgumentType::Double:
             {
                 double* result_ptr = reinterpret_cast<double*>(out_result_ptr) + n_val;
 
@@ -87,7 +88,7 @@ static void convert_from_f64(const void*                     in_vals_ptr,
                 break;
             }
 
-            case VKGL::GetSetArgumentType::Float:
+            case OpenGL::GetSetArgumentType::Float:
             {
                 float* result_ptr = reinterpret_cast<float*>(out_result_ptr) + n_val;
 
@@ -95,7 +96,7 @@ static void convert_from_f64(const void*                     in_vals_ptr,
                 break;
             }
 
-            case VKGL::GetSetArgumentType::Int:
+            case OpenGL::GetSetArgumentType::Int:
             {
                 int* result_ptr = reinterpret_cast<int*>(out_result_ptr) + n_val;
 
@@ -111,10 +112,10 @@ static void convert_from_f64(const void*                     in_vals_ptr,
     }
 }
 
-static void convert_from_i32(const void*                     in_vals_ptr,
-                             const uint32_t&                 in_n_vals,
-                             const VKGL::GetSetArgumentType& in_dst_type,
-                             void*                           out_result_ptr)
+static void convert_from_i32(const void*                       in_vals_ptr,
+                             const uint32_t&                   in_n_vals,
+                             const OpenGL::GetSetArgumentType& in_dst_type,
+                             void*                             out_result_ptr)
 {
     const int32_t* in_vals_i32_ptr = reinterpret_cast<const int32_t*>(in_vals_ptr);
 
@@ -124,7 +125,7 @@ static void convert_from_i32(const void*                     in_vals_ptr,
     {
         switch (in_dst_type)
         {
-            case VKGL::GetSetArgumentType::Boolean:
+            case OpenGL::GetSetArgumentType::Boolean:
             {
                 bool* result_ptr = reinterpret_cast<bool*>(out_result_ptr) + n_val;
 
@@ -132,7 +133,7 @@ static void convert_from_i32(const void*                     in_vals_ptr,
                 break;
             }
 
-            case VKGL::GetSetArgumentType::Double:
+            case OpenGL::GetSetArgumentType::Double:
             {
                 double* result_ptr = reinterpret_cast<double*>(out_result_ptr) + n_val;
 
@@ -140,7 +141,7 @@ static void convert_from_i32(const void*                     in_vals_ptr,
                 break;
             }
 
-            case VKGL::GetSetArgumentType::Float:
+            case OpenGL::GetSetArgumentType::Float:
             {
                 float* result_ptr = reinterpret_cast<float*>(out_result_ptr) + n_val;
 
@@ -148,7 +149,7 @@ static void convert_from_i32(const void*                     in_vals_ptr,
                 break;
             }
 
-            case VKGL::GetSetArgumentType::Int:
+            case OpenGL::GetSetArgumentType::Int:
             {
                 int* result_ptr = reinterpret_cast<int*>(out_result_ptr) + n_val;
 
@@ -164,93 +165,93 @@ static void convert_from_i32(const void*                     in_vals_ptr,
     }
 }
 
-void VKGL::Converters::convert(const VKGL::GetSetArgumentType& in_src_type,
-                               const void*                     in_vals_ptr,
-                               const uint32_t&                 in_n_vals,
-                               const VKGL::GetSetArgumentType& in_dst_type,
-                               void*                           out_result_ptr)
+void OpenGL::Converters::convert(const OpenGL::GetSetArgumentType& in_src_type,
+                                 const void*                       in_vals_ptr,
+                                 const uint32_t&                   in_n_vals,
+                                 const OpenGL::GetSetArgumentType& in_dst_type,
+                                 void*                             out_result_ptr)
 {
     switch (in_src_type)
     {
-        case VKGL::GetSetArgumentType::BlendEquationVKGL:
+        case OpenGL::GetSetArgumentType::BlendEquationVKGL:
         {
-            const GLenum blend_equation_gl = VKGL::Utils::get_gl_enum_for_blend_equation(*reinterpret_cast<const VKGL::BlendEquation*>(in_vals_ptr) );
+            const GLenum blend_equation_gl = OpenGL::Utils::get_gl_enum_for_blend_equation(*reinterpret_cast<const OpenGL::BlendEquation*>(in_vals_ptr) );
 
             vkgl_assert(in_n_vals == 1);
 
-            return convert(VKGL::GetSetArgumentType::Int,
+            return convert(OpenGL::GetSetArgumentType::Int,
                           &blend_equation_gl,
                            1, /* in_n_vals */
                            in_dst_type,
                            out_result_ptr);
         }
 
-        case VKGL::GetSetArgumentType::BlendFunctionVKGL:
+        case OpenGL::GetSetArgumentType::BlendFunctionVKGL:
         {
-            const GLenum blend_func_gl = VKGL::Utils::get_gl_enum_for_blend_function(*reinterpret_cast<const VKGL::BlendFunction*>(in_vals_ptr) );
+            const GLenum blend_func_gl = OpenGL::Utils::get_gl_enum_for_blend_function(*reinterpret_cast<const OpenGL::BlendFunction*>(in_vals_ptr) );
 
             vkgl_assert(in_n_vals == 1);
 
-            return convert(VKGL::GetSetArgumentType::Int,
+            return convert(OpenGL::GetSetArgumentType::Int,
                           &blend_func_gl,
                            1, /* in_n_vals */
                            in_dst_type,
                            out_result_ptr);
         }
 
-        case VKGL::GetSetArgumentType::Boolean:
+        case OpenGL::GetSetArgumentType::Boolean:
         {
             const uint32_t val = ((*reinterpret_cast<const bool*>(in_vals_ptr) ) == true);
 
             vkgl_assert(in_n_vals == 1);
 
-            return convert(VKGL::GetSetArgumentType::Int,
+            return convert(OpenGL::GetSetArgumentType::Int,
                           &val,
                            1, /* in_n_vals */
                            in_dst_type,
                            out_result_ptr);
         }
 
-        case VKGL::GetSetArgumentType::BooleanFromInt32_Bit0:
+        case OpenGL::GetSetArgumentType::BooleanFromInt32_Bit0:
         {
             const uint32_t val = ((*reinterpret_cast<const int32_t*>(in_vals_ptr) ) & (1 << 0) );
 
             vkgl_assert(in_n_vals == 1);
 
-            return convert(VKGL::GetSetArgumentType::Int,
+            return convert(OpenGL::GetSetArgumentType::Int,
                           &val,
                            1, /* in_n_vals */
                            in_dst_type,
                            out_result_ptr);
         }
 
-        case VKGL::GetSetArgumentType::CullFaceVKGL:
+        case OpenGL::GetSetArgumentType::CullFaceVKGL:
         {
-            const GLenum cull_face_gl = VKGL::Utils::get_gl_enum_for_cull_mode(*reinterpret_cast<const VKGL::CullMode*>(in_vals_ptr) );
+            const GLenum cull_face_gl = OpenGL::Utils::get_gl_enum_for_cull_mode(*reinterpret_cast<const OpenGL::CullMode*>(in_vals_ptr) );
 
             vkgl_assert(in_n_vals == 1);
 
-            return convert(VKGL::GetSetArgumentType::Int,
+            return convert(OpenGL::GetSetArgumentType::Int,
                          &cull_face_gl,
                           1, /* in_n_vals */
                           in_dst_type,
                           out_result_ptr);
         }
 
-        case VKGL::GetSetArgumentType::DepthFunctionVKGL:
+        case OpenGL::GetSetArgumentType::DepthFunctionVKGL:
         {
-            const GLenum depth_func_gl = VKGL::Utils::get_gl_enum_for_depth_function(*reinterpret_cast<const VKGL::DepthFunction*>(in_vals_ptr) );
+            const GLenum depth_func_gl = OpenGL::Utils::get_gl_enum_for_depth_function(*reinterpret_cast<const OpenGL::DepthFunction*>(in_vals_ptr) );
 
             vkgl_assert(in_n_vals == 1);
 
-            return convert(VKGL::GetSetArgumentType::Int,
+            return convert(OpenGL::GetSetArgumentType::Int,
                          &depth_func_gl,
                           1, /* in_n_vals */
                           in_dst_type,
                           out_result_ptr);
         }
 
-        case VKGL::GetSetArgumentType::Double:
+        case OpenGL::GetSetArgumentType::Double:
         {
             return convert_from_f64(in_vals_ptr,
                                     in_n_vals,
@@ -258,7 +259,7 @@ void VKGL::Converters::convert(const VKGL::GetSetArgumentType& in_src_type,
                                     out_result_ptr);
         }
 
-        case VKGL::GetSetArgumentType::Float:
+        case OpenGL::GetSetArgumentType::Float:
         {
             return convert_from_f32(in_vals_ptr,
                                     in_n_vals,
@@ -266,20 +267,20 @@ void VKGL::Converters::convert(const VKGL::GetSetArgumentType& in_src_type,
                                     out_result_ptr);
         }
 
-        case VKGL::GetSetArgumentType::HintModeVKGL:
+        case OpenGL::GetSetArgumentType::HintModeVKGL:
         {
-            const GLenum hint_mode_gl = VKGL::Utils::get_gl_enum_for_hint_mode(*reinterpret_cast<const VKGL::HintMode*>(in_vals_ptr) );
+            const GLenum hint_mode_gl = OpenGL::Utils::get_gl_enum_for_hint_mode(*reinterpret_cast<const OpenGL::HintMode*>(in_vals_ptr) );
 
             vkgl_assert(in_n_vals == 1);
 
-            return convert(VKGL::GetSetArgumentType::Int,
+            return convert(OpenGL::GetSetArgumentType::Int,
                          &hint_mode_gl,
                           1, /* in_n_vals */
                           in_dst_type,
                           out_result_ptr);
         }
 
-        case VKGL::GetSetArgumentType::Int:
+        case OpenGL::GetSetArgumentType::Int:
         {
             return convert_from_i32(in_vals_ptr,
                                     in_n_vals,
@@ -287,59 +288,59 @@ void VKGL::Converters::convert(const VKGL::GetSetArgumentType& in_src_type,
                                     out_result_ptr);
         }
 
-        case VKGL::GetSetArgumentType::LogicOpModeVKGL:
+        case OpenGL::GetSetArgumentType::LogicOpModeVKGL:
         {
-            const GLenum logic_op_mode_gl = VKGL::Utils::get_gl_enum_for_logic_op_mode(*reinterpret_cast<const VKGL::LogicOpMode*>(in_vals_ptr) );
+            const GLenum logic_op_mode_gl = OpenGL::Utils::get_gl_enum_for_logic_op_mode(*reinterpret_cast<const OpenGL::LogicOpMode*>(in_vals_ptr) );
 
             vkgl_assert(in_n_vals == 1);
 
-            return convert(VKGL::GetSetArgumentType::Int,
+            return convert(OpenGL::GetSetArgumentType::Int,
                          &logic_op_mode_gl,
                           1, /* in_n_vals */
                           in_dst_type,
                           out_result_ptr);
         }
 
-        case VKGL::GetSetArgumentType::ProvokingVertexConventionVKGL:
+        case OpenGL::GetSetArgumentType::ProvokingVertexConventionVKGL:
         {
-            const GLenum convention_gl = VKGL::Utils::get_gl_enum_for_provoking_vertex_convention(*reinterpret_cast<const VKGL::ProvokingVertexConvention*>(in_vals_ptr) );
+            const GLenum convention_gl = OpenGL::Utils::get_gl_enum_for_provoking_vertex_convention(*reinterpret_cast<const OpenGL::ProvokingVertexConvention*>(in_vals_ptr) );
 
             vkgl_assert(in_n_vals == 1);
 
-            return convert(VKGL::GetSetArgumentType::Int,
+            return convert(OpenGL::GetSetArgumentType::Int,
                          &convention_gl,
                           1, /* in_n_vals */
                           in_dst_type,
                           out_result_ptr);
         }
 
-        case VKGL::GetSetArgumentType::StencilFunctionVKGL:
+        case OpenGL::GetSetArgumentType::StencilFunctionVKGL:
         {
-            const GLenum stencil_func_gl = VKGL::Utils::get_gl_enum_for_stencil_function(*reinterpret_cast<const VKGL::StencilFunction*>(in_vals_ptr) );
+            const GLenum stencil_func_gl = OpenGL::Utils::get_gl_enum_for_stencil_function(*reinterpret_cast<const OpenGL::StencilFunction*>(in_vals_ptr) );
 
             vkgl_assert(in_n_vals == 1);
 
-            return convert(VKGL::GetSetArgumentType::Int,
+            return convert(OpenGL::GetSetArgumentType::Int,
                          &stencil_func_gl,
                           1, /* in_n_vals */
                           in_dst_type,
                           out_result_ptr);
         }
 
-        case VKGL::GetSetArgumentType::StencilOperationVKGL:
+        case OpenGL::GetSetArgumentType::StencilOperationVKGL:
         {
-            const GLenum stencil_op_gl = VKGL::Utils::get_gl_enum_for_stencil_operation(*reinterpret_cast<const VKGL::StencilOperation*>(in_vals_ptr) );
+            const GLenum stencil_op_gl = OpenGL::Utils::get_gl_enum_for_stencil_operation(*reinterpret_cast<const OpenGL::StencilOperation*>(in_vals_ptr) );
 
             vkgl_assert(in_n_vals == 1);
 
-            return convert(VKGL::GetSetArgumentType::Int,
+            return convert(OpenGL::GetSetArgumentType::Int,
                          &stencil_op_gl,
                           1, /* in_n_vals */
                           in_dst_type,
                           out_result_ptr);
         }
 
-        case VKGL::GetSetArgumentType::String:
+        case OpenGL::GetSetArgumentType::String:
         default:
         {
             vkgl_assert_fail();

@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_shader)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_shader)
 {
     bool result = false;
 
@@ -17,22 +17,25 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglDeleteShader(GLuint shader)
+void VKGL_APIENTRY OpenGL::vkglDeleteShader(GLuint shader)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glDeleteShader(shader=[%d])",
+               shader);
 
     dispatch_table_ptr->pGLDeleteShader(dispatch_table_ptr->bound_context_ptr,
                                         shader);
 }
 
-void vkglDeleteShader_execute(VKGL::Context* in_context_ptr,
-                              const GLuint&  in_shader)
+static void vkglDeleteShader_execute(OpenGL::Context* in_context_ptr,
+                                     const GLuint&    in_shader)
 {
     in_context_ptr->delete_shader(in_shader);
 }
 
-void vkglDeleteShader_with_validation(VKGL::Context* in_context_ptr,
-                                      const GLuint&  in_shader)
+void OpenGL::vkglDeleteShader_with_validation(OpenGL::Context* in_context_ptr,
+                                              const GLuint&    in_shader)
 {
     if (validate(in_context_ptr,
                  in_shader) )

@@ -7,11 +7,14 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglVertexAttribI4sv(GLuint         index,
-                                        const GLshort* v);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglVertexAttribI4sv(GLuint         index,
+                                            const GLshort* v);
 
-void vkglVertexAttribI4sv_with_validation(VKGL::Context* in_context_ptr,
-                                          const GLuint&  in_index,
-                                          const GLshort* in_v_ptr);
+    void vkglVertexAttribI4sv_with_validation(OpenGL::Context* in_context_ptr,
+                                              const GLuint&    in_index,
+                                              const GLshort*   in_v_ptr);
+}
 
 #endif /* VKGL_GL_VERTEX_ATTRIB_I_4SV_H */

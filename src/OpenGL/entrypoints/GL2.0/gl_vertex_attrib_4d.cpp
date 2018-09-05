@@ -6,12 +6,12 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context*  in_context_ptr,
-                     const GLuint&   in_index,
-                     const GLdouble& in_x,
-                     const GLdouble& in_y,
-                     const GLdouble& in_z,
-                     const GLdouble& in_w)
+static bool validate(OpenGL::Context*  in_context_ptr,
+                     const GLuint&     in_index,
+                     const GLdouble&   in_x,
+                     const GLdouble&   in_y,
+                     const GLdouble&   in_z,
+                     const GLdouble&   in_w)
 {
     bool result = false;
 
@@ -21,13 +21,20 @@ static bool validate(VKGL::Context*  in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglVertexAttrib4d(GLuint   index,
-                                      GLdouble x,
-                                      GLdouble y,
-                                      GLdouble z,
-                                      GLdouble w)
+void VKGL_APIENTRY OpenGL::vkglVertexAttrib4d(GLuint   index,
+                                              GLdouble x,
+                                              GLdouble y,
+                                              GLdouble z,
+                                              GLdouble w)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glVertexAttrib4d(index=[%u] x=[%.4f] y=[%.4f] z=[%.4f] w=[%.4f])",
+               index,
+               static_cast<float>(x),
+               static_cast<float>(y),
+               static_cast<float>(z),
+               static_cast<float>(w) );
 
     dispatch_table_ptr->pGLVertexAttrib4d(dispatch_table_ptr->bound_context_ptr,
                                           index,
@@ -37,12 +44,12 @@ void VKGL_APIENTRY vkglVertexAttrib4d(GLuint   index,
                                           w);
 }
 
-void vkglVertexAttrib4d_execute(VKGL::Context*  in_context_ptr,
-                                const GLuint&   in_index,
-                                const GLdouble& in_x,
-                                const GLdouble& in_y,
-                                const GLdouble& in_z,
-                                const GLdouble& in_w)
+static void vkglVertexAttrib4d_execute(OpenGL::Context* in_context_ptr,
+                                       const GLuint&    in_index,
+                                       const GLdouble&  in_x,
+                                       const GLdouble&  in_y,
+                                       const GLdouble&  in_z,
+                                       const GLdouble&  in_w)
 {
     const double data[] =
     {
@@ -53,19 +60,19 @@ void vkglVertexAttrib4d_execute(VKGL::Context*  in_context_ptr,
     };
 
     in_context_ptr->set_vertex_attribute(in_index,
-                                         VKGL::GetSetArgumentType::Double,
-                                         VKGL::GetSetArgumentType::Float,
+                                         OpenGL::GetSetArgumentType::Double,
+                                         OpenGL::GetSetArgumentType::Float,
                                          4,
                                          false, /* in_normalized */
                                          data);
 }
 
-void vkglVertexAttrib4d_with_validation(VKGL::Context*  in_context_ptr,
-                                        const GLuint&   in_index,
-                                        const GLdouble& in_x,
-                                        const GLdouble& in_y,
-                                        const GLdouble& in_z,
-                                        const GLdouble& in_w)
+void OpenGL::vkglVertexAttrib4d_with_validation(OpenGL::Context* in_context_ptr,
+                                                const GLuint&    in_index,
+                                                const GLdouble&  in_x,
+                                                const GLdouble&  in_y,
+                                                const GLdouble&  in_z,
+                                                const GLdouble&  in_w)
 {
     if (validate(in_context_ptr,
                  in_index,

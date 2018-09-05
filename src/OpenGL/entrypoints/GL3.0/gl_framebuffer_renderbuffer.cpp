@@ -7,11 +7,11 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLenum&  in_attachment,
-                     const GLenum&  in_renderbuffertarget,
-                     const GLuint&  in_renderbuffer)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLenum&    in_attachment,
+                     const GLenum&    in_renderbuffertarget,
+                     const GLuint&    in_renderbuffer)
 {
     bool result = false;
 
@@ -21,12 +21,18 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglFramebufferRenderbuffer(GLenum target,
-                                               GLenum attachment,
-                                               GLenum renderbuffertarget,
-                                               GLuint renderbuffer)
+void VKGL_APIENTRY OpenGL::vkglFramebufferRenderbuffer(GLenum target,
+                                                       GLenum attachment,
+                                                       GLenum renderbuffertarget,
+                                                       GLuint renderbuffer)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glFramebufferRenderbuffer(target=[%s] attachment=[%s] renderbuffertarget=[%s] renderbuffer=[%d])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               OpenGL::Utils::get_raw_string_for_gl_enum(attachment),
+               OpenGL::Utils::get_raw_string_for_gl_enum(renderbuffertarget),
+               renderbuffer);
 
     dispatch_table_ptr->pGLFramebufferRenderbuffer(dispatch_table_ptr->bound_context_ptr,
                                                    target,
@@ -35,15 +41,15 @@ void VKGL_APIENTRY vkglFramebufferRenderbuffer(GLenum target,
                                                    renderbuffer);
 }
 
-void vkglFramebufferRenderbuffer_execute(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_target,
-                                         const GLenum&  in_attachment,
-                                         const GLenum&  in_renderbuffertarget,
-                                         const GLuint&  in_renderbuffer)
+static void vkglFramebufferRenderbuffer_execute(OpenGL::Context* in_context_ptr,
+                                                const GLenum&    in_target,
+                                                const GLenum&    in_attachment,
+                                                const GLenum&    in_renderbuffertarget,
+                                                const GLuint&    in_renderbuffer)
 {
-    const auto attachment_vkgl         = VKGL::Utils::get_framebuffer_attachment_point_for_gl_enum(in_attachment);
-    const auto renderbuffertarget_vkgl = VKGL::Utils::get_renderbuffer_target_for_gl_enum         (in_renderbuffertarget);
-    const auto target_vkgl             = VKGL::Utils::get_framebuffer_target_for_gl_enum          (in_target);
+    const auto attachment_vkgl         = OpenGL::Utils::get_framebuffer_attachment_point_for_gl_enum(in_attachment);
+    const auto renderbuffertarget_vkgl = OpenGL::Utils::get_renderbuffer_target_for_gl_enum         (in_renderbuffertarget);
+    const auto target_vkgl             = OpenGL::Utils::get_framebuffer_target_for_gl_enum          (in_target);
 
     in_context_ptr->framebuffer_renderbuffer(target_vkgl,
                                              attachment_vkgl,
@@ -51,11 +57,11 @@ void vkglFramebufferRenderbuffer_execute(VKGL::Context* in_context_ptr,
                                              in_renderbuffer);
 }
 
-void vkglFramebufferRenderbuffer_with_validation(VKGL::Context* in_context_ptr,
-                                                 const GLenum&  in_target,
-                                                 const GLenum&  in_attachment,
-                                                 const GLenum&  in_renderbuffertarget,
-                                                 const GLuint&  in_renderbuffer)
+void OpenGL::vkglFramebufferRenderbuffer_with_validation(OpenGL::Context* in_context_ptr,
+                                                         const GLenum&    in_target,
+                                                         const GLenum&    in_attachment,
+                                                         const GLenum&    in_renderbuffertarget,
+                                                         const GLuint&    in_renderbuffer)
 {
     if (validate(in_context_ptr,
                  in_target,

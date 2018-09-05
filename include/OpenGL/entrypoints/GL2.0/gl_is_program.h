@@ -7,9 +7,12 @@
 
 #include "OpenGL/types.h"
 
-GLboolean VKGL_APIENTRY vkglIsProgram(GLuint program);
+namespace OpenGL
+{
+    GLboolean VKGL_APIENTRY vkglIsProgram(GLuint program);
 
-bool vkglIsProgram_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLuint&  in_program);
+    bool vkglIsProgram_with_validation(OpenGL::Context* in_context_ptr,
+                                       const GLuint&    in_program);
+}
 
 #endif /* VKGL_GL_IS_PROGRAM_H */

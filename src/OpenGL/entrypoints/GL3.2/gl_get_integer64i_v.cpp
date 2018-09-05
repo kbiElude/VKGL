@@ -7,10 +7,10 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLuint&  in_index,
-                     GLint64*       out_data_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLuint&    in_index,
+                     GLint64*         out_data_ptr)
 {
     bool result = false;
 
@@ -21,11 +21,16 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglGetInteger64i_v(GLenum   target,
-                                       GLuint   index,
-                                       GLint64* data)
+void VKGL_APIENTRY OpenGL::vkglGetInteger64i_v(GLenum   target,
+                                               GLuint   index,
+                                               GLint64* data)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glGetInteger64i_v(target=[%s] index=[%u] data=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               index,
+               data);
 
     dispatch_table_ptr->pGLGetInteger64i_v(dispatch_table_ptr->bound_context_ptr,
                                            target,
@@ -33,23 +38,23 @@ void VKGL_APIENTRY vkglGetInteger64i_v(GLenum   target,
                                            data);
 }
 
-void vkglGetInteger64i_v_execute(VKGL::Context* in_context_ptr,
-                                 const GLenum&  in_target,
-                                 const GLuint&  in_index,
-                                 GLint64*       out_data_ptr)
+static void vkglGetInteger64i_v_execute(OpenGL::Context* in_context_ptr,
+                                        const GLenum&    in_target,
+                                        const GLuint&    in_index,
+                                        GLint64*         out_data_ptr)
 {
-    const auto target_vkgl = VKGL::Utils::get_context_property_for_gl_enum(in_target);
+    const auto target_vkgl = OpenGL::Utils::get_context_property_for_gl_enum(in_target);
 
     in_context_ptr->get_parameter_indexed(target_vkgl,
                                           in_index,
-                                          VKGL::GetSetArgumentType::Int64,
+                                          OpenGL::GetSetArgumentType::Int64,
                                           out_data_ptr);
 }
 
-void vkglGetInteger64i_v_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLenum&  in_target,
-                                         const GLuint&  in_index,
-                                         GLint64*       out_data_ptr)
+void OpenGL::vkglGetInteger64i_v_with_validation(OpenGL::Context* in_context_ptr,
+                                                 const GLenum&    in_target,
+                                                 const GLuint&    in_index,
+                                                 GLint64*         out_data_ptr)
 {
     if (validate(in_context_ptr,
                  in_target,

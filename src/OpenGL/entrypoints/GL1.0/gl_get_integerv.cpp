@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_pname,
-                     GLint*         out_data_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_pname,
+                     GLint*           out_data_ptr)
 {
     bool result = false;
 
@@ -20,30 +20,34 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglGetIntegerv(GLenum pname,
-                                   GLint* data)
+void VKGL_APIENTRY OpenGL::vkglGetIntegerv(GLenum pname,
+                                           GLint* data)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glGetIntegerv(pname=[%s] data=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(pname),
+               data);
 
     dispatch_table_ptr->pGLGetIntegerv(dispatch_table_ptr->bound_context_ptr,
                                        pname,
                                        data);
 }
 
-void vkglGetIntegerv_execute(VKGL::Context* in_context_ptr,
-                             const GLenum&  in_pname,
-                             GLint*         out_data_ptr)
+static void vkglGetIntegerv_execute(OpenGL::Context* in_context_ptr,
+                                    const GLenum&    in_pname,
+                                    GLint*           out_data_ptr)
 {
-    const auto pname_vkgl = VKGL::Utils::get_context_property_for_gl_enum(in_pname);
+    const auto pname_vkgl = OpenGL::Utils::get_context_property_for_gl_enum(in_pname);
 
     in_context_ptr->get_parameter(pname_vkgl,
-                                  VKGL::GetSetArgumentType::Int,
+                                  OpenGL::GetSetArgumentType::Int,
                                   out_data_ptr);
 }
 
-void vkglGetIntegerv_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLenum&  in_pname,
-                                     GLint*         out_data_ptr)
+void OpenGL::vkglGetIntegerv_with_validation(OpenGL::Context* in_context_ptr,
+                                             const GLenum&    in_pname,
+                                             GLint*           out_data_ptr)
 {
     if (validate(in_context_ptr,
                  in_pname,

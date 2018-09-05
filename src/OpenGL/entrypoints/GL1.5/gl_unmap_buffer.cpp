@@ -7,8 +7,8 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target)
 {
     bool result = false;
 
@@ -18,25 +18,28 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLboolean VKGL_APIENTRY vkglUnmapBuffer(GLenum target)
+GLboolean VKGL_APIENTRY OpenGL::vkglUnmapBuffer(GLenum target)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glUnmapBuffer(target=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target) );
 
     return dispatch_table_ptr->pGLUnmapBuffer(dispatch_table_ptr->bound_context_ptr,
                                               target) ? GL_TRUE
                                                       : GL_FALSE;
 }
 
-bool vkglUnmapBuffer_execute(VKGL::Context* in_context_ptr,
-                             const GLenum&  in_target)
+static bool vkglUnmapBuffer_execute(OpenGL::Context* in_context_ptr,
+                                    const GLenum&    in_target)
 {
-    const auto target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum(in_target);
+    const auto target_vkgl = OpenGL::Utils::get_buffer_target_for_gl_enum(in_target);
 
     return in_context_ptr->unmap_buffer(target_vkgl);
 }
 
-bool vkglUnmapBuffer_with_validation(VKGL::Context* in_context_ptr,
-                                     const GLenum&  in_target)
+bool OpenGL::vkglUnmapBuffer_with_validation(OpenGL::Context* in_context_ptr,
+                                             const GLenum&    in_target)
 {
     bool result = false;
 

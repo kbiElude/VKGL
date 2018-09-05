@@ -6,7 +6,7 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context*   in_context_ptr,
+static bool validate(OpenGL::Context* in_context_ptr,
                      const GLint&     in_location,
                      const GLsizei&   in_count,
                      const GLboolean& in_transpose,
@@ -20,12 +20,19 @@ static bool validate(VKGL::Context*   in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglUniformMatrix3x4fv(GLint          location,
-                                          GLsizei        count,
-                                          GLboolean      transpose,
-                                          const GLfloat* value)
+void VKGL_APIENTRY OpenGL::vkglUniformMatrix3x4fv(GLint          location,
+                                                  GLsizei        count,
+                                                  GLboolean      transpose,
+                                                  const GLfloat* value)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    /* TODO: Make me more useful */
+    VKGL_TRACE("glUniformMatrix3x4fv(location=[%d] count=[%d] transpose=[%d] value=[%p])",
+               location,
+               static_cast<int32_t>(count),
+               (transpose == GL_TRUE) ? 1 : 0,
+               value);
 
     dispatch_table_ptr->pGLUniformMatrix3x4fv(dispatch_table_ptr->bound_context_ptr,
                                               location,
@@ -34,14 +41,14 @@ void VKGL_APIENTRY vkglUniformMatrix3x4fv(GLint          location,
                                               value);
 }
 
-void vkglUniformMatrix3x4fv_execute(VKGL::Context*   in_context_ptr,
-                                    const GLint&     in_location,
-                                    const GLsizei&   in_count,
-                                    const GLboolean& in_transpose,
-                                    const GLfloat*   in_value_ptr)
+static void vkglUniformMatrix3x4fv_execute(OpenGL::Context* in_context_ptr,
+                                           const GLint&     in_location,
+                                           const GLsizei&   in_count,
+                                           const GLboolean& in_transpose,
+                                           const GLfloat*   in_value_ptr)
 {
     in_context_ptr->set_uniform_matrix_arrayed(in_location,
-                                               VKGL::GetSetArgumentType::Float,
+                                               OpenGL::GetSetArgumentType::Float,
                                                3,
                                                4,
                                                in_count,
@@ -49,11 +56,11 @@ void vkglUniformMatrix3x4fv_execute(VKGL::Context*   in_context_ptr,
                                                in_value_ptr);
 }
 
-void vkglUniformMatrix3x4fv_with_validation(VKGL::Context*   in_context_ptr,
-                                            const GLint&     in_location,
-                                            const GLsizei&   in_count,
-                                            const GLboolean& in_transpose,
-                                            const GLfloat*   in_value_ptr)
+void OpenGL::vkglUniformMatrix3x4fv_with_validation(OpenGL::Context* in_context_ptr,
+                                                    const GLint&     in_location,
+                                                    const GLsizei&   in_count,
+                                                    const GLboolean& in_transpose,
+                                                    const GLfloat*   in_value_ptr)
 {
     if (validate(in_context_ptr,
                  in_location,

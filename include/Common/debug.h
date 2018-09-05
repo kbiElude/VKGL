@@ -2,8 +2,8 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
-#ifndef VKGL_DEBUG_H
-#define VKGL_DEBUG_H
+#ifndef COMMON_DEBUG_H
+#define COMMON_DEBUG_H
 
 namespace VKGL
 {
@@ -15,4 +15,4 @@ namespace VKGL
     }
 }
 
-#endif /* VKGL_DEBUG_H */
+#endif /* COMMON_DEBUG_H */

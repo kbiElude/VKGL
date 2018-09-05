@@ -7,11 +7,14 @@
 
 #include "OpenGL/types.h"
 
-void VKGL_APIENTRY vkglDeleteVertexArrays(GLsizei       n,
-                                          const GLuint* arrays);
+namespace OpenGL
+{
+    void VKGL_APIENTRY vkglDeleteVertexArrays(GLsizei       n,
+                                              const GLuint* arrays);
 
-void vkglDeleteVertexArrays_with_validation(VKGL::Context* in_context_ptr,
-                                            const GLsizei& in_n,
-                                            const GLuint*  in_arrays_ptr);
+    void vkglDeleteVertexArrays_with_validation(OpenGL::Context* in_context_ptr,
+                                                const GLsizei&   in_n,
+                                                const GLuint*    in_arrays_ptr);
+}
 
 #endif /* VKGL_GL_DELETE_VERTEX_ARRAYS_H */

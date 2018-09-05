@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*    in_context_ptr,
+static bool validate(OpenGL::Context*  in_context_ptr,
                      const GLenum&     in_target,
                      const GLintptr&   in_offset,
                      const GLsizeiptr& in_size,
@@ -21,12 +21,18 @@ static bool validate(VKGL::Context*    in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetBufferSubData(GLenum     target,
-                                        GLintptr   offset,
-                                        GLsizeiptr size,
-                                        void*      data)
+void VKGL_APIENTRY OpenGL::vkglGetBufferSubData(GLenum     target,
+                                                GLintptr   offset,
+                                                GLsizeiptr size,
+                                                void*      data)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glGetBufferSubData(target=[%s] offset=[%d] size=[%d] data=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               static_cast<int32_t>(offset),
+               static_cast<int32_t>(size),
+               data);
 
     dispatch_table_ptr->pGLGetBufferSubData(dispatch_table_ptr->bound_context_ptr,
                                             target,
@@ -35,13 +41,13 @@ void VKGL_APIENTRY vkglGetBufferSubData(GLenum     target,
                                             data);
 }
 
-void vkglGetBufferSubData_execute(VKGL::Context*    in_context_ptr,
-                                  const GLenum&     in_target,
-                                  const GLintptr&   in_offset,
-                                  const GLsizeiptr& in_size,
-                                  void*             in_data)
+static void vkglGetBufferSubData_execute(OpenGL::Context*  in_context_ptr,
+                                         const GLenum&     in_target,
+                                         const GLintptr&   in_offset,
+                                         const GLsizeiptr& in_size,
+                                         void*             in_data)
 {
-    const auto target_vkgl = VKGL::Utils::get_buffer_target_for_gl_enum(in_target);
+    const auto target_vkgl = OpenGL::Utils::get_buffer_target_for_gl_enum(in_target);
 
     in_context_ptr->get_buffer_sub_data(target_vkgl,
                                         in_offset,
@@ -49,11 +55,11 @@ void vkglGetBufferSubData_execute(VKGL::Context*    in_context_ptr,
                                         in_data);
 }
 
-void vkglGetBufferSubData_with_validation(VKGL::Context*    in_context_ptr,
-                                          const GLenum&     in_target,
-                                          const GLintptr&   in_offset,
-                                          const GLsizeiptr& in_size,
-                                          void*             in_data)
+void OpenGL::vkglGetBufferSubData_with_validation(OpenGL::Context*  in_context_ptr,
+                                                  const GLenum&     in_target,
+                                                  const GLintptr&   in_offset,
+                                                  const GLsizeiptr& in_size,
+                                                  void*             in_data)
 {
     if (validate(in_context_ptr,
                  in_target,

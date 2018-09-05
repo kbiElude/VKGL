@@ -7,12 +7,12 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program,
-                     const GLuint&  in_uniform_index,
-                     const GLsizei& in_buf_size,
-                     GLsizei*       inout_length_ptr,
-                     GLchar*        out_uniform_name_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program,
+                     const GLuint&    in_uniform_index,
+                     const GLsizei&   in_buf_size,
+                     GLsizei*         inout_length_ptr,
+                     GLchar*          out_uniform_name_ptr)
 {
     bool result = false;
 
@@ -22,13 +22,20 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetActiveUniformName(GLuint   program,
-                                            GLuint   uniformIndex,
-                                            GLsizei  bufSize,
-                                            GLsizei* length,
-                                            GLchar*  uniformName)
+void VKGL_APIENTRY OpenGL::vkglGetActiveUniformName(GLuint   program,
+                                                    GLuint   uniformIndex,
+                                                    GLsizei  bufSize,
+                                                    GLsizei* length,
+                                                    GLchar*  uniformName)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glGetActiveUniformName(program=[%u] uniformIndex=[%u] bufSize=[%d] length=[%p] uniformName=[%p])",
+               program,
+               uniformIndex,
+               static_cast<int32_t>(bufSize),
+               length,
+               uniformName);
 
     dispatch_table_ptr->pGLGetActiveUniformName(dispatch_table_ptr->bound_context_ptr,
                                                 program,
@@ -38,12 +45,12 @@ void VKGL_APIENTRY vkglGetActiveUniformName(GLuint   program,
                                                 uniformName);
 }
 
-void vkglGetActiveUniformName_execute(VKGL::Context* in_context_ptr,
-                                      const GLuint&  in_program,
-                                      const GLuint&  in_uniform_index,
-                                      const GLsizei& in_buf_size,
-                                      GLsizei*       inout_length_ptr,
-                                      GLchar*        out_uniform_name_ptr)
+static void vkglGetActiveUniformName_execute(OpenGL::Context* in_context_ptr,
+                                             const GLuint&    in_program,
+                                             const GLuint&    in_uniform_index,
+                                             const GLsizei&   in_buf_size,
+                                             GLsizei*         inout_length_ptr,
+                                             GLchar*          out_uniform_name_ptr)
 {
     in_context_ptr->get_active_uniform_name(in_program,
                                             in_uniform_index,
@@ -52,12 +59,12 @@ void vkglGetActiveUniformName_execute(VKGL::Context* in_context_ptr,
                                             out_uniform_name_ptr);
 }
 
-void vkglGetActiveUniformName_with_validation(VKGL::Context* in_context_ptr,
-                                              const GLuint&  in_program,
-                                              const GLuint&  in_uniform_index,
-                                              const GLsizei& in_buf_size,
-                                              GLsizei*       inout_length_ptr,
-                                              GLchar*        out_uniform_name_ptr)
+void OpenGL::vkglGetActiveUniformName_with_validation(OpenGL::Context* in_context_ptr,
+                                                      const GLuint&    in_program,
+                                                      const GLuint&    in_uniform_index,
+                                                      const GLsizei&   in_buf_size,
+                                                      GLsizei*         inout_length_ptr,
+                                                      GLchar*          out_uniform_name_ptr)
 {
     if (validate(in_context_ptr,
                  in_program,

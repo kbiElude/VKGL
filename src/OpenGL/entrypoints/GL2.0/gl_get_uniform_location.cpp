@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program,
-                     const GLchar*  in_name)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program,
+                     const GLchar*    in_name)
 {
     bool result = false;
 
@@ -18,27 +18,31 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLint VKGL_APIENTRY vkglGetUniformLocation(GLuint        program,
-                                           const GLchar* name)
+GLint VKGL_APIENTRY OpenGL::vkglGetUniformLocation(GLuint        program,
+                                                   const GLchar* name)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glGetUniformLocation(program=[%u] name=[%s])",
+               program,
+               name);
 
     return dispatch_table_ptr->pGLGetUniformLocation(dispatch_table_ptr->bound_context_ptr,
                                                      program,
                                                      name);
 }
 
-GLint vkglGetUniformLocation_execute(VKGL::Context* in_context_ptr,
-                                    const GLuint&   in_program,
-                                    const GLchar*   in_name)
+static GLint vkglGetUniformLocation_execute(OpenGL::Context* in_context_ptr,
+                                            const GLuint&    in_program,
+                                            const GLchar*    in_name)
 {
     return in_context_ptr->get_uniform_location(in_program,
                                                 in_name);
 }
 
-GLint vkglGetUniformLocation_with_validation(VKGL::Context* in_context_ptr,
-                                             const GLuint&  in_program,
-                                             const GLchar*  in_name)
+GLint OpenGL::vkglGetUniformLocation_with_validation(OpenGL::Context* in_context_ptr,
+                                                     const GLuint&    in_program,
+                                                     const GLchar*    in_name)
 {
     GLint result = -1;
 

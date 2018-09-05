@@ -7,8 +7,8 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_func)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_func)
 {
     bool result = false;
 
@@ -19,24 +19,27 @@ static bool validate(VKGL::Context* in_context_ptr,
 }
 
 
-void VKGL_APIENTRY vkglDepthFunc(GLenum func)
+void VKGL_APIENTRY OpenGL::vkglDepthFunc(GLenum func)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glDepthFunc(func=[%s])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(func) );
 
     dispatch_table_ptr->pGLDepthFunc(dispatch_table_ptr->bound_context_ptr,
                                      func);
 }
 
-void vkglDepthFunc_execute(VKGL::Context* in_context_ptr,
-                           const GLenum&  in_func)
+static void vkglDepthFunc_execute(OpenGL::Context* in_context_ptr,
+                                  const GLenum&    in_func)
 {
-    const auto depth_func_vkgl = VKGL::Utils::get_depth_function_for_gl_enum(in_func);
+    const auto depth_func_vkgl = OpenGL::Utils::get_depth_function_for_gl_enum(in_func);
 
     in_context_ptr->set_depth_function(depth_func_vkgl);
 }
 
-void vkglDepthFunc_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLenum&  in_func)
+void OpenGL::vkglDepthFunc_with_validation(OpenGL::Context* in_context_ptr,
+                                           const GLenum&    in_func)
 {
     if (validate(in_context_ptr,
                  in_func) )

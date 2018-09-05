@@ -7,9 +7,9 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLuint&  in_index)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLuint&    in_index)
 {
     bool result = false;
 
@@ -19,29 +19,33 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglEnablei(GLenum target,
-                               GLuint index)
+void VKGL_APIENTRY OpenGL::vkglEnablei(GLenum target,
+                                       GLuint index)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glEnablei(target=[%s] index=[%u])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               index);
 
     dispatch_table_ptr->pGLEnablei(dispatch_table_ptr->bound_context_ptr,
                                    target,
                                    index);
 }
 
-void vkglEnablei_execute(VKGL::Context* in_context_ptr,
-                         const GLenum&  in_target,
-                         const GLuint&  in_index)
+static void vkglEnablei_execute(OpenGL::Context* in_context_ptr,
+                                const GLenum&    in_target,
+                                const GLuint&    in_index)
 {
     vkgl_assert(in_target == GL_BLEND);
 
-    in_context_ptr->enablei(VKGL::Capability::Blend,
+    in_context_ptr->enablei(OpenGL::Capability::Blend,
                             in_index);
 }
 
-void vkglEnablei_with_validation(VKGL::Context* in_context_ptr,
-                                 const GLenum&  in_target,
-                                 const GLuint&  in_index)
+void OpenGL::vkglEnablei_with_validation(OpenGL::Context* in_context_ptr,
+                                         const GLenum&    in_target,
+                                         const GLuint&    in_index)
 {
     if (validate(in_context_ptr,
                  in_target,

@@ -7,14 +7,14 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program,
-                     const GLuint&  in_index,
-                     const GLsizei& in_buf_size,
-                     GLsizei*       out_length_ptr,
-                     GLint*         out_size_ptr,
-                     GLenum*        out_type_ptr,
-                     GLchar*        out_name_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program,
+                     const GLuint&    in_index,
+                     const GLsizei&   in_buf_size,
+                     GLsizei*         out_length_ptr,
+                     GLint*           out_size_ptr,
+                     GLenum*          out_type_ptr,
+                     GLchar*          out_name_ptr)
 {
     bool result = false;
 
@@ -24,15 +24,24 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglGetActiveAttrib(GLuint   program,
-                                       GLuint   index,
-                                       GLsizei  bufSize,
-                                       GLsizei* length,
-                                       GLint*   size,
-                                       GLenum*  type,
-                                       GLchar*  name)
+void VKGL_APIENTRY OpenGL::vkglGetActiveAttrib(GLuint   program,
+                                               GLuint   index,
+                                               GLsizei  bufSize,
+                                               GLsizei* length,
+                                               GLint*   size,
+                                               GLenum*  type,
+                                               GLchar*  name)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glGetActiveAttrib(program=[%u] index=[%u] bufSize=[%d] length=[%p] size=[%p] type=[%p] name=[%p])",
+               program,
+               index,
+               static_cast<int32_t>(bufSize),
+               length,
+               size,
+               type,
+               name);
 
     dispatch_table_ptr->pGLGetActiveAttrib(dispatch_table_ptr->bound_context_ptr,
                                            program,
@@ -44,16 +53,16 @@ void VKGL_APIENTRY vkglGetActiveAttrib(GLuint   program,
                                            name);
 }
 
-void vkglGetActiveAttrib_execute(VKGL::Context* in_context_ptr,
-                                 const GLuint&  in_program,
-                                 const GLuint&  in_index,
-                                 const GLsizei& in_buf_size,
-                                 GLsizei*       out_length_ptr,
-                                 GLint*         out_size_ptr,
-                                 GLenum*        out_type_ptr,
-                                 GLchar*        out_name_ptr)
+static void vkglGetActiveAttrib_execute(OpenGL::Context* in_context_ptr,
+                                        const GLuint&    in_program,
+                                        const GLuint&    in_index,
+                                        const GLsizei&   in_buf_size,
+                                        GLsizei*         out_length_ptr,
+                                        GLint*           out_size_ptr,
+                                        GLenum*          out_type_ptr,
+                                        GLchar*          out_name_ptr)
 {
-    auto type_vkgl = VKGL::VariableType::Unknown;
+    auto type_vkgl = OpenGL::VariableType::Unknown;
 
     in_context_ptr->get_active_attrib(in_program,
                                       in_index,
@@ -63,17 +72,17 @@ void vkglGetActiveAttrib_execute(VKGL::Context* in_context_ptr,
                                      &type_vkgl,
                                       out_name_ptr)
 
-    *out_type_ptr = VKGL::Utils::get_gl_enum_for_variable_type(type_vkgl);
+    *out_type_ptr = OpenGL::Utils::get_gl_enum_for_variable_type(type_vkgl);
 }
 
-void vkglGetActiveAttrib_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLuint&  in_program,
-                                         const GLuint&  in_index,
-                                         const GLsizei& in_buf_size,
-                                         GLsizei*       out_length_ptr,
-                                         GLint*         out_size_ptr,
-                                         GLenum*        out_type_ptr,
-                                         GLchar*        out_name_ptr)
+void OpenGL::vkglGetActiveAttrib_with_validation(OpenGL::Context* in_context_ptr,
+                                                 const GLuint&    in_program,
+                                                 const GLuint&    in_index,
+                                                 const GLsizei&   in_buf_size,
+                                                 GLsizei*         out_length_ptr,
+                                                 GLint*           out_size_ptr,
+                                                 GLenum*          out_type_ptr,
+                                                 GLchar*          out_name_ptr)
 {
     if (validate(in_context_ptr,
                  in_program,

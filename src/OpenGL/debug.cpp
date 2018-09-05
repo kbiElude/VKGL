@@ -2,7 +2,7 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
-#include "OpenGL/debug.h"
+#include "Common/debug.h"
 #include <assert.h>
 #include <stdio.h>
 

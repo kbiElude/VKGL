@@ -6,9 +6,9 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_index,
-                     const GLfloat* in_v_ptr)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_index,
+                     const GLfloat*   in_v_ptr)
 {
     bool result = false;
 
@@ -18,31 +18,36 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglVertexAttrib2fv(GLuint         index,
-                                       const GLfloat* v)
+void VKGL_APIENTRY OpenGL::vkglVertexAttrib2fv(GLuint         index,
+                                               const GLfloat* v)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    /* TODO: Make me more useful */
+    VKGL_TRACE("glVertexAttrib2fv(index=[%u] v=[%p])",
+               index,
+               v);
 
     dispatch_table_ptr->pGLVertexAttrib2fv(dispatch_table_ptr->bound_context_ptr,
                                            index,
                                            v);
 }
 
-void vkglVertexAttrib2fv_execute(VKGL::Context* in_context_ptr,
-                                 const GLuint&  in_index,
-                                 const GLfloat* in_v_ptr)
+static void vkglVertexAttrib2fv_execute(OpenGL::Context* in_context_ptr,
+                                        const GLuint&    in_index,
+                                        const GLfloat*   in_v_ptr)
 {
     in_context_ptr->set_vertex_attribute(in_index,
-                                         VKGL::GetSetArgumentType::Float,
-                                         VKGL::GetSetArgumentType::Float,
+                                         OpenGL::GetSetArgumentType::Float,
+                                         OpenGL::GetSetArgumentType::Float,
                                          2,
                                          false, /* in_normalized */
                                          in_v_ptr);
 }
 
-void vkglVertexAttrib2fv_with_validation(VKGL::Context* in_context_ptr,
-                                         const GLuint&  in_index,
-                                         const GLfloat* in_v_ptr)
+void OpenGL::vkglVertexAttrib2fv_with_validation(OpenGL::Context* in_context_ptr,
+                                                 const GLuint&    in_index,
+                                                 const GLfloat*   in_v_ptr)
 {
     if (validate(in_context_ptr,
                  in_index,

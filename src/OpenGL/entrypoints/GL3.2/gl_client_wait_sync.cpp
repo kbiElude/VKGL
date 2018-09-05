@@ -7,7 +7,7 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context*    in_context_ptr,
+static bool validate(OpenGL::Context*  in_context_ptr,
                      const GLsync&     in_sync,
                      const GLbitfield& in_flags,
                      const GLuint64&   in_timeout)
@@ -20,11 +20,16 @@ static bool validate(VKGL::Context*    in_context_ptr,
     return result;
 }
 
-GLenum VKGL_APIENTRY vkglClientWaitSync(GLsync     sync,
-                                        GLbitfield flags,
-                                        GLuint64   timeout)
+GLenum VKGL_APIENTRY OpenGL::vkglClientWaitSync(GLsync     sync,
+                                                GLbitfield flags,
+                                                GLuint64   timeout)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glClientWaitSync(sync=[%p] flags=[%s] timeout=[%d])",
+               sync,
+               OpenGL::Utils::get_raw_string_for_gl_bitfield(OpenGL::BitfieldType::Wait_Sync_Mask, flags),
+               static_cast<uint32_t>(timeout) );
 
     dispatch_table_ptr->pGLClientWaitSync(dispatch_table_ptr->bound_context_ptr,
                                           sync,
@@ -32,23 +37,23 @@ GLenum VKGL_APIENTRY vkglClientWaitSync(GLsync     sync,
                                           timeout);
 }
 
-GLenum vkglClientWaitSync_execute(VKGL::Context*    in_context_ptr,
-                                  const GLsync&     in_sync,
-                                  const GLbitfield& in_flags,
-                                  const GLuint64&   in_timeout)
+static GLenum vkglClientWaitSync_execute(OpenGL::Context*  in_context_ptr,
+                                         const GLsync&     in_sync,
+                                         const GLbitfield& in_flags,
+                                         const GLuint64&   in_timeout)
 {
-    const auto flags_vkgl = VKGL::Utils::get_wait_sync_bits_for_gl_enum(in_flags);
-    const auto result     = in_context_ptr->client_wait_sync           (in_sync,
-                                                                        flags_vkgl,
-                                                                        in_timeout);
+    const auto flags_vkgl = OpenGL::Utils::get_wait_sync_bits_for_gl_enum(in_flags);
+    const auto result     = in_context_ptr->client_wait_sync             (in_sync,
+                                                                          flags_vkgl,
+                                                                          in_timeout);
 
-    return VKGL::Utils::get_gl_enum_for_wait_result(result);
+    return OpenGL::Utils::get_gl_enum_for_wait_result(result);
 }
 
-GLenum vkglClientWaitSync_with_validation(VKGL::Context*    in_context_ptr,
-                                          const GLsync&     in_sync,
-                                          const GLbitfield& in_flags,
-                                          const GLuint64&   in_timeout)
+GLenum OpenGL::vkglClientWaitSync_with_validation(OpenGL::Context*  in_context_ptr,
+                                                  const GLsync&     in_sync,
+                                                  const GLbitfield& in_flags,
+                                                  const GLuint64&   in_timeout)
 {
     GLenum result = UINT32_MAX;
 

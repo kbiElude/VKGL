@@ -7,14 +7,14 @@
 #include "OpenGL/globals.h"
 #include "OpenGL/utils_enum.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLenum&  in_target,
-                     const GLint&   in_level,
-                     const GLenum&  in_internalformat,
-                     const GLsizei& in_width,
-                     const GLint&   in_border,
-                     const GLsizei& in_image_size,
-                     const void*    in_data)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLenum&    in_target,
+                     const GLint&     in_level,
+                     const GLenum&    in_internalformat,
+                     const GLsizei&   in_width,
+                     const GLint&     in_border,
+                     const GLsizei&   in_image_size,
+                     const void*      in_data)
 {
     bool result = false;
 
@@ -24,15 +24,24 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglCompressedTexImage1D(GLenum      target,
-                                            GLint       level,
-                                            GLenum      internalformat,
-                                            GLsizei     width,
-                                            GLint       border,
-                                            GLsizei     imageSize,
-                                            const void* data)
+void VKGL_APIENTRY OpenGL::vkglCompressedTexImage1D(GLenum      target,
+                                                    GLint       level,
+                                                    GLenum      internalformat,
+                                                    GLsizei     width,
+                                                    GLint       border,
+                                                    GLsizei     imageSize,
+                                                    const void* data)
 {
-    const auto dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glCompressedTexImage1D(target=[%s] level=[%d] internalformat=[%s] width=[%d] border=[%d] imageSize=[%d] data=[%p])",
+               OpenGL::Utils::get_raw_string_for_gl_enum(target),
+               level,
+               OpenGL::Utils::get_raw_string_for_gl_enum(internalformat),
+               static_cast<int32_t>(width),
+               border,
+               imageSize,
+               data);
 
     dispatch_table_ptr->pGLCompressedTexImage1D(dispatch_table_ptr->bound_context_ptr,
                                                 target,
@@ -44,17 +53,17 @@ void VKGL_APIENTRY vkglCompressedTexImage1D(GLenum      target,
                                                 data);
 }
 
-void vkglCompressedTexImage1D_execute(VKGL::Context* in_context_ptr,
-                                      const GLenum&  in_target,
-                                      const GLint&   in_level,
-                                      const GLenum&  in_internalformat,
-                                      const GLsizei& in_width,
-                                      const GLint&   in_border,
-                                      const GLsizei& in_image_size,
-                                      const void*    in_data)
+static void vkglCompressedTexImage1D_execute(OpenGL::Context* in_context_ptr,
+                                             const GLenum&    in_target,
+                                             const GLint&     in_level,
+                                             const GLenum&    in_internalformat,
+                                             const GLsizei&   in_width,
+                                             const GLint&     in_border,
+                                             const GLsizei&   in_image_size,
+                                             const void*      in_data)
 {
-    const auto internalformat_vkgl = VKGL::Utils::get_internal_format_for_gl_enum(in_internalformat);
-    const auto target_vkgl         = VKGL::Utils::get_texture_target_for_gl_enum( in_target);
+    const auto internalformat_vkgl = OpenGL::Utils::get_internal_format_for_gl_enum(in_internalformat);
+    const auto target_vkgl         = OpenGL::Utils::get_texture_target_for_gl_enum( in_target);
 
     in_context_ptr->compressed_tex_image_1d(target_vkgl,
                                             in_level,
@@ -65,14 +74,14 @@ void vkglCompressedTexImage1D_execute(VKGL::Context* in_context_ptr,
                                             in_data);
 }
 
-void vkglCompressedTexImage1D_with_validation(VKGL::Context* in_context_ptr,
-                                              const GLenum&  in_target,
-                                              const GLint&   in_level,
-                                              const GLenum&  in_internalformat,
-                                              const GLsizei& in_width,
-                                              const GLint&   in_border,
-                                              const GLsizei& in_image_size,
-                                              const void*    in_data)
+void OpenGL::vkglCompressedTexImage1D_with_validation(OpenGL::Context* in_context_ptr,
+                                                      const GLenum&    in_target,
+                                                      const GLint&     in_level,
+                                                      const GLenum&    in_internalformat,
+                                                      const GLsizei&   in_width,
+                                                      const GLint&     in_border,
+                                                      const GLsizei&   in_image_size,
+                                                      const void*      in_data)
 {
     if (validate(in_context_ptr,
                  in_target,

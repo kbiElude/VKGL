@@ -6,8 +6,8 @@
 #include "OpenGL/context.h"
 #include "OpenGL/globals.h"
 
-static bool validate(VKGL::Context* in_context_ptr,
-                     const GLuint&  in_program)
+static bool validate(OpenGL::Context* in_context_ptr,
+                     const GLuint&    in_program)
 {
     bool result = false;
 
@@ -17,22 +17,25 @@ static bool validate(VKGL::Context* in_context_ptr,
     return result;
 }
 
-GLboolean VKGL_APIENTRY vkglIsProgram(GLuint program)
+GLboolean VKGL_APIENTRY OpenGL::vkglIsProgram(GLuint program)
 {
-    const auto& dispatch_table_ptr = g_dispatch_table_ptr;
+    const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
+
+    VKGL_TRACE("glIsProgram(program=[%u])",
+               program);
 
     return dispatch_table_ptr->pGLIsProgram(dispatch_table_ptr->bound_context_ptr,
                                             program) == GL_TRUE;
 }
 
-bool vkglIsProgram_execute(VKGL::Context* in_context_ptr,
-                           const GLuint&  in_program)
+static bool vkglIsProgram_execute(OpenGL::Context* in_context_ptr,
+                                  const GLuint&    in_program)
 {
     return in_context_ptr->is_program(in_program);
 }
 
-bool vkglIsProgram_with_validation(VKGL::Context* in_context_ptr,
-                                   const GLuint&  in_program)
+bool OpenGL::vkglIsProgram_with_validation(OpenGL::Context* in_context_ptr,
+                                           const GLuint&    in_program)
 {
     bool result = false;
 
