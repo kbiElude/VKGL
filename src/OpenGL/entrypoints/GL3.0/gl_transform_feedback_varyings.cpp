@@ -50,10 +50,10 @@ static void vkglTransformFeedbackVaryings_execute(OpenGL::Context*     in_contex
 {
     const auto buffer_mode_vkgl = OpenGL::Utils::get_transform_feedback_buffer_mode_for_gl_enum(in_buffer_mode);
 
-    in_context_ptr->transform_feedback_varyings(in_program,
-                                                in_count,
-                                                in_varyings_ptr_ptr,
-                                                in_buffer_mode);
+    in_context_ptr->set_transform_feedback_varyings(in_program,
+                                                    in_count,
+                                                    in_varyings_ptr_ptr,
+                                                    buffer_mode_vkgl);
 }
 
 void OpenGL::vkglTransformFeedbackVaryings_with_validation(OpenGL::Context*     in_context_ptr,

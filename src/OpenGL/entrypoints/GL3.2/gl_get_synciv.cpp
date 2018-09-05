@@ -46,19 +46,20 @@ void VKGL_APIENTRY OpenGL::vkglGetSynciv(GLsync   sync,
 }
 
 static void vkglGetSynciv_execute(OpenGL::Context* in_context_ptr,
-                                  GLsync           in_sync,
-                                  GLenum           in_pname,
-                                  GLsizei          in_buf_size,
+                                  const GLsync&    in_sync,
+                                  const GLenum&    in_pname,
+                                  const GLsizei&   in_buf_size,
                                   GLsizei*         inout_length_ptr,
                                   GLint*           out_values_ptr)
 {
     const auto pname_vkgl = OpenGL::Utils::get_sync_property_for_gl_enum(in_pname);
 
-    in_context_ptr->get_synciv(in_sync,
-                               in_pname,
-                               in_buf_size,
-                               inout_length_ptr,
-                               out_values_ptr);
+    in_context_ptr->get_sync_property(in_sync,
+                                      in_pname,
+                                      OpenGL::GetSetArgumentType::Int,
+                                      in_buf_size,
+                                      inout_length_ptr,
+                                      out_values_ptr);
 }
 
 void OpenGL::vkglGetSynciv_with_validation(OpenGL::Context* in_context_ptr,

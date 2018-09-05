@@ -55,11 +55,11 @@ static void vkglRenderbufferStorageMultisample_execute(OpenGL::Context* in_conte
     const auto internalformat_vkgl = OpenGL::Utils::get_internal_format_for_gl_enum    (in_internalformat);
     const auto target_vkgl         = OpenGL::Utils::get_renderbuffer_target_for_gl_enum(in_target);
 
-    in_context_ptr->renderbuffer_storage_multisample(target_vkgl,
-                                                     in_samples,
-                                                     internalformat_vkgl,
-                                                     in_width,
-                                                     in_height);
+    in_context_ptr->set_renderbuffer_storage_multisample(target_vkgl,
+                                                         in_samples,
+                                                         internalformat_vkgl,
+                                                         in_width,
+                                                         in_height);
 }
 
 void OpenGL::vkglRenderbufferStorageMultisample_with_validation(OpenGL::Context* in_context_ptr,

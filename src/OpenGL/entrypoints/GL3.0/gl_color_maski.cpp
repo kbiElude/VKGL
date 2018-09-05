@@ -51,11 +51,11 @@ static void vkglColorMaski_execute(OpenGL::Context* in_context_ptr,
                                    const GLboolean& in_b,
                                    const GLboolean& in_a)
 {
-    in_context_ptr->set_color_maski(in_index,
-                                    in_r,
-                                    in_g,
-                                    in_b,
-                                    in_a);
+    in_context_ptr->set_color_mask_indexed(in_index,
+                                           (in_r == GL_TRUE) ? true : false,
+                                           (in_g == GL_TRUE) ? true : false,
+                                           (in_b == GL_TRUE) ? true : false,
+                                           (in_a == GL_TRUE) ? true : false);
 }
 
 void OpenGL::vkglColorMaski_with_validation(OpenGL::Context* in_context_ptr,

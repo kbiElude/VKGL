@@ -50,10 +50,10 @@ static void vkglRenderbufferStorage_execute(OpenGL::Context* in_context_ptr,
     const auto internalformat_vkgl = OpenGL::Utils::get_internal_format_for_gl_enum    (in_internalformat);
     const auto target_vkgl         = OpenGL::Utils::get_renderbuffer_target_for_gl_enum(in_target);
 
-    in_context_ptr->renderbuffer_storage(target_vkgl,
-                                         internalformat_vkgl,
-                                         in_width,
-                                         in_height);
+    in_context_ptr->set_renderbuffer_storage(target_vkgl,
+                                             internalformat_vkgl,
+                                             in_width,
+                                             in_height);
 }
 
 void OpenGL::vkglRenderbufferStorage_with_validation(OpenGL::Context* in_context_ptr,

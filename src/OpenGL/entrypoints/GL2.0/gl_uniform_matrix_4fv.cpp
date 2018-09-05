@@ -47,13 +47,12 @@ static void vkglUniformMatrix4fv_execute(OpenGL::Context* in_context_ptr,
                                          const GLboolean& in_transpose,
                                          const GLfloat*   in_value_ptr)
 {
-    in_context_ptr->set_uniform_matrix_arrayed(in_location,
-                                               OpenGL::GetSetArgumentType::Float,
-                                               4,
-                                               4,
-                                               in_count,
-                                               (in_transpose == GL_TRUE),
-                                               in_value_ptr);
+    in_context_ptr->set_matrix_uniform(in_location,
+                                       4, /* in_n_columns */
+                                       4, /* in_n_rows    */
+                                       in_count,
+                                       (in_transpose == GL_TRUE),
+                                       in_value_ptr);
 }
 
 void OpenGL::vkglUniformMatrix4fv_with_validation(OpenGL::Context* in_context_ptr,

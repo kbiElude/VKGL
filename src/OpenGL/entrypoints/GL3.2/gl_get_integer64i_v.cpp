@@ -46,8 +46,8 @@ static void vkglGetInteger64i_v_execute(OpenGL::Context* in_context_ptr,
     const auto target_vkgl = OpenGL::Utils::get_context_property_for_gl_enum(in_target);
 
     in_context_ptr->get_parameter_indexed(target_vkgl,
-                                          in_index,
                                           OpenGL::GetSetArgumentType::Int64,
+                                          in_index,
                                           out_data_ptr);
 }
 

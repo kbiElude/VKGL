@@ -33,7 +33,7 @@ GLuint VKGL_APIENTRY OpenGL::vkglGetUniformBlockIndex(GLuint        program,
 }
 
 static GLuint vkglGetUniformBlockIndex_execute(OpenGL::Context* in_context_ptr,
-                                               GLuint           in_program,
+                                               const GLuint&    in_program,
                                                const GLchar*    in_uniform_block_name)
 {
     return in_context_ptr->get_uniform_block_index(in_program,

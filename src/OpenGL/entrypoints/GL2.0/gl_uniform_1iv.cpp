@@ -42,11 +42,11 @@ static void vkglUniform1iv_execute(OpenGL::Context* in_context_ptr,
                                    const GLsizei&   in_count,
                                    const GLint*     in_value_ptr)
 {
-    in_context_ptr->set_uniform_arrayed(in_location,
-                                        OpenGL::GetSetArgumentType::Int,
-                                        1,
-                                        in_count,
-                                        in_value_ptr);
+    in_context_ptr->set_uniform(in_location,
+                                OpenGL::GetSetArgumentType::Int,
+                                1, /* in_n_components */
+                                in_count,
+                                in_value_ptr);
 }
 
 void OpenGL::vkglUniform1iv_with_validation(OpenGL::Context* in_context_ptr,

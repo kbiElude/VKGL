@@ -25,7 +25,7 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsRenderbuffer(GLuint renderbuffer)
                renderbuffer);
 
     return dispatch_table_ptr->pGLIsRenderbuffer(dispatch_table_ptr->bound_context_ptr,
-                                                 renderbuffer) == GL_TRUE;
+                                                 renderbuffer) ? GL_TRUE : GL_FALSE;
 }
 
 static bool vkglIsRenderbuffer_execute(OpenGL::Context* in_context_ptr,

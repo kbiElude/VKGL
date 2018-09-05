@@ -50,8 +50,8 @@ static void vkglVertexAttribI2ui_execute(OpenGL::Context* in_context_ptr,
     in_context_ptr->set_vertex_attribute(in_index,
                                          OpenGL::GetSetArgumentType::Unsigned_Int,
                                          OpenGL::GetSetArgumentType::Unsigned_Int,
-                                         2,
-                                         false, /* in_normalized */
+                                         2,     /* in_n_components */
+                                         false, /* in_normalized   */
                                          data);
 }
 

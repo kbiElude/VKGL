@@ -25,7 +25,7 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsProgram(GLuint program)
                program);
 
     return dispatch_table_ptr->pGLIsProgram(dispatch_table_ptr->bound_context_ptr,
-                                            program) == GL_TRUE;
+                                            program) ? GL_TRUE : GL_FALSE;
 }
 
 static bool vkglIsProgram_execute(OpenGL::Context* in_context_ptr,

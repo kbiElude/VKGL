@@ -61,7 +61,8 @@ static void vkglUniform4f_execute(OpenGL::Context* in_context_ptr,
 
     in_context_ptr->set_uniform(in_location,
                                 OpenGL::GetSetArgumentType::Float,
-                                4,
+                                4, /* in_n_components  */
+                                1, /* in_n_array_items */
                                 data);
 }
 

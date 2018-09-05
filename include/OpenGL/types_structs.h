@@ -222,7 +222,7 @@ namespace OpenGL
         PFNVKGLBLENDEQUATIONSEPARATEPROC    pGLBlendEquationSeparate;
         PFNVKGLCOMPILESHADERPROC            pGLCompileShader;
         PFNVKGLCREATEPROGRAMPROC            pGLCreateProgram;
-        PFNVKGLCREATESHADERPROC             pGLCreateShadr;
+        PFNVKGLCREATESHADERPROC             pGLCreateShader;
         PFNVKGLDELETEPROGRAMPROC            pGLDeleteProgram;
         PFNVKGLDELETESHADERPROC             pGLDeleteShader;
         PFNVKGLDETACHSHADERPROC             pGLDetachShader;

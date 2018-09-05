@@ -62,8 +62,8 @@ static void vkglVertexAttribI4i_execute(OpenGL::Context* in_context_ptr,
     in_context_ptr->set_vertex_attribute(in_index,
                                          OpenGL::GetSetArgumentType::Int,
                                          OpenGL::GetSetArgumentType::Int,
-                                         4,
-                                         false, /* in_normalized */
+                                         4,     /* in_n_components */
+                                         false, /* in_normalized   */
                                          data);
 }
 

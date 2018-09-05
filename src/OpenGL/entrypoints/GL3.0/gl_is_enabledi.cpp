@@ -39,9 +39,9 @@ static GLboolean vkglIsEnabledi_execute(OpenGL::Context* in_context_ptr,
 {
     vkgl_assert(in_target == GL_BLEND);
 
-    return (in_context_ptr->is_enabledi(OpenGL::Capability::Blend,
-                                        in_index) ) ? GL_TRUE
-                                                    : GL_FALSE;
+    return (in_context_ptr->is_enabled_indexed(OpenGL::Capability::Blend,
+                                               in_index) ) ? GL_TRUE
+                                                           : GL_FALSE;
 }
 
 GLboolean OpenGL::vkglIsEnabledi_with_validation(OpenGL::Context* in_context_ptr,

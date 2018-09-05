@@ -37,8 +37,8 @@ static void vkglSampleCoverage_execute(OpenGL::Context* in_context_ptr,
                                        const GLfloat&   in_value,
                                        const GLboolean& in_invert)
 {
-    in_context_ptr->sample_coverage(in_value,
-                                    in_invert);
+    in_context_ptr->set_sample_coverage(in_value,
+                                        in_invert);
 }
 
 void OpenGL::vkglSampleCoverage_with_validation(OpenGL::Context* in_context_ptr,

@@ -68,6 +68,10 @@ void OpenGL::vkglDrawElements_with_validation(OpenGL::Context* in_context_ptr,
                  in_type,
                  in_indices) )
     {
-        todo;
+        vkglDrawElements_execute(in_context_ptr,
+                                 in_mode,
+                                 in_count,
+                                 in_type,
+                                 in_indices);
     }
 }

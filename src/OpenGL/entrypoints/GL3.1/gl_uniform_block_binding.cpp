@@ -41,9 +41,9 @@ static void vkglUniformBlockBinding_execute(OpenGL::Context* in_context_ptr,
                                             const GLuint&    in_uniform_block_index,
                                             const GLuint&    in_uniform_block_binding)
 {
-    in_context_ptr->uniform_block_binding(in_program,
-                                          in_uniform_block_index,
-                                          in_uniform_block_binding);
+    in_context_ptr->set_uniform_block_binding(in_program,
+                                              in_uniform_block_index,
+                                              in_uniform_block_binding);
 }
 
 void OpenGL::vkglUniformBlockBinding_with_validation(OpenGL::Context* in_context_ptr,

@@ -31,10 +31,10 @@ GLenum VKGL_APIENTRY OpenGL::vkglClientWaitSync(GLsync     sync,
                OpenGL::Utils::get_raw_string_for_gl_bitfield(OpenGL::BitfieldType::Wait_Sync_Mask, flags),
                static_cast<uint32_t>(timeout) );
 
-    dispatch_table_ptr->pGLClientWaitSync(dispatch_table_ptr->bound_context_ptr,
-                                          sync,
-                                          flags,
-                                          timeout);
+    return dispatch_table_ptr->pGLClientWaitSync(dispatch_table_ptr->bound_context_ptr,
+                                                 sync,
+                                                 flags,
+                                                 timeout);
 }
 
 static GLenum vkglClientWaitSync_execute(OpenGL::Context*  in_context_ptr,
@@ -62,9 +62,11 @@ GLenum OpenGL::vkglClientWaitSync_with_validation(OpenGL::Context*  in_context_p
                  in_flags,
                  in_timeout) )
     {
-        vkglClientWaitSync_execute(in_context_ptr,
-                                   in_sync,
-                                   in_flags,
-                                   in_timeout);
+        result = vkglClientWaitSync_execute(in_context_ptr,
+                                            in_sync,
+                                            in_flags,
+                                            in_timeout);
     }
+
+    return result;
 }

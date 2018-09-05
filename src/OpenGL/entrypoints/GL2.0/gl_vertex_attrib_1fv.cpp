@@ -40,8 +40,8 @@ static void vkglVertexAttrib1fv_execute(OpenGL::Context* in_context_ptr,
     in_context_ptr->set_vertex_attribute(in_index,
                                          OpenGL::GetSetArgumentType::Float,
                                          OpenGL::GetSetArgumentType::Float,
-                                         1,
-                                         false, /* in_normalized */
+                                         1,     /* in_n_components */
+                                         false, /* in_normalized   */
                                          in_v_ptr);
 }
 

@@ -70,7 +70,7 @@ static void vkglGetActiveUniform_execute(OpenGL::Context* in_context_ptr,
                                        out_length_ptr,
                                        out_size_ptr,
                                       &type_vkgl,
-                                       out_name_ptr)
+                                       out_name_ptr);
 
     *out_type_ptr = OpenGL::Utils::get_gl_enum_for_variable_type(type_vkgl);
 }

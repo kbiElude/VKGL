@@ -36,8 +36,8 @@ static void vkglSampleMaski_execute(OpenGL::Context*  in_context_ptr,
                                     const GLuint&     in_mask_number,
                                     const GLbitfield& in_mask)
 {
-    in_context_ptr->set_sample_mask(in_mask_number,
-                                    in_mask);
+    in_context_ptr->set_sample_mask_indexed(in_mask_number,
+                                            in_mask);
 }
 
 void OpenGL::vkglSampleMaski_with_validation(OpenGL::Context*  in_context_ptr,

@@ -54,9 +54,9 @@ void VKGL_APIENTRY OpenGL::vkglGetTransformFeedbackVarying(GLuint   program,
 }
 
 void vkglGetTransformFeedbackVarying_execute(OpenGL::Context* in_context_ptr,
-                                             GLuint           in_program,
-                                             GLuint           in_index,
-                                             GLsizei          in_buf_size,
+                                             const GLuint&    in_program,
+                                             const GLuint&    in_index,
+                                             const GLsizei&   in_buf_size,
                                              GLsizei*         out_length_ptr,
                                              GLsizei*         out_size_ptr,
                                              GLenum*          out_type_ptr,

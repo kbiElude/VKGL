@@ -42,11 +42,11 @@ static void vkglUniform3uiv_execute(OpenGL::Context* in_context_ptr,
                                     const GLsizei&   in_count,
                                     const GLuint*    in_value_ptr)
 {
-    in_context_ptr->set_uniform_arrayed(in_location,
-                                        OpenGL::GetSetArgumentType::Unsigned_Int,
-                                        3,
-                                        in_count,
-                                        in_value_ptr);
+    in_context_ptr->set_uniform(in_location,
+                                OpenGL::GetSetArgumentType::Unsigned_Int,
+                                3, /* in_n_components */
+                                in_count,
+                                in_value_ptr);
 }
 
 void OpenGL::vkglUniform3uiv_with_validation(OpenGL::Context* in_context_ptr,

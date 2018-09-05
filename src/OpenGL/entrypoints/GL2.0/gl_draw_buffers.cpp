@@ -40,14 +40,14 @@ static void vkglDrawBuffers_execute(OpenGL::Context* in_context_ptr,
     vkgl_assert(in_n < N_MAX_DRAW_BUFFERS);
 
     for (uint32_t n = 0;
-                  n < in_n;
+                  n < static_cast<uint32_t>(in_n);
                 ++n)
     {
         bufs_vkgl[n] = OpenGL::Utils::get_draw_buffer_for_gl_enum(in_bufs[n]);
     }
 
-    in_context_ptr->draw_buffers(in_n,
-                                 bufs_vkgl);
+    in_context_ptr->set_draw_buffers(in_n,
+                                     bufs_vkgl);
 }
 
 void OpenGL::vkglDrawBuffers_with_validation(OpenGL::Context* in_context_ptr,

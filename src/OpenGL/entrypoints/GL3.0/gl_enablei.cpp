@@ -39,8 +39,8 @@ static void vkglEnablei_execute(OpenGL::Context* in_context_ptr,
 {
     vkgl_assert(in_target == GL_BLEND);
 
-    in_context_ptr->enablei(OpenGL::Capability::Blend,
-                            in_index);
+    in_context_ptr->enable_indexed(OpenGL::Capability::Blend,
+                                   in_index);
 }
 
 void OpenGL::vkglEnablei_with_validation(OpenGL::Context* in_context_ptr,

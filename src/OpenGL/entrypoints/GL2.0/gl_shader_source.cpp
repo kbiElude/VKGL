@@ -47,10 +47,10 @@ static void vkglShaderSource_execute(OpenGL::Context*     in_context_ptr,
                                      const GLchar* const* in_string_ptr_ptr,
                                      const GLint*         in_length_ptr)
 {
-    in_context_ptr->shader_source(in_shader,
-                                  in_count,
-                                  in_string_ptr_ptr,
-                                  in_length_ptr);
+    in_context_ptr->set_shader_source(in_shader,
+                                      in_count,
+                                      in_string_ptr_ptr,
+                                      in_length_ptr);
 }
 
 void OpenGL::vkglShaderSource_with_validation(OpenGL::Context*     in_context_ptr,

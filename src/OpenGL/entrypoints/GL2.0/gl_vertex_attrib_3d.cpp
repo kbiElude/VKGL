@@ -56,8 +56,8 @@ static void vkglVertexAttrib3d_execute(OpenGL::Context* in_context_ptr,
     in_context_ptr->set_vertex_attribute(in_index,
                                          OpenGL::GetSetArgumentType::Double,
                                          OpenGL::GetSetArgumentType::Float,
-                                         3,
-                                         false, /* in_normalized */
+                                         3,     /* in_n_components */
+                                         false, /* in_normalized   */
                                          data);
 }
 

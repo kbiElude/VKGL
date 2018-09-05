@@ -11,7 +11,7 @@ namespace OpenGL
 {
     void VKGL_APIENTRY vkglLinkProgram(GLuint program);
 
-    bool vkglLinkProgram_with_validation(OpenGL::Context* in_context_ptr,
+    void vkglLinkProgram_with_validation(OpenGL::Context* in_context_ptr,
                                          const GLuint&    in_program);
 }
 

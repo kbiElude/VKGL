@@ -46,6 +46,7 @@ static void vkglGetBooleani_v_execute(OpenGL::Context* in_context_ptr,
 
     in_context_ptr->get_parameter_indexed(target_vkgl,
                                           OpenGL::GetSetArgumentType::Boolean,
+                                          in_index,
                                           out_data_ptr);
 }
 

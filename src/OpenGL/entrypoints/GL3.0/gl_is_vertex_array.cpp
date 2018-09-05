@@ -25,7 +25,7 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsVertexArray(GLuint array)
                array);
 
     return dispatch_table_ptr->pGLIsVertexArray(dispatch_table_ptr->bound_context_ptr,
-                                                array) == GL_TRUE;
+                                                array) ? GL_TRUE : GL_FALSE;
 }
 
 static bool vkglIsVertexArray_execute(OpenGL::Context* in_context_ptr,

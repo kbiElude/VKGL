@@ -28,24 +28,20 @@ void VKGL_APIENTRY OpenGL::vkglLinkProgram(GLuint program)
                                               program);
 }
 
-static bool vkglLinkProgram_execute(OpenGL::Context* in_context_ptr,
+static void vkglLinkProgram_execute(OpenGL::Context* in_context_ptr,
                                     const GLuint&    in_program)
 {
-    return in_context_ptr->link_program(in_program);
+    in_context_ptr->link_program(in_program);
 }
 
-bool OpenGL::vkglLinkProgram_with_validation(OpenGL::Context* in_context_ptr,
+void OpenGL::vkglLinkProgram_with_validation(OpenGL::Context* in_context_ptr,
                                              const GLuint&    in_program)
 {
-    bool result = false;
-
     if (validate(in_context_ptr,
                  in_program) )
     {
-        result = vkglLinkProgram_execute(in_context_ptr,
-                                         in_program);
+        vkglLinkProgram_execute(in_context_ptr,
+                                in_program);
     }
-
-    return result;
 }
 

@@ -39,8 +39,8 @@ static void vkglDisablei_execute(OpenGL::Context* in_context_ptr,
 {
     vkgl_assert(in_target == GL_BLEND);
 
-    in_context_ptr->disablei(OpenGL::Capability::Blend,
-                             in_index);
+    in_context_ptr->disable_indexed(OpenGL::Capability::Blend,
+                                    in_index);
 }
 
 void OpenGL::vkglDisablei_with_validation(OpenGL::Context* in_context_ptr,

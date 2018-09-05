@@ -37,10 +37,14 @@ static GLboolean vkglIsTexture_execute(OpenGL::Context* in_context_ptr,
 GLboolean OpenGL::vkglIsTexture_with_validation(OpenGL::Context* in_context_ptr,
                                                 const GLuint&    in_texture)
 {
+    GLboolean result = GL_FALSE;
+
     if (validate(in_context_ptr,
                  in_texture) )
     {
-        return vkglIsTexture_execute(in_context_ptr,
-                                     in_texture);
+        result = vkglIsTexture_execute(in_context_ptr,
+                                       in_texture);
     }
+
+    return result;
 }
