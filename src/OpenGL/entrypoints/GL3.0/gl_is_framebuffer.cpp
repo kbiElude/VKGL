@@ -25,13 +25,14 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsFramebuffer(GLuint framebuffer)
                framebuffer);
 
     return dispatch_table_ptr->pGLIsFramebuffer(dispatch_table_ptr->bound_context_ptr,
-                                                framebuffer) == GL_TRUE;
+                                                framebuffer) ? GL_TRUE
+                                                             : GL_FALSE;
 }
 
 static bool vkglIsFramebuffer_execute(OpenGL::Context* in_context_ptr,
                                       const GLuint&    in_framebuffer)
 {
-    return in_context_ptr->is_framebuffer(in_framebuffer) == GL_TRUE;
+    return in_context_ptr->is_framebuffer(in_framebuffer);
 }
 
 bool OpenGL::vkglIsFramebuffer_with_validation(OpenGL::Context* in_context_ptr,

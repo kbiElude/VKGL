@@ -63,14 +63,14 @@ void OpenGL::GLTextureManager::get_texture_level_parameter(const int32_t&       
                                                            const OpenGL::GetSetArgumentType&   in_arg_type,
                                                            void*                               out_params_ptr) const
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::GLTextureManager::get_texture_parameter(const OpenGL::TextureProperty&    in_property,
                                                      const OpenGL::GetSetArgumentType& in_arg_type,
                                                      void*                             out_arg_value_ptr) const
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 bool OpenGL::GLTextureManager::is_alive_id(const GLuint& in_id) const
@@ -94,5 +94,5 @@ void OpenGL::GLTextureManager::set_texture_parameter(const OpenGL::TextureProper
                                                      const OpenGL::GetSetArgumentType& in_arg_type,
                                                      const void*                       in_arg_value_ptr)
 {
-    todo;
+    vkgl_not_implemented();
 }

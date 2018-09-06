@@ -25,14 +25,14 @@ static bool validate(OpenGL::Context* in_context_ptr,
     return result;
 }
 
-void VKGL_APIENTRY vkglCopyTexSubImage2D(GLenum  target,
-                                         GLint   level,
-                                         GLint   xoffset,
-                                         GLint   yoffset,
-                                         GLint   x,
-                                         GLint   y,
-                                         GLsizei width,
-                                         GLsizei height)
+void VKGL_APIENTRY OpenGL::vkglCopyTexSubImage2D(GLenum  target,
+                                                 GLint   level,
+                                                 GLint   xoffset,
+                                                 GLint   yoffset,
+                                                 GLint   x,
+                                                 GLint   y,
+                                                 GLsizei width,
+                                                 GLsizei height)
 {
     const auto dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 
@@ -57,15 +57,15 @@ void VKGL_APIENTRY vkglCopyTexSubImage2D(GLenum  target,
                                              height);
 }
 
-void vkglCopyTexSubImage2D_execute(OpenGL::Context* in_context_ptr,
-                                   const GLenum&    in_target,
-                                   const GLint&     in_level,
-                                   const GLint&     in_xoffset,
-                                   const GLint&     in_yoffset,
-                                   const GLint&     in_x,
-                                   const GLint&     in_y,
-                                   const GLsizei&   in_width,
-                                   const GLsizei&   in_height)
+static void vkglCopyTexSubImage2D_execute(OpenGL::Context* in_context_ptr,
+                                          const GLenum&    in_target,
+                                          const GLint&     in_level,
+                                          const GLint&     in_xoffset,
+                                          const GLint&     in_yoffset,
+                                          const GLint&     in_x,
+                                          const GLint&     in_y,
+                                          const GLsizei&   in_width,
+                                          const GLsizei&   in_height)
 {
     const auto target_vkgl = OpenGL::Utils::get_texture_target_for_gl_enum(in_target);
 
@@ -79,15 +79,15 @@ void vkglCopyTexSubImage2D_execute(OpenGL::Context* in_context_ptr,
                                           in_height);
 }
 
-void vkglCopyTexSubImage2D_with_validation(OpenGL::Context* in_context_ptr,
-                                           const GLenum&    in_target,
-                                           const GLint&     in_level,
-                                           const GLint&     in_xoffset,
-                                           const GLint&     in_yoffset,
-                                           const GLint&     in_x,
-                                           const GLint&     in_y,
-                                           const GLsizei&   in_width,
-                                           const GLsizei&   in_height)
+void OpenGL::vkglCopyTexSubImage2D_with_validation(OpenGL::Context* in_context_ptr,
+                                                   const GLenum&    in_target,
+                                                   const GLint&     in_level,
+                                                   const GLint&     in_xoffset,
+                                                   const GLint&     in_yoffset,
+                                                   const GLint&     in_x,
+                                                   const GLint&     in_y,
+                                                   const GLsizei&   in_width,
+                                                   const GLsizei&   in_height)
 {
     if (validate(in_context_ptr,
                  in_target,

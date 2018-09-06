@@ -2,6 +2,7 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+#include "Common/macros.h"
 #include "OpenGL/scheduler.h"
 
 OpenGL::Scheduler::Scheduler()
@@ -16,7 +17,7 @@ OpenGL::Scheduler::~Scheduler()
 
 void OpenGL::Scheduler::clear(const OpenGL::ClearBufferBits& in_buffers_to_clear)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::compressed_tex_image_1d(const GLuint&                 in_id,
@@ -27,7 +28,7 @@ void OpenGL::Scheduler::compressed_tex_image_1d(const GLuint&                 in
                                                 const GLsizei                 in_image_size,
                                                 const void*                   in_data)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::compressed_tex_image_2d(const GLuint&                 in_id,
@@ -39,7 +40,7 @@ void OpenGL::Scheduler::compressed_tex_image_2d(const GLuint&                 in
                                                 const GLsizei&                in_image_size,
                                                 const void*                   in_data)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::compressed_tex_image_3d(const GLuint&                 in_id,
@@ -52,7 +53,7 @@ void OpenGL::Scheduler::compressed_tex_image_3d(const GLuint&                 in
                                                 const GLsizei&                in_image_size,
                                                 const void*                   in_data)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::compressed_tex_sub_image_1d(const GLuint&              in_id,
@@ -63,7 +64,7 @@ void OpenGL::Scheduler::compressed_tex_sub_image_1d(const GLuint&              i
                                                     const GLsizei&             in_image_size,
                                                     const void*                in_data)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::compressed_tex_sub_image_2d(const GLuint&              in_id,
@@ -76,7 +77,7 @@ void OpenGL::Scheduler::compressed_tex_sub_image_2d(const GLuint&              i
                                                     const GLsizei&             in_image_size,
                                                     const void*                in_data)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::compressed_tex_sub_image_3d(const GLuint&              in_id,
@@ -91,7 +92,7 @@ void OpenGL::Scheduler::compressed_tex_sub_image_3d(const GLuint&              i
                                                     const GLsizei&             in_image_size,
                                                     const void*                in_data)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::copy_tex_image_1d(const GLuint&                 in_id,
@@ -102,7 +103,7 @@ void OpenGL::Scheduler::copy_tex_image_1d(const GLuint&                 in_id,
                                           const GLsizei&                in_width,
                                           const GLint&                  in_border)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::copy_tex_image_2d(const GLuint&                 in_id,
@@ -114,7 +115,7 @@ void OpenGL::Scheduler::copy_tex_image_2d(const GLuint&                 in_id,
                                           const GLsizei&                in_height,
                                           const GLint&                  in_border)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::copy_tex_sub_image_1d(const GLuint&  in_id,
@@ -124,7 +125,7 @@ void OpenGL::Scheduler::copy_tex_sub_image_1d(const GLuint&  in_id,
                                               const GLint&   in_y,
                                               const GLsizei& in_width)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::copy_tex_sub_image_2d(const GLuint&  in_id,
@@ -136,7 +137,7 @@ void OpenGL::Scheduler::copy_tex_sub_image_2d(const GLuint&  in_id,
                                               const GLsizei& in_width,
                                               const GLsizei& in_height)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::copy_tex_sub_image_3d(const GLuint&  in_id,
@@ -149,7 +150,7 @@ void OpenGL::Scheduler::copy_tex_sub_image_3d(const GLuint&  in_id,
                                               const GLsizei& in_width,
                                               const GLsizei& in_height)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 OpenGL::SchedulerUniquePtr OpenGL::Scheduler::create()
@@ -173,12 +174,12 @@ OpenGL::SchedulerUniquePtr OpenGL::Scheduler::create()
 
 void OpenGL::Scheduler::finish()
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::flush()
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::get_texture_image(const GLuint&              in_id,
@@ -187,7 +188,7 @@ void OpenGL::Scheduler::get_texture_image(const GLuint&              in_id,
                                           const OpenGL::PixelType&   in_type,
                                           void*                      out_pixels_ptr)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 bool OpenGL::Scheduler::init()
@@ -205,7 +206,7 @@ void OpenGL::Scheduler::multi_draw_arrays(const OpenGL::DrawCallMode& in_mode,
                                           const GLsizei*              in_count_ptr,
                                           const GLsizei&              in_drawcount)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::multi_draw_elements(const OpenGL::DrawCallMode&      in_mode,
@@ -214,7 +215,7 @@ void OpenGL::Scheduler::multi_draw_elements(const OpenGL::DrawCallMode&      in_
                                             const void* const*               in_indices_ptr,
                                             const GLsizei&                   in_drawcount)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::read_pixels(const int32_t&             in_x,
@@ -225,7 +226,7 @@ void OpenGL::Scheduler::read_pixels(const int32_t&             in_x,
                                     const OpenGL::PixelType&   in_type,
                                     void*                      out_pixels_ptr)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::tex_image_1d(const GLuint&                 in_id,
@@ -237,7 +238,7 @@ void OpenGL::Scheduler::tex_image_1d(const GLuint&                 in_id,
                                      const OpenGL::PixelType&      in_type,
                                      const void*                   in_pixels_ptr)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::tex_image_2d(const GLuint&                 in_id,
@@ -250,7 +251,7 @@ void OpenGL::Scheduler::tex_image_2d(const GLuint&                 in_id,
                                      const OpenGL::PixelType&      in_type,
                                      const void*                   in_pixels_ptr)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::tex_sub_image_1d(const GLuint&              in_id,
@@ -261,7 +262,7 @@ void OpenGL::Scheduler::tex_sub_image_1d(const GLuint&              in_id,
                                          const OpenGL::PixelType&   in_type,
                                          const void*                in_pixels)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::tex_sub_image_2d(const GLuint&              in_id,
@@ -274,7 +275,7 @@ void OpenGL::Scheduler::tex_sub_image_2d(const GLuint&              in_id,
                                          const OpenGL::PixelType&   in_type,
                                          const void*                in_pixels)
 {
-    todo;
+    vkgl_not_implemented();
 }
 
 void OpenGL::Scheduler::tex_sub_image_3d(const GLuint&              in_id,
@@ -289,5 +290,5 @@ void OpenGL::Scheduler::tex_sub_image_3d(const GLuint&              in_id,
                                          const OpenGL::PixelType&   in_type,
                                          const void*                in_pixels)
 {
-    todo;
+    vkgl_not_implemented();
 }

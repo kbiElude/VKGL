@@ -3,6 +3,7 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Common/debug.h"
+#include "Common/globals.h"
 #include "Common/macros.h"
 #include "OpenGL/utils_enum.h"
 
@@ -3473,6 +3474,72 @@ OpenGL::QueryTargetProperty OpenGL::Utils::get_query_target_property_for_gl_enum
     return result;
 }
 
+const char* OpenGL::Utils::get_raw_string_for_gl_bitfield(const OpenGL::BitfieldType& in_bitfield,
+                                                          const GLenum&               in_enum)
+{
+    static VKGL_THREADLOCAL char result[MAX_PER_FUNC_LOCAL_HELPER_STORAGE_SIZE];
+
+    switch (in_bitfield)
+    {
+        case OpenGL::BitfieldType::Blit_Mask:
+        case OpenGL::BitfieldType::Clear_Buffer_Mask:
+        {
+            snprintf(result,
+                     sizeof(result),
+                     "%s | %s | %s",
+                     (in_enum & GL_COLOR_BUFFER_BIT)   ? "GL_COLOR_BUFFER_BIT"   : "0",
+                     (in_enum & GL_DEPTH_BUFFER_BIT)   ? "GL_DEPTH_BUFFER_BIT"   : "0",
+                     (in_enum & GL_STENCIL_BUFFER_BIT) ? "GL_STENCIL_BUFFER_BIT" : "0");
+
+            break;
+        }
+
+        case OpenGL::BitfieldType::Buffer_Access_Mask:
+        {
+            snprintf(result,
+                     sizeof(result),
+                     "%s | %s | %s | %s | %s | %s",
+                     (in_enum & GL_MAP_FLUSH_EXPLICIT_BIT)    ? "GL_MAP_FLUSH_EXPLICIT_BIT"    : "0",
+                     (in_enum & GL_MAP_INVALIDATE_BUFFER_BIT) ? "GL_MAP_INVALIDATE_BUFFER_BIT" : "0",
+                     (in_enum & GL_MAP_INVALIDATE_RANGE_BIT)  ? "GL_MAP_INVALIDATE_RANGE_BIT"  : "0",
+                     (in_enum & GL_MAP_READ_BIT)              ? "GL_MAP_READ_BIT"              : "0",
+                     (in_enum & GL_MAP_WRITE_BIT)             ? "GL_MAP_WRITE_BIT"             : "0",
+                     (in_enum & GL_MAP_UNSYNCHRONIZED_BIT)    ? "GL_MAP_UNSYNCHRONIZED_BIT"    : "0");
+
+            break;
+
+        }
+
+        case OpenGL::BitfieldType::Sync_Condition_Mask:
+        {
+            vkgl_assert(in_enum == GL_SYNC_GPU_COMMANDS_COMPLETE);
+
+            snprintf(result,
+                     sizeof(result),
+                     "GL_SYNC_GPU_COMMANDS_COMPLETE");
+
+            break;
+        }
+
+        case OpenGL::BitfieldType::Wait_Sync_Mask:
+        {
+            snprintf(result,
+                     sizeof(result),
+                     "%s",
+                     (in_enum & GL_SYNC_FLUSH_COMMANDS_BIT) ? "GL_SYNC_FLUSH_COMMANDS_BIT" : "0");
+
+            break;
+        }
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 const char* OpenGL::Utils::get_raw_string_for_gl_enum(const GLenum& in_enum)
 {
     const char* result = "???";
@@ -4785,7 +4852,7 @@ OpenGL::TextureWrapMode OpenGL::Utils::get_texture_wrap_mode_for_gl_enum(const G
     return result;
 }
 
-OpenGL::VariableType get_variable_type_for_gl_enum(const GLenum& in_enum)
+OpenGL::VariableType OpenGL::Utils::get_variable_type_for_gl_enum(const GLenum& in_enum)
 {
     OpenGL::VariableType result = OpenGL::VariableType::Unknown;
 

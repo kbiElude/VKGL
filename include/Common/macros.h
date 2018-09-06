@@ -25,4 +25,7 @@
     #define vkgl_assert_fail()
 #endif
 
+#define vkgl_not_implemented() \
+    MessageBox(HWND_DESKTOP, "Critical error", "Functionality not implemented", MB_OK | MB_ICONERROR);
+
 #endif /* COMMON_MACROS_H */

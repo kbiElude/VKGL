@@ -30,9 +30,9 @@ static void vkglGetDoublev_execute(OpenGL::Context* in_context_ptr,
                                   out_data_ptr);
 }
 
-void vkglGetDoublev_with_validation(OpenGL::Context* in_context_ptr,
-                                    const GLenum&    in_pname,
-                                    GLdouble*        out_data_ptr)
+void OpenGL::vkglGetDoublev_with_validation(OpenGL::Context* in_context_ptr,
+                                            const GLenum&    in_pname,
+                                            GLdouble*        out_data_ptr)
 {
     if (validate(in_context_ptr,
                  in_pname,
@@ -44,8 +44,8 @@ void vkglGetDoublev_with_validation(OpenGL::Context* in_context_ptr,
     }
 }
 
-void VKGL_APIENTRY vkglGetDoublev(GLenum    pname,
-                                  GLdouble* data)
+void VKGL_APIENTRY OpenGL::vkglGetDoublev(GLenum    pname,
+                                          GLdouble* data)
 {
     const auto& dispatch_table_ptr = OpenGL::g_dispatch_table_ptr;
 

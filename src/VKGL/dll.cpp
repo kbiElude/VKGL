@@ -12,6 +12,10 @@
     #include "GDI32/interceptors.h"
 #endif
 
+#if defined(VKGL_INCLUDE_OPENGL)
+    #include "OpenGL/interceptors.h"
+#endif
+
 #if defined(VKGL_INCLUDE_WGL)
     #include "WGL/interceptors.h"
 #endif
@@ -20,6 +24,9 @@ const std::vector<VKGL::FunctionInterceptor> g_function_interceptors[] =
 {
 #if defined(VKGL_INCLUDE_GDI32)
     GDI32::get_function_interceptors(),
+#endif
+#if defined(VKGL_INCLUDE_OPENGL)
+    OpenGL::get_function_interceptors(),
 #endif
 #if defined(VKGL_INCLUDE_WGL)
     WGL::get_function_interceptors(),

@@ -31,7 +31,7 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsRenderbuffer(GLuint renderbuffer)
 static bool vkglIsRenderbuffer_execute(OpenGL::Context* in_context_ptr,
                                        const GLuint&    in_renderbuffer)
 {
-    return in_context_ptr->is_renderbuffer(in_renderbuffer) == GL_TRUE;
+    return in_context_ptr->is_renderbuffer(in_renderbuffer);
 }
 
 bool OpenGL::vkglIsRenderbuffer_with_validation(OpenGL::Context* in_context_ptr,

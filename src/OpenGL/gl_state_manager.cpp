@@ -423,7 +423,7 @@ void OpenGL::GLStateManager::set_depth_range(const double& in_near,
 
 void OpenGL::GLStateManager::set_draw_buffer(const OpenGL::DrawBuffer& in_draw_buffer)
 {
-    todo_fbos;
+    vkgl_not_implemented();
 }
 
 void OpenGL::GLStateManager::set_front_face_orientation(const OpenGL::FrontFaceOrientation& in_orientation)
@@ -506,9 +506,16 @@ void OpenGL::GLStateManager::set_polygon_mode(const OpenGL::PolygonMode& in_mode
     m_state_ptr->polygon_mode = in_mode;
 }
 
+void OpenGL::GLStateManager::set_polygon_offset(const float& in_factor,
+                                                const float& in_units)
+{
+    m_state_ptr->polygon_offset_factor = in_factor;
+    m_state_ptr->polygon_offset_units  = in_units;
+}
+
 void OpenGL::GLStateManager::set_read_buffer(const OpenGL::ReadBuffer& in_read_buffer)
 {
-    todo_fbos;
+    vkgl_not_implemented();
 }
 
 void OpenGL::GLStateManager::set_sample_coverage(const float& in_value,
@@ -633,4 +640,6 @@ bool OpenGL::GLStateManager::is_enabled(const OpenGL::Capability& in_capability)
             vkgl_assert_fail();
         }
     }
+
+    return result;
 }

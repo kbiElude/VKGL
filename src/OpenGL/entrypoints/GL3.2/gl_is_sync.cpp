@@ -26,7 +26,7 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsSync(GLsync sync)
                sync);
 
     return dispatch_table_ptr->pGLIsSync(dispatch_table_ptr->bound_context_ptr,
-                                         sync) ? GL_TRUE : GL_FALSE;
+                                         sync) ;
 }
 
 static GLboolean vkglIsSync_execute(OpenGL::Context* in_context_ptr,

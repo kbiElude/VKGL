@@ -25,7 +25,7 @@ GLboolean VKGL_APIENTRY OpenGL::vkglIsShader(GLuint shader)
                shader);
 
     return dispatch_table_ptr->pGLIsShader(dispatch_table_ptr->bound_context_ptr,
-                                           shader) == GL_TRUE;
+                                           shader) ? GL_TRUE : GL_FALSE;
 }
 
 static bool vkglIsShader_execute(OpenGL::Context* in_context_ptr,
