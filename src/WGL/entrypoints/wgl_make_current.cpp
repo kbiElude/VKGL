@@ -7,6 +7,11 @@
 #include "WGL/globals.h"
 #include "WGL/entrypoints/wgl_make_current.h"
 
+#if defined(VKGL_INCLUDE_OPENGL)
+    #include "OpenGL/context.h"
+    #include "OpenGL/globals.h"
+#endif
+
 BOOL WINAPI WGL::make_current(HDC   in_hdc,
                               HGLRC in_hglrc)
 {
@@ -19,6 +24,20 @@ BOOL WINAPI WGL::make_current(HDC   in_hdc,
     if (WGL::g_current_wgl_context_ptr != nullptr)
     {
         WGL::g_current_wgl_context_ptr->set_current_hdc(in_hdc);
+
+        #if defined(VKGL_INCLUDE_OPENGL)
+        {
+            OpenGL::g_dispatch_table_ptr = WGL::g_current_wgl_context_ptr->get_gl_context_ptr()->get_dispatch_table();
+        }
+        #endif
+    }
+    else
+    {
+        #if defined(VKGL_INCLUDE_OPENGL)
+        {
+            OpenGL::g_dispatch_table_ptr = nullptr;
+        }
+        #endif
     }
 
     return TRUE;

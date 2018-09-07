@@ -274,6 +274,7 @@ void OpenGL::GLStateManager::init_prop_maps()
         {OpenGL::ContextProperty::Stencil_Value_Mask,                         {OpenGL::GetSetArgumentType::Int,                           1, &m_state_ptr->stencil_value_mask_front} },
         {OpenGL::ContextProperty::Stencil_Writemask,                          {OpenGL::GetSetArgumentType::Int,                           1, &m_state_ptr->stencil_writemask_front} },
         {OpenGL::ContextProperty::Texture_Compression_Hint,                   {OpenGL::GetSetArgumentType::HintModeVKGL,                  1, &m_state_ptr->hint_texture_compression} },
+        {OpenGL::ContextProperty::Version,                                    {OpenGL::GetSetArgumentType::String,                        1, &m_state_ptr->version} },
         {OpenGL::ContextProperty::Viewport,                                   {OpenGL::GetSetArgumentType::Float,                         1, &m_state_ptr->viewport} },
     };
 

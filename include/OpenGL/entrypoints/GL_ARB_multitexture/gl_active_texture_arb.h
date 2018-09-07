@@ -5,6 +5,7 @@
 #ifndef VKGL_GL_ACTIVE_TEXTURE_ARB_H
 #define VKGL_GL_ACTIVE_TEXTURE_ARB_H
 
+#define vkglActiveTextureARB                 vkglActiveTexture
 #define vkglActiveTextureARB_with_validation vkglActiveTexture_with_validation
 
 #endif /* VKGL_GL_ACTIVE_TEXTURE_ARB_H */

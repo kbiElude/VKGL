@@ -63,9 +63,9 @@ static void vkglVertexAttribI3ui_execute(OpenGL::Context* in_context_ptr,
 
 void OpenGL::vkglVertexAttribI3ui_with_validation(OpenGL::Context* in_context_ptr,
                                                   const GLuint&    in_index,
-                                                  const GLint&     in_x,
-                                                  const GLint&     in_y,
-                                                  const GLint&     in_z)
+                                                  const GLuint&    in_x,
+                                                  const GLuint&    in_y,
+                                                  const GLuint&    in_z)
 {
     if (validate(in_context_ptr,
                  in_index,

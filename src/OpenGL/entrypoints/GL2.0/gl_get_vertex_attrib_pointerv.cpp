@@ -32,10 +32,10 @@ void VKGL_APIENTRY OpenGL::vkglGetVertexAttribPointerv(GLuint index,
                OpenGL::Utils::get_raw_string_for_gl_enum(pname),
                pointer);
 
-    dispatch_table_ptr->pGLGetVertexAttribPointer(dispatch_table_ptr->bound_context_ptr,
-                                                  index,
-                                                  pname,
-                                                  pointer);
+    dispatch_table_ptr->pGLGetVertexAttribPointerv(dispatch_table_ptr->bound_context_ptr,
+                                                   index,
+                                                   pname,
+                                                   pointer);
 }
 
 static void vkglGetVertexAttribPointerv_execute(OpenGL::Context* in_context_ptr,

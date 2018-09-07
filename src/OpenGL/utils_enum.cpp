@@ -463,6 +463,7 @@ OpenGL::ContextProperty OpenGL::Utils::get_context_property_for_gl_enum(const GL
         case GL_UNPACK_SKIP_PIXELS:                       result = OpenGL::ContextProperty::Unpack_Skip_Pixels;                       break;
         case GL_UNPACK_SKIP_ROWS:                         result = OpenGL::ContextProperty::Unpack_Skip_Rows;                         break;
         case GL_UNPACK_SWAP_BYTES:                        result = OpenGL::ContextProperty::Unpack_Swap_Bytes;                        break;
+        case GL_VERSION:                                  result = OpenGL::ContextProperty::Version;                                  break;
         case GL_VIEWPORT:                                 result = OpenGL::ContextProperty::Viewport;                                 break;
 
         default:
@@ -743,6 +744,7 @@ GLenum OpenGL::Utils::get_gl_enum_for_context_property(const OpenGL::ContextProp
         case OpenGL::ContextProperty::Unpack_Skip_Pixels:                       result = GL_UNPACK_SKIP_PIXELS;                       break;
         case OpenGL::ContextProperty::Unpack_Skip_Rows:                         result = GL_UNPACK_SKIP_ROWS;                         break;
         case OpenGL::ContextProperty::Unpack_Swap_Bytes:                        result = GL_UNPACK_SWAP_BYTES;                        break;
+        case OpenGL::ContextProperty::Version:                                  result = GL_VERSION;                                  break;
         case OpenGL::ContextProperty::Viewport:                                 result = GL_VIEWPORT;                                 break;
 
         default:

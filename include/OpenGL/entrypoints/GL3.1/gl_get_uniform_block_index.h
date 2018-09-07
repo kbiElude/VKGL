@@ -13,7 +13,7 @@ namespace OpenGL
                                                   const GLchar* uniformBlockName);
 
     GLuint vkglGetUniformBlockIndex_with_validation(OpenGL::Context* in_context_ptr,
-                                                    GLuint           in_program,
+                                                    const GLuint&    in_program,
                                                     const GLchar*    in_uniform_block_name);
 }
 

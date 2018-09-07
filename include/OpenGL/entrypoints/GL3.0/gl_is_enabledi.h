@@ -12,9 +12,9 @@ namespace OpenGL
     GLboolean VKGL_APIENTRY vkglIsEnabledi(GLenum target,
                                            GLuint index);
 
-    GLboolean vkglIsEnabledi_with_validation(OpenGL::Context* in_context_ptr,
-                                             const GLenum&    in_target,
-                                             const GLuint&    in_index);
+    bool vkglIsEnabledi_with_validation(OpenGL::Context* in_context_ptr,
+                                        const GLenum&    in_target,
+                                        const GLuint&    in_index);
 }
 
 #endif /* VKGL_GL_IS_ENABLEDI_H */

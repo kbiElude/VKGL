@@ -5,12 +5,21 @@
 #ifndef WGL_CONTEXT_H
 #define WGL_CONTEXT_H
 
+#include "vkgl_config.h"
+#include "Common/types.h"
+
+#if !defined(VKGL_INCLUDE_OPENGL)
+    #error WGL requires OpenGL component for successful compilation
+#else
+    #include "OpenGL/context.h"
+#endif
+
 #include <stdint.h>
 #include <windows.h>
 
 namespace WGL
 {
-    class Context
+    class Context : public VKGL::IWSIContext
     {
     public:
         /* Public functions */
@@ -20,6 +29,11 @@ namespace WGL
                                const int*     in_attribute_list_ptr);
 
         ~Context();
+
+        const OpenGL::Context* get_gl_context_ptr() const
+        {
+            return m_gl_context_ptr.get();
+        }
 
         const PIXELFORMATDESCRIPTOR& get_pixel_format_descriptor() const
         {
@@ -75,11 +89,14 @@ namespace WGL
         /* Private functions */
         Context();
 
-        bool init(const HDC&     in_hdc,
-                  const Context* in_share_context_ptr,
-                  const int*     in_attribute_list_ptr);
+        bool init           (const HDC&     in_hdc,
+                             const Context* in_share_context_ptr,
+                             const int*     in_attribute_list_ptr);
+        bool init_gl_context();
 
         /* Private variables */
+
+        OpenGL::ContextUniquePtr m_gl_context_ptr;
 
         HDC                   m_current_hdc;
         bool                  m_is_debug_context;

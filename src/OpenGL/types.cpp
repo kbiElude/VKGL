@@ -182,6 +182,8 @@ OpenGL::ContextState::ContextState(const IGLLimits* in_limits_ptr,
 
     is_program_point_size_enabled = false;
     polygon_mode                  = PolygonMode::Fill;
+
+    version = "WIP";
 }
 
 OpenGL::DispatchTable::DispatchTable()

@@ -5,6 +5,7 @@
 #ifndef VKGL_GL_DRAW_BUFFERS_ARB_H
 #define VKGL_GL_DRAW_BUFFERS_ARB_H
 
+#define vkglDrawBuffersARB                 vkglDrawBuffers
 #define vkglDrawBuffersARB_with_validation vkglDrawBuffers_with_validation
 
 #endif /* VKGL_GL_DRAW_BUFFERS_ARB_H */

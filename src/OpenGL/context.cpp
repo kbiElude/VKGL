@@ -3,11 +3,432 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Common/macros.h"
+#include "Common/types.h"
 #include "OpenGL/types.h"
 #include "OpenGL/context.h"
 #include "OpenGL/utils_enum.h"
 
-OpenGL::Context::Context()
+#include "OpenGL/entrypoints/GL1.0/gl_clear.h"
+#include "OpenGL/entrypoints/GL1.0/gl_clear_color.h"
+#include "OpenGL/entrypoints/GL1.0/gl_clear_depth.h"
+#include "OpenGL/entrypoints/GL1.0/gl_clear_stencil.h"
+#include "OpenGL/entrypoints/GL1.0/gl_color_mask.h"
+#include "OpenGL/entrypoints/GL1.0/gl_cull_face.h"
+#include "OpenGL/entrypoints/GL1.0/gl_depth_func.h"
+#include "OpenGL/entrypoints/GL1.0/gl_depth_mask.h"
+#include "OpenGL/entrypoints/GL1.0/gl_depth_range.h"
+#include "OpenGL/entrypoints/GL1.0/gl_disable.h"
+#include "OpenGL/entrypoints/GL1.0/gl_draw_buffer.h"
+#include "OpenGL/entrypoints/GL1.0/gl_enable.h"
+#include "OpenGL/entrypoints/GL1.0/gl_finish.h"
+#include "OpenGL/entrypoints/GL1.0/gl_flush.h"
+#include "OpenGL/entrypoints/GL1.0/gl_front_face.h"
+#include "OpenGL/entrypoints/GL1.0/gl_get_booleanv.h"
+#include "OpenGL/entrypoints/GL1.0/gl_get_doublev.h"
+#include "OpenGL/entrypoints/GL1.0/gl_get_error.h"
+#include "OpenGL/entrypoints/GL1.0/gl_get_floatv.h"
+#include "OpenGL/entrypoints/GL1.0/gl_get_integerv.h"
+#include "OpenGL/entrypoints/GL1.0/gl_get_string.h"
+#include "OpenGL/entrypoints/GL1.0/gl_get_tex_image.h"
+#include "OpenGL/entrypoints/GL1.0/gl_get_tex_level_parameterfv.h"
+#include "OpenGL/entrypoints/GL1.0/gl_get_tex_level_parameteriv.h"
+#include "OpenGL/entrypoints/GL1.0/gl_get_tex_parameterfv.h"
+#include "OpenGL/entrypoints/GL1.0/gl_get_tex_parameteriv.h"
+#include "OpenGL/entrypoints/GL1.0/gl_hint.h"
+#include "OpenGL/entrypoints/GL1.0/gl_is_enabled.h"
+#include "OpenGL/entrypoints/GL1.0/gl_line_width.h"
+#include "OpenGL/entrypoints/GL1.0/gl_logic_op.h"
+#include "OpenGL/entrypoints/GL1.0/gl_pixel_storef.h"
+#include "OpenGL/entrypoints/GL1.0/gl_pixel_storei.h"
+#include "OpenGL/entrypoints/GL1.0/gl_point_size.h"
+#include "OpenGL/entrypoints/GL1.0/gl_polygon_mode.h"
+#include "OpenGL/entrypoints/GL1.0/gl_read_buffer.h"
+#include "OpenGL/entrypoints/GL1.0/gl_read_pixels.h"
+#include "OpenGL/entrypoints/GL1.0/gl_scissor.h"
+#include "OpenGL/entrypoints/GL1.0/gl_stencil_func.h"
+#include "OpenGL/entrypoints/GL1.0/gl_stencil_mask.h"
+#include "OpenGL/entrypoints/GL1.0/gl_stencil_op.h"
+#include "OpenGL/entrypoints/GL1.0/gl_tex_image_1d.h"
+#include "OpenGL/entrypoints/GL1.0/gl_tex_image_2d.h"
+#include "OpenGL/entrypoints/GL1.0/gl_tex_parameterf.h"
+#include "OpenGL/entrypoints/GL1.0/gl_tex_parameterfv.h"
+#include "OpenGL/entrypoints/GL1.0/gl_tex_parameteri.h"
+#include "OpenGL/entrypoints/GL1.0/gl_tex_parameteriv.h"
+#include "OpenGL/entrypoints/GL1.0/gl_viewport.h"
+
+#include "OpenGL/entrypoints/GL1.1/gl_bind_texture.h"
+#include "OpenGL/entrypoints/GL1.1/gl_copy_tex_image_1d.h"
+#include "OpenGL/entrypoints/GL1.1/gl_copy_tex_image_2d.h"
+#include "OpenGL/entrypoints/GL1.1/gl_copy_tex_sub_image_1d.h"
+#include "OpenGL/entrypoints/GL1.1/gl_copy_tex_sub_image_2d.h"
+#include "OpenGL/entrypoints/GL1.1/gl_delete_textures.h"
+#include "OpenGL/entrypoints/GL1.1/gl_draw_arrays.h"
+#include "OpenGL/entrypoints/GL1.1/gl_draw_elements.h"
+#include "OpenGL/entrypoints/GL1.1/gl_gen_textures.h"
+#include "OpenGL/entrypoints/GL1.1/gl_is_texture.h"
+#include "OpenGL/entrypoints/GL1.1/gl_polygon_offset.h"
+#include "OpenGL/entrypoints/GL1.1/gl_tex_sub_image_1d.h"
+#include "OpenGL/entrypoints/GL1.1/gl_tex_sub_image_2d.h"
+
+#include "OpenGL/entrypoints/GL1.2/gl_copy_tex_sub_image_3d.h"
+#include "OpenGL/entrypoints/GL1.2/gl_draw_range_elements.h"
+#include "OpenGL/entrypoints/GL1.2/gl_tex_image_3d.h"
+#include "OpenGL/entrypoints/GL1.2/gl_tex_sub_image_3d.h"
+
+#include "OpenGL/entrypoints/GL1.3/gl_active_texture.h"
+#include "OpenGL/entrypoints/GL1.3/gl_compressed_tex_image_1d.h"
+#include "OpenGL/entrypoints/GL1.3/gl_compressed_tex_image_2d.h"
+#include "OpenGL/entrypoints/GL1.3/gl_compressed_tex_image_3d.h"
+#include "OpenGL/entrypoints/GL1.3/gl_compressed_tex_sub_image_1d.h"
+#include "OpenGL/entrypoints/GL1.3/gl_compressed_tex_sub_image_2d.h"
+#include "OpenGL/entrypoints/GL1.3/gl_compressed_tex_sub_image_3d.h"
+#include "OpenGL/entrypoints/GL1.3/gl_get_compressed_tex_image.h"
+#include "OpenGL/entrypoints/GL1.3/gl_sample_coverage.h"
+
+#include "OpenGL/entrypoints/GL1.4/gl_blend_color.h"
+#include "OpenGL/entrypoints/GL1.4/gl_blend_equation.h"
+#include "OpenGL/entrypoints/GL1.4/gl_blend_func_separate.h"
+#include "OpenGL/entrypoints/GL1.4/gl_multi_draw_arrays.h"
+#include "OpenGL/entrypoints/GL1.4/gl_multi_draw_elements.h"
+#include "OpenGL/entrypoints/GL1.4/gl_point_parameterf.h"
+#include "OpenGL/entrypoints/GL1.4/gl_point_parameterfv.h"
+#include "OpenGL/entrypoints/GL1.4/gl_point_parameteri.h"
+#include "OpenGL/entrypoints/GL1.4/gl_point_parameteriv.h"
+
+#include "OpenGL/entrypoints/GL1.5/gl_begin_query.h"
+#include "OpenGL/entrypoints/GL1.5/gl_bind_buffer.h"
+#include "OpenGL/entrypoints/GL1.5/gl_buffer_data.h"
+#include "OpenGL/entrypoints/GL1.5/gl_buffer_sub_data.h"
+#include "OpenGL/entrypoints/GL1.5/gl_delete_buffers.h"
+#include "OpenGL/entrypoints/GL1.5/gl_delete_queries.h"
+#include "OpenGL/entrypoints/GL1.5/gl_end_query.h"
+#include "OpenGL/entrypoints/GL1.5/gl_gen_buffers.h"
+#include "OpenGL/entrypoints/GL1.5/gl_gen_queries.h"
+#include "OpenGL/entrypoints/GL1.5/gl_get_buffer_parameteriv.h"
+#include "OpenGL/entrypoints/GL1.5/gl_get_buffer_pointerv.h"
+#include "OpenGL/entrypoints/GL1.5/gl_get_buffer_sub_data.h"
+#include "OpenGL/entrypoints/GL1.5/gl_get_queryiv.h"
+#include "OpenGL/entrypoints/GL1.5/gl_get_query_objectiv.h"
+#include "OpenGL/entrypoints/GL1.5/gl_get_query_objectuiv.h"
+#include "OpenGL/entrypoints/GL1.5/gl_is_buffer.h"
+#include "OpenGL/entrypoints/GL1.5/gl_is_query.h"
+#include "OpenGL/entrypoints/GL1.5/gl_map_buffer.h"
+#include "OpenGL/entrypoints/GL1.5/gl_unmap_buffer.h"
+
+#include "OpenGL/entrypoints/GL2.0/gl_attach_shader.h"
+#include "OpenGL/entrypoints/GL2.0/gl_bind_attrib_location.h"
+#include "OpenGL/entrypoints/GL2.0/gl_blend_equation_separate.h"
+#include "OpenGL/entrypoints/GL2.0/gl_compile_shader.h"
+#include "OpenGL/entrypoints/GL2.0/gl_create_program.h"
+#include "OpenGL/entrypoints/GL2.0/gl_create_shader.h"
+#include "OpenGL/entrypoints/GL2.0/gl_delete_program.h"
+#include "OpenGL/entrypoints/GL2.0/gl_delete_shader.h"
+#include "OpenGL/entrypoints/GL2.0/gl_detach_shader.h"
+#include "OpenGL/entrypoints/GL2.0/gl_disable_vertex_attrib_array.h"
+#include "OpenGL/entrypoints/GL2.0/gl_draw_buffers.h"
+#include "OpenGL/entrypoints/GL2.0/gl_enable_vertex_attrib_array.h"
+#include "OpenGL/entrypoints/GL2.0/gl_get_active_attrib.h"
+#include "OpenGL/entrypoints/GL2.0/gl_get_active_uniform.h"
+#include "OpenGL/entrypoints/GL2.0/gl_get_attached_shaders.h"
+#include "OpenGL/entrypoints/GL2.0/gl_get_attrib_location.h"
+#include "OpenGL/entrypoints/GL2.0/gl_get_programiv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_get_program_info_log.h"
+#include "OpenGL/entrypoints/GL2.0/gl_get_shaderiv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_get_shader_info_log.h"
+#include "OpenGL/entrypoints/GL2.0/gl_get_shader_source.h"
+#include "OpenGL/entrypoints/GL2.0/gl_get_uniformfv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_get_uniformiv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_get_uniform_location.h"
+#include "OpenGL/entrypoints/GL2.0/gl_get_vertex_attribdv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_get_vertex_attribfv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_get_vertex_attribiv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_get_vertex_attrib_pointerv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_is_program.h"
+#include "OpenGL/entrypoints/GL2.0/gl_is_shader.h"
+#include "OpenGL/entrypoints/GL2.0/gl_link_program.h"
+#include "OpenGL/entrypoints/GL2.0/gl_shader_source.h"
+#include "OpenGL/entrypoints/GL2.0/gl_stencil_func_separate.h"
+#include "OpenGL/entrypoints/GL2.0/gl_stencil_mask_separate.h"
+#include "OpenGL/entrypoints/GL2.0/gl_stencil_op_separate.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_1f.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_1fv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_1i.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_1iv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_2f.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_2fv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_2i.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_2iv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_3f.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_3fv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_3i.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_3iv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_4f.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_4fv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_4i.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_4iv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_matrix_2fv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_matrix_3fv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_uniform_matrix_4fv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_use_program.h"
+#include "OpenGL/entrypoints/GL2.0/gl_validate_program.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_1d.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_1dv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_1f.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_1fv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_1s.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_1sv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_2d.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_2dv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_2f.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_2fv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_2s.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_2sv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_3d.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_3dv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_3f.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_3fv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_3s.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_3sv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4bv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4d.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4dv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4f.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4fv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4iv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4Nbv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4Niv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4Nsv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4Nub.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4Nubv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4Nuiv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4Nusv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4s.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4sv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4ubv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4uiv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_4usv.h"
+#include "OpenGL/entrypoints/GL2.0/gl_vertex_attrib_pointer.h"
+
+#include "OpenGL/entrypoints/GL2.1/gl_uniform_matrix_2x3_fv.h"
+#include "OpenGL/entrypoints/GL2.1/gl_uniform_matrix_2x4_fv.h"
+#include "OpenGL/entrypoints/GL2.1/gl_uniform_matrix_3x2_fv.h"
+#include "OpenGL/entrypoints/GL2.1/gl_uniform_matrix_3x4_fv.h"
+#include "OpenGL/entrypoints/GL2.1/gl_uniform_matrix_4x2_fv.h"
+#include "OpenGL/entrypoints/GL2.1/gl_uniform_matrix_4x3_fv.h"
+
+#include "OpenGL/entrypoints/GL3.0/gl_begin_conditional_render.h"
+#include "OpenGL/entrypoints/GL3.0/gl_begin_transform_feedback.h"
+#include "OpenGL/entrypoints/GL3.0/gl_bind_buffer_base.h"
+#include "OpenGL/entrypoints/GL3.0/gl_bind_buffer_range.h"
+#include "OpenGL/entrypoints/GL3.0/gl_bind_frag_data_location.h"
+#include "OpenGL/entrypoints/GL3.0/gl_bind_framebuffer.h"
+#include "OpenGL/entrypoints/GL3.0/gl_bind_renderbuffer.h"
+#include "OpenGL/entrypoints/GL3.0/gl_bind_vertex_array.h"
+#include "OpenGL/entrypoints/GL3.0/gl_blit_framebuffer.h"
+#include "OpenGL/entrypoints/GL3.0/gl_check_framebuffer_status.h"
+#include "OpenGL/entrypoints/GL3.0/gl_clamp_color.h"
+#include "OpenGL/entrypoints/GL3.0/gl_clear_buffer_fi.h"
+#include "OpenGL/entrypoints/GL3.0/gl_clear_buffer_fv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_clear_buffer_iv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_clear_buffer_uiv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_color_maski.h"
+#include "OpenGL/entrypoints/GL3.0/gl_delete_framebuffers.h"
+#include "OpenGL/entrypoints/GL3.0/gl_delete_renderbuffers.h"
+#include "OpenGL/entrypoints/GL3.0/gl_delete_vertex_arrays.h"
+#include "OpenGL/entrypoints/GL3.0/gl_disablei.h"
+#include "OpenGL/entrypoints/GL3.0/gl_enablei.h"
+#include "OpenGL/entrypoints/GL3.0/gl_end_conditional_render.h"
+#include "OpenGL/entrypoints/GL3.0/gl_end_transform_feedback.h"
+#include "OpenGL/entrypoints/GL3.0/gl_flush_mapped_buffer_range.h"
+#include "OpenGL/entrypoints/GL3.0/gl_framebuffer_renderbuffer.h"
+#include "OpenGL/entrypoints/GL3.0/gl_framebuffer_texture_1d.h"
+#include "OpenGL/entrypoints/GL3.0/gl_framebuffer_texture_2d.h"
+#include "OpenGL/entrypoints/GL3.0/gl_framebuffer_texture_3d.h"
+#include "OpenGL/entrypoints/GL3.0/gl_framebuffer_texture_layer.h"
+#include "OpenGL/entrypoints/GL3.0/gl_generate_mipmap.h"
+#include "OpenGL/entrypoints/GL3.0/gl_gen_framebuffers.h"
+#include "OpenGL/entrypoints/GL3.0/gl_gen_renderbuffers.h"
+#include "OpenGL/entrypoints/GL3.0/gl_gen_vertex_arrays.h"
+#include "OpenGL/entrypoints/GL3.0/gl_get_booleani_v.h"
+#include "OpenGL/entrypoints/GL3.0/gl_get_frag_data_location.h"
+#include "OpenGL/entrypoints/GL3.0/gl_get_framebuffer_attachment_parameteriv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_get_integeri_v.h"
+#include "OpenGL/entrypoints/GL3.0/gl_get_renderbuffer_parameteriv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_get_stringi.h"
+#include "OpenGL/entrypoints/GL3.0/gl_get_tex_parameter_i_iv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_get_tex_parameter_i_uiv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_get_transform_feedback_varying.h"
+#include "OpenGL/entrypoints/GL3.0/gl_get_uniformuiv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_get_vertex_attrib_i_iv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_get_vertex_attrib_i_uiv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_is_enabledi.h"
+#include "OpenGL/entrypoints/GL3.0/gl_is_framebuffer.h"
+#include "OpenGL/entrypoints/GL3.0/gl_is_renderbuffer.h"
+#include "OpenGL/entrypoints/GL3.0/gl_is_vertex_array.h"
+#include "OpenGL/entrypoints/GL3.0/gl_map_buffer_range.h"
+#include "OpenGL/entrypoints/GL3.0/gl_renderbuffer_storage.h"
+#include "OpenGL/entrypoints/GL3.0/gl_renderbuffer_storage_multisample.h"
+#include "OpenGL/entrypoints/GL3.0/gl_tex_parameter_i_iv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_tex_parameter_i_uiv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_transform_feedback_varyings.h"
+#include "OpenGL/entrypoints/GL3.0/gl_uniform_1ui.h"
+#include "OpenGL/entrypoints/GL3.0/gl_uniform_1uiv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_uniform_2ui.h"
+#include "OpenGL/entrypoints/GL3.0/gl_uniform_2uiv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_uniform_3ui.h"
+#include "OpenGL/entrypoints/GL3.0/gl_uniform_3uiv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_uniform_4ui.h"
+#include "OpenGL/entrypoints/GL3.0/gl_uniform_4uiv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_1i.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_1iv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_1ui.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_1uiv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_2i.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_2iv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_2ui.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_2uiv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_3i.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_3iv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_3ui.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_3uiv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_4bv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_4i.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_4iv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_4sv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_4ubv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_4ui.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_4uiv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_4usv.h"
+#include "OpenGL/entrypoints/GL3.0/gl_vertex_attrib_i_pointer.h"
+
+#include "OpenGL/entrypoints/GL3.1/gl_copy_buffer_sub_data.h"
+#include "OpenGL/entrypoints/GL3.1/gl_draw_arrays_instanced.h"
+#include "OpenGL/entrypoints/GL3.1/gl_draw_elements_instanced.h"
+#include "OpenGL/entrypoints/GL3.1/gl_get_active_uniformsiv.h"
+#include "OpenGL/entrypoints/GL3.1/gl_get_active_uniform_blockiv.h"
+#include "OpenGL/entrypoints/GL3.1/gl_get_active_uniform_block_name.h"
+#include "OpenGL/entrypoints/GL3.1/gl_get_active_uniform_name.h"
+#include "OpenGL/entrypoints/GL3.1/gl_get_uniform_block_index.h"
+#include "OpenGL/entrypoints/GL3.1/gl_get_uniform_indices.h"
+#include "OpenGL/entrypoints/GL3.1/gl_primitive_restart_index.h"
+#include "OpenGL/entrypoints/GL3.1/gl_tex_buffer.h"
+#include "OpenGL/entrypoints/GL3.1/gl_uniform_block_binding.h"
+
+#include "OpenGL/entrypoints/GL3.2/gl_client_wait_sync.h"
+#include "OpenGL/entrypoints/GL3.2/gl_delete_sync.h"
+#include "OpenGL/entrypoints/GL3.2/gl_draw_elements_base_vertex.h"
+#include "OpenGL/entrypoints/GL3.2/gl_draw_elements_instanced_base_vertex.h"
+#include "OpenGL/entrypoints/GL3.2/gl_draw_range_elements_base_vertex.h"
+#include "OpenGL/entrypoints/GL3.2/gl_fence_sync.h"
+#include "OpenGL/entrypoints/GL3.2/gl_framebuffer_texture.h"
+#include "OpenGL/entrypoints/GL3.2/gl_get_buffer_parameteri64v.h"
+#include "OpenGL/entrypoints/GL3.2/gl_get_integer64i_v.h"
+#include "OpenGL/entrypoints/GL3.2/gl_get_integer64v.h"
+#include "OpenGL/entrypoints/GL3.2/gl_get_multisamplefv.h"
+#include "OpenGL/entrypoints/GL3.2/gl_get_synciv.h"
+#include "OpenGL/entrypoints/GL3.2/gl_is_sync.h"
+#include "OpenGL/entrypoints/GL3.2/gl_multi_draw_elements_base_vertex.h"
+#include "OpenGL/entrypoints/GL3.2/gl_provoking_vertex.h"
+#include "OpenGL/entrypoints/GL3.2/gl_sample_maski.h"
+#include "OpenGL/entrypoints/GL3.2/gl_tex_image_2d_multisample.h"
+#include "OpenGL/entrypoints/GL3.2/gl_tex_image_3d_multisample.h"
+#include "OpenGL/entrypoints/GL3.2/gl_wait_sync.h"
+
+#include "OpenGL/entrypoints/GL_ARB_color_buffer_float/gl_clamp_color_arb.h"
+
+#include "OpenGL/entrypoints/GL_ARB_draw_buffers/gl_draw_buffers_arb.h"
+
+#include "OpenGL/entrypoints/GL_ARB_draw_instanced/gl_draw_arrays_instanced_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_draw_instanced/gl_draw_elements_instanced_arb.h"
+
+#include "OpenGL/entrypoints/GL_ARB_multisample/gl_sample_coverage_arb.h"
+
+#include "OpenGL/entrypoints/GL_ARB_multitexture/gl_active_texture_arb.h"
+
+#include "OpenGL/entrypoints/GL_ARB_occlusion_query/gl_begin_query_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_occlusion_query/gl_delete_queries_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_occlusion_query/gl_end_query_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_occlusion_query/gl_gen_queries_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_occlusion_query/gl_get_queryiv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_occlusion_query/gl_get_query_objectiv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_occlusion_query/gl_get_query_objectuiv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_occlusion_query/gl_is_query_arb.h"
+
+#include "OpenGL/entrypoints/GL_ARB_point_parameters/gl_point_parameterf_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_point_parameters/gl_point_parameterfv_arb.h"
+
+#include "OpenGL/entrypoints/GL_ARB_texture_buffer_object/gl_tex_buffer_arb.h"
+
+#include "OpenGL/entrypoints/GL_ARB_texture_compression/gl_compressed_tex_image_1d_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_texture_compression/gl_compressed_tex_image_2d_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_texture_compression/gl_compressed_tex_image_3d_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_texture_compression/gl_compressed_tex_sub_image_1d_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_texture_compression/gl_compressed_tex_sub_image_2d_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_texture_compression/gl_compressed_tex_sub_image_3d_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_texture_compression/gl_get_compressed_tex_image_arb.h"
+
+#include "OpenGL/entrypoints/GL_ARB_vertex_buffer_object/gl_bind_buffer_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_buffer_object/gl_buffer_data_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_buffer_object/gl_buffer_sub_data_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_buffer_object/gl_delete_buffers_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_buffer_object/gl_gen_buffers_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_buffer_object/gl_get_buffer_parameteriv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_buffer_object/gl_get_buffer_pointerv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_buffer_object/gl_get_buffer_sub_data_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_buffer_object/gl_is_buffer_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_buffer_object/gl_map_buffer_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_buffer_object/gl_unmap_buffer_arb.h"
+
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_disable_vertex_attrib_array_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_enable_vertex_attrib_array_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_get_vertex_attribdv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_get_vertex_attribfv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_get_vertex_attribiv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_get_vertex_attrib_pointerv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_1dv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_1d_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_1fv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_1f_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_1sv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_1s_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_2dv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_2d_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_2fv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_2f_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_2sv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_2s_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_3dv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_3d_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_3fv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_3f_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_3sv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_3s_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4bv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4dv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4d_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4fv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4f_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4iv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4Nbv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4Niv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4Nsv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4Nubv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4Nub_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4Nuiv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4sv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4s_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4ubv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4uiv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_4usv_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_program/gl_vertex_attrib_pointer_arb.h"
+
+#include "OpenGL/entrypoints/GL_ARB_vertex_shader/gl_bind_attrib_location_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_shader/gl_get_active_attrib_arb.h"
+#include "OpenGL/entrypoints/GL_ARB_vertex_shader/gl_get_attrib_location_arb.h"
+
+
+OpenGL::Context::Context(const VKGL::IWSIContext* in_wsi_context_ptr)
+    :m_wsi_context_ptr(in_wsi_context_ptr)
 {
     /* Stub */
 }
@@ -561,12 +982,12 @@ void OpenGL::Context::copy_tex_sub_image_3d(const OpenGL::TextureTarget& in_targ
 #endif
 }
 
-OpenGL::ContextUniquePtr OpenGL::Context::create()
+OpenGL::ContextUniquePtr OpenGL::Context::create(const VKGL::IWSIContext* in_wsi_context_ptr)
 {
     OpenGL::ContextUniquePtr result_ptr;
 
     result_ptr.reset(
-        new OpenGL::Context()
+        new OpenGL::Context(in_wsi_context_ptr)
     );
 
     if (result_ptr != nullptr)
@@ -1502,6 +1923,16 @@ bool OpenGL::Context::init()
 {
     bool result = false;
 
+    /* Init dispatch table */
+    result = init_dispatch_table();
+
+    if (!result)
+    {
+        vkgl_assert(result);
+
+        goto end;
+    }
+
     /* Set up GL limits container */
     m_gl_limits_ptr.reset(
         new OpenGL::GLLimits()
@@ -1539,6 +1970,339 @@ bool OpenGL::Context::init()
     /* All done */
     result = true;
 end:
+    return result;
+}
+
+bool OpenGL::Context::init_dispatch_table()
+{
+    bool result = false;
+
+    m_dispatch_table.pGLBindTexture            = OpenGL::vkglBindTexture_with_validation;
+    m_dispatch_table.pGLClear                  = OpenGL::vkglClear_with_validation;
+    m_dispatch_table.pGLClearColor             = OpenGL::vkglClearColor_with_validation;
+    m_dispatch_table.pGLClearDepth             = OpenGL::vkglClearDepth_with_validation;
+    m_dispatch_table.pGLClearStencil           = OpenGL::vkglClearStencil_with_validation;
+    m_dispatch_table.pGLColorMask              = OpenGL::vkglColorMask_with_validation;
+    m_dispatch_table.pGLCopyTexImage1D         = OpenGL::vkglCopyTexImage1D_with_validation;
+    m_dispatch_table.pGLCopyTexImage2D         = OpenGL::vkglCopyTexImage2D_with_validation;
+    m_dispatch_table.pGLCopyTexSubImage1D      = OpenGL::vkglCopyTexSubImage1D_with_validation;
+    m_dispatch_table.pGLCopyTexSubImage2D      = OpenGL::vkglCopyTexSubImage2D_with_validation;
+    m_dispatch_table.pGLCullFace               = OpenGL::vkglCullFace_with_validation;
+    m_dispatch_table.pGLDeleteTextures         = OpenGL::vkglDeleteTextures_with_validation;
+    m_dispatch_table.pGLDepthFunc              = OpenGL::vkglDepthFunc_with_validation;
+    m_dispatch_table.pGLDepthMask              = OpenGL::vkglDepthMask_with_validation;
+    m_dispatch_table.pGLDepthRange             = OpenGL::vkglDepthRange_with_validation;
+    m_dispatch_table.pGLDisable                = OpenGL::vkglDisable_with_validation;
+    m_dispatch_table.pGLDrawArrays             = OpenGL::vkglDrawArrays_with_validation;
+    m_dispatch_table.pGLDrawBuffer             = OpenGL::vkglDrawBuffer_with_validation;
+    m_dispatch_table.pGLDrawElements           = OpenGL::vkglDrawElements_with_validation;
+    m_dispatch_table.pGLEnable                 = OpenGL::vkglEnable_with_validation;
+    m_dispatch_table.pGLFinish                 = OpenGL::vkglFinish_with_validation;
+    m_dispatch_table.pGLFlush                  = OpenGL::vkglFlush_with_validation;
+    m_dispatch_table.pGLFrontFace              = OpenGL::vkglFrontFace_with_validation;
+    m_dispatch_table.pGLGenTextures            = OpenGL::vkglGenTextures_with_validation;
+    m_dispatch_table.pGLGetBooleanv            = OpenGL::vkglGetBooleanv_with_validation;
+    m_dispatch_table.pGLGetDoublev             = OpenGL::vkglGetDoublev_with_validation;
+    m_dispatch_table.pGLGetError               = OpenGL::vkglGetError_with_validation;
+    m_dispatch_table.pGLGetFloatv              = OpenGL::vkglGetFloatv_with_validation;
+    m_dispatch_table.pGLGetIntegerv            = OpenGL::vkglGetIntegerv_with_validation;
+    m_dispatch_table.pGLGetString              = OpenGL::vkglGetString_with_validation;
+    m_dispatch_table.pGLGetTexImage            = OpenGL::vkglGetTexImage_with_validation;
+    m_dispatch_table.pGLGetTexLevelParameterfv = OpenGL::vkglGetTexLevelParameterfv_with_validation;
+    m_dispatch_table.pGLGetTexLevelParameteriv = OpenGL::vkglGetTexLevelParameteriv_with_validation;
+    m_dispatch_table.pGLGetTexParameterfv      = OpenGL::vkglGetTexParameterfv_with_validation;
+    m_dispatch_table.pGLGetTexParameteriv      = OpenGL::vkglGetTexParameteriv_with_validation;
+    m_dispatch_table.pGLHint                   = OpenGL::vkglHint_with_validation;
+    m_dispatch_table.pGLIsEnabled              = OpenGL::vkglIsEnabled_with_validation;
+    m_dispatch_table.pGLIsTexture              = OpenGL::vkglIsTexture_with_validation;
+    m_dispatch_table.pGLLineWidth              = OpenGL::vkglLineWidth_with_validation;
+    m_dispatch_table.pGLLogicOp                = OpenGL::vkglLogicOp_with_validation;
+    m_dispatch_table.pGLPixelStoref            = OpenGL::vkglPixelStoref_with_validation;
+    m_dispatch_table.pGLPixelStorei            = OpenGL::vkglPixelStorei_with_validation;
+    m_dispatch_table.pGLPointSize              = OpenGL::vkglPointSize_with_validation;
+    m_dispatch_table.pGLPolygonMode            = OpenGL::vkglPolygonMode_with_validation;
+    m_dispatch_table.pGLPolygonOffset          = OpenGL::vkglPolygonOffset_with_validation;
+    m_dispatch_table.pGLReadBuffer             = OpenGL::vkglReadBuffer_with_validation;
+    m_dispatch_table.pGLReadPixels             = OpenGL::vkglReadPixels_with_validation;
+    m_dispatch_table.pGLScissor                = OpenGL::vkglScissor_with_validation;
+    m_dispatch_table.pGLStencilFunc            = OpenGL::vkglStencilFunc_with_validation;
+    m_dispatch_table.pGLStencilMask            = OpenGL::vkglStencilMask_with_validation;
+    m_dispatch_table.pGLStencilOp              = OpenGL::vkglStencilOp_with_validation;
+    m_dispatch_table.pGLTexImage1D             = OpenGL::vkglTexImage1D_with_validation;
+    m_dispatch_table.pGLTexImage2D             = OpenGL::vkglTexImage2D_with_validation;
+    m_dispatch_table.pGLTexParameterf          = OpenGL::vkglTexParameterf_with_validation;
+    m_dispatch_table.pGLTexParameterfv         = OpenGL::vkglTexParameterfv_with_validation;
+    m_dispatch_table.pGLTexParameteri          = OpenGL::vkglTexParameteri_with_validation;
+    m_dispatch_table.pGLTexParameteriv         = OpenGL::vkglTexParameteriv_with_validation;
+    m_dispatch_table.pGLTexSubImage1D          = OpenGL::vkglTexSubImage1D_with_validation;
+    m_dispatch_table.pGLTexSubImage2D          = OpenGL::vkglTexSubImage2D_with_validation;
+    m_dispatch_table.pGLViewport               = OpenGL::vkglViewport_with_validation;
+
+    m_dispatch_table.pGLCopyTexSubImage3D = OpenGL::vkglCopyTexSubImage3D_with_validation;
+    m_dispatch_table.pGLDrawRangeElements = OpenGL::vkglDrawRangeElements_with_validation;
+    m_dispatch_table.pGLTexImage3D        = OpenGL::vkglTexImage3D_with_validation;
+    m_dispatch_table.pGLTexSubImage3D     = OpenGL::vkglTexSubImage3D_with_validation;
+
+    m_dispatch_table.pGLActiveTexture           = OpenGL::vkglActiveTexture_with_validation;
+    m_dispatch_table.pGLCompressedTexImage1D    = OpenGL::vkglCompressedTexImage1D_with_validation;
+    m_dispatch_table.pGLCompressedTexImage2D    = OpenGL::vkglCompressedTexImage2D_with_validation;
+    m_dispatch_table.pGLCompressedTexImage3D    = OpenGL::vkglCompressedTexImage3D_with_validation;
+    m_dispatch_table.pGLCompressedTexSubImage1D = OpenGL::vkglCompressedTexSubImage1D_with_validation;
+    m_dispatch_table.pGLCompressedTexSubImage2D = OpenGL::vkglCompressedTexSubImage2D_with_validation;
+    m_dispatch_table.pGLCompressedTexSubImage3D = OpenGL::vkglCompressedTexSubImage3D_with_validation;
+    m_dispatch_table.pGLGetCompressedTexImage   = OpenGL::vkglGetCompressedTexImage_with_validation;
+    m_dispatch_table.pGLSampleCoverage          = OpenGL::vkglSampleCoverage_with_validation;
+
+    m_dispatch_table.pGLBlendColor        = OpenGL::vkglBlendColor_with_validation;
+    m_dispatch_table.pGLBlendEquation     = OpenGL::vkglBlendEquation_with_validation;
+    m_dispatch_table.pGLBlendFuncSeparate = OpenGL::vkglBlendFuncSeparate_with_validation;
+    m_dispatch_table.pGLMultiDrawArrays   = OpenGL::vkglMultiDrawArrays_with_validation;
+    m_dispatch_table.pGLMultiDrawElements = OpenGL::vkglMultiDrawElements_with_validation;
+    m_dispatch_table.pGLPointParameterf   = OpenGL::vkglPointParameterf_with_validation;
+    m_dispatch_table.pGLPointParameterfv  = OpenGL::vkglPointParameterfv_with_validation;
+    m_dispatch_table.pGLPointParameteri   = OpenGL::vkglPointParameteri_with_validation;
+    m_dispatch_table.pGLPointParameteriv  = OpenGL::vkglPointParameteriv_with_validation;
+
+    m_dispatch_table.pGLBeginQuery           = OpenGL::vkglBeginQuery_with_validation;
+    m_dispatch_table.pGLBindBuffer           = OpenGL::vkglBindBuffer_with_validation;
+    m_dispatch_table.pGLBufferData           = OpenGL::vkglBufferData_with_validation;
+    m_dispatch_table.pGLBufferSubData        = OpenGL::vkglBufferSubData_with_validation;
+    m_dispatch_table.pGLDeleteBuffers        = OpenGL::vkglDeleteBuffers_with_validation;
+    m_dispatch_table.pGLDeleteQueries        = OpenGL::vkglDeleteQueries_with_validation;
+    m_dispatch_table.pGLEndQuery             = OpenGL::vkglEndQuery_with_validation;
+    m_dispatch_table.pGLGenBuffers           = OpenGL::vkglGenBuffers_with_validation;
+    m_dispatch_table.pGLGenQueries           = OpenGL::vkglGenQueries_with_validation;
+    m_dispatch_table.pGLGetBufferParameteriv = OpenGL::vkglGetBufferParameteriv_with_validation;
+    m_dispatch_table.pGLGetBufferPointerv    = OpenGL::vkglGetBufferPointerv_with_validation;
+    m_dispatch_table.pGLGetBufferSubData     = OpenGL::vkglGetBufferSubData_with_validation;
+    m_dispatch_table.pGLGetQueryiv           = OpenGL::vkglGetQueryiv_with_validation;
+    m_dispatch_table.pGLGetQueryObjectiv     = OpenGL::vkglGetQueryObjectiv_with_validation;
+    m_dispatch_table.pGLGetQueryObjectuiv    = OpenGL::vkglGetQueryObjectuiv_with_validation;
+    m_dispatch_table.pGLIsBuffer             = OpenGL::vkglIsBuffer_with_validation;
+    m_dispatch_table.pGLIsQuery              = OpenGL::vkglIsQuery_with_validation;
+    m_dispatch_table.pGLMapBuffer            = OpenGL::vkglMapBuffer_with_validation;
+    m_dispatch_table.pGLUnmapBuffer          = OpenGL::vkglUnmapBuffer_with_validation;
+
+    m_dispatch_table.pGLAttachShader             = OpenGL::vkglAttachShader_with_validation;
+    m_dispatch_table.pGLBindAttribLocation       = OpenGL::vkglBindAttribLocation_with_validation;
+    m_dispatch_table.pGLBlendEquationSeparate    = OpenGL::vkglBlendEquationSeparate_with_validation;
+    m_dispatch_table.pGLCompileShader            = OpenGL::vkglCompileShader_with_validation;
+    m_dispatch_table.pGLCreateProgram            = OpenGL::vkglCreateProgram_with_validation;
+    m_dispatch_table.pGLCreateShader             = OpenGL::vkglCreateShader_with_validation;
+    m_dispatch_table.pGLDeleteProgram            = OpenGL::vkglDeleteProgram_with_validation;
+    m_dispatch_table.pGLDeleteShader             = OpenGL::vkglDeleteShader_with_validation;
+    m_dispatch_table.pGLDetachShader             = OpenGL::vkglDetachShader_with_validation;
+    m_dispatch_table.pGLDisableVertexAttribArray = OpenGL::vkglDisableVertexAttribArray_with_validation;
+    m_dispatch_table.pGLDrawBuffers              = OpenGL::vkglDrawBuffers_with_validation;
+    m_dispatch_table.pGLEnableVertexAttribArray  = OpenGL::vkglEnableVertexAttribArray_with_validation;
+    m_dispatch_table.pGLGetActiveAttrib          = OpenGL::vkglGetActiveAttrib_with_validation;
+    m_dispatch_table.pGLGetActiveUniform         = OpenGL::vkglGetActiveUniform_with_validation;
+    m_dispatch_table.pGLGetAttachedShaders       = OpenGL::vkglGetAttachedShaders_with_validation;
+    m_dispatch_table.pGLGetAttribLocation        = OpenGL::vkglGetAttribLocation_with_validation;
+    m_dispatch_table.pGLGetProgramiv             = OpenGL::vkglGetProgramiv_with_validation;
+    m_dispatch_table.pGLGetProgramInfoLog        = OpenGL::vkglGetProgramInfoLog_with_validation;
+    m_dispatch_table.pGLGetShaderiv              = OpenGL::vkglGetShaderiv_with_validation;
+    m_dispatch_table.pGLGetShaderInfoLog         = OpenGL::vkglGetShaderInfoLog_with_validation;
+    m_dispatch_table.pGLGetShaderSource          = OpenGL::vkglGetShaderSource_with_validation;
+    m_dispatch_table.pGLGetUniformfv             = OpenGL::vkglGetUniformfv_with_validation;
+    m_dispatch_table.pGLGetUniformiv             = OpenGL::vkglGetUniformiv_with_validation;
+    m_dispatch_table.pGLGetUniformLocation       = OpenGL::vkglGetUniformLocation_with_validation;
+    m_dispatch_table.pGLGetVertexAttribdv        = OpenGL::vkglGetVertexAttribdv_with_validation;
+    m_dispatch_table.pGLGetVertexAttribfv        = OpenGL::vkglGetVertexAttribfv_with_validation;
+    m_dispatch_table.pGLGetVertexAttribiv        = OpenGL::vkglGetVertexAttribiv_with_validation;
+    m_dispatch_table.pGLGetVertexAttribPointerv  = OpenGL::vkglGetVertexAttribPointerv_with_validation;
+    m_dispatch_table.pGLIsProgram                = OpenGL::vkglIsProgram_with_validation;
+    m_dispatch_table.pGLIsShader                 = OpenGL::vkglIsShader_with_validation;
+    m_dispatch_table.pGLLinkProgram              = OpenGL::vkglLinkProgram_with_validation;
+    m_dispatch_table.pGLShaderSource             = OpenGL::vkglShaderSource_with_validation;
+    m_dispatch_table.pGLStencilFuncSeparate      = OpenGL::vkglStencilFuncSeparate_with_validation;
+    m_dispatch_table.pGLStencilMaskSeparate      = OpenGL::vkglStencilMaskSeparate_with_validation;
+    m_dispatch_table.pGLStencilOpSeparate        = OpenGL::vkglStencilOpSeparate_with_validation;
+    m_dispatch_table.pGLUniform1f                = OpenGL::vkglUniform1f_with_validation;
+    m_dispatch_table.pGLUniform1fv               = OpenGL::vkglUniform1fv_with_validation;
+    m_dispatch_table.pGLUniform1i                = OpenGL::vkglUniform1i_with_validation;
+    m_dispatch_table.pGLUniform1iv               = OpenGL::vkglUniform1iv_with_validation;
+    m_dispatch_table.pGLUniform2f                = OpenGL::vkglUniform2f_with_validation;
+    m_dispatch_table.pGLUniform2fv               = OpenGL::vkglUniform2fv_with_validation;
+    m_dispatch_table.pGLUniform2i                = OpenGL::vkglUniform2i_with_validation;
+    m_dispatch_table.pGLUniform2iv               = OpenGL::vkglUniform2iv_with_validation;
+    m_dispatch_table.pGLUniform3f                = OpenGL::vkglUniform3f_with_validation;
+    m_dispatch_table.pGLUniform3fv               = OpenGL::vkglUniform3fv_with_validation;
+    m_dispatch_table.pGLUniform3i                = OpenGL::vkglUniform3i_with_validation;
+    m_dispatch_table.pGLUniform3iv               = OpenGL::vkglUniform3iv_with_validation;
+    m_dispatch_table.pGLUniform4f                = OpenGL::vkglUniform4f_with_validation;
+    m_dispatch_table.pGLUniform4fv               = OpenGL::vkglUniform4fv_with_validation;
+    m_dispatch_table.pGLUniform4i                = OpenGL::vkglUniform4i_with_validation;
+    m_dispatch_table.pGLUniform4iv               = OpenGL::vkglUniform4iv_with_validation;
+    m_dispatch_table.pGLUniformMatrix2fv         = OpenGL::vkglUniformMatrix2fv_with_validation;
+    m_dispatch_table.pGLUniformMatrix3fv         = OpenGL::vkglUniformMatrix3fv_with_validation;
+    m_dispatch_table.pGLUniformMatrix4fv         = OpenGL::vkglUniformMatrix4fv_with_validation;
+    m_dispatch_table.pGLUseProgram               = OpenGL::vkglUseProgram_with_validation;
+    m_dispatch_table.pGLValidateProgram          = OpenGL::vkglValidateProgram_with_validation;
+    m_dispatch_table.pGLVertexAttrib1d           = OpenGL::vkglVertexAttrib1d_with_validation;
+    m_dispatch_table.pGLVertexAttrib1dv          = OpenGL::vkglVertexAttrib1dv_with_validation;
+    m_dispatch_table.pGLVertexAttrib1f           = OpenGL::vkglVertexAttrib1f_with_validation;
+    m_dispatch_table.pGLVertexAttrib1fv          = OpenGL::vkglVertexAttrib1fv_with_validation;
+    m_dispatch_table.pGLVertexAttrib1s           = OpenGL::vkglVertexAttrib1s_with_validation;
+    m_dispatch_table.pGLVertexAttrib1sv          = OpenGL::vkglVertexAttrib1sv_with_validation;
+    m_dispatch_table.pGLVertexAttrib2d           = OpenGL::vkglVertexAttrib2d_with_validation;
+    m_dispatch_table.pGLVertexAttrib2dv          = OpenGL::vkglVertexAttrib2dv_with_validation;
+    m_dispatch_table.pGLVertexAttrib2f           = OpenGL::vkglVertexAttrib2f_with_validation;
+    m_dispatch_table.pGLVertexAttrib2fv          = OpenGL::vkglVertexAttrib2fv_with_validation;
+    m_dispatch_table.pGLVertexAttrib2s           = OpenGL::vkglVertexAttrib2s_with_validation;
+    m_dispatch_table.pGLVertexAttrib2sv          = OpenGL::vkglVertexAttrib2sv_with_validation;
+    m_dispatch_table.pGLVertexAttrib3d           = OpenGL::vkglVertexAttrib3d_with_validation;
+    m_dispatch_table.pGLVertexAttrib3dv          = OpenGL::vkglVertexAttrib3dv_with_validation;
+    m_dispatch_table.pGLVertexAttrib3f           = OpenGL::vkglVertexAttrib3f_with_validation;
+    m_dispatch_table.pGLVertexAttrib3fv          = OpenGL::vkglVertexAttrib3fv_with_validation;
+    m_dispatch_table.pGLVertexAttrib3s           = OpenGL::vkglVertexAttrib3s_with_validation;
+    m_dispatch_table.pGLVertexAttrib3sv          = OpenGL::vkglVertexAttrib3sv_with_validation;
+    m_dispatch_table.pGLVertexAttrib4bv          = OpenGL::vkglVertexAttrib4bv_with_validation;
+    m_dispatch_table.pGLVertexAttrib4d           = OpenGL::vkglVertexAttrib4d_with_validation;
+    m_dispatch_table.pGLVertexAttrib4dv          = OpenGL::vkglVertexAttrib4dv_with_validation;
+    m_dispatch_table.pGLVertexAttrib4f           = OpenGL::vkglVertexAttrib4f_with_validation;
+    m_dispatch_table.pGLVertexAttrib4fv          = OpenGL::vkglVertexAttrib4fv_with_validation;
+    m_dispatch_table.pGLVertexAttrib4iv          = OpenGL::vkglVertexAttrib4iv_with_validation;
+    m_dispatch_table.pGLVertexAttrib4Nbv         = OpenGL::vkglVertexAttrib4Nbv_with_validation;
+    m_dispatch_table.pGLVertexAttrib4Niv         = OpenGL::vkglVertexAttrib4Niv_with_validation;
+    m_dispatch_table.pGLVertexAttrib4Nsv         = OpenGL::vkglVertexAttrib4Nsv_with_validation;
+    m_dispatch_table.pGLVertexAttrib4Nub         = OpenGL::vkglVertexAttrib4Nub_with_validation;
+    m_dispatch_table.pGLVertexAttrib4Nubv        = OpenGL::vkglVertexAttrib4Nubv_with_validation;
+    m_dispatch_table.pGLVertexAttrib4Nuiv        = OpenGL::vkglVertexAttrib4Nuiv_with_validation;
+    m_dispatch_table.pGLVertexAttrib4Nusv        = OpenGL::vkglVertexAttrib4Nusv_with_validation;
+    m_dispatch_table.pGLVertexAttrib4s           = OpenGL::vkglVertexAttrib4s_with_validation;
+    m_dispatch_table.pGLVertexAttrib4sv          = OpenGL::vkglVertexAttrib4sv_with_validation;
+    m_dispatch_table.pGLVertexAttrib4ubv         = OpenGL::vkglVertexAttrib4ubv_with_validation;
+    m_dispatch_table.pGLVertexAttrib4uiv         = OpenGL::vkglVertexAttrib4uiv_with_validation;
+    m_dispatch_table.pGLVertexAttrib4usv         = OpenGL::vkglVertexAttrib4usv_with_validation;
+    m_dispatch_table.pGLVertexAttribPointer      = OpenGL::vkglVertexAttribPointer_with_validation;
+
+    m_dispatch_table.pGLUniformMatrix2x3fv = OpenGL::vkglUniformMatrix2x3fv_with_validation;
+    m_dispatch_table.pGLUniformMatrix2x4fv = OpenGL::vkglUniformMatrix2x4fv_with_validation;
+    m_dispatch_table.pGLUniformMatrix3x2fv = OpenGL::vkglUniformMatrix3x2fv_with_validation;
+    m_dispatch_table.pGLUniformMatrix3x4fv = OpenGL::vkglUniformMatrix3x4fv_with_validation;
+    m_dispatch_table.pGLUniformMatrix4x2fv = OpenGL::vkglUniformMatrix4x2fv_with_validation;
+    m_dispatch_table.pGLUniformMatrix4x3fv = OpenGL::vkglUniformMatrix4x3fv_with_validation;
+
+    m_dispatch_table.pGLBeginConditionalRender              = OpenGL::vkglBeginConditionalRender_with_validation;
+    m_dispatch_table.pGLBeginTransformFeedback              = OpenGL::vkglBeginTransformFeedback_with_validation;
+    m_dispatch_table.pGLBindBufferBase                      = OpenGL::vkglBindBufferBase_with_validation;
+    m_dispatch_table.pGLBindBufferRange                     = OpenGL::vkglBindBufferRange_with_validation;
+    m_dispatch_table.pGLBindFragDataLocation                = OpenGL::vkglBindFragDataLocation_with_validation;
+    m_dispatch_table.pGLBindFramebuffer                     = OpenGL::vkglBindFramebuffer_with_validation;
+    m_dispatch_table.pGLBindRenderbuffer                    = OpenGL::vkglBindRenderbuffer_with_validation;
+    m_dispatch_table.pGLBindVertexArray                     = OpenGL::vkglBindVertexArray_with_validation;
+    m_dispatch_table.pGLBlitFramebuffer                     = OpenGL::vkglBlitFramebuffer_with_validation;
+    m_dispatch_table.pGLCheckFramebufferStatus              = OpenGL::vkglCheckFramebufferStatus_with_validation;
+    m_dispatch_table.pGLClampColor                          = OpenGL::vkglClampColor_with_validation;
+    m_dispatch_table.pGLClearBufferfi                       = OpenGL::vkglClearBufferfi_with_validation;
+    m_dispatch_table.pGLClearBufferfv                       = OpenGL::vkglClearBufferfv_with_validation;
+    m_dispatch_table.pGLClearBufferiv                       = OpenGL::vkglClearBufferiv_with_validation;
+    m_dispatch_table.pGLClearBufferuiv                      = OpenGL::vkglClearBufferuiv_with_validation;
+    m_dispatch_table.pGLColorMaski                          = OpenGL::vkglColorMaski_with_validation;
+    m_dispatch_table.pGLDeleteFramebuffers                  = OpenGL::vkglDeleteFramebuffers_with_validation;
+    m_dispatch_table.pGLDeleteRenderbuffers                 = OpenGL::vkglDeleteRenderbuffers_with_validation;
+    m_dispatch_table.pGLDeleteVertexArrays                  = OpenGL::vkglDeleteVertexArrays_with_validation;
+    m_dispatch_table.pGLDisablei                            = OpenGL::vkglDisablei_with_validation;
+    m_dispatch_table.pGLEnablei                             = OpenGL::vkglEnablei_with_validation;
+    m_dispatch_table.pGLEndConditionalRender                = OpenGL::vkglEndConditionalRender_with_validation;
+    m_dispatch_table.pGLEndTransformFeedback                = OpenGL::vkglEndTransformFeedback_with_validation;
+    m_dispatch_table.pGLFlushMappedBufferRange              = OpenGL::vkglFlushMappedBufferRange_with_validation;
+    m_dispatch_table.pGLFramebufferRenderbuffer             = OpenGL::vkglFramebufferRenderbuffer_with_validation;
+    m_dispatch_table.pGLFramebufferTexture1D                = OpenGL::vkglFramebufferTexture1D_with_validation;
+    m_dispatch_table.pGLFramebufferTexture2D                = OpenGL::vkglFramebufferTexture2D_with_validation;
+    m_dispatch_table.pGLFramebufferTexture3D                = OpenGL::vkglFramebufferTexture3D_with_validation;
+    m_dispatch_table.pGLFramebufferTextureLayer             = OpenGL::vkglFramebufferTextureLayer_with_validation;
+    m_dispatch_table.pGLGenerateMipmap                      = OpenGL::vkglGenerateMipmap_with_validation;
+    m_dispatch_table.pGLGenFramebuffers                     = OpenGL::vkglGenFramebuffers_with_validation;
+    m_dispatch_table.pGLGenRenderbuffers                    = OpenGL::vkglGenRenderbuffers_with_validation;
+    m_dispatch_table.pGLGenVertexArrays                     = OpenGL::vkglGenVertexArrays_with_validation;
+    m_dispatch_table.pGLGetBooleani_v                       = OpenGL::vkglGetBooleani_v_with_validation;
+    m_dispatch_table.pGLGetFragDataLocation                 = OpenGL::vkglGetFragDataLocation_with_validation;
+    m_dispatch_table.pGLGetFramebufferAttachmentParameteriv = OpenGL::vkglGetFramebufferAttachmentParameteriv_with_validation;
+    m_dispatch_table.pGLGetIntegeri_v                       = OpenGL::vkglGetIntegeri_v_with_validation;
+    m_dispatch_table.pGLGetRenderbufferParameteriv          = OpenGL::vkglGetRenderbufferParameteriv_with_validation;
+    m_dispatch_table.pGLGetStringi                          = OpenGL::vkglGetStringi_with_validation;
+    m_dispatch_table.pGLGetTexParameterIiv                  = OpenGL::vkglGetTexParameterIiv_with_validation;
+    m_dispatch_table.pGLGetTexParameterIuiv                 = OpenGL::vkglGetTexParameterIuiv_with_validation;
+    m_dispatch_table.pGLGetTransformFeedbackVarying         = OpenGL::vkglGetTransformFeedbackVarying_with_validation;
+    m_dispatch_table.pGLGetUniformuiv                       = OpenGL::vkglGetUniformuiv_with_validation;
+    m_dispatch_table.pGLGetVertexAttribIiv                  = OpenGL::vkglGetVertexAttribIiv_with_validation;
+    m_dispatch_table.pGLGetVertexAttribIuiv                 = OpenGL::vkglGetVertexAttribIuiv_with_validation;
+    m_dispatch_table.pGLIsEnabledi                          = OpenGL::vkglIsEnabledi_with_validation;
+    m_dispatch_table.pGLIsFramebuffer                       = OpenGL::vkglIsFramebuffer_with_validation;
+    m_dispatch_table.pGLIsRenderbuffer                      = OpenGL::vkglIsRenderbuffer_with_validation;
+    m_dispatch_table.pGLIsVertexArray                       = OpenGL::vkglIsVertexArray_with_validation;
+    m_dispatch_table.pGLMapBufferRange                      = OpenGL::vkglMapBufferRange_with_validation;
+    m_dispatch_table.pGLRenderbufferStorage                 = OpenGL::vkglRenderbufferStorage_with_validation;
+    m_dispatch_table.pGLRenderbufferStorageMultisample      = OpenGL::vkglRenderbufferStorageMultisample_with_validation;
+    m_dispatch_table.pGLTexParameterIiv                     = OpenGL::vkglTexParameterIiv_with_validation;
+    m_dispatch_table.pGLTexParameterIuiv                    = OpenGL::vkglTexParameterIuiv_with_validation;
+    m_dispatch_table.pGLTransformFeedbackVaryings           = OpenGL::vkglTransformFeedbackVaryings_with_validation;
+    m_dispatch_table.pGLUniform1ui                          = OpenGL::vkglUniform1ui_with_validation;
+    m_dispatch_table.pGLUniform1uiv                         = OpenGL::vkglUniform1uiv_with_validation;
+    m_dispatch_table.pGLUniform2ui                          = OpenGL::vkglUniform2ui_with_validation;
+    m_dispatch_table.pGLUniform2uiv                         = OpenGL::vkglUniform2uiv_with_validation;
+    m_dispatch_table.pGLUniform3ui                          = OpenGL::vkglUniform3ui_with_validation;
+    m_dispatch_table.pGLUniform3uiv                         = OpenGL::vkglUniform3uiv_with_validation;
+    m_dispatch_table.pGLUniform4ui                          = OpenGL::vkglUniform4ui_with_validation;
+    m_dispatch_table.pGLUniform4uiv                         = OpenGL::vkglUniform4uiv_with_validation;
+    m_dispatch_table.pGLVertexAttribI1i                     = OpenGL::vkglVertexAttribI1i_with_validation;
+    m_dispatch_table.pGLVertexAttribI1iv                    = OpenGL::vkglVertexAttribI1iv_with_validation;
+    m_dispatch_table.pGLVertexAttribI1ui                    = OpenGL::vkglVertexAttribI1ui_with_validation;
+    m_dispatch_table.pGLVertexAttribI1uiv                   = OpenGL::vkglVertexAttribI1uiv_with_validation;
+    m_dispatch_table.pGLVertexAttribI2i                     = OpenGL::vkglVertexAttribI2i_with_validation;
+    m_dispatch_table.pGLVertexAttribI2iv                    = OpenGL::vkglVertexAttribI2iv_with_validation;
+    m_dispatch_table.pGLVertexAttribI2ui                    = OpenGL::vkglVertexAttribI2ui_with_validation;
+    m_dispatch_table.pGLVertexAttribI2uiv                   = OpenGL::vkglVertexAttribI2uiv_with_validation;
+    m_dispatch_table.pGLVertexAttribI3i                     = OpenGL::vkglVertexAttribI3i_with_validation;
+    m_dispatch_table.pGLVertexAttribI3iv                    = OpenGL::vkglVertexAttribI3iv_with_validation;
+    m_dispatch_table.pGLVertexAttribI3ui                    = OpenGL::vkglVertexAttribI3ui_with_validation;
+    m_dispatch_table.pGLVertexAttribI3uiv                   = OpenGL::vkglVertexAttribI3uiv_with_validation;
+    m_dispatch_table.pGLVertexAttribI4bv                    = OpenGL::vkglVertexAttribI4bv_with_validation;
+    m_dispatch_table.pGLVertexAttribI4i                     = OpenGL::vkglVertexAttribI4i_with_validation;
+    m_dispatch_table.pGLVertexAttribI4iv                    = OpenGL::vkglVertexAttribI4iv_with_validation;
+    m_dispatch_table.pGLVertexAttribI4sv                    = OpenGL::vkglVertexAttribI4sv_with_validation;
+    m_dispatch_table.pGLVertexAttribI4ubv                   = OpenGL::vkglVertexAttribI4ubv_with_validation;
+    m_dispatch_table.pGLVertexAttribI4ui                    = OpenGL::vkglVertexAttribI4ui_with_validation;
+    m_dispatch_table.pGLVertexAttribI4uiv                   = OpenGL::vkglVertexAttribI4uiv_with_validation;
+    m_dispatch_table.pGLVertexAttribI4usv                   = OpenGL::vkglVertexAttribI4usv_with_validation;
+    m_dispatch_table.pGLVertexAttribIPointer                = OpenGL::vkglVertexAttribIPointer_with_validation;
+
+    m_dispatch_table.pGLCopyBufferSubData         = OpenGL::vkglCopyBufferSubData_with_validation;
+    m_dispatch_table.pGLDrawArraysInstanced       = OpenGL::vkglDrawArraysInstanced_with_validation;
+    m_dispatch_table.pGLDrawElementsInstanced     = OpenGL::vkglDrawElementsInstanced_with_validation;
+    m_dispatch_table.pGLGetActiveUniformsiv       = OpenGL::vkglGetActiveUniformsiv_with_validation;
+    m_dispatch_table.pGLGetActiveUniformBlockiv   = OpenGL::vkglGetActiveUniformBlockiv_with_validation;
+    m_dispatch_table.pGLGetActiveUniformBlockName = OpenGL::vkglGetActiveUniformBlockName_with_validation;
+    m_dispatch_table.pGLGetActiveUniformName      = OpenGL::vkglGetActiveUniformName_with_validation;
+    m_dispatch_table.pGLGetUniformBlockIndex      = OpenGL::vkglGetUniformBlockIndex_with_validation;
+    m_dispatch_table.pGLGetUniformIndices         = OpenGL::vkglGetUniformIndices_with_validation;
+    m_dispatch_table.pGLPrimitiveRestartIndex     = OpenGL::vkglPrimitiveRestartIndex_with_validation;
+    m_dispatch_table.pGLTexBuffer                 = OpenGL::vkglTexBuffer_with_validation;
+    m_dispatch_table.pGLUniformBlockBinding       = OpenGL::vkglUniformBlockBinding_with_validation;
+
+    m_dispatch_table.pGLClientWaitSync                  = OpenGL::vkglClientWaitSync_with_validation;
+    m_dispatch_table.pGLDeleteSync                      = OpenGL::vkglDeleteSync_with_validation;
+    m_dispatch_table.pGLDrawElementsBaseVertex          = OpenGL::vkglDrawElementsBaseVertex_with_validation;
+    m_dispatch_table.pGLDrawElementsInstancedBaseVertex = OpenGL::vkglDrawElementsInstancedBaseVertex_with_validation;
+    m_dispatch_table.pGLDrawRangeElementsBaseVertex     = OpenGL::vkglDrawRangeElementsBaseVertex_with_validation;
+    m_dispatch_table.pGLFenceSync                       = OpenGL::vkglFenceSync_with_validation;
+    m_dispatch_table.pGLFramebufferTexture              = OpenGL::vkglFramebufferTexture_with_validation;
+    m_dispatch_table.pGLGetBufferParameteri64v          = OpenGL::vkglGetBufferParameteri64v_with_validation;
+    m_dispatch_table.pGLGetInteger64i_v                 = OpenGL::vkglGetInteger64i_v_with_validation;
+    m_dispatch_table.pGLGetInteger64v                   = OpenGL::vkglGetInteger64v_with_validation;
+    m_dispatch_table.pGLGetMultisamplefv                = OpenGL::vkglGetMultisamplefv_with_validation;
+    m_dispatch_table.pGLGetSynciv                       = OpenGL::vkglGetSynciv_with_validation;
+    m_dispatch_table.pGLIsSync                          = OpenGL::vkglIsSync_with_validation;
+    m_dispatch_table.pGLMultiDrawElementsBaseVertex     = OpenGL::vkglMultiDrawElementsBaseVertex_with_validation;
+    m_dispatch_table.pGLProvokingVertex                 = OpenGL::vkglProvokingVertex_with_validation;
+    m_dispatch_table.pGLSampleMaski                     = OpenGL::vkglSampleMaski_with_validation;
+    m_dispatch_table.pGLTexImage2DMultisample           = OpenGL::vkglTexImage2DMultisample_with_validation;
+    m_dispatch_table.pGLTexImage3DMultisample           = OpenGL::vkglTexImage3DMultisample_with_validation;
+    m_dispatch_table.pGLWaitSync                        = OpenGL::vkglWaitSync_with_validation;
+
+    result = true;
     return result;
 }
 

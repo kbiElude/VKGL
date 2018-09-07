@@ -5,6 +5,7 @@
 #ifndef VKGL_CONTEXT_H
 #define VKGL_CONTEXT_H
 
+#include "Common/types.h"
 #include "OpenGL/gl_limits.h"
 #include "OpenGL/gl_state_manager.h"
 #include "OpenGL/gl_texture_manager.h"
@@ -19,10 +20,15 @@ namespace OpenGL
     public:
         /* Public functions */
 
-        static ContextUniquePtr create();
+        static ContextUniquePtr create(const VKGL::IWSIContext* in_wsi_context_ptr);
 
         ~Context();
 
+
+        const OpenGL::DispatchTable* get_dispatch_table() const
+        {
+            return &m_dispatch_table;
+        }
 
         /* Object generation routines: */
         GLuint create_program   ();
@@ -791,11 +797,15 @@ namespace OpenGL
     private:
         /* Private functions */
 
-        Context();
+        Context(const VKGL::IWSIContext* in_wsi_context_ptr);
 
-        bool init();
+        bool init               ();
+        bool init_dispatch_table();
 
         /* Private variables */
+        OpenGL::DispatchTable    m_dispatch_table;
+        const VKGL::IWSIContext* m_wsi_context_ptr;
+
         GLLimitsUniquePtr         m_gl_limits_ptr;
         GLStateManagerUniquePtr   m_gl_state_manager_ptr;
         GLTextureManagerUniquePtr m_gl_texture_manager_ptr;

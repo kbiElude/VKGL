@@ -241,7 +241,7 @@ namespace OpenGL
         PFNVKGLGETUNIFORMLOCATIONPROC       pGLGetUniformLocation;
         PFNVKGLGETUNIFORMFVPROC             pGLGetUniformfv;
         PFNVKGLGETUNIFORMIVPROC             pGLGetUniformiv;
-        PFNVKGLGETVERTEXATTRIBPOINTERVPROC  pGLGetVertexAttribPointer;
+        PFNVKGLGETVERTEXATTRIBPOINTERVPROC  pGLGetVertexAttribPointerv;
         PFNVKGLGETVERTEXATTRIBDVPROC        pGLGetVertexAttribdv;
         PFNVKGLGETVERTEXATTRIBFVPROC        pGLGetVertexAttribfv;
         PFNVKGLGETVERTEXATTRIBIVPROC        pGLGetVertexAttribiv;
@@ -619,6 +619,8 @@ namespace OpenGL
     {
         bool    is_primitive_restart_enabled;
         int32_t primitive_restart_index;
+
+        std::string version;
 
         bool              is_depth_clamp_enabled;
         double            depth_range[2];

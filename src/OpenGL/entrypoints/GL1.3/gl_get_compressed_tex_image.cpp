@@ -50,8 +50,8 @@ static void vkglGetCompressedTexImage_execute(OpenGL::Context* in_context_ptr,
 }
 
 void OpenGL::vkglGetCompressedTexImage_with_validation(OpenGL::Context* in_context_ptr,
-                                                       GLenum           in_target,
-                                                       GLint            in_level,
+                                                       const GLenum&    in_target,
+                                                       const GLint&     in_level,
                                                        void*            in_img)
 {
     if (validate(in_context_ptr,

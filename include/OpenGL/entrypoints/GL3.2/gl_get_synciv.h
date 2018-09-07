@@ -16,9 +16,9 @@ namespace OpenGL
                                      GLint*   values);
 
     void vkglGetSynciv_with_validation(OpenGL::Context* in_context_ptr,
-                                       GLsync           in_sync,
-                                       GLenum           in_pname,
-                                       GLsizei          in_buf_size,
+                                       const GLsync&    in_sync,
+                                       const GLenum&    in_pname,
+                                       const GLsizei&   in_buf_size,
                                        GLsizei*         inout_length_ptr,
                                        GLint*           out_values_ptr);
 }

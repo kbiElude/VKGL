@@ -10,7 +10,7 @@
 
 namespace OpenGL
 {
-    extern VKGL_THREADLOCAL OpenGL::DispatchTable* g_dispatch_table_ptr;
+    extern VKGL_THREADLOCAL const OpenGL::DispatchTable* g_dispatch_table_ptr;
 
     /* NOTE: opengl32.dll only exposes <=GL1.1 entrypoints. We discard the compatibility
      *       entrypoints and only reroute funcs implemented by the library

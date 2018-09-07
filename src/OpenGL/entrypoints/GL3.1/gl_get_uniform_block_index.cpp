@@ -41,7 +41,7 @@ static GLuint vkglGetUniformBlockIndex_execute(OpenGL::Context* in_context_ptr,
 }
 
 GLuint OpenGL::vkglGetUniformBlockIndex_with_validation(OpenGL::Context* in_context_ptr,
-                                                        GLuint           in_program,
+                                                        const GLuint&    in_program,
                                                         const GLchar*    in_uniform_block_name)
 {
     GLuint result = UINT32_MAX;

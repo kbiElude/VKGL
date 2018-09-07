@@ -7,6 +7,7 @@
 
 #include "OpenGL/types.h"
 
+#define vkglClampColorARB                 vkglClampColor
 #define vkglClampColorARB_with_validation vkglClampColor_with_validation
 
 #endif /* VKGL_GL_CLAMP_COLOR_ARB_H */

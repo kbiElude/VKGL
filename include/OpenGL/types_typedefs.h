@@ -106,25 +106,25 @@ namespace OpenGL
     typedef void (*PFNVKGLPOINTPARAMETERIVPROC) (OpenGL::Context* in_context_ptr, const GLenum& pname, const GLint* params);
 
     /* VKGL GL entrypoints: GL 1.5 */
-    typedef void      (*PFNVKGLBEGINQUERYPROC)          (OpenGL::Context* in_context_ptr, GLenum target, GLuint id);
-    typedef void      (*PFNVKGLBINDBUFFERPROC)          (OpenGL::Context* in_context_ptr, GLenum target, GLuint buffer);
-    typedef void      (*PFNVKGLBUFFERDATAPROC)          (OpenGL::Context* in_context_ptr, GLenum target, GLsizeiptr size, const void* data, GLenum usage);
-    typedef void      (*PFNVKGLBUFFERSUBDATAPROC)       (OpenGL::Context* in_context_ptr, GLenum target, GLintptr offset, GLsizeiptr size, const void* data);
-    typedef void      (*PFNVKGLDELETEBUFFERSPROC)       (OpenGL::Context* in_context_ptr, GLsizei n, const GLuint* buffers);
-    typedef void      (*PFNVKGLDELETEQUERIESPROC)       (OpenGL::Context* in_context_ptr, GLsizei n, const GLuint* ids);
-    typedef void      (*PFNVKGLENDQUERYPROC)            (OpenGL::Context* in_context_ptr, GLenum target);
-    typedef void      (*PFNVKGLGENBUFFERSPROC)          (OpenGL::Context* in_context_ptr, GLsizei n, GLuint* buffers);
-    typedef void      (*PFNVKGLGENQUERIESPROC)          (OpenGL::Context* in_context_ptr, GLsizei n, GLuint* ids);
-    typedef void      (*PFNVKGLGETBUFFERPARAMETERIVPROC)(OpenGL::Context* in_context_ptr, GLenum target, GLenum pname, GLint* params);
-    typedef void      (*PFNVKGLGETBUFFERPOINTERVPROC)   (OpenGL::Context* in_context_ptr, GLenum target, GLenum pname, void** params);
-    typedef void      (*PFNVKGLGETBUFFERSUBDATAPROC)    (OpenGL::Context* in_context_ptr, GLenum target, GLintptr offset, GLsizeiptr size, void* data);
-    typedef void      (*PFNVKGLGETQUERYOBJECTIVPROC)    (OpenGL::Context* in_context_ptr, GLuint id, GLenum pname, GLint* params);
-    typedef void      (*PFNVKGLGETQUERYOBJECTUIVPROC)   (OpenGL::Context* in_context_ptr, GLuint id, GLenum pname, GLuint* params);
-    typedef void      (*PFNVKGLGETQUERYIVPROC)          (OpenGL::Context* in_context_ptr, GLenum target, GLenum pname, GLint* params);
-    typedef GLboolean (*PFNVKGLISBUFFERPROC)            (OpenGL::Context* in_context_ptr, GLuint buffer);
-    typedef GLboolean (*PFNVKGLISQUERYPROC)             (OpenGL::Context* in_context_ptr, GLuint id);
-    typedef void*     (*PFNVKGLMAPBUFFERPROC)           (OpenGL::Context* in_context_ptr, GLenum target, GLenum access);
-    typedef GLboolean (*PFNVKGLUNMAPBUFFERPROC)         (OpenGL::Context* in_context_ptr, GLenum target);
+    typedef void  (*PFNVKGLBEGINQUERYPROC)          (OpenGL::Context* in_context_ptr, const GLenum& target, const GLuint& id);
+    typedef void  (*PFNVKGLBINDBUFFERPROC)          (OpenGL::Context* in_context_ptr, const GLenum& target, const GLuint& buffer);
+    typedef void  (*PFNVKGLBUFFERDATAPROC)          (OpenGL::Context* in_context_ptr, const GLenum& target, const GLsizeiptr& size, const void* data, const GLenum& usage);
+    typedef void  (*PFNVKGLBUFFERSUBDATAPROC)       (OpenGL::Context* in_context_ptr, const GLenum& target, const GLintptr& offset, const GLsizeiptr& size, const void* data);
+    typedef void  (*PFNVKGLDELETEBUFFERSPROC)       (OpenGL::Context* in_context_ptr, const GLsizei& n, const GLuint* buffers);
+    typedef void  (*PFNVKGLDELETEQUERIESPROC)       (OpenGL::Context* in_context_ptr, const GLsizei& n, const GLuint* ids);
+    typedef void  (*PFNVKGLENDQUERYPROC)            (OpenGL::Context* in_context_ptr, const GLenum& target);
+    typedef void  (*PFNVKGLGENBUFFERSPROC)          (OpenGL::Context* in_context_ptr, const GLsizei& n, GLuint* buffers);
+    typedef void  (*PFNVKGLGENQUERIESPROC)          (OpenGL::Context* in_context_ptr, const GLsizei& n, GLuint* ids);
+    typedef void  (*PFNVKGLGETBUFFERPARAMETERIVPROC)(OpenGL::Context* in_context_ptr, const GLenum& target, const GLenum& pname, GLint* params);
+    typedef void  (*PFNVKGLGETBUFFERPOINTERVPROC)   (OpenGL::Context* in_context_ptr, const GLenum& target, const GLenum& pname, void** params);
+    typedef void  (*PFNVKGLGETBUFFERSUBDATAPROC)    (OpenGL::Context* in_context_ptr, const GLenum& target, const GLintptr& offset, const GLsizeiptr& size, void* data);
+    typedef void  (*PFNVKGLGETQUERYOBJECTIVPROC)    (OpenGL::Context* in_context_ptr, const GLuint& id, const GLenum& pname, GLint* params);
+    typedef void  (*PFNVKGLGETQUERYOBJECTUIVPROC)   (OpenGL::Context* in_context_ptr, const GLuint& id, const GLenum& pname, GLuint* params);
+    typedef void  (*PFNVKGLGETQUERYIVPROC)          (OpenGL::Context* in_context_ptr, const GLenum& target, const GLenum& pname, GLint* params);
+    typedef bool  (*PFNVKGLISBUFFERPROC)            (OpenGL::Context* in_context_ptr, const GLuint& buffer);
+    typedef bool  (*PFNVKGLISQUERYPROC)             (OpenGL::Context* in_context_ptr, const GLuint& id);
+    typedef void* (*PFNVKGLMAPBUFFERPROC)           (OpenGL::Context* in_context_ptr, const GLenum& target, const GLenum& access);
+    typedef bool  (*PFNVKGLUNMAPBUFFERPROC)         (OpenGL::Context* in_context_ptr, const GLenum& target);
 
     /* VKGL GL entrypoints: GL 2.0 */
 
@@ -145,7 +145,7 @@ namespace OpenGL
     typedef void      (*PFNVKGLGETATTACHEDSHADERSPROC)      (OpenGL::Context* in_context_ptr, const GLuint& in_program, const GLsizei& in_maxCount, GLsizei* in_count, GLuint* in_shaders);
     typedef GLint     (*PFNVKGLGETATTRIBLOCATIONPROC)       (OpenGL::Context* in_context_ptr, const GLuint& in_program, const GLchar* in_name);
     typedef void      (*PFNVKGLGETPROGRAMINFOLOGPROC)       (OpenGL::Context* in_context_ptr, const GLuint& in_program, const GLsizei& in_bufSize, GLsizei* in_length, GLchar* in_infoLog);
-    typedef void      (*PFNVKGLGETPROGRAMIVPROC)            (OpenGL::Context* in_context_ptr, const GLuint& in_program, GLenum in_pname, GLint* in_params);
+    typedef void      (*PFNVKGLGETPROGRAMIVPROC)            (OpenGL::Context* in_context_ptr, const GLuint& in_program, const GLenum& in_pname, GLint* in_params);
     typedef void      (*PFNVKGLGETSHADERINFOLOGPROC)        (OpenGL::Context* in_context_ptr, const GLuint& in_shader, const GLsizei& in_bufSize, GLsizei* in_length, GLchar* in_infoLog);
     typedef void      (*PFNVKGLGETSHADERSOURCEPROC)         (OpenGL::Context* in_context_ptr, const GLuint& in_shader, const GLsizei& in_bufSize, GLsizei* in_length, GLchar* in_source);
     typedef void      (*PFNVKGLGETSHADERIVPROC)             (OpenGL::Context* in_context_ptr, const GLuint& in_shader, const GLenum& in_pname, GLint* in_params);
@@ -156,8 +156,8 @@ namespace OpenGL
     typedef void      (*PFNVKGLGETVERTEXATTRIBDVPROC)       (OpenGL::Context* in_context_ptr, const GLuint& in_index, const GLenum& in_pname, GLdouble* in_params);
     typedef void      (*PFNVKGLGETVERTEXATTRIBFVPROC)       (OpenGL::Context* in_context_ptr, const GLuint& in_index, const GLenum& in_pname, GLfloat* in_params);
     typedef void      (*PFNVKGLGETVERTEXATTRIBIVPROC)       (OpenGL::Context* in_context_ptr, const GLuint& in_index, const GLenum& in_pname, GLint* in_params);
-    typedef GLboolean (*PFNVKGLISPROGRAMPROC)               (OpenGL::Context* in_context_ptr, const GLuint& in_program);
-    typedef GLboolean (*PFNVKGLISSHADERPROC)                (OpenGL::Context* in_context_ptr, const GLuint& in_shader);
+    typedef bool      (*PFNVKGLISPROGRAMPROC)               (OpenGL::Context* in_context_ptr, const GLuint& in_program);
+    typedef bool      (*PFNVKGLISSHADERPROC)                (OpenGL::Context* in_context_ptr, const GLuint& in_shader);
     typedef void      (*PFNVKGLLINKPROGRAMPROC)             (OpenGL::Context* in_context_ptr, const GLuint& in_program);
     typedef void      (*PFNVKGLSHADERSOURCEPROC)            (OpenGL::Context* in_context_ptr, const GLuint& in_shader, const GLsizei& in_count,const GLchar* const* in_string, const GLint* in_length);
     typedef void      (*PFNVKGLSTENCILFUNCSEPARATEPROC)     (OpenGL::Context* in_context_ptr, const GLenum& in_face, const GLenum& in_func,const GLint& in_ref, const GLuint& in_mask);
@@ -276,10 +276,10 @@ namespace OpenGL
     typedef void           (*PFNVKGLGETUNIFORMUIVPROC)                      (OpenGL::Context* in_context_ptr, const GLuint& in_program, const GLint& in_location, GLuint* out_params_ptr);
     typedef void           (*PFNVKGLGETVERTEXATTRIBIIVPROC)                 (OpenGL::Context* in_context_ptr, const GLuint& in_index, const GLenum& in_pname, GLint* out_params_ptr);
     typedef void           (*PFNVKGLGETVERTEXATTRIBIUIVPROC)                (OpenGL::Context* in_context_ptr, const GLuint& in_index, const GLenum& in_pname, GLuint* out_params_ptr);
-    typedef GLboolean      (*PFNVKGLISENABLEDIPROC)                         (OpenGL::Context* in_context_ptr, const GLenum& in_target, const GLuint& in_index);
-    typedef GLboolean      (*PFNVKGLISFRAMEBUFFERPROC)                      (OpenGL::Context* in_context_ptr, const GLuint& in_framebuffer);
-    typedef GLboolean      (*PFNVKGLISRENDERBUFFERPROC)                     (OpenGL::Context* in_context_ptr, const GLuint& in_renderbuffer);
-    typedef GLboolean      (*PFNVKGLISVERTEXARRAYPROC)                      (OpenGL::Context* in_context_ptr, const GLuint& in_array);
+    typedef bool           (*PFNVKGLISENABLEDIPROC)                         (OpenGL::Context* in_context_ptr, const GLenum& in_target, const GLuint& in_index);
+    typedef bool           (*PFNVKGLISFRAMEBUFFERPROC)                      (OpenGL::Context* in_context_ptr, const GLuint& in_framebuffer);
+    typedef bool           (*PFNVKGLISRENDERBUFFERPROC)                     (OpenGL::Context* in_context_ptr, const GLuint& in_renderbuffer);
+    typedef bool           (*PFNVKGLISVERTEXARRAYPROC)                      (OpenGL::Context* in_context_ptr, const GLuint& in_array);
     typedef void*          (*PFNVKGLMAPBUFFERRANGEPROC)                     (OpenGL::Context* in_context_ptr, const GLenum& in_target, const GLintptr& in_offset, const GLsizeiptr& in_length, const GLbitfield& in_access);
     typedef void           (*PFNVKGLRENDERBUFFERSTORAGEPROC)                (OpenGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_internalformat, const GLsizei& in_width, const GLsizei& in_height);
     typedef void           (*PFNVKGLRENDERBUFFERSTORAGEMULTISAMPLEPROC)     (OpenGL::Context* in_context_ptr, const GLenum& in_target, const GLsizei& in_samples, const GLenum& in_internalformat, const GLsizei& in_width, const GLsizei& in_height);
@@ -331,25 +331,25 @@ namespace OpenGL
     typedef void   (*PFNVKGLUNIFORMBLOCKBINDINGPROC)      (OpenGL::Context* in_context_ptr, const GLuint& in_program, const GLuint& in_uniform_block_index, const GLuint& in_uniform_block_binding);
 
     /* VKGL GL entrypoints : GL 3.2 */
-    typedef GLenum    (*PFNVKGLCLIENTWAITSYNCPROC)                 (OpenGL::Context* in_context_ptr, GLsync in_sync, GLbitfield in_flags, GLuint64 in_timeout);
-    typedef void      (*PFNVKGLDELETESYNCPROC)                     (OpenGL::Context* in_context_ptr, GLsync in_sync);
-    typedef void      (*PFNVKGLDRAWELEMENTSBASEVERTEXPROC)         (OpenGL::Context* in_context_ptr, GLenum in_mode, GLsizei in_count, GLenum in_type, const void* in_indices, GLint in_basevertex);
-    typedef void      (*PFNVKGLDRAWELEMENTSINSTANCEDBASEVERTEXPROC)(OpenGL::Context* in_context_ptr, GLenum in_mode, GLsizei in_count, GLenum in_type, const void* in_indices, GLsizei in_instancecount, GLint in_basevertex);
-    typedef void      (*PFNVKGLDRAWRANGEELEMENTSBASEVERTEXPROC)    (OpenGL::Context* in_context_ptr, GLenum in_mode, GLuint in_start, GLuint in_end, GLsizei in_count, GLenum in_type, const void* in_indices, GLint in_basevertex);
-    typedef GLsync    (*PFNVKGLFENCESYNCPROC)                      (OpenGL::Context* in_context_ptr, GLenum in_condition, GLbitfield in_flags);
-    typedef void      (*PFNVKGLFRAMEBUFFERTEXTUREPROC)             (OpenGL::Context* in_context_ptr, GLenum in_target, GLenum in_attachment, GLuint in_texture, GLint in_level);
-    typedef void      (*PFNVKGLGETBUFFERPARAMETERI64VPROC)         (OpenGL::Context* in_context_ptr, GLenum in_target, GLenum in_pname, GLint64* in_params);
-    typedef void      (*PFNVKGLGETINTEGER64I_VPROC)                (OpenGL::Context* in_context_ptr, GLenum in_target, GLuint in_index, GLint64* in_data);
-    typedef void      (*PFNVKGLGETINTEGER64VPROC)                  (OpenGL::Context* in_context_ptr, GLenum in_pname, GLint64* in_data);
-    typedef void      (*PFNVKGLGETMULTISAMPLEFVPROC)               (OpenGL::Context* in_context_ptr, GLenum in_pname, GLuint in_index, GLfloat* in_val);
-    typedef void      (*PFNVKGLGETSYNCIVPROC)                      (OpenGL::Context* in_context_ptr, GLsync in_sync, GLenum in_pname, GLsizei in_bufSize, GLsizei* in_length, GLint* in_values);
-    typedef GLboolean (*PFNVKGLISSYNCPROC)                         (OpenGL::Context* in_context_ptr, GLsync in_sync);
-    typedef void      (*PFNVKGLMULTIDRAWELEMENTSBASEVERTEXPROC)    (OpenGL::Context* in_context_ptr, GLenum in_mode, const GLsizei* in_count, GLenum in_type, const void* const* in_indices, GLsizei in_drawcount, const GLint* in_basevertex);
-    typedef void      (*PFNVKGLPROVOKINGVERTEXPROC)                (OpenGL::Context* in_context_ptr, GLenum in_mode);
-    typedef void      (*PFNVKGLSAMPLEMASKIPROC)                    (OpenGL::Context* in_context_ptr, GLuint in_maskNumber, GLbitfield in_mask);
-    typedef void      (*PFNVKGLTEXIMAGE2DMULTISAMPLEPROC)          (OpenGL::Context* in_context_ptr, GLenum in_target, GLsizei in_samples, GLenum in_internalformat, GLsizei in_width, GLsizei in_height, GLboolean in_fixedsamplelocations);
-    typedef void      (*PFNVKGLTEXIMAGE3DMULTISAMPLEPROC)          (OpenGL::Context* in_context_ptr, GLenum in_target, GLsizei in_samples, GLenum in_internalformat, GLsizei in_width, GLsizei in_height, GLsizei in_depth, GLboolean in_fixedsamplelocations);
-    typedef void      (*PFNVKGLWAITSYNCPROC)                       (OpenGL::Context* in_context_ptr, GLsync in_sync, GLbitfield in_flags, GLuint64 in_timeout);
+    typedef GLenum    (*PFNVKGLCLIENTWAITSYNCPROC)                 (OpenGL::Context* in_context_ptr, const GLsync& in_sync, const GLbitfield& in_flags, const GLuint64& in_timeout);
+    typedef void      (*PFNVKGLDELETESYNCPROC)                     (OpenGL::Context* in_context_ptr, const GLsync& in_sync);
+    typedef void      (*PFNVKGLDRAWELEMENTSBASEVERTEXPROC)         (OpenGL::Context* in_context_ptr, const GLenum& in_mode, const GLsizei& in_count, const GLenum& in_type, const void* in_indices, const GLint& in_basevertex);
+    typedef void      (*PFNVKGLDRAWELEMENTSINSTANCEDBASEVERTEXPROC)(OpenGL::Context* in_context_ptr, const GLenum& in_mode, const GLsizei& in_count, const GLenum& in_type, const void* in_indices, const GLsizei& in_instancecount, const GLint& in_basevertex);
+    typedef void      (*PFNVKGLDRAWRANGEELEMENTSBASEVERTEXPROC)    (OpenGL::Context* in_context_ptr, const GLenum& in_mode, const GLuint& in_start, const GLuint& in_end, const GLsizei& in_count, const GLenum& in_type, const void* in_indices, const GLint& in_basevertex);
+    typedef GLsync    (*PFNVKGLFENCESYNCPROC)                      (OpenGL::Context* in_context_ptr, const GLenum& in_condition, const GLbitfield& in_flags);
+    typedef void      (*PFNVKGLFRAMEBUFFERTEXTUREPROC)             (OpenGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_attachment, const GLuint& in_texture, const GLint& in_level);
+    typedef void      (*PFNVKGLGETBUFFERPARAMETERI64VPROC)         (OpenGL::Context* in_context_ptr, const GLenum& in_target, const GLenum& in_pname, GLint64* in_params);
+    typedef void      (*PFNVKGLGETINTEGER64I_VPROC)                (OpenGL::Context* in_context_ptr, const GLenum& in_target, const GLuint& in_index, GLint64* in_data);
+    typedef void      (*PFNVKGLGETINTEGER64VPROC)                  (OpenGL::Context* in_context_ptr, const GLenum& in_pname, GLint64* in_data);
+    typedef void      (*PFNVKGLGETMULTISAMPLEFVPROC)               (OpenGL::Context* in_context_ptr, const GLenum& in_pname, const GLuint& in_index, GLfloat* in_val);
+    typedef void      (*PFNVKGLGETSYNCIVPROC)                      (OpenGL::Context* in_context_ptr, const GLsync& in_sync, const GLenum& in_pname, const GLsizei& in_bufSize, GLsizei* in_length, GLint* in_values);
+    typedef GLboolean (*PFNVKGLISSYNCPROC)                         (OpenGL::Context* in_context_ptr, const GLsync& in_sync);
+    typedef void      (*PFNVKGLMULTIDRAWELEMENTSBASEVERTEXPROC)    (OpenGL::Context* in_context_ptr, const GLenum& in_mode, const GLsizei* in_count, const GLenum& in_type, const void* const* in_indices, const GLsizei& in_drawcount, const GLint* in_basevertex);
+    typedef void      (*PFNVKGLPROVOKINGVERTEXPROC)                (OpenGL::Context* in_context_ptr, const GLenum& in_mode);
+    typedef void      (*PFNVKGLSAMPLEMASKIPROC)                    (OpenGL::Context* in_context_ptr, const GLuint& in_maskNumber, const GLbitfield& in_mask);
+    typedef void      (*PFNVKGLTEXIMAGE2DMULTISAMPLEPROC)          (OpenGL::Context* in_context_ptr, const GLenum& in_target, const GLsizei& in_samples, const GLenum& in_internalformat, const GLsizei& in_width, const GLsizei& in_height, const GLboolean& in_fixedsamplelocations);
+    typedef void      (*PFNVKGLTEXIMAGE3DMULTISAMPLEPROC)          (OpenGL::Context* in_context_ptr, const GLenum& in_target, const GLsizei& in_samples, const GLenum& in_internalformat, const GLsizei& in_width, const GLsizei& in_height, const GLsizei& in_depth, const GLboolean& in_fixedsamplelocations);
+    typedef void      (*PFNVKGLWAITSYNCPROC)                       (OpenGL::Context* in_context_ptr, const GLsync& in_sync, const GLbitfield& in_flags, const GLuint64& in_timeout);
 
 }
 

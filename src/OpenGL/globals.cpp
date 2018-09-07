@@ -5,7 +5,7 @@
 #include "OpenGL/globals.h"
 #include <GL/gl.h>
 
-VKGL_THREADLOCAL OpenGL::DispatchTable* OpenGL::g_dispatch_table_ptr = nullptr;
+const VKGL_THREADLOCAL OpenGL::DispatchTable* OpenGL::g_dispatch_table_ptr = nullptr;
 
 void* OpenGL::g_cached_gl_bind_texture              = glBindTexture;
 void* OpenGL::g_cached_gl_clear                     = glClear;
