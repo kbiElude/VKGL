@@ -199,9 +199,10 @@ bool WGL::Context::init(const HDC&     in_hdc,
                  "Non-forward-compatible GL context was requested: VKGL does not prevent apps from using deprecated functionality.");
     }
 
-    result = init_gl_context();
-
 end:
+    vkgl_assert(result);
+
+    result = init_gl_context();
     vkgl_assert(result);
 
     return result;

@@ -312,6 +312,27 @@ namespace OpenGL
         }
 
     private:
+        /* Private type definitions */
+
+        typedef struct PropertyData
+        {
+            void*                      data_ptr;
+            uint32_t                   n_components;
+            OpenGL::GetSetArgumentType type;
+
+            PropertyData(const OpenGL::GetSetArgumentType& in_type,
+                         const uint32_t&                   in_n_components,
+                         void*                             in_data_ptr)
+                :data_ptr    (in_data_ptr),
+                 n_components(in_n_components),
+                 type        (in_type)
+            {
+                /* Stub */
+            }
+        } PropertyData;
+
+        typedef std::unordered_map<OpenGL::ContextProperty, PropertyData> PropertyToArgumentTypeMap;
+
         /* Private functions */
 
         /* Private variables */
@@ -341,6 +362,7 @@ namespace OpenGL
         uint32_t                            m_max_geometry_texture_image_units;
         uint32_t                            m_max_geometry_total_output_components;
         uint32_t                            m_max_geometry_uniform_blocks;
+        uint32_t                            m_max_geometry_uniform_components;
         uint32_t                            m_max_integer_samples;
         uint32_t                            m_max_program_texel_offset;
         uint32_t                            m_max_rectangle_texture_size;
@@ -366,6 +388,7 @@ namespace OpenGL
         uint32_t                            m_max_vertex_uniform_components;
         uint32_t                            m_max_viewport_dims[2];
         int32_t                             m_min_program_texel_offset;
+        float                               m_point_fade_threshold_size;
         float                               m_point_size_granularity;
         float                               m_point_size_range[2];
         uint32_t                            m_query_counter_bits;
@@ -373,6 +396,8 @@ namespace OpenGL
         float                               m_smooth_line_width_range[2];
         uint32_t                            m_subpixel_bits;
         uint32_t                            m_uniform_buffer_offset_alignment;
+
+        PropertyToArgumentTypeMap m_prop_map;
     };
 
     typedef std::unique_ptr<GLLimits> GLLimitsUniquePtr;

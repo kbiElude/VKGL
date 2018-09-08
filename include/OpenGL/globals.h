@@ -16,6 +16,7 @@ namespace OpenGL
      *       entrypoints and only reroute funcs implemented by the library
      */
     extern void* g_cached_gl_bind_texture;
+    extern void* g_cached_gl_blend_func;
     extern void* g_cached_gl_clear;
     extern void* g_cached_gl_clear_color;
     extern void* g_cached_gl_clear_depth;

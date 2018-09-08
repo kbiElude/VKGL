@@ -9,6 +9,36 @@
 
 namespace OpenGL
 {
+    class IContext
+    {
+    public:
+        virtual ~IContext()
+        {
+            /* Stub */
+        }
+
+        virtual const OpenGL::DispatchTable*    get_dispatch_table      () const = 0;
+        virtual const std::vector<std::string>& get_supported_extensions() const = 0;
+    };
+
+    class IGLConstants
+    {
+    public:
+        virtual ~IGLConstants()
+        {
+            /* Stub */
+        }
+
+        virtual const uint32_t& get_context_flags           () const = 0;
+        virtual const uint32_t& get_context_profile_mask    () const = 0;
+        virtual const char*     get_extensions              () const = 0;
+        virtual const uint32_t& get_major_version           () const = 0;
+        virtual const uint32_t& get_minor_version           () const = 0;
+        virtual const char*     get_renderer                () const = 0;
+        virtual const char*     get_shading_language_version() const = 0;
+        virtual const char*     get_vendor                  () const = 0;
+    };
+
     class IGLLimits
     {
     public:

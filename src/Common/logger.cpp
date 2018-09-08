@@ -7,6 +7,9 @@
 #include "Common/logger.h"
 #include "Common/macros.h"
 
+#define LOG_FILE_NAME "VKGL_log.txt"
+
+
 /* TODO: Writes must be flushed asynchronously, every once in a while. Right now,
  *       cached trace data is only written at dll detach time!
  */
@@ -15,12 +18,12 @@ VKGL::Logger* VKGL::g_logger_ptr = nullptr;
 
 VKGL::Logger::Logger()
 {
-    /* Stub */
+    Anvil::IO::delete_file(LOG_FILE_NAME);
 }
 
 VKGL::Logger::~Logger()
 {
-    Anvil::IO::write_text_file("VKGL_log.txt",
+    Anvil::IO::write_text_file(LOG_FILE_NAME,
                                g_logger_ptr->m_log_data_sstream.str() );
 }
 
@@ -62,5 +65,18 @@ void VKGL::Logger::log(const LogLevel& in_log_level,
 
     m_log_data_sstream << temp
                        << "\n";
+
+    /* TODO: Writes should be async and triggered every now and then, only if needed!
+     *
+     * This mechanism is only needed for initial VKGL bring-up. Remove as soon as no longer
+     * required.
+     */
+    {
+        Anvil::IO::write_text_file(LOG_FILE_NAME,
+                                   g_logger_ptr->m_log_data_sstream.str(),
+                                   true); /* in_should_append */
+
+        g_logger_ptr->m_log_data_sstream = std::stringstream();
+    }
 }
 

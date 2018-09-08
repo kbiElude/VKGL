@@ -256,7 +256,8 @@ namespace OpenGL
         GLenum                          get_gl_enum_for_vertex_attribute_property(const OpenGL::VertexAttributeProperty& in_property);
         OpenGL::VertexAttributeProperty get_vertex_attribute_property_for_gl_enum(const GLenum&                          in_pname);
 
-        bool is_context_property_gl_limit(const OpenGL::ContextProperty& in_pname);
+        bool is_context_property_gl_constant(const OpenGL::ContextProperty& in_pname);
+        bool is_context_property_gl_limit   (const OpenGL::ContextProperty& in_pname);
     }
 };
 

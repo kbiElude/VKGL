@@ -2,6 +2,7 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+#include "OpenGL/entrypoints/GL1.0/gl_blend_func.h"
 #include "OpenGL/entrypoints/GL1.0/gl_clear.h"
 #include "OpenGL/entrypoints/GL1.0/gl_clear_color.h"
 #include "OpenGL/entrypoints/GL1.0/gl_clear_depth.h"
@@ -797,6 +798,7 @@ std::vector<VKGL::FunctionInterceptor> OpenGL::get_function_interceptors()
     return std::vector<VKGL::FunctionInterceptor>
     {
         VKGL::FunctionInterceptor(&(PVOID&) OpenGL::g_cached_gl_bind_texture,              OpenGL::vkglBindTexture),
+        VKGL::FunctionInterceptor(&(PVOID&) OpenGL::g_cached_gl_blend_func,                OpenGL::vkglBlendFunc),
         VKGL::FunctionInterceptor(&(PVOID&) OpenGL::g_cached_gl_clear,                     OpenGL::vkglClear),
         VKGL::FunctionInterceptor(&(PVOID&) OpenGL::g_cached_gl_clear_color,               OpenGL::vkglClearColor),
         VKGL::FunctionInterceptor(&(PVOID&) OpenGL::g_cached_gl_clear_depth,               OpenGL::vkglClearDepth),

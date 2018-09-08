@@ -8,6 +8,7 @@
 const VKGL_THREADLOCAL OpenGL::DispatchTable* OpenGL::g_dispatch_table_ptr = nullptr;
 
 void* OpenGL::g_cached_gl_bind_texture              = glBindTexture;
+void* OpenGL::g_cached_gl_blend_func                = glBlendFunc;
 void* OpenGL::g_cached_gl_clear                     = glClear;
 void* OpenGL::g_cached_gl_clear_color               = glClearColor;
 void* OpenGL::g_cached_gl_clear_depth               = glClearDepth;

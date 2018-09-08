@@ -6,16 +6,18 @@
 #define VKGL_CONTEXT_H
 
 #include "Common/types.h"
+#include "OpenGL/gl_constants.h"
 #include "OpenGL/gl_limits.h"
 #include "OpenGL/gl_state_manager.h"
 #include "OpenGL/gl_texture_manager.h"
 #include "OpenGL/scheduler.h"
+#include "OpenGL/types.h"
 
 namespace OpenGL
 {
     typedef std::unique_ptr<OpenGL::Context> ContextUniquePtr;
 
-    class Context
+    class Context : public IContext
     {
     public:
         /* Public functions */
@@ -28,6 +30,11 @@ namespace OpenGL
         const OpenGL::DispatchTable* get_dispatch_table() const
         {
             return &m_dispatch_table;
+        }
+
+        const std::vector<std::string>& get_supported_extensions() const
+        {
+            return m_supported_extensions;
         }
 
         /* Object generation routines: */
@@ -799,13 +806,16 @@ namespace OpenGL
 
         Context(const VKGL::IWSIContext* in_wsi_context_ptr);
 
-        bool init               ();
-        bool init_dispatch_table();
+        bool init                     ();
+        bool init_dispatch_table      ();
+        bool init_supported_extensions();
 
         /* Private variables */
         OpenGL::DispatchTable    m_dispatch_table;
+        std::vector<std::string> m_supported_extensions;
         const VKGL::IWSIContext* m_wsi_context_ptr;
 
+        GLConstantsUniquePtr      m_gl_constants_ptr;
         GLLimitsUniquePtr         m_gl_limits_ptr;
         GLStateManagerUniquePtr   m_gl_state_manager_ptr;
         GLTextureManagerUniquePtr m_gl_texture_manager_ptr;

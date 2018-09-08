@@ -26,6 +26,6 @@
 #endif
 
 #define vkgl_not_implemented() \
-    MessageBox(HWND_DESKTOP, "Functionality not implemented!", __FILE__, MB_OK | MB_ICONERROR);
+    MessageBox(HWND_DESKTOP, "Functionality not implemented!", __FUNCTION__ "()", MB_OK | MB_ICONERROR);
 
 #endif /* COMMON_MACROS_H */

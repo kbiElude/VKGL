@@ -224,7 +224,6 @@ void OpenGL::GLStateManager::init_prop_maps()
         {OpenGL::ContextProperty::Color_Clear_Value,                          {OpenGL::GetSetArgumentType::Float,                         4,  m_state_ptr->color_clear_value} },
         {OpenGL::ContextProperty::Color_Logic_Op,                             {OpenGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->is_color_logic_op_enabled} },
         {OpenGL::ContextProperty::Color_Writemask,                            {OpenGL::GetSetArgumentType::BooleanFromInt32_Bit0,         1, &m_state_ptr->color_writemask_for_draw_buffers} },
-        // TODO: {OpenGL::ContextProperty::Context_Flags,                              {OpenGL::GetSetArgumentType::, 1, &m_state_ptr->} },
         {OpenGL::ContextProperty::Cull_Face,                                  {OpenGL::GetSetArgumentType::CullFaceVKGL,                  1, &m_state_ptr->cull_face_mode} },
         {OpenGL::ContextProperty::Current_Program,                            {OpenGL::GetSetArgumentType::Int,                           1, &m_state_ptr->current_program_id} },
         {OpenGL::ContextProperty::Depth_Clear_Value,                          {OpenGL::GetSetArgumentType::Double,                        1, &m_state_ptr->depth_clear_value} },

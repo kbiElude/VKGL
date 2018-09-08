@@ -294,177 +294,190 @@ OpenGL::ContextProperty OpenGL::Utils::get_context_property_for_gl_enum(const GL
 
     switch (in_enum)
     {
-        case GL_ACTIVE_TEXTURE:                           result = OpenGL::ContextProperty::Active_Texture;                           break;
-        case GL_ALIASED_LINE_WIDTH_RANGE:                 result = OpenGL::ContextProperty::Aliased_Line_Width_Range;                 break;
-        case GL_ARRAY_BUFFER_BINDING:                     result = OpenGL::ContextProperty::Array_Buffer_Binding;                     break;
-        case GL_BLEND:                                    result = OpenGL::ContextProperty::Blend;                                    break;
-        case GL_BLEND_COLOR:                              result = OpenGL::ContextProperty::Blend_Color;                              break;
-        case GL_BLEND_DST_ALPHA:                          result = OpenGL::ContextProperty::Blend_Dst_Alpha;                          break;
-        case GL_BLEND_DST_RGB:                            result = OpenGL::ContextProperty::Blend_Dst_RGB;                            break;
-        case GL_BLEND_EQUATION_ALPHA:                     result = OpenGL::ContextProperty::Blend_Equation_Alpha;                     break;
-        case GL_BLEND_EQUATION_RGB:                       result = OpenGL::ContextProperty::Blend_Equation_RGB;                       break;
-        case GL_BLEND_SRC_ALPHA:                          result = OpenGL::ContextProperty::Blend_Src_Alpha;                          break;
-        case GL_BLEND_SRC_RGB:                            result = OpenGL::ContextProperty::Blend_Src_RGB;                            break;
-        case GL_COLOR_CLEAR_VALUE:                        result = OpenGL::ContextProperty::Color_Clear_Value;                        break;
-        case GL_COLOR_LOGIC_OP:                           result = OpenGL::ContextProperty::Color_Logic_Op;                           break;
-        case GL_COLOR_WRITEMASK:                          result = OpenGL::ContextProperty::Color_Writemask;                          break;
-        case GL_COMPRESSED_TEXTURE_FORMATS:               result = OpenGL::ContextProperty::Compressed_Texture_Formats;               break;
-        case GL_CONTEXT_FLAGS:                            result = OpenGL::ContextProperty::Context_Flags;                            break;
-        case GL_CULL_FACE:                                result = OpenGL::ContextProperty::Cull_Face;                                break;
-        case GL_CURRENT_PROGRAM:                          result = OpenGL::ContextProperty::Current_Program;                          break;
-        case GL_DEPTH_CLEAR_VALUE:                        result = OpenGL::ContextProperty::Depth_Clear_Value;                        break;
-        case GL_DEPTH_FUNC:                               result = OpenGL::ContextProperty::Depth_Func;                               break;
-        case GL_DEPTH_RANGE:                              result = OpenGL::ContextProperty::Depth_Range;                              break;
-        case GL_DEPTH_TEST:                               result = OpenGL::ContextProperty::Depth_Test;                               break;
-        case GL_DEPTH_WRITEMASK:                          result = OpenGL::ContextProperty::Depth_Writemask;                          break;
-        case GL_DITHER:                                   result = OpenGL::ContextProperty::Dither;                                   break;
-        case GL_DOUBLEBUFFER:                             result = OpenGL::ContextProperty::Doublebuffer;                             break;
-        case GL_DRAW_BUFFER:                              result = OpenGL::ContextProperty::Draw_Buffer;                              break;
-        case GL_DRAW_BUFFER0:                             result = OpenGL::ContextProperty::Draw_Buffer0;                             break;
-        case GL_DRAW_BUFFER1:                             result = OpenGL::ContextProperty::Draw_Buffer1;                             break;
-        case GL_DRAW_BUFFER2:                             result = OpenGL::ContextProperty::Draw_Buffer2;                             break;
-        case GL_DRAW_BUFFER3:                             result = OpenGL::ContextProperty::Draw_Buffer3;                             break;
-        case GL_DRAW_BUFFER4:                             result = OpenGL::ContextProperty::Draw_Buffer4;                             break;
-        case GL_DRAW_BUFFER5:                             result = OpenGL::ContextProperty::Draw_Buffer5;                             break;
-        case GL_DRAW_BUFFER6:                             result = OpenGL::ContextProperty::Draw_Buffer6;                             break;
-        case GL_DRAW_BUFFER7:                             result = OpenGL::ContextProperty::Draw_Buffer7;                             break;
-        case GL_DRAW_FRAMEBUFFER_BINDING:                 result = OpenGL::ContextProperty::Draw_Framebuffer_Binding;                 break;
-        case GL_ELEMENT_ARRAY_BUFFER_BINDING:             result = OpenGL::ContextProperty::Element_Array_Buffer_Binding;             break;
-        case GL_FRAGMENT_SHADER_DERIVATIVE_HINT:          result = OpenGL::ContextProperty::Fragment_Shader_Derivative_Hint;          break;
-        case GL_LINE_SMOOTH:                              result = OpenGL::ContextProperty::Line_Smooth;                              break;
-        case GL_LINE_SMOOTH_HINT:                         result = OpenGL::ContextProperty::Line_Smooth_Hint;                         break;
-        case GL_LINE_WIDTH:                               result = OpenGL::ContextProperty::Line_Width;                               break;
-        case GL_LOGIC_OP_MODE:                            result = OpenGL::ContextProperty::Logic_Op_Mode;                            break;
-        case GL_MAJOR_VERSION:                            result = OpenGL::ContextProperty::Major_Version;                            break;
-        case GL_MAX_3D_TEXTURE_SIZE:                      result = OpenGL::ContextProperty::Max_3D_Texture_Size;                      break;
-        case GL_MAX_ARRAY_TEXTURE_LAYERS:                 result = OpenGL::ContextProperty::Max_Array_Texture_Layers;                 break;
-        case GL_MAX_CLIP_DISTANCES:                       result = OpenGL::ContextProperty::Max_Clip_Distances;                       break;
-        case GL_MAX_COLOR_TEXTURE_SAMPLES:                result = OpenGL::ContextProperty::Max_Color_Texture_Samples;                break;
-        case GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS: result = OpenGL::ContextProperty::Max_Combined_Fragment_Uniform_Components; break;
-        case GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS: result = OpenGL::ContextProperty::Max_Combined_Geometry_Uniform_Components; break;
-        case GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS:         result = OpenGL::ContextProperty::Max_Combined_Texture_Image_Units;         break;
-        case GL_MAX_COMBINED_UNIFORM_BLOCKS:              result = OpenGL::ContextProperty::Max_Combined_Uniform_Blocks;              break;
-        case GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS:   result = OpenGL::ContextProperty::Max_Combined_Vertex_Uniform_Components;   break;
-        case GL_MAX_CUBE_MAP_TEXTURE_SIZE:                result = OpenGL::ContextProperty::Max_Cube_Map_Texture_Size;                break;
-        case GL_MAX_DEPTH_TEXTURE_SAMPLES:                result = OpenGL::ContextProperty::Max_Depth_Texture_Samples;                break;
-        case GL_MAX_DRAW_BUFFERS:                         result = OpenGL::ContextProperty::Max_Draw_Buffers;                         break;
-        case GL_MAX_DUAL_SOURCE_DRAW_BUFFERS:             result = OpenGL::ContextProperty::Max_Dual_Source_Draw_Buffers;             break;
-        case GL_MAX_ELEMENTS_INDICES:                     result = OpenGL::ContextProperty::Max_Elements_Indices;                     break;
-        case GL_MAX_ELEMENTS_VERTICES:                    result = OpenGL::ContextProperty::Max_Elements_Vertices;                    break;
-        case GL_MAX_FRAGMENT_INPUT_COMPONENTS:            result = OpenGL::ContextProperty::Max_Fragment_Input_Components;            break;
-        case GL_MAX_FRAGMENT_UNIFORM_BLOCKS:              result = OpenGL::ContextProperty::Max_Fragment_Uniform_Blocks;              break;
-        case GL_MAX_FRAGMENT_UNIFORM_COMPONENTS:          result = OpenGL::ContextProperty::Max_Fragment_Uniform_Components;          break;
-        case GL_MAX_GEOMETRY_INPUT_COMPONENTS:            result = OpenGL::ContextProperty::Max_Geometry_Input_Components;            break;
-        case GL_MAX_GEOMETRY_OUTPUT_COMPONENTS:           result = OpenGL::ContextProperty::Max_Geometry_Output_Components;           break;
-        case GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS:         result = OpenGL::ContextProperty::Max_Geometry_Texture_Image_Units;         break;
-        case GL_MAX_GEOMETRY_UNIFORM_BLOCKS:              result = OpenGL::ContextProperty::Max_Geometry_Uniform_Blocks;              break;
-        case GL_MAX_GEOMETRY_UNIFORM_COMPONENTS:          result = OpenGL::ContextProperty::Max_Geometry_Uniform_Components;          break;
-        case GL_MAX_INTEGER_SAMPLES:                      result = OpenGL::ContextProperty::Max_Integer_Samples;                      break;
-        case GL_MAX_PROGRAM_TEXEL_OFFSET:                 result = OpenGL::ContextProperty::Max_Program_Texel_Offset;                 break;
-        case GL_MAX_RECTANGLE_TEXTURE_SIZE:               result = OpenGL::ContextProperty::Max_Rectangle_Texture_Size;               break;
-        case GL_MAX_RENDERBUFFER_SIZE:                    result = OpenGL::ContextProperty::Max_Renderbuffer_Size;                    break;
-        case GL_MAX_SAMPLE_MASK_WORDS:                    result = OpenGL::ContextProperty::Max_Sample_Mask_Words;                    break;
-        case GL_MAX_SERVER_WAIT_TIMEOUT:                  result = OpenGL::ContextProperty::Max_Server_Wait_Timeout;                  break;
-        case GL_MAX_TEXTURE_BUFFER_SIZE:                  result = OpenGL::ContextProperty::Max_Texture_Buffer_Size;                  break;
-        case GL_MAX_TEXTURE_IMAGE_UNITS:                  result = OpenGL::ContextProperty::Max_Texture_Image_Units;                  break;
-        case GL_MAX_TEXTURE_LOD_BIAS:                     result = OpenGL::ContextProperty::Max_Texture_LOD_Bias;                     break;
-        case GL_MAX_TEXTURE_SIZE:                         result = OpenGL::ContextProperty::Max_Texture_Size;                         break;
-        case GL_MAX_UNIFORM_BLOCK_SIZE:                   result = OpenGL::ContextProperty::Max_Uniform_Block_Size;                   break;
-        case GL_MAX_UNIFORM_BUFFER_BINDINGS:              result = OpenGL::ContextProperty::Max_Uniform_Buffer_Bindings;              break;
-        case GL_MAX_VARYING_COMPONENTS:                   result = OpenGL::ContextProperty::Max_Varying_Components;                   break;
-        case GL_MAX_VERTEX_ATTRIBS:                       result = OpenGL::ContextProperty::Max_Vertex_Attribs;                       break;
-        case GL_MAX_VERTEX_OUTPUT_COMPONENTS:             result = OpenGL::ContextProperty::Max_Vertex_Output_Components;             break;
-        case GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS:           result = OpenGL::ContextProperty::Max_Vertex_Texture_Image_Units;           break;
-        case GL_MAX_VERTEX_UNIFORM_BLOCKS:                result = OpenGL::ContextProperty::Max_Vertex_Uniform_Blocks;                break;
-        case GL_MAX_VERTEX_UNIFORM_COMPONENTS:            result = OpenGL::ContextProperty::Max_Vertex_Uniform_Components;            break;
-        case GL_MAX_VIEWPORT_DIMS:                        result = OpenGL::ContextProperty::Max_Viewport_Dims;                        break;
-        case GL_MINOR_VERSION:                            result = OpenGL::ContextProperty::Minor_Version;                            break;
-        case GL_MIN_PROGRAM_TEXEL_OFFSET:                 result = OpenGL::ContextProperty::Min_Program_Texel_Offset;                 break;
-        case GL_NUM_COMPRESSED_TEXTURE_FORMATS:           result = OpenGL::ContextProperty::Num_Compressed_Texture_Formats;           break;
-        case GL_NUM_EXTENSIONS:                           result = OpenGL::ContextProperty::Num_Extensions;                           break;
-        case GL_PACK_ALIGNMENT:                           result = OpenGL::ContextProperty::Pack_Alignment;                           break;
-        case GL_PACK_IMAGE_HEIGHT:                        result = OpenGL::ContextProperty::Pack_Image_Height;                        break;
-        case GL_PACK_LSB_FIRST:                           result = OpenGL::ContextProperty::Pack_LSB_First;                           break;
-        case GL_PACK_ROW_LENGTH:                          result = OpenGL::ContextProperty::Pack_Row_Length;                          break;
-        case GL_PACK_SKIP_IMAGES:                         result = OpenGL::ContextProperty::Pack_Skip_Images;                         break;
-        case GL_PACK_SKIP_PIXELS:                         result = OpenGL::ContextProperty::Pack_Skip_Pixels;                         break;
-        case GL_PACK_SKIP_ROWS:                           result = OpenGL::ContextProperty::Pack_Skip_Rows;                           break;
-        case GL_PACK_SWAP_BYTES:                          result = OpenGL::ContextProperty::Pack_Swap_Bytes;                          break;
-        case GL_PIXEL_PACK_BUFFER_BINDING:                result = OpenGL::ContextProperty::Pixel_Pack_Buffer_Binding;                break;
-        case GL_PIXEL_UNPACK_BUFFER_BINDING:              result = OpenGL::ContextProperty::Pixel_Unpack_Buffer_Binding;              break;
-        case GL_POINT_FADE_THRESHOLD_SIZE:                result = OpenGL::ContextProperty::Point_Fade_Threshold_Size;                break;
-        case GL_POINT_SIZE:                               result = OpenGL::ContextProperty::Point_Size;                               break;
-        case GL_POINT_SIZE_GRANULARITY:                   result = OpenGL::ContextProperty::Point_Size_Granularity;                   break;
-        case GL_POINT_SIZE_RANGE:                         result = OpenGL::ContextProperty::Point_Size_Range;                         break;
-        case GL_POLYGON_OFFSET_FACTOR:                    result = OpenGL::ContextProperty::Polygon_Offset_Factor;                    break;
-        case GL_POLYGON_OFFSET_FILL:                      result = OpenGL::ContextProperty::Polygon_Offset_Fill;                      break;
-        case GL_POLYGON_OFFSET_LINE:                      result = OpenGL::ContextProperty::Polygon_Offset_Line;                      break;
-        case GL_POLYGON_OFFSET_POINT:                     result = OpenGL::ContextProperty::Polygon_Offset_Point;                     break;
-        case GL_POLYGON_OFFSET_UNITS:                     result = OpenGL::ContextProperty::Polygon_Offset_Units;                     break;
-        case GL_POLYGON_SMOOTH:                           result = OpenGL::ContextProperty::Polygon_Smooth;                           break;
-        case GL_POLYGON_SMOOTH_HINT:                      result = OpenGL::ContextProperty::Polygon_Smooth_Hint;                      break;
-        case GL_PRIMITIVE_RESTART_INDEX:                  result = OpenGL::ContextProperty::Primitive_Restart_Index;                  break;
-        case GL_PROGRAM_POINT_SIZE:                       result = OpenGL::ContextProperty::Program_Point_Size;                       break;
-        case GL_PROVOKING_VERTEX:                         result = OpenGL::ContextProperty::Provoking_Vertex;                         break;
-        case GL_READ_BUFFER:                              result = OpenGL::ContextProperty::Read_Buffer;                              break;
-        case GL_READ_FRAMEBUFFER_BINDING:                 result = OpenGL::ContextProperty::Read_Framebuffer_Binding;                 break;
-        case GL_RENDERBUFFER_BINDING:                     result = OpenGL::ContextProperty::Renderbuffer_Binding;                     break;
-        case GL_SAMPLER_BINDING:                          result = OpenGL::ContextProperty::Sampler_Binding;                          break;
-        case GL_SAMPLES:                                  result = OpenGL::ContextProperty::Samples;                                  break;
-        case GL_SAMPLE_BUFFERS:                           result = OpenGL::ContextProperty::Sample_Buffers;                           break;
-        case GL_SAMPLE_COVERAGE_INVERT:                   result = OpenGL::ContextProperty::Sample_Coverage_Invert;                   break;
-        case GL_SAMPLE_COVERAGE_VALUE:                    result = OpenGL::ContextProperty::Sample_Coverage_Value;                    break;
-        case GL_SCISSOR_BOX:                              result = OpenGL::ContextProperty::Scissor_Box;                              break;
-        case GL_SCISSOR_TEST:                             result = OpenGL::ContextProperty::Scissor_Test;                             break;
-        case GL_SMOOTH_LINE_WIDTH_GRANULARITY:            result = OpenGL::ContextProperty::Smooth_Line_Width_Granularity;            break;
-        case GL_SMOOTH_LINE_WIDTH_RANGE:                  result = OpenGL::ContextProperty::Smooth_Line_Width_Range;                  break;
-        case GL_STENCIL_BACK_FAIL:                        result = OpenGL::ContextProperty::Stencil_Back_Fail;                        break;
-        case GL_STENCIL_BACK_FUNC:                        result = OpenGL::ContextProperty::Stencil_Back_Func;                        break;
-        case GL_STENCIL_BACK_PASS_DEPTH_FAIL:             result = OpenGL::ContextProperty::Stencil_Back_Pass_Depth_Fail;             break;
-        case GL_STENCIL_BACK_PASS_DEPTH_PASS:             result = OpenGL::ContextProperty::Stencil_Back_Pass_Depth_Pass;             break;
-        case GL_STENCIL_BACK_REF:                         result = OpenGL::ContextProperty::Stencil_Back_Ref;                         break;
-        case GL_STENCIL_BACK_VALUE_MASK:                  result = OpenGL::ContextProperty::Stencil_Back_Value_Mask;                  break;
-        case GL_STENCIL_BACK_WRITEMASK:                   result = OpenGL::ContextProperty::Stencil_Back_Writemask;                   break;
-        case GL_STENCIL_CLEAR_VALUE:                      result = OpenGL::ContextProperty::Stencil_Clear_Value;                      break;
-        case GL_STENCIL_FAIL:                             result = OpenGL::ContextProperty::Stencil_Fail;                             break;
-        case GL_STENCIL_FUNC:                             result = OpenGL::ContextProperty::Stencil_Func;                             break;
-        case GL_STENCIL_PASS_DEPTH_FAIL:                  result = OpenGL::ContextProperty::Stencil_Pass_Depth_Fail;                  break;
-        case GL_STENCIL_PASS_DEPTH_PASS:                  result = OpenGL::ContextProperty::Stencil_Pass_Depth_Pass;                  break;
-        case GL_STENCIL_REF:                              result = OpenGL::ContextProperty::Stencil_Ref;                              break;
-        case GL_STENCIL_TEST:                             result = OpenGL::ContextProperty::Stencil_Test;                             break;
-        case GL_STENCIL_VALUE_MASK:                       result = OpenGL::ContextProperty::Stencil_Value_Mask;                       break;
-        case GL_STENCIL_WRITEMASK:                        result = OpenGL::ContextProperty::Stencil_Writemask;                        break;
-        case GL_STEREO:                                   result = OpenGL::ContextProperty::Stereo;                                   break;
-        case GL_SUBPIXEL_BITS:                            result = OpenGL::ContextProperty::Subpixel_Bits;                            break;
-        case GL_TEXTURE_BINDING_1D:                       result = OpenGL::ContextProperty::Texture_Binding_1D;                       break;
-        case GL_TEXTURE_BINDING_1D_ARRAY:                 result = OpenGL::ContextProperty::Texture_Binding_1D_Array;                 break;
-        case GL_TEXTURE_BINDING_2D:                       result = OpenGL::ContextProperty::Texture_Binding_2D;                       break;
-        case GL_TEXTURE_BINDING_2D_ARRAY:                 result = OpenGL::ContextProperty::Texture_Binding_2D_Array;                 break;
-        case GL_TEXTURE_BINDING_2D_MULTISAMPLE:           result = OpenGL::ContextProperty::Texture_Binding_2D_Multisample;           break;
-        case GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY:     result = OpenGL::ContextProperty::Texture_Binding_2D_Multisample_Array;     break;
-        case GL_TEXTURE_BINDING_3D:                       result = OpenGL::ContextProperty::Texture_Binding_3D;                       break;
-        case GL_TEXTURE_BINDING_BUFFER:                   result = OpenGL::ContextProperty::Texture_Binding_Buffer;                   break;
-        case GL_TEXTURE_BINDING_CUBE_MAP:                 result = OpenGL::ContextProperty::Texture_Binding_Cube_Map;                 break;
-        case GL_TEXTURE_BINDING_RECTANGLE:                result = OpenGL::ContextProperty::Texture_Binding_Rectangle;                break;
-        case GL_TEXTURE_COMPRESSION_HINT:                 result = OpenGL::ContextProperty::Texture_Compression_Hint;                 break;
-        case GL_TIMESTAMP:                                result = OpenGL::ContextProperty::Timestamp;                                break;
-        case GL_TRANSFORM_FEEDBACK_BUFFER_BINDING:        result = OpenGL::ContextProperty::Transform_Feedback_Buffer_Binding;        break;
-        case GL_TRANSFORM_FEEDBACK_BUFFER_SIZE:           result = OpenGL::ContextProperty::Transform_Feedback_Buffer_Size;           break;
-        case GL_TRANSFORM_FEEDBACK_BUFFER_START:          result = OpenGL::ContextProperty::Transform_Feedback_Buffer_Start;          break;
-        case GL_UNIFORM_BUFFER_BINDING:                   result = OpenGL::ContextProperty::Uniform_Buffer_Binding;                   break;
-        case GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT:          result = OpenGL::ContextProperty::Uniform_Buffer_Offset_Alignment;          break;
-        case GL_UNIFORM_BUFFER_SIZE:                      result = OpenGL::ContextProperty::Uniform_Buffer_Size;                      break;
-        case GL_UNIFORM_BUFFER_START:                     result = OpenGL::ContextProperty::Uniform_Buffer_Start;                     break;
-        case GL_UNPACK_ALIGNMENT:                         result = OpenGL::ContextProperty::Unpack_Alignment;                         break;
-        case GL_UNPACK_IMAGE_HEIGHT:                      result = OpenGL::ContextProperty::Unpack_Image_Height;                      break;
-        case GL_UNPACK_LSB_FIRST:                         result = OpenGL::ContextProperty::Unpack_LSB_First;                         break;
-        case GL_UNPACK_ROW_LENGTH:                        result = OpenGL::ContextProperty::Unpack_Row_Length;                        break;
-        case GL_UNPACK_SKIP_IMAGES:                       result = OpenGL::ContextProperty::Unpack_Skip_Images;                       break;
-        case GL_UNPACK_SKIP_PIXELS:                       result = OpenGL::ContextProperty::Unpack_Skip_Pixels;                       break;
-        case GL_UNPACK_SKIP_ROWS:                         result = OpenGL::ContextProperty::Unpack_Skip_Rows;                         break;
-        case GL_UNPACK_SWAP_BYTES:                        result = OpenGL::ContextProperty::Unpack_Swap_Bytes;                        break;
-        case GL_VERSION:                                  result = OpenGL::ContextProperty::Version;                                  break;
-        case GL_VIEWPORT:                                 result = OpenGL::ContextProperty::Viewport;                                 break;
+        case GL_ACTIVE_TEXTURE:                                result = OpenGL::ContextProperty::Active_Texture;                                break;
+        case GL_ALIASED_LINE_WIDTH_RANGE:                      result = OpenGL::ContextProperty::Aliased_Line_Width_Range;                      break;
+        case GL_ARRAY_BUFFER_BINDING:                          result = OpenGL::ContextProperty::Array_Buffer_Binding;                          break;
+        case GL_BLEND:                                         result = OpenGL::ContextProperty::Blend;                                         break;
+        case GL_BLEND_COLOR:                                   result = OpenGL::ContextProperty::Blend_Color;                                   break;
+        case GL_BLEND_DST_ALPHA:                               result = OpenGL::ContextProperty::Blend_Dst_Alpha;                               break;
+        case GL_BLEND_DST_RGB:                                 result = OpenGL::ContextProperty::Blend_Dst_RGB;                                 break;
+        case GL_BLEND_EQUATION_ALPHA:                          result = OpenGL::ContextProperty::Blend_Equation_Alpha;                          break;
+        case GL_BLEND_EQUATION_RGB:                            result = OpenGL::ContextProperty::Blend_Equation_RGB;                            break;
+        case GL_BLEND_SRC_ALPHA:                               result = OpenGL::ContextProperty::Blend_Src_Alpha;                               break;
+        case GL_BLEND_SRC_RGB:                                 result = OpenGL::ContextProperty::Blend_Src_RGB;                                 break;
+        case GL_COLOR_CLEAR_VALUE:                             result = OpenGL::ContextProperty::Color_Clear_Value;                             break;
+        case GL_COLOR_LOGIC_OP:                                result = OpenGL::ContextProperty::Color_Logic_Op;                                break;
+        case GL_COLOR_WRITEMASK:                               result = OpenGL::ContextProperty::Color_Writemask;                               break;
+        case GL_COMPRESSED_TEXTURE_FORMATS:                    result = OpenGL::ContextProperty::Compressed_Texture_Formats;                    break;
+        case GL_CONTEXT_FLAGS:                                 result = OpenGL::ContextProperty::Context_Flags;                                 break;
+        case GL_CONTEXT_PROFILE_MASK:                          result = OpenGL::ContextProperty::Context_Profile_Mask;                          break;
+        case GL_CULL_FACE:                                     result = OpenGL::ContextProperty::Cull_Face;                                     break;
+        case GL_CURRENT_PROGRAM:                               result = OpenGL::ContextProperty::Current_Program;                               break;
+        case GL_DEPTH_CLEAR_VALUE:                             result = OpenGL::ContextProperty::Depth_Clear_Value;                             break;
+        case GL_DEPTH_FUNC:                                    result = OpenGL::ContextProperty::Depth_Func;                                    break;
+        case GL_DEPTH_RANGE:                                   result = OpenGL::ContextProperty::Depth_Range;                                   break;
+        case GL_DEPTH_TEST:                                    result = OpenGL::ContextProperty::Depth_Test;                                    break;
+        case GL_DEPTH_WRITEMASK:                               result = OpenGL::ContextProperty::Depth_Writemask;                               break;
+        case GL_DITHER:                                        result = OpenGL::ContextProperty::Dither;                                        break;
+        case GL_DOUBLEBUFFER:                                  result = OpenGL::ContextProperty::Doublebuffer;                                  break;
+        case GL_DRAW_BUFFER:                                   result = OpenGL::ContextProperty::Draw_Buffer;                                   break;
+        case GL_DRAW_BUFFER0:                                  result = OpenGL::ContextProperty::Draw_Buffer0;                                  break;
+        case GL_DRAW_BUFFER1:                                  result = OpenGL::ContextProperty::Draw_Buffer1;                                  break;
+        case GL_DRAW_BUFFER2:                                  result = OpenGL::ContextProperty::Draw_Buffer2;                                  break;
+        case GL_DRAW_BUFFER3:                                  result = OpenGL::ContextProperty::Draw_Buffer3;                                  break;
+        case GL_DRAW_BUFFER4:                                  result = OpenGL::ContextProperty::Draw_Buffer4;                                  break;
+        case GL_DRAW_BUFFER5:                                  result = OpenGL::ContextProperty::Draw_Buffer5;                                  break;
+        case GL_DRAW_BUFFER6:                                  result = OpenGL::ContextProperty::Draw_Buffer6;                                  break;
+        case GL_DRAW_BUFFER7:                                  result = OpenGL::ContextProperty::Draw_Buffer7;                                  break;
+        case GL_DRAW_FRAMEBUFFER_BINDING:                      result = OpenGL::ContextProperty::Draw_Framebuffer_Binding;                      break;
+        case GL_ELEMENT_ARRAY_BUFFER_BINDING:                  result = OpenGL::ContextProperty::Element_Array_Buffer_Binding;                  break;
+        case GL_EXTENSIONS:                                    result = OpenGL::ContextProperty::Extensions;                                    break;
+        case GL_FRAGMENT_SHADER_DERIVATIVE_HINT:               result = OpenGL::ContextProperty::Fragment_Shader_Derivative_Hint;               break;
+        case GL_LINE_SMOOTH:                                   result = OpenGL::ContextProperty::Line_Smooth;                                   break;
+        case GL_LINE_SMOOTH_HINT:                              result = OpenGL::ContextProperty::Line_Smooth_Hint;                              break;
+        case GL_LINE_WIDTH:                                    result = OpenGL::ContextProperty::Line_Width;                                    break;
+        case GL_LOGIC_OP_MODE:                                 result = OpenGL::ContextProperty::Logic_Op_Mode;                                 break;
+        case GL_MAJOR_VERSION:                                 result = OpenGL::ContextProperty::Major_Version;                                 break;
+        case GL_MAX_3D_TEXTURE_SIZE:                           result = OpenGL::ContextProperty::Max_3D_Texture_Size;                           break;
+        case GL_MAX_ARRAY_TEXTURE_LAYERS:                      result = OpenGL::ContextProperty::Max_Array_Texture_Layers;                      break;
+        case GL_MAX_CLIP_DISTANCES:                            result = OpenGL::ContextProperty::Max_Clip_Distances;                            break;
+        case GL_MAX_COLOR_ATTACHMENTS:                         result = OpenGL::ContextProperty::Max_Color_Attachments;                         break;
+        case GL_MAX_COLOR_TEXTURE_SAMPLES:                     result = OpenGL::ContextProperty::Max_Color_Texture_Samples;                     break;
+        case GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS:      result = OpenGL::ContextProperty::Max_Combined_Fragment_Uniform_Components;      break;
+        case GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS:      result = OpenGL::ContextProperty::Max_Combined_Geometry_Uniform_Components;      break;
+        case GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS:              result = OpenGL::ContextProperty::Max_Combined_Texture_Image_Units;              break;
+        case GL_MAX_COMBINED_UNIFORM_BLOCKS:                   result = OpenGL::ContextProperty::Max_Combined_Uniform_Blocks;                   break;
+        case GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS:        result = OpenGL::ContextProperty::Max_Combined_Vertex_Uniform_Components;        break;
+        case GL_MAX_CUBE_MAP_TEXTURE_SIZE:                     result = OpenGL::ContextProperty::Max_Cube_Map_Texture_Size;                     break;
+        case GL_MAX_DEPTH_TEXTURE_SAMPLES:                     result = OpenGL::ContextProperty::Max_Depth_Texture_Samples;                     break;
+        case GL_MAX_DRAW_BUFFERS:                              result = OpenGL::ContextProperty::Max_Draw_Buffers;                              break;
+        case GL_MAX_DUAL_SOURCE_DRAW_BUFFERS:                  result = OpenGL::ContextProperty::Max_Dual_Source_Draw_Buffers;                  break;
+        case GL_MAX_ELEMENTS_INDICES:                          result = OpenGL::ContextProperty::Max_Elements_Indices;                          break;
+        case GL_MAX_ELEMENTS_VERTICES:                         result = OpenGL::ContextProperty::Max_Elements_Vertices;                         break;
+        case GL_MAX_FRAGMENT_INPUT_COMPONENTS:                 result = OpenGL::ContextProperty::Max_Fragment_Input_Components;                 break;
+        case GL_MAX_FRAGMENT_UNIFORM_BLOCKS:                   result = OpenGL::ContextProperty::Max_Fragment_Uniform_Blocks;                   break;
+        case GL_MAX_FRAGMENT_UNIFORM_COMPONENTS:               result = OpenGL::ContextProperty::Max_Fragment_Uniform_Components;               break;
+        case GL_MAX_GEOMETRY_INPUT_COMPONENTS:                 result = OpenGL::ContextProperty::Max_Geometry_Input_Components;                 break;
+        case GL_MAX_GEOMETRY_OUTPUT_COMPONENTS:                result = OpenGL::ContextProperty::Max_Geometry_Output_Components;                break;
+        case GL_MAX_GEOMETRY_OUTPUT_VERTICES:                  result = OpenGL::ContextProperty::Max_Geometry_Output_Vertices;                  break;
+        case GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS:              result = OpenGL::ContextProperty::Max_Geometry_Texture_Image_Units;              break;
+        case GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS:          result = OpenGL::ContextProperty::Max_Geometry_Total_Output_Components;          break;
+        case GL_MAX_GEOMETRY_UNIFORM_BLOCKS:                   result = OpenGL::ContextProperty::Max_Geometry_Uniform_Blocks;                   break;
+        case GL_MAX_GEOMETRY_UNIFORM_COMPONENTS:               result = OpenGL::ContextProperty::Max_Geometry_Uniform_Components;               break;
+        case GL_MAX_INTEGER_SAMPLES:                           result = OpenGL::ContextProperty::Max_Integer_Samples;                           break;
+        case GL_MAX_PROGRAM_TEXEL_OFFSET:                      result = OpenGL::ContextProperty::Max_Program_Texel_Offset;                      break;
+        case GL_MAX_RECTANGLE_TEXTURE_SIZE:                    result = OpenGL::ContextProperty::Max_Rectangle_Texture_Size;                    break;
+        case GL_MAX_RENDERBUFFER_SIZE:                         result = OpenGL::ContextProperty::Max_Renderbuffer_Size;                         break;
+        case GL_MAX_SAMPLE_MASK_WORDS:                         result = OpenGL::ContextProperty::Max_Sample_Mask_Words;                         break;
+        case GL_MAX_SAMPLES:                                   result = OpenGL::ContextProperty::Max_Samples;                                   break;
+        case GL_MAX_SERVER_WAIT_TIMEOUT:                       result = OpenGL::ContextProperty::Max_Server_Wait_Timeout;                       break;
+        case GL_MAX_TEXTURE_BUFFER_SIZE:                       result = OpenGL::ContextProperty::Max_Texture_Buffer_Size;                       break;
+        case GL_MAX_TEXTURE_IMAGE_UNITS:                       result = OpenGL::ContextProperty::Max_Texture_Image_Units;                       break;
+        case GL_MAX_TEXTURE_LOD_BIAS:                          result = OpenGL::ContextProperty::Max_Texture_LOD_Bias;                          break;
+        case GL_MAX_TEXTURE_SIZE:                              result = OpenGL::ContextProperty::Max_Texture_Size;                              break;
+        case GL_MAX_TRANSFORM_FEEDBACK_BUFFERS:                result = OpenGL::ContextProperty::Max_Transform_Feedback_Buffers;                break;
+        case GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS: result = OpenGL::ContextProperty::Max_Transform_Feedback_Interleaved_Components; break;
+        case GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS:       result = OpenGL::ContextProperty::Max_Transform_Feedback_Separate_Attribs;       break;
+        case GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS:    result = OpenGL::ContextProperty::Max_Transform_Feedback_Separate_Components;    break;
+        case GL_MAX_UNIFORM_BLOCK_SIZE:                        result = OpenGL::ContextProperty::Max_Uniform_Block_Size;                        break;
+        case GL_MAX_UNIFORM_BUFFER_BINDINGS:                   result = OpenGL::ContextProperty::Max_Uniform_Buffer_Bindings;                   break;
+        case GL_MAX_VARYING_COMPONENTS:                        result = OpenGL::ContextProperty::Max_Varying_Components;                        break;
+        case GL_MAX_VERTEX_ATTRIBS:                            result = OpenGL::ContextProperty::Max_Vertex_Attribs;                            break;
+        case GL_MAX_VERTEX_OUTPUT_COMPONENTS:                  result = OpenGL::ContextProperty::Max_Vertex_Output_Components;                  break;
+        case GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS:                result = OpenGL::ContextProperty::Max_Vertex_Texture_Image_Units;                break;
+        case GL_MAX_VERTEX_UNIFORM_BLOCKS:                     result = OpenGL::ContextProperty::Max_Vertex_Uniform_Blocks;                     break;
+        case GL_MAX_VERTEX_UNIFORM_COMPONENTS:                 result = OpenGL::ContextProperty::Max_Vertex_Uniform_Components;                 break;
+        case GL_MAX_VIEWPORT_DIMS:                             result = OpenGL::ContextProperty::Max_Viewport_Dims;                             break;
+        case GL_MINOR_VERSION:                                 result = OpenGL::ContextProperty::Minor_Version;                                 break;
+        case GL_MIN_PROGRAM_TEXEL_OFFSET:                      result = OpenGL::ContextProperty::Min_Program_Texel_Offset;                      break;
+        case GL_NUM_COMPRESSED_TEXTURE_FORMATS:                result = OpenGL::ContextProperty::Num_Compressed_Texture_Formats;                break;
+        case GL_NUM_EXTENSIONS:                                result = OpenGL::ContextProperty::Num_Extensions;                                break;
+        case GL_PACK_ALIGNMENT:                                result = OpenGL::ContextProperty::Pack_Alignment;                                break;
+        case GL_PACK_IMAGE_HEIGHT:                             result = OpenGL::ContextProperty::Pack_Image_Height;                             break;
+        case GL_PACK_LSB_FIRST:                                result = OpenGL::ContextProperty::Pack_LSB_First;                                break;
+        case GL_PACK_ROW_LENGTH:                               result = OpenGL::ContextProperty::Pack_Row_Length;                               break;
+        case GL_PACK_SKIP_IMAGES:                              result = OpenGL::ContextProperty::Pack_Skip_Images;                              break;
+        case GL_PACK_SKIP_PIXELS:                              result = OpenGL::ContextProperty::Pack_Skip_Pixels;                              break;
+        case GL_PACK_SKIP_ROWS:                                result = OpenGL::ContextProperty::Pack_Skip_Rows;                                break;
+        case GL_PACK_SWAP_BYTES:                               result = OpenGL::ContextProperty::Pack_Swap_Bytes;                               break;
+        case GL_PIXEL_PACK_BUFFER_BINDING:                     result = OpenGL::ContextProperty::Pixel_Pack_Buffer_Binding;                     break;
+        case GL_PIXEL_UNPACK_BUFFER_BINDING:                   result = OpenGL::ContextProperty::Pixel_Unpack_Buffer_Binding;                   break;
+        case GL_POINT_FADE_THRESHOLD_SIZE:                     result = OpenGL::ContextProperty::Point_Fade_Threshold_Size;                     break;
+        case GL_POINT_SIZE:                                    result = OpenGL::ContextProperty::Point_Size;                                    break;
+        case GL_POINT_SIZE_GRANULARITY:                        result = OpenGL::ContextProperty::Point_Size_Granularity;                        break;
+        case GL_POINT_SIZE_RANGE:                              result = OpenGL::ContextProperty::Point_Size_Range;                              break;
+        case GL_POLYGON_OFFSET_FACTOR:                         result = OpenGL::ContextProperty::Polygon_Offset_Factor;                         break;
+        case GL_POLYGON_OFFSET_FILL:                           result = OpenGL::ContextProperty::Polygon_Offset_Fill;                           break;
+        case GL_POLYGON_OFFSET_LINE:                           result = OpenGL::ContextProperty::Polygon_Offset_Line;                           break;
+        case GL_POLYGON_OFFSET_POINT:                          result = OpenGL::ContextProperty::Polygon_Offset_Point;                          break;
+        case GL_POLYGON_OFFSET_UNITS:                          result = OpenGL::ContextProperty::Polygon_Offset_Units;                          break;
+        case GL_POLYGON_SMOOTH:                                result = OpenGL::ContextProperty::Polygon_Smooth;                                break;
+        case GL_POLYGON_SMOOTH_HINT:                           result = OpenGL::ContextProperty::Polygon_Smooth_Hint;                           break;
+        case GL_PRIMITIVE_RESTART_INDEX:                       result = OpenGL::ContextProperty::Primitive_Restart_Index;                       break;
+        case GL_PROGRAM_POINT_SIZE:                            result = OpenGL::ContextProperty::Program_Point_Size;                            break;
+        case GL_PROVOKING_VERTEX:                              result = OpenGL::ContextProperty::Provoking_Vertex;                              break;
+        case GL_QUERY_COUNTER_BITS:                            result = OpenGL::ContextProperty::Query_Counter_Bits;                            break;
+        case GL_READ_BUFFER:                                   result = OpenGL::ContextProperty::Read_Buffer;                                   break;
+        case GL_READ_FRAMEBUFFER_BINDING:                      result = OpenGL::ContextProperty::Read_Framebuffer_Binding;                      break;
+        case GL_RENDERER:                                      result = OpenGL::ContextProperty::Renderer;                                      break;
+        case GL_RENDERBUFFER_BINDING:                          result = OpenGL::ContextProperty::Renderbuffer_Binding;                          break;
+        case GL_SAMPLER_BINDING:                               result = OpenGL::ContextProperty::Sampler_Binding;                               break;
+        case GL_SAMPLES:                                       result = OpenGL::ContextProperty::Samples;                                       break;
+        case GL_SAMPLE_BUFFERS:                                result = OpenGL::ContextProperty::Sample_Buffers;                                break;
+        case GL_SAMPLE_COVERAGE_INVERT:                        result = OpenGL::ContextProperty::Sample_Coverage_Invert;                        break;
+        case GL_SAMPLE_COVERAGE_VALUE:                         result = OpenGL::ContextProperty::Sample_Coverage_Value;                         break;
+        case GL_SCISSOR_BOX:                                   result = OpenGL::ContextProperty::Scissor_Box;                                   break;
+        case GL_SCISSOR_TEST:                                  result = OpenGL::ContextProperty::Scissor_Test;                                  break;
+        case GL_SHADING_LANGUAGE_VERSION:                      result = OpenGL::ContextProperty::Shading_Language_Version;                      break;
+        case GL_SMOOTH_LINE_WIDTH_GRANULARITY:                 result = OpenGL::ContextProperty::Smooth_Line_Width_Granularity;                 break;
+        case GL_SMOOTH_LINE_WIDTH_RANGE:                       result = OpenGL::ContextProperty::Smooth_Line_Width_Range;                       break;
+        case GL_STENCIL_BACK_FAIL:                             result = OpenGL::ContextProperty::Stencil_Back_Fail;                             break;
+        case GL_STENCIL_BACK_FUNC:                             result = OpenGL::ContextProperty::Stencil_Back_Func;                             break;
+        case GL_STENCIL_BACK_PASS_DEPTH_FAIL:                  result = OpenGL::ContextProperty::Stencil_Back_Pass_Depth_Fail;                  break;
+        case GL_STENCIL_BACK_PASS_DEPTH_PASS:                  result = OpenGL::ContextProperty::Stencil_Back_Pass_Depth_Pass;                  break;
+        case GL_STENCIL_BACK_REF:                              result = OpenGL::ContextProperty::Stencil_Back_Ref;                              break;
+        case GL_STENCIL_BACK_VALUE_MASK:                       result = OpenGL::ContextProperty::Stencil_Back_Value_Mask;                       break;
+        case GL_STENCIL_BACK_WRITEMASK:                        result = OpenGL::ContextProperty::Stencil_Back_Writemask;                        break;
+        case GL_STENCIL_CLEAR_VALUE:                           result = OpenGL::ContextProperty::Stencil_Clear_Value;                           break;
+        case GL_STENCIL_FAIL:                                  result = OpenGL::ContextProperty::Stencil_Fail;                                  break;
+        case GL_STENCIL_FUNC:                                  result = OpenGL::ContextProperty::Stencil_Func;                                  break;
+        case GL_STENCIL_PASS_DEPTH_FAIL:                       result = OpenGL::ContextProperty::Stencil_Pass_Depth_Fail;                       break;
+        case GL_STENCIL_PASS_DEPTH_PASS:                       result = OpenGL::ContextProperty::Stencil_Pass_Depth_Pass;                       break;
+        case GL_STENCIL_REF:                                   result = OpenGL::ContextProperty::Stencil_Ref;                                   break;
+        case GL_STENCIL_TEST:                                  result = OpenGL::ContextProperty::Stencil_Test;                                  break;
+        case GL_STENCIL_VALUE_MASK:                            result = OpenGL::ContextProperty::Stencil_Value_Mask;                            break;
+        case GL_STENCIL_WRITEMASK:                             result = OpenGL::ContextProperty::Stencil_Writemask;                             break;
+        case GL_STEREO:                                        result = OpenGL::ContextProperty::Stereo;                                        break;
+        case GL_SUBPIXEL_BITS:                                 result = OpenGL::ContextProperty::Subpixel_Bits;                                 break;
+        case GL_TEXTURE_BINDING_1D:                            result = OpenGL::ContextProperty::Texture_Binding_1D;                            break;
+        case GL_TEXTURE_BINDING_1D_ARRAY:                      result = OpenGL::ContextProperty::Texture_Binding_1D_Array;                      break;
+        case GL_TEXTURE_BINDING_2D:                            result = OpenGL::ContextProperty::Texture_Binding_2D;                            break;
+        case GL_TEXTURE_BINDING_2D_ARRAY:                      result = OpenGL::ContextProperty::Texture_Binding_2D_Array;                      break;
+        case GL_TEXTURE_BINDING_2D_MULTISAMPLE:                result = OpenGL::ContextProperty::Texture_Binding_2D_Multisample;                break;
+        case GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY:          result = OpenGL::ContextProperty::Texture_Binding_2D_Multisample_Array;          break;
+        case GL_TEXTURE_BINDING_3D:                            result = OpenGL::ContextProperty::Texture_Binding_3D;                            break;
+        case GL_TEXTURE_BINDING_BUFFER:                        result = OpenGL::ContextProperty::Texture_Binding_Buffer;                        break;
+        case GL_TEXTURE_BINDING_CUBE_MAP:                      result = OpenGL::ContextProperty::Texture_Binding_Cube_Map;                      break;
+        case GL_TEXTURE_BINDING_RECTANGLE:                     result = OpenGL::ContextProperty::Texture_Binding_Rectangle;                     break;
+        case GL_TEXTURE_COMPRESSION_HINT:                      result = OpenGL::ContextProperty::Texture_Compression_Hint;                      break;
+        case GL_TIMESTAMP:                                     result = OpenGL::ContextProperty::Timestamp;                                     break;
+        case GL_TRANSFORM_FEEDBACK_BUFFER_BINDING:             result = OpenGL::ContextProperty::Transform_Feedback_Buffer_Binding;             break;
+        case GL_TRANSFORM_FEEDBACK_BUFFER_SIZE:                result = OpenGL::ContextProperty::Transform_Feedback_Buffer_Size;                break;
+        case GL_TRANSFORM_FEEDBACK_BUFFER_START:               result = OpenGL::ContextProperty::Transform_Feedback_Buffer_Start;               break;
+        case GL_UNIFORM_BUFFER_BINDING:                        result = OpenGL::ContextProperty::Uniform_Buffer_Binding;                        break;
+        case GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT:               result = OpenGL::ContextProperty::Uniform_Buffer_Offset_Alignment;               break;
+        case GL_UNIFORM_BUFFER_SIZE:                           result = OpenGL::ContextProperty::Uniform_Buffer_Size;                           break;
+        case GL_UNIFORM_BUFFER_START:                          result = OpenGL::ContextProperty::Uniform_Buffer_Start;                          break;
+        case GL_UNPACK_ALIGNMENT:                              result = OpenGL::ContextProperty::Unpack_Alignment;                              break;
+        case GL_UNPACK_IMAGE_HEIGHT:                           result = OpenGL::ContextProperty::Unpack_Image_Height;                           break;
+        case GL_UNPACK_LSB_FIRST:                              result = OpenGL::ContextProperty::Unpack_LSB_First;                              break;
+        case GL_UNPACK_ROW_LENGTH:                             result = OpenGL::ContextProperty::Unpack_Row_Length;                             break;
+        case GL_UNPACK_SKIP_IMAGES:                            result = OpenGL::ContextProperty::Unpack_Skip_Images;                            break;
+        case GL_UNPACK_SKIP_PIXELS:                            result = OpenGL::ContextProperty::Unpack_Skip_Pixels;                            break;
+        case GL_UNPACK_SKIP_ROWS:                              result = OpenGL::ContextProperty::Unpack_Skip_Rows;                              break;
+        case GL_UNPACK_SWAP_BYTES:                             result = OpenGL::ContextProperty::Unpack_Swap_Bytes;                             break;
+        case GL_VERSION:                                       result = OpenGL::ContextProperty::Version;                                       break;
+        case GL_VIEWPORT:                                      result = OpenGL::ContextProperty::Viewport;                                      break;
 
         default:
         {
@@ -575,177 +588,190 @@ GLenum OpenGL::Utils::get_gl_enum_for_context_property(const OpenGL::ContextProp
 
     switch (in_property)
     {
-        case OpenGL::ContextProperty::Active_Texture:                           result = GL_ACTIVE_TEXTURE;                           break;
-        case OpenGL::ContextProperty::Aliased_Line_Width_Range:                 result = GL_ALIASED_LINE_WIDTH_RANGE;                 break;
-        case OpenGL::ContextProperty::Array_Buffer_Binding:                     result = GL_ARRAY_BUFFER_BINDING;                     break;
-        case OpenGL::ContextProperty::Blend:                                    result = GL_BLEND;                                    break;
-        case OpenGL::ContextProperty::Blend_Color:                              result = GL_BLEND_COLOR;                              break;
-        case OpenGL::ContextProperty::Blend_Dst_Alpha:                          result = GL_BLEND_DST_ALPHA;                          break;
-        case OpenGL::ContextProperty::Blend_Dst_RGB:                            result = GL_BLEND_DST_RGB;                            break;
-        case OpenGL::ContextProperty::Blend_Equation_Alpha:                     result = GL_BLEND_EQUATION_ALPHA;                     break;
-        case OpenGL::ContextProperty::Blend_Equation_RGB:                       result = GL_BLEND_EQUATION_RGB;                       break;
-        case OpenGL::ContextProperty::Blend_Src_Alpha:                          result = GL_BLEND_SRC_ALPHA;                          break;
-        case OpenGL::ContextProperty::Blend_Src_RGB:                            result = GL_BLEND_SRC_RGB;                            break;
-        case OpenGL::ContextProperty::Color_Clear_Value:                        result = GL_COLOR_CLEAR_VALUE;                        break;
-        case OpenGL::ContextProperty::Color_Logic_Op:                           result = GL_COLOR_LOGIC_OP;                           break;
-        case OpenGL::ContextProperty::Color_Writemask:                          result = GL_COLOR_WRITEMASK;                          break;
-        case OpenGL::ContextProperty::Compressed_Texture_Formats:               result = GL_COMPRESSED_TEXTURE_FORMATS;               break;
-        case OpenGL::ContextProperty::Context_Flags:                            result = GL_CONTEXT_FLAGS;                            break;
-        case OpenGL::ContextProperty::Cull_Face:                                result = GL_CULL_FACE;                                break;
-        case OpenGL::ContextProperty::Current_Program:                          result = GL_CURRENT_PROGRAM;                          break;
-        case OpenGL::ContextProperty::Depth_Clear_Value:                        result = GL_DEPTH_CLEAR_VALUE;                        break;
-        case OpenGL::ContextProperty::Depth_Func:                               result = GL_DEPTH_FUNC;                               break;
-        case OpenGL::ContextProperty::Depth_Range:                              result = GL_DEPTH_RANGE;                              break;
-        case OpenGL::ContextProperty::Depth_Test:                               result = GL_DEPTH_TEST;                               break;
-        case OpenGL::ContextProperty::Depth_Writemask:                          result = GL_DEPTH_WRITEMASK;                          break;
-        case OpenGL::ContextProperty::Dither:                                   result = GL_DITHER;                                   break;
-        case OpenGL::ContextProperty::Doublebuffer:                             result = GL_DOUBLEBUFFER;                             break;
-        case OpenGL::ContextProperty::Draw_Buffer:                              result = GL_DRAW_BUFFER;                              break;
-        case OpenGL::ContextProperty::Draw_Buffer0:                             result = GL_DRAW_BUFFER0;                             break;
-        case OpenGL::ContextProperty::Draw_Buffer1:                             result = GL_DRAW_BUFFER1;                             break;
-        case OpenGL::ContextProperty::Draw_Buffer2:                             result = GL_DRAW_BUFFER2;                             break;
-        case OpenGL::ContextProperty::Draw_Buffer3:                             result = GL_DRAW_BUFFER3;                             break;
-        case OpenGL::ContextProperty::Draw_Buffer4:                             result = GL_DRAW_BUFFER4;                             break;
-        case OpenGL::ContextProperty::Draw_Buffer5:                             result = GL_DRAW_BUFFER5;                             break;
-        case OpenGL::ContextProperty::Draw_Buffer6:                             result = GL_DRAW_BUFFER6;                             break;
-        case OpenGL::ContextProperty::Draw_Buffer7:                             result = GL_DRAW_BUFFER7;                             break;
-        case OpenGL::ContextProperty::Draw_Framebuffer_Binding:                 result = GL_DRAW_FRAMEBUFFER_BINDING;                 break;
-        case OpenGL::ContextProperty::Element_Array_Buffer_Binding:             result = GL_ELEMENT_ARRAY_BUFFER_BINDING;             break;
-        case OpenGL::ContextProperty::Fragment_Shader_Derivative_Hint:          result = GL_FRAGMENT_SHADER_DERIVATIVE_HINT;          break;
-        case OpenGL::ContextProperty::Line_Smooth:                              result = GL_LINE_SMOOTH;                              break;
-        case OpenGL::ContextProperty::Line_Smooth_Hint:                         result = GL_LINE_SMOOTH_HINT;                         break;
-        case OpenGL::ContextProperty::Line_Width:                               result = GL_LINE_WIDTH;                               break;
-        case OpenGL::ContextProperty::Logic_Op_Mode:                            result = GL_LOGIC_OP_MODE;                            break;
-        case OpenGL::ContextProperty::Major_Version:                            result = GL_MAJOR_VERSION;                            break;
-        case OpenGL::ContextProperty::Max_3D_Texture_Size:                      result = GL_MAX_3D_TEXTURE_SIZE;                      break;
-        case OpenGL::ContextProperty::Max_Array_Texture_Layers:                 result = GL_MAX_ARRAY_TEXTURE_LAYERS;                 break;
-        case OpenGL::ContextProperty::Max_Clip_Distances:                       result = GL_MAX_CLIP_DISTANCES;                       break;
-        case OpenGL::ContextProperty::Max_Color_Texture_Samples:                result = GL_MAX_COLOR_TEXTURE_SAMPLES;                break;
-        case OpenGL::ContextProperty::Max_Combined_Fragment_Uniform_Components: result = GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS; break;
-        case OpenGL::ContextProperty::Max_Combined_Geometry_Uniform_Components: result = GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS; break;
-        case OpenGL::ContextProperty::Max_Combined_Texture_Image_Units:         result = GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS;         break;
-        case OpenGL::ContextProperty::Max_Combined_Uniform_Blocks:              result = GL_MAX_COMBINED_UNIFORM_BLOCKS;              break;
-        case OpenGL::ContextProperty::Max_Combined_Vertex_Uniform_Components:   result = GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS;   break;
-        case OpenGL::ContextProperty::Max_Cube_Map_Texture_Size:                result = GL_MAX_CUBE_MAP_TEXTURE_SIZE;                break;
-        case OpenGL::ContextProperty::Max_Depth_Texture_Samples:                result = GL_MAX_DEPTH_TEXTURE_SAMPLES;                break;
-        case OpenGL::ContextProperty::Max_Draw_Buffers:                         result = GL_MAX_DRAW_BUFFERS;                         break;
-        case OpenGL::ContextProperty::Max_Dual_Source_Draw_Buffers:             result = GL_MAX_DUAL_SOURCE_DRAW_BUFFERS;             break;
-        case OpenGL::ContextProperty::Max_Elements_Indices:                     result = GL_MAX_ELEMENTS_INDICES;                     break;
-        case OpenGL::ContextProperty::Max_Elements_Vertices:                    result = GL_MAX_ELEMENTS_VERTICES;                    break;
-        case OpenGL::ContextProperty::Max_Fragment_Input_Components:            result = GL_MAX_FRAGMENT_INPUT_COMPONENTS;            break;
-        case OpenGL::ContextProperty::Max_Fragment_Uniform_Blocks:              result = GL_MAX_FRAGMENT_UNIFORM_BLOCKS;              break;
-        case OpenGL::ContextProperty::Max_Fragment_Uniform_Components:          result = GL_MAX_FRAGMENT_UNIFORM_COMPONENTS;          break;
-        case OpenGL::ContextProperty::Max_Geometry_Input_Components:            result = GL_MAX_GEOMETRY_INPUT_COMPONENTS;            break;
-        case OpenGL::ContextProperty::Max_Geometry_Output_Components:           result = GL_MAX_GEOMETRY_OUTPUT_COMPONENTS;           break;
-        case OpenGL::ContextProperty::Max_Geometry_Texture_Image_Units:         result = GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS;         break;
-        case OpenGL::ContextProperty::Max_Geometry_Uniform_Blocks:              result = GL_MAX_GEOMETRY_UNIFORM_BLOCKS;              break;
-        case OpenGL::ContextProperty::Max_Geometry_Uniform_Components:          result = GL_MAX_GEOMETRY_UNIFORM_COMPONENTS;          break;
-        case OpenGL::ContextProperty::Max_Integer_Samples:                      result = GL_MAX_INTEGER_SAMPLES;                      break;
-        case OpenGL::ContextProperty::Max_Program_Texel_Offset:                 result = GL_MAX_PROGRAM_TEXEL_OFFSET;                 break;
-        case OpenGL::ContextProperty::Max_Rectangle_Texture_Size:               result = GL_MAX_RECTANGLE_TEXTURE_SIZE;               break;
-        case OpenGL::ContextProperty::Max_Renderbuffer_Size:                    result = GL_MAX_RENDERBUFFER_SIZE;                    break;
-        case OpenGL::ContextProperty::Max_Sample_Mask_Words:                    result = GL_MAX_SAMPLE_MASK_WORDS;                    break;
-        case OpenGL::ContextProperty::Max_Server_Wait_Timeout:                  result = GL_MAX_SERVER_WAIT_TIMEOUT;                  break;
-        case OpenGL::ContextProperty::Max_Texture_Buffer_Size:                  result = GL_MAX_TEXTURE_BUFFER_SIZE;                  break;
-        case OpenGL::ContextProperty::Max_Texture_Image_Units:                  result = GL_MAX_TEXTURE_IMAGE_UNITS;                  break;
-        case OpenGL::ContextProperty::Max_Texture_LOD_Bias:                     result = GL_MAX_TEXTURE_LOD_BIAS;                     break;
-        case OpenGL::ContextProperty::Max_Texture_Size:                         result = GL_MAX_TEXTURE_SIZE;                         break;
-        case OpenGL::ContextProperty::Max_Uniform_Block_Size:                   result = GL_MAX_UNIFORM_BLOCK_SIZE;                   break;
-        case OpenGL::ContextProperty::Max_Uniform_Buffer_Bindings:              result = GL_MAX_UNIFORM_BUFFER_BINDINGS;              break;
-        case OpenGL::ContextProperty::Max_Varying_Components:                   result = GL_MAX_VARYING_COMPONENTS;                   break;
-        case OpenGL::ContextProperty::Max_Vertex_Attribs:                       result = GL_MAX_VERTEX_ATTRIBS;                       break;
-        case OpenGL::ContextProperty::Max_Vertex_Output_Components:             result = GL_MAX_VERTEX_OUTPUT_COMPONENTS;             break;
-        case OpenGL::ContextProperty::Max_Vertex_Texture_Image_Units:           result = GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS;           break;
-        case OpenGL::ContextProperty::Max_Vertex_Uniform_Blocks:                result = GL_MAX_VERTEX_UNIFORM_BLOCKS;                break;
-        case OpenGL::ContextProperty::Max_Vertex_Uniform_Components:            result = GL_MAX_VERTEX_UNIFORM_COMPONENTS;            break;
-        case OpenGL::ContextProperty::Max_Viewport_Dims:                        result = GL_MAX_VIEWPORT_DIMS;                        break;
-        case OpenGL::ContextProperty::Minor_Version:                            result = GL_MINOR_VERSION;                            break;
-        case OpenGL::ContextProperty::Min_Program_Texel_Offset:                 result = GL_MIN_PROGRAM_TEXEL_OFFSET;                 break;
-        case OpenGL::ContextProperty::Num_Compressed_Texture_Formats:           result = GL_NUM_COMPRESSED_TEXTURE_FORMATS;           break;
-        case OpenGL::ContextProperty::Num_Extensions:                           result = GL_NUM_EXTENSIONS;                           break;
-        case OpenGL::ContextProperty::Pack_Alignment:                           result = GL_PACK_ALIGNMENT;                           break;
-        case OpenGL::ContextProperty::Pack_Image_Height:                        result = GL_PACK_IMAGE_HEIGHT;                        break;
-        case OpenGL::ContextProperty::Pack_LSB_First:                           result = GL_PACK_LSB_FIRST;                           break;
-        case OpenGL::ContextProperty::Pack_Row_Length:                          result = GL_PACK_ROW_LENGTH;                          break;
-        case OpenGL::ContextProperty::Pack_Skip_Images:                         result = GL_PACK_SKIP_IMAGES;                         break;
-        case OpenGL::ContextProperty::Pack_Skip_Pixels:                         result = GL_PACK_SKIP_PIXELS;                         break;
-        case OpenGL::ContextProperty::Pack_Skip_Rows:                           result = GL_PACK_SKIP_ROWS;                           break;
-        case OpenGL::ContextProperty::Pack_Swap_Bytes:                          result = GL_PACK_SWAP_BYTES;                          break;
-        case OpenGL::ContextProperty::Pixel_Pack_Buffer_Binding:                result = GL_PIXEL_PACK_BUFFER_BINDING;                break;
-        case OpenGL::ContextProperty::Pixel_Unpack_Buffer_Binding:              result = GL_PIXEL_UNPACK_BUFFER_BINDING;              break;
-        case OpenGL::ContextProperty::Point_Fade_Threshold_Size:                result = GL_POINT_FADE_THRESHOLD_SIZE;                break;
-        case OpenGL::ContextProperty::Point_Size:                               result = GL_POINT_SIZE;                               break;
-        case OpenGL::ContextProperty::Point_Size_Granularity:                   result = GL_POINT_SIZE_GRANULARITY;                   break;
-        case OpenGL::ContextProperty::Point_Size_Range:                         result = GL_POINT_SIZE_RANGE;                         break;
-        case OpenGL::ContextProperty::Polygon_Offset_Factor:                    result = GL_POLYGON_OFFSET_FACTOR;                    break;
-        case OpenGL::ContextProperty::Polygon_Offset_Fill:                      result = GL_POLYGON_OFFSET_FILL;                      break;
-        case OpenGL::ContextProperty::Polygon_Offset_Line:                      result = GL_POLYGON_OFFSET_LINE;                      break;
-        case OpenGL::ContextProperty::Polygon_Offset_Point:                     result = GL_POLYGON_OFFSET_POINT;                     break;
-        case OpenGL::ContextProperty::Polygon_Offset_Units:                     result = GL_POLYGON_OFFSET_UNITS;                     break;
-        case OpenGL::ContextProperty::Polygon_Smooth:                           result = GL_POLYGON_SMOOTH;                           break;
-        case OpenGL::ContextProperty::Polygon_Smooth_Hint:                      result = GL_POLYGON_SMOOTH_HINT;                      break;
-        case OpenGL::ContextProperty::Primitive_Restart_Index:                  result = GL_PRIMITIVE_RESTART_INDEX;                  break;
-        case OpenGL::ContextProperty::Program_Point_Size:                       result = GL_PROGRAM_POINT_SIZE;                       break;
-        case OpenGL::ContextProperty::Provoking_Vertex:                         result = GL_PROVOKING_VERTEX;                         break;
-        case OpenGL::ContextProperty::Read_Buffer:                              result = GL_READ_BUFFER;                              break;
-        case OpenGL::ContextProperty::Read_Framebuffer_Binding:                 result = GL_READ_FRAMEBUFFER_BINDING;                 break;
-        case OpenGL::ContextProperty::Renderbuffer_Binding:                     result = GL_RENDERBUFFER_BINDING;                     break;
-        case OpenGL::ContextProperty::Sampler_Binding:                          result = GL_SAMPLER_BINDING;                          break;
-        case OpenGL::ContextProperty::Samples:                                  result = GL_SAMPLES;                                  break;
-        case OpenGL::ContextProperty::Sample_Buffers:                           result = GL_SAMPLE_BUFFERS;                           break;
-        case OpenGL::ContextProperty::Sample_Coverage_Invert:                   result = GL_SAMPLE_COVERAGE_INVERT;                   break;
-        case OpenGL::ContextProperty::Sample_Coverage_Value:                    result = GL_SAMPLE_COVERAGE_VALUE;                    break;
-        case OpenGL::ContextProperty::Scissor_Box:                              result = GL_SCISSOR_BOX;                              break;
-        case OpenGL::ContextProperty::Scissor_Test:                             result = GL_SCISSOR_TEST;                             break;
-        case OpenGL::ContextProperty::Smooth_Line_Width_Granularity:            result = GL_SMOOTH_LINE_WIDTH_GRANULARITY;            break;
-        case OpenGL::ContextProperty::Smooth_Line_Width_Range:                  result = GL_SMOOTH_LINE_WIDTH_RANGE;                  break;
-        case OpenGL::ContextProperty::Stencil_Back_Fail:                        result = GL_STENCIL_BACK_FAIL;                        break;
-        case OpenGL::ContextProperty::Stencil_Back_Func:                        result = GL_STENCIL_BACK_FUNC;                        break;
-        case OpenGL::ContextProperty::Stencil_Back_Pass_Depth_Fail:             result = GL_STENCIL_BACK_PASS_DEPTH_FAIL;             break;
-        case OpenGL::ContextProperty::Stencil_Back_Pass_Depth_Pass:             result = GL_STENCIL_BACK_PASS_DEPTH_PASS;             break;
-        case OpenGL::ContextProperty::Stencil_Back_Ref:                         result = GL_STENCIL_BACK_REF;                         break;
-        case OpenGL::ContextProperty::Stencil_Back_Value_Mask:                  result = GL_STENCIL_BACK_VALUE_MASK;                  break;
-        case OpenGL::ContextProperty::Stencil_Back_Writemask:                   result = GL_STENCIL_BACK_WRITEMASK;                   break;
-        case OpenGL::ContextProperty::Stencil_Clear_Value:                      result = GL_STENCIL_CLEAR_VALUE;                      break;
-        case OpenGL::ContextProperty::Stencil_Fail:                             result = GL_STENCIL_FAIL;                             break;
-        case OpenGL::ContextProperty::Stencil_Func:                             result = GL_STENCIL_FUNC;                             break;
-        case OpenGL::ContextProperty::Stencil_Pass_Depth_Fail:                  result = GL_STENCIL_PASS_DEPTH_FAIL;                  break;
-        case OpenGL::ContextProperty::Stencil_Pass_Depth_Pass:                  result = GL_STENCIL_PASS_DEPTH_PASS;                  break;
-        case OpenGL::ContextProperty::Stencil_Ref:                              result = GL_STENCIL_REF;                              break;
-        case OpenGL::ContextProperty::Stencil_Test:                             result = GL_STENCIL_TEST;                             break;
-        case OpenGL::ContextProperty::Stencil_Value_Mask:                       result = GL_STENCIL_VALUE_MASK;                       break;
-        case OpenGL::ContextProperty::Stencil_Writemask:                        result = GL_STENCIL_WRITEMASK;                        break;
-        case OpenGL::ContextProperty::Stereo:                                   result = GL_STEREO;                                   break;
-        case OpenGL::ContextProperty::Subpixel_Bits:                            result = GL_SUBPIXEL_BITS;                            break;
-        case OpenGL::ContextProperty::Texture_Binding_1D:                       result = GL_TEXTURE_BINDING_1D;                       break;
-        case OpenGL::ContextProperty::Texture_Binding_1D_Array:                 result = GL_TEXTURE_BINDING_1D_ARRAY;                 break;
-        case OpenGL::ContextProperty::Texture_Binding_2D:                       result = GL_TEXTURE_BINDING_2D;                       break;
-        case OpenGL::ContextProperty::Texture_Binding_2D_Array:                 result = GL_TEXTURE_BINDING_2D_ARRAY;                 break;
-        case OpenGL::ContextProperty::Texture_Binding_2D_Multisample:           result = GL_TEXTURE_BINDING_2D_MULTISAMPLE;           break;
-        case OpenGL::ContextProperty::Texture_Binding_2D_Multisample_Array:     result = GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY;     break;
-        case OpenGL::ContextProperty::Texture_Binding_3D:                       result = GL_TEXTURE_BINDING_3D;                       break;
-        case OpenGL::ContextProperty::Texture_Binding_Buffer:                   result = GL_TEXTURE_BINDING_BUFFER;                   break;
-        case OpenGL::ContextProperty::Texture_Binding_Cube_Map:                 result = GL_TEXTURE_BINDING_CUBE_MAP;                 break;
-        case OpenGL::ContextProperty::Texture_Binding_Rectangle:                result = GL_TEXTURE_BINDING_RECTANGLE;                break;
-        case OpenGL::ContextProperty::Texture_Compression_Hint:                 result = GL_TEXTURE_COMPRESSION_HINT;                 break;
-        case OpenGL::ContextProperty::Timestamp:                                result = GL_TIMESTAMP;                                break;
-        case OpenGL::ContextProperty::Transform_Feedback_Buffer_Binding:        result = GL_TRANSFORM_FEEDBACK_BUFFER_BINDING;        break;
-        case OpenGL::ContextProperty::Transform_Feedback_Buffer_Size:           result = GL_TRANSFORM_FEEDBACK_BUFFER_SIZE;           break;
-        case OpenGL::ContextProperty::Transform_Feedback_Buffer_Start:          result = GL_TRANSFORM_FEEDBACK_BUFFER_START;          break;
-        case OpenGL::ContextProperty::Uniform_Buffer_Binding:                   result = GL_UNIFORM_BUFFER_BINDING;                   break;
-        case OpenGL::ContextProperty::Uniform_Buffer_Offset_Alignment:          result = GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT;          break;
-        case OpenGL::ContextProperty::Uniform_Buffer_Size:                      result = GL_UNIFORM_BUFFER_SIZE;                      break;
-        case OpenGL::ContextProperty::Uniform_Buffer_Start:                     result = GL_UNIFORM_BUFFER_START;                     break;
-        case OpenGL::ContextProperty::Unpack_Alignment:                         result = GL_UNPACK_ALIGNMENT;                         break;
-        case OpenGL::ContextProperty::Unpack_Image_Height:                      result = GL_UNPACK_IMAGE_HEIGHT;                      break;
-        case OpenGL::ContextProperty::Unpack_LSB_First:                         result = GL_UNPACK_LSB_FIRST;                         break;
-        case OpenGL::ContextProperty::Unpack_Row_Length:                        result = GL_UNPACK_ROW_LENGTH;                        break;
-        case OpenGL::ContextProperty::Unpack_Skip_Images:                       result = GL_UNPACK_SKIP_IMAGES;                       break;
-        case OpenGL::ContextProperty::Unpack_Skip_Pixels:                       result = GL_UNPACK_SKIP_PIXELS;                       break;
-        case OpenGL::ContextProperty::Unpack_Skip_Rows:                         result = GL_UNPACK_SKIP_ROWS;                         break;
-        case OpenGL::ContextProperty::Unpack_Swap_Bytes:                        result = GL_UNPACK_SWAP_BYTES;                        break;
-        case OpenGL::ContextProperty::Version:                                  result = GL_VERSION;                                  break;
-        case OpenGL::ContextProperty::Viewport:                                 result = GL_VIEWPORT;                                 break;
+        case OpenGL::ContextProperty::Active_Texture:                                result = GL_ACTIVE_TEXTURE;                                break;
+        case OpenGL::ContextProperty::Aliased_Line_Width_Range:                      result = GL_ALIASED_LINE_WIDTH_RANGE;                      break;
+        case OpenGL::ContextProperty::Array_Buffer_Binding:                          result = GL_ARRAY_BUFFER_BINDING;                          break;
+        case OpenGL::ContextProperty::Blend:                                         result = GL_BLEND;                                         break;
+        case OpenGL::ContextProperty::Blend_Color:                                   result = GL_BLEND_COLOR;                                   break;
+        case OpenGL::ContextProperty::Blend_Dst_Alpha:                               result = GL_BLEND_DST_ALPHA;                               break;
+        case OpenGL::ContextProperty::Blend_Dst_RGB:                                 result = GL_BLEND_DST_RGB;                                 break;
+        case OpenGL::ContextProperty::Blend_Equation_Alpha:                          result = GL_BLEND_EQUATION_ALPHA;                          break;
+        case OpenGL::ContextProperty::Blend_Equation_RGB:                            result = GL_BLEND_EQUATION_RGB;                            break;
+        case OpenGL::ContextProperty::Blend_Src_Alpha:                               result = GL_BLEND_SRC_ALPHA;                               break;
+        case OpenGL::ContextProperty::Blend_Src_RGB:                                 result = GL_BLEND_SRC_RGB;                                 break;
+        case OpenGL::ContextProperty::Color_Clear_Value:                             result = GL_COLOR_CLEAR_VALUE;                             break;
+        case OpenGL::ContextProperty::Color_Logic_Op:                                result = GL_COLOR_LOGIC_OP;                                break;
+        case OpenGL::ContextProperty::Color_Writemask:                               result = GL_COLOR_WRITEMASK;                               break;
+        case OpenGL::ContextProperty::Compressed_Texture_Formats:                    result = GL_COMPRESSED_TEXTURE_FORMATS;                    break;
+        case OpenGL::ContextProperty::Context_Flags:                                 result = GL_CONTEXT_FLAGS;                                 break;
+        case OpenGL::ContextProperty::Context_Profile_Mask:                          result = GL_CONTEXT_PROFILE_MASK;                          break;
+        case OpenGL::ContextProperty::Cull_Face:                                     result = GL_CULL_FACE;                                     break;
+        case OpenGL::ContextProperty::Current_Program:                               result = GL_CURRENT_PROGRAM;                               break;
+        case OpenGL::ContextProperty::Depth_Clear_Value:                             result = GL_DEPTH_CLEAR_VALUE;                             break;
+        case OpenGL::ContextProperty::Depth_Func:                                    result = GL_DEPTH_FUNC;                                    break;
+        case OpenGL::ContextProperty::Depth_Range:                                   result = GL_DEPTH_RANGE;                                   break;
+        case OpenGL::ContextProperty::Depth_Test:                                    result = GL_DEPTH_TEST;                                    break;
+        case OpenGL::ContextProperty::Depth_Writemask:                               result = GL_DEPTH_WRITEMASK;                               break;
+        case OpenGL::ContextProperty::Dither:                                        result = GL_DITHER;                                        break;
+        case OpenGL::ContextProperty::Doublebuffer:                                  result = GL_DOUBLEBUFFER;                                  break;
+        case OpenGL::ContextProperty::Draw_Buffer:                                   result = GL_DRAW_BUFFER;                                   break;
+        case OpenGL::ContextProperty::Draw_Buffer0:                                  result = GL_DRAW_BUFFER0;                                  break;
+        case OpenGL::ContextProperty::Draw_Buffer1:                                  result = GL_DRAW_BUFFER1;                                  break;
+        case OpenGL::ContextProperty::Draw_Buffer2:                                  result = GL_DRAW_BUFFER2;                                  break;
+        case OpenGL::ContextProperty::Draw_Buffer3:                                  result = GL_DRAW_BUFFER3;                                  break;
+        case OpenGL::ContextProperty::Draw_Buffer4:                                  result = GL_DRAW_BUFFER4;                                  break;
+        case OpenGL::ContextProperty::Draw_Buffer5:                                  result = GL_DRAW_BUFFER5;                                  break;
+        case OpenGL::ContextProperty::Draw_Buffer6:                                  result = GL_DRAW_BUFFER6;                                  break;
+        case OpenGL::ContextProperty::Draw_Buffer7:                                  result = GL_DRAW_BUFFER7;                                  break;
+        case OpenGL::ContextProperty::Draw_Framebuffer_Binding:                      result = GL_DRAW_FRAMEBUFFER_BINDING;                      break;
+        case OpenGL::ContextProperty::Element_Array_Buffer_Binding:                  result = GL_ELEMENT_ARRAY_BUFFER_BINDING;                  break;
+        case OpenGL::ContextProperty::Extensions:                                    result = GL_EXTENSIONS;                                    break;
+        case OpenGL::ContextProperty::Fragment_Shader_Derivative_Hint:               result = GL_FRAGMENT_SHADER_DERIVATIVE_HINT;               break;
+        case OpenGL::ContextProperty::Line_Smooth:                                   result = GL_LINE_SMOOTH;                                   break;
+        case OpenGL::ContextProperty::Line_Smooth_Hint:                              result = GL_LINE_SMOOTH_HINT;                              break;
+        case OpenGL::ContextProperty::Line_Width:                                    result = GL_LINE_WIDTH;                                    break;
+        case OpenGL::ContextProperty::Logic_Op_Mode:                                 result = GL_LOGIC_OP_MODE;                                 break;
+        case OpenGL::ContextProperty::Major_Version:                                 result = GL_MAJOR_VERSION;                                 break;
+        case OpenGL::ContextProperty::Max_3D_Texture_Size:                           result = GL_MAX_3D_TEXTURE_SIZE;                           break;
+        case OpenGL::ContextProperty::Max_Array_Texture_Layers:                      result = GL_MAX_ARRAY_TEXTURE_LAYERS;                      break;
+        case OpenGL::ContextProperty::Max_Clip_Distances:                            result = GL_MAX_CLIP_DISTANCES;                            break;
+        case OpenGL::ContextProperty::Max_Color_Attachments:                         result = GL_MAX_COLOR_ATTACHMENTS;                         break;
+        case OpenGL::ContextProperty::Max_Color_Texture_Samples:                     result = GL_MAX_COLOR_TEXTURE_SAMPLES;                     break;
+        case OpenGL::ContextProperty::Max_Combined_Fragment_Uniform_Components:      result = GL_MAX_COMBINED_FRAGMENT_UNIFORM_COMPONENTS;      break;
+        case OpenGL::ContextProperty::Max_Combined_Geometry_Uniform_Components:      result = GL_MAX_COMBINED_GEOMETRY_UNIFORM_COMPONENTS;      break;
+        case OpenGL::ContextProperty::Max_Combined_Texture_Image_Units:              result = GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS;              break;
+        case OpenGL::ContextProperty::Max_Combined_Uniform_Blocks:                   result = GL_MAX_COMBINED_UNIFORM_BLOCKS;                   break;
+        case OpenGL::ContextProperty::Max_Combined_Vertex_Uniform_Components:        result = GL_MAX_COMBINED_VERTEX_UNIFORM_COMPONENTS;        break;
+        case OpenGL::ContextProperty::Max_Cube_Map_Texture_Size:                     result = GL_MAX_CUBE_MAP_TEXTURE_SIZE;                     break;
+        case OpenGL::ContextProperty::Max_Depth_Texture_Samples:                     result = GL_MAX_DEPTH_TEXTURE_SAMPLES;                     break;
+        case OpenGL::ContextProperty::Max_Draw_Buffers:                              result = GL_MAX_DRAW_BUFFERS;                              break;
+        case OpenGL::ContextProperty::Max_Dual_Source_Draw_Buffers:                  result = GL_MAX_DUAL_SOURCE_DRAW_BUFFERS;                  break;
+        case OpenGL::ContextProperty::Max_Elements_Indices:                          result = GL_MAX_ELEMENTS_INDICES;                          break;
+        case OpenGL::ContextProperty::Max_Elements_Vertices:                         result = GL_MAX_ELEMENTS_VERTICES;                         break;
+        case OpenGL::ContextProperty::Max_Fragment_Input_Components:                 result = GL_MAX_FRAGMENT_INPUT_COMPONENTS;                 break;
+        case OpenGL::ContextProperty::Max_Fragment_Uniform_Blocks:                   result = GL_MAX_FRAGMENT_UNIFORM_BLOCKS;                   break;
+        case OpenGL::ContextProperty::Max_Fragment_Uniform_Components:               result = GL_MAX_FRAGMENT_UNIFORM_COMPONENTS;               break;
+        case OpenGL::ContextProperty::Max_Geometry_Input_Components:                 result = GL_MAX_GEOMETRY_INPUT_COMPONENTS;                 break;
+        case OpenGL::ContextProperty::Max_Geometry_Output_Components:                result = GL_MAX_GEOMETRY_OUTPUT_COMPONENTS;                break;
+        case OpenGL::ContextProperty::Max_Geometry_Output_Vertices:                  result = GL_MAX_GEOMETRY_OUTPUT_VERTICES;                  break;
+        case OpenGL::ContextProperty::Max_Geometry_Texture_Image_Units:              result = GL_MAX_GEOMETRY_TEXTURE_IMAGE_UNITS;              break;
+        case OpenGL::ContextProperty::Max_Geometry_Total_Output_Components:          result = GL_MAX_GEOMETRY_TOTAL_OUTPUT_COMPONENTS;          break;
+        case OpenGL::ContextProperty::Max_Geometry_Uniform_Blocks:                   result = GL_MAX_GEOMETRY_UNIFORM_BLOCKS;                   break;
+        case OpenGL::ContextProperty::Max_Geometry_Uniform_Components:               result = GL_MAX_GEOMETRY_UNIFORM_COMPONENTS;               break;
+        case OpenGL::ContextProperty::Max_Integer_Samples:                           result = GL_MAX_INTEGER_SAMPLES;                           break;
+        case OpenGL::ContextProperty::Max_Program_Texel_Offset:                      result = GL_MAX_PROGRAM_TEXEL_OFFSET;                      break;
+        case OpenGL::ContextProperty::Max_Rectangle_Texture_Size:                    result = GL_MAX_RECTANGLE_TEXTURE_SIZE;                    break;
+        case OpenGL::ContextProperty::Max_Renderbuffer_Size:                         result = GL_MAX_RENDERBUFFER_SIZE;                         break;
+        case OpenGL::ContextProperty::Max_Sample_Mask_Words:                         result = GL_MAX_SAMPLE_MASK_WORDS;                         break;
+        case OpenGL::ContextProperty::Max_Samples:                                   result = GL_MAX_SAMPLES;                                   break;
+        case OpenGL::ContextProperty::Max_Server_Wait_Timeout:                       result = GL_MAX_SERVER_WAIT_TIMEOUT;                       break;
+        case OpenGL::ContextProperty::Max_Texture_Buffer_Size:                       result = GL_MAX_TEXTURE_BUFFER_SIZE;                       break;
+        case OpenGL::ContextProperty::Max_Texture_Image_Units:                       result = GL_MAX_TEXTURE_IMAGE_UNITS;                       break;
+        case OpenGL::ContextProperty::Max_Texture_LOD_Bias:                          result = GL_MAX_TEXTURE_LOD_BIAS;                          break;
+        case OpenGL::ContextProperty::Max_Texture_Size:                              result = GL_MAX_TEXTURE_SIZE;                              break;
+        case OpenGL::ContextProperty::Max_Transform_Feedback_Buffers:                result = GL_MAX_TRANSFORM_FEEDBACK_BUFFERS;                break;
+        case OpenGL::ContextProperty::Max_Transform_Feedback_Interleaved_Components: result = GL_MAX_TRANSFORM_FEEDBACK_INTERLEAVED_COMPONENTS; break;
+        case OpenGL::ContextProperty::Max_Transform_Feedback_Separate_Attribs:       result = GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_ATTRIBS;       break;
+        case OpenGL::ContextProperty::Max_Transform_Feedback_Separate_Components:    result = GL_MAX_TRANSFORM_FEEDBACK_SEPARATE_COMPONENTS;    break;
+        case OpenGL::ContextProperty::Max_Uniform_Block_Size:                        result = GL_MAX_UNIFORM_BLOCK_SIZE;                        break;
+        case OpenGL::ContextProperty::Max_Uniform_Buffer_Bindings:                   result = GL_MAX_UNIFORM_BUFFER_BINDINGS;                   break;
+        case OpenGL::ContextProperty::Max_Varying_Components:                        result = GL_MAX_VARYING_COMPONENTS;                        break;
+        case OpenGL::ContextProperty::Max_Vertex_Attribs:                            result = GL_MAX_VERTEX_ATTRIBS;                            break;
+        case OpenGL::ContextProperty::Max_Vertex_Output_Components:                  result = GL_MAX_VERTEX_OUTPUT_COMPONENTS;                  break;
+        case OpenGL::ContextProperty::Max_Vertex_Texture_Image_Units:                result = GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS;                break;
+        case OpenGL::ContextProperty::Max_Vertex_Uniform_Blocks:                     result = GL_MAX_VERTEX_UNIFORM_BLOCKS;                     break;
+        case OpenGL::ContextProperty::Max_Vertex_Uniform_Components:                 result = GL_MAX_VERTEX_UNIFORM_COMPONENTS;                 break;
+        case OpenGL::ContextProperty::Max_Viewport_Dims:                             result = GL_MAX_VIEWPORT_DIMS;                             break;
+        case OpenGL::ContextProperty::Minor_Version:                                 result = GL_MINOR_VERSION;                                 break;
+        case OpenGL::ContextProperty::Min_Program_Texel_Offset:                      result = GL_MIN_PROGRAM_TEXEL_OFFSET;                      break;
+        case OpenGL::ContextProperty::Num_Compressed_Texture_Formats:                result = GL_NUM_COMPRESSED_TEXTURE_FORMATS;                break;
+        case OpenGL::ContextProperty::Num_Extensions:                                result = GL_NUM_EXTENSIONS;                                break;
+        case OpenGL::ContextProperty::Pack_Alignment:                                result = GL_PACK_ALIGNMENT;                                break;
+        case OpenGL::ContextProperty::Pack_Image_Height:                             result = GL_PACK_IMAGE_HEIGHT;                             break;
+        case OpenGL::ContextProperty::Pack_LSB_First:                                result = GL_PACK_LSB_FIRST;                                break;
+        case OpenGL::ContextProperty::Pack_Row_Length:                               result = GL_PACK_ROW_LENGTH;                               break;
+        case OpenGL::ContextProperty::Pack_Skip_Images:                              result = GL_PACK_SKIP_IMAGES;                              break;
+        case OpenGL::ContextProperty::Pack_Skip_Pixels:                              result = GL_PACK_SKIP_PIXELS;                              break;
+        case OpenGL::ContextProperty::Pack_Skip_Rows:                                result = GL_PACK_SKIP_ROWS;                                break;
+        case OpenGL::ContextProperty::Pack_Swap_Bytes:                               result = GL_PACK_SWAP_BYTES;                               break;
+        case OpenGL::ContextProperty::Pixel_Pack_Buffer_Binding:                     result = GL_PIXEL_PACK_BUFFER_BINDING;                     break;
+        case OpenGL::ContextProperty::Pixel_Unpack_Buffer_Binding:                   result = GL_PIXEL_UNPACK_BUFFER_BINDING;                   break;
+        case OpenGL::ContextProperty::Point_Fade_Threshold_Size:                     result = GL_POINT_FADE_THRESHOLD_SIZE;                     break;
+        case OpenGL::ContextProperty::Point_Size:                                    result = GL_POINT_SIZE;                                    break;
+        case OpenGL::ContextProperty::Point_Size_Granularity:                        result = GL_POINT_SIZE_GRANULARITY;                        break;
+        case OpenGL::ContextProperty::Point_Size_Range:                              result = GL_POINT_SIZE_RANGE;                              break;
+        case OpenGL::ContextProperty::Polygon_Offset_Factor:                         result = GL_POLYGON_OFFSET_FACTOR;                         break;
+        case OpenGL::ContextProperty::Polygon_Offset_Fill:                           result = GL_POLYGON_OFFSET_FILL;                           break;
+        case OpenGL::ContextProperty::Polygon_Offset_Line:                           result = GL_POLYGON_OFFSET_LINE;                           break;
+        case OpenGL::ContextProperty::Polygon_Offset_Point:                          result = GL_POLYGON_OFFSET_POINT;                          break;
+        case OpenGL::ContextProperty::Polygon_Offset_Units:                          result = GL_POLYGON_OFFSET_UNITS;                          break;
+        case OpenGL::ContextProperty::Polygon_Smooth:                                result = GL_POLYGON_SMOOTH;                                break;
+        case OpenGL::ContextProperty::Polygon_Smooth_Hint:                           result = GL_POLYGON_SMOOTH_HINT;                           break;
+        case OpenGL::ContextProperty::Primitive_Restart_Index:                       result = GL_PRIMITIVE_RESTART_INDEX;                       break;
+        case OpenGL::ContextProperty::Program_Point_Size:                            result = GL_PROGRAM_POINT_SIZE;                            break;
+        case OpenGL::ContextProperty::Provoking_Vertex:                              result = GL_PROVOKING_VERTEX;                              break;
+        case OpenGL::ContextProperty::Query_Counter_Bits:                            result = GL_QUERY_COUNTER_BITS;                            break;
+        case OpenGL::ContextProperty::Read_Buffer:                                   result = GL_READ_BUFFER;                                   break;
+        case OpenGL::ContextProperty::Read_Framebuffer_Binding:                      result = GL_READ_FRAMEBUFFER_BINDING;                      break;
+        case OpenGL::ContextProperty::Renderer:                                      result = GL_RENDERER;                                      break;
+        case OpenGL::ContextProperty::Renderbuffer_Binding:                          result = GL_RENDERBUFFER_BINDING;                          break;
+        case OpenGL::ContextProperty::Sampler_Binding:                               result = GL_SAMPLER_BINDING;                               break;
+        case OpenGL::ContextProperty::Samples:                                       result = GL_SAMPLES;                                       break;
+        case OpenGL::ContextProperty::Sample_Buffers:                                result = GL_SAMPLE_BUFFERS;                                break;
+        case OpenGL::ContextProperty::Sample_Coverage_Invert:                        result = GL_SAMPLE_COVERAGE_INVERT;                        break;
+        case OpenGL::ContextProperty::Sample_Coverage_Value:                         result = GL_SAMPLE_COVERAGE_VALUE;                         break;
+        case OpenGL::ContextProperty::Scissor_Box:                                   result = GL_SCISSOR_BOX;                                   break;
+        case OpenGL::ContextProperty::Scissor_Test:                                  result = GL_SCISSOR_TEST;                                  break;
+        case OpenGL::ContextProperty::Shading_Language_Version:                      result = GL_SHADING_LANGUAGE_VERSION;                      break;
+        case OpenGL::ContextProperty::Smooth_Line_Width_Granularity:                 result = GL_SMOOTH_LINE_WIDTH_GRANULARITY;                 break;
+        case OpenGL::ContextProperty::Smooth_Line_Width_Range:                       result = GL_SMOOTH_LINE_WIDTH_RANGE;                       break;
+        case OpenGL::ContextProperty::Stencil_Back_Fail:                             result = GL_STENCIL_BACK_FAIL;                             break;
+        case OpenGL::ContextProperty::Stencil_Back_Func:                             result = GL_STENCIL_BACK_FUNC;                             break;
+        case OpenGL::ContextProperty::Stencil_Back_Pass_Depth_Fail:                  result = GL_STENCIL_BACK_PASS_DEPTH_FAIL;                  break;
+        case OpenGL::ContextProperty::Stencil_Back_Pass_Depth_Pass:                  result = GL_STENCIL_BACK_PASS_DEPTH_PASS;                  break;
+        case OpenGL::ContextProperty::Stencil_Back_Ref:                              result = GL_STENCIL_BACK_REF;                              break;
+        case OpenGL::ContextProperty::Stencil_Back_Value_Mask:                       result = GL_STENCIL_BACK_VALUE_MASK;                       break;
+        case OpenGL::ContextProperty::Stencil_Back_Writemask:                        result = GL_STENCIL_BACK_WRITEMASK;                        break;
+        case OpenGL::ContextProperty::Stencil_Clear_Value:                           result = GL_STENCIL_CLEAR_VALUE;                           break;
+        case OpenGL::ContextProperty::Stencil_Fail:                                  result = GL_STENCIL_FAIL;                                  break;
+        case OpenGL::ContextProperty::Stencil_Func:                                  result = GL_STENCIL_FUNC;                                  break;
+        case OpenGL::ContextProperty::Stencil_Pass_Depth_Fail:                       result = GL_STENCIL_PASS_DEPTH_FAIL;                       break;
+        case OpenGL::ContextProperty::Stencil_Pass_Depth_Pass:                       result = GL_STENCIL_PASS_DEPTH_PASS;                       break;
+        case OpenGL::ContextProperty::Stencil_Ref:                                   result = GL_STENCIL_REF;                                   break;
+        case OpenGL::ContextProperty::Stencil_Test:                                  result = GL_STENCIL_TEST;                                  break;
+        case OpenGL::ContextProperty::Stencil_Value_Mask:                            result = GL_STENCIL_VALUE_MASK;                            break;
+        case OpenGL::ContextProperty::Stencil_Writemask:                             result = GL_STENCIL_WRITEMASK;                             break;
+        case OpenGL::ContextProperty::Stereo:                                        result = GL_STEREO;                                        break;
+        case OpenGL::ContextProperty::Subpixel_Bits:                                 result = GL_SUBPIXEL_BITS;                                 break;
+        case OpenGL::ContextProperty::Texture_Binding_1D:                            result = GL_TEXTURE_BINDING_1D;                            break;
+        case OpenGL::ContextProperty::Texture_Binding_1D_Array:                      result = GL_TEXTURE_BINDING_1D_ARRAY;                      break;
+        case OpenGL::ContextProperty::Texture_Binding_2D:                            result = GL_TEXTURE_BINDING_2D;                            break;
+        case OpenGL::ContextProperty::Texture_Binding_2D_Array:                      result = GL_TEXTURE_BINDING_2D_ARRAY;                      break;
+        case OpenGL::ContextProperty::Texture_Binding_2D_Multisample:                result = GL_TEXTURE_BINDING_2D_MULTISAMPLE;                break;
+        case OpenGL::ContextProperty::Texture_Binding_2D_Multisample_Array:          result = GL_TEXTURE_BINDING_2D_MULTISAMPLE_ARRAY;          break;
+        case OpenGL::ContextProperty::Texture_Binding_3D:                            result = GL_TEXTURE_BINDING_3D;                            break;
+        case OpenGL::ContextProperty::Texture_Binding_Buffer:                        result = GL_TEXTURE_BINDING_BUFFER;                        break;
+        case OpenGL::ContextProperty::Texture_Binding_Cube_Map:                      result = GL_TEXTURE_BINDING_CUBE_MAP;                      break;
+        case OpenGL::ContextProperty::Texture_Binding_Rectangle:                     result = GL_TEXTURE_BINDING_RECTANGLE;                     break;
+        case OpenGL::ContextProperty::Texture_Compression_Hint:                      result = GL_TEXTURE_COMPRESSION_HINT;                      break;
+        case OpenGL::ContextProperty::Timestamp:                                     result = GL_TIMESTAMP;                                     break;
+        case OpenGL::ContextProperty::Transform_Feedback_Buffer_Binding:             result = GL_TRANSFORM_FEEDBACK_BUFFER_BINDING;             break;
+        case OpenGL::ContextProperty::Transform_Feedback_Buffer_Size:                result = GL_TRANSFORM_FEEDBACK_BUFFER_SIZE;                break;
+        case OpenGL::ContextProperty::Transform_Feedback_Buffer_Start:               result = GL_TRANSFORM_FEEDBACK_BUFFER_START;               break;
+        case OpenGL::ContextProperty::Uniform_Buffer_Binding:                        result = GL_UNIFORM_BUFFER_BINDING;                        break;
+        case OpenGL::ContextProperty::Uniform_Buffer_Offset_Alignment:               result = GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT;               break;
+        case OpenGL::ContextProperty::Uniform_Buffer_Size:                           result = GL_UNIFORM_BUFFER_SIZE;                           break;
+        case OpenGL::ContextProperty::Uniform_Buffer_Start:                          result = GL_UNIFORM_BUFFER_START;                          break;
+        case OpenGL::ContextProperty::Unpack_Alignment:                              result = GL_UNPACK_ALIGNMENT;                              break;
+        case OpenGL::ContextProperty::Unpack_Image_Height:                           result = GL_UNPACK_IMAGE_HEIGHT;                           break;
+        case OpenGL::ContextProperty::Unpack_LSB_First:                              result = GL_UNPACK_LSB_FIRST;                              break;
+        case OpenGL::ContextProperty::Unpack_Row_Length:                             result = GL_UNPACK_ROW_LENGTH;                             break;
+        case OpenGL::ContextProperty::Unpack_Skip_Images:                            result = GL_UNPACK_SKIP_IMAGES;                            break;
+        case OpenGL::ContextProperty::Unpack_Skip_Pixels:                            result = GL_UNPACK_SKIP_PIXELS;                            break;
+        case OpenGL::ContextProperty::Unpack_Skip_Rows:                              result = GL_UNPACK_SKIP_ROWS;                              break;
+        case OpenGL::ContextProperty::Unpack_Swap_Bytes:                             result = GL_UNPACK_SWAP_BYTES;                             break;
+        case OpenGL::ContextProperty::Version:                                       result = GL_VERSION;                                       break;
+        case OpenGL::ContextProperty::Viewport:                                      result = GL_VIEWPORT;                                      break;
 
         default:
         {
@@ -4358,6 +4384,7 @@ const char* OpenGL::Utils::get_raw_string_for_gl_enum(const GLenum& in_enum)
         {GL_SAMPLER_2D_MULTISAMPLE_ARRAY,              "GL_SAMPLER_2D_MULTISAMPLE_ARRAY"},
         {GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY,          "GL_INT_SAMPLER_2D_MULTISAMPLE_ARRAY"},
         {GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY, "GL_UNSIGNED_INT_SAMPLER_2D_MULTISAMPLE_ARRAY"},
+        {GL_MAX_COLOR_ATTACHMENTS,                     "GL_MAX_COLOR_ATTACHMENTS"},
         {GL_MAX_COLOR_TEXTURE_SAMPLES,                 "GL_MAX_COLOR_TEXTURE_SAMPLES"},
         {GL_MAX_DEPTH_TEXTURE_SAMPLES,                 "GL_MAX_DEPTH_TEXTURE_SAMPLES"},
         {GL_MAX_INTEGER_SAMPLES,                       "GL_MAX_INTEGER_SAMPLES"},
@@ -5093,18 +5120,43 @@ OpenGL::VertexAttributeProperty OpenGL::Utils::get_vertex_attribute_property_for
     return result;
 }
 
+bool OpenGL::Utils::is_context_property_gl_constant(const OpenGL::ContextProperty& in_pname)
+{
+    /* NOTE: Needs to stay in sync with GLConstants::GLConstants() ! */
+    bool result = false;
+
+    switch (in_pname)
+    {
+        case OpenGL::ContextProperty::Context_Flags:
+        case OpenGL::ContextProperty::Context_Profile_Mask:
+        case OpenGL::ContextProperty::Extensions:
+        case OpenGL::ContextProperty::Major_Version:
+        case OpenGL::ContextProperty::Minor_Version:
+        case OpenGL::ContextProperty::Num_Extensions:
+        case OpenGL::ContextProperty::Renderer:
+        case OpenGL::ContextProperty::Shading_Language_Version:
+        case OpenGL::ContextProperty::Vendor:
+        case OpenGL::ContextProperty::Version:
+        {
+            result = true;
+        }
+    }
+
+    return result;
+}
+
 bool OpenGL::Utils::is_context_property_gl_limit(const OpenGL::ContextProperty& in_pname)
 {
+    /* NOTE: Needs to stay in sync with GLLimits::GLLimits() ! */
     bool result = false;
 
     switch (in_pname)
     {
         case OpenGL::ContextProperty::Aliased_Line_Width_Range:
-        case OpenGL::ContextProperty::Compressed_Texture_Formats:
-        case OpenGL::ContextProperty::Major_Version:
         case OpenGL::ContextProperty::Max_3D_Texture_Size:
         case OpenGL::ContextProperty::Max_Array_Texture_Layers:
         case OpenGL::ContextProperty::Max_Clip_Distances:
+        case OpenGL::ContextProperty::Max_Color_Attachments:
         case OpenGL::ContextProperty::Max_Color_Texture_Samples:
         case OpenGL::ContextProperty::Max_Combined_Fragment_Uniform_Components:
         case OpenGL::ContextProperty::Max_Combined_Geometry_Uniform_Components:
@@ -5114,7 +5166,6 @@ bool OpenGL::Utils::is_context_property_gl_limit(const OpenGL::ContextProperty& 
         case OpenGL::ContextProperty::Max_Cube_Map_Texture_Size:
         case OpenGL::ContextProperty::Max_Depth_Texture_Samples:
         case OpenGL::ContextProperty::Max_Draw_Buffers:
-        case OpenGL::ContextProperty::Max_Dual_Source_Draw_Buffers:
         case OpenGL::ContextProperty::Max_Elements_Indices:
         case OpenGL::ContextProperty::Max_Elements_Vertices:
         case OpenGL::ContextProperty::Max_Fragment_Input_Components:
@@ -5122,7 +5173,9 @@ bool OpenGL::Utils::is_context_property_gl_limit(const OpenGL::ContextProperty& 
         case OpenGL::ContextProperty::Max_Fragment_Uniform_Components:
         case OpenGL::ContextProperty::Max_Geometry_Input_Components:
         case OpenGL::ContextProperty::Max_Geometry_Output_Components:
+        case OpenGL::ContextProperty::Max_Geometry_Output_Vertices:
         case OpenGL::ContextProperty::Max_Geometry_Texture_Image_Units:
+        case OpenGL::ContextProperty::Max_Geometry_Total_Output_Components:
         case OpenGL::ContextProperty::Max_Geometry_Uniform_Blocks:
         case OpenGL::ContextProperty::Max_Geometry_Uniform_Components:
         case OpenGL::ContextProperty::Max_Integer_Samples:
@@ -5130,11 +5183,16 @@ bool OpenGL::Utils::is_context_property_gl_limit(const OpenGL::ContextProperty& 
         case OpenGL::ContextProperty::Max_Rectangle_Texture_Size:
         case OpenGL::ContextProperty::Max_Renderbuffer_Size:
         case OpenGL::ContextProperty::Max_Sample_Mask_Words:
+        case OpenGL::ContextProperty::Max_Samples:
         case OpenGL::ContextProperty::Max_Server_Wait_Timeout:
         case OpenGL::ContextProperty::Max_Texture_Buffer_Size:
         case OpenGL::ContextProperty::Max_Texture_Image_Units:
         case OpenGL::ContextProperty::Max_Texture_LOD_Bias:
         case OpenGL::ContextProperty::Max_Texture_Size:
+        case OpenGL::ContextProperty::Max_Transform_Feedback_Buffers:
+        case OpenGL::ContextProperty::Max_Transform_Feedback_Interleaved_Components:
+        case OpenGL::ContextProperty::Max_Transform_Feedback_Separate_Attribs:
+        case OpenGL::ContextProperty::Max_Transform_Feedback_Separate_Components:
         case OpenGL::ContextProperty::Max_Uniform_Block_Size:
         case OpenGL::ContextProperty::Max_Uniform_Buffer_Bindings:
         case OpenGL::ContextProperty::Max_Varying_Components:
@@ -5144,19 +5202,19 @@ bool OpenGL::Utils::is_context_property_gl_limit(const OpenGL::ContextProperty& 
         case OpenGL::ContextProperty::Max_Vertex_Uniform_Blocks:
         case OpenGL::ContextProperty::Max_Vertex_Uniform_Components:
         case OpenGL::ContextProperty::Max_Viewport_Dims:
-        case OpenGL::ContextProperty::Minor_Version:
         case OpenGL::ContextProperty::Min_Program_Texel_Offset:
-        case OpenGL::ContextProperty::Num_Compressed_Texture_Formats:
-        case OpenGL::ContextProperty::Num_Extensions:
         case OpenGL::ContextProperty::Point_Fade_Threshold_Size:
         case OpenGL::ContextProperty::Point_Size_Granularity:
         case OpenGL::ContextProperty::Point_Size_Range:
+        case OpenGL::ContextProperty::Query_Counter_Bits:
         case OpenGL::ContextProperty::Smooth_Line_Width_Granularity:
         case OpenGL::ContextProperty::Smooth_Line_Width_Range:
         case OpenGL::ContextProperty::Subpixel_Bits:
         case OpenGL::ContextProperty::Uniform_Buffer_Offset_Alignment:
         {
             result = true;
+
+            break;
         }
 
         default:

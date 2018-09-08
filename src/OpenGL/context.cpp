@@ -8,6 +8,7 @@
 #include "OpenGL/context.h"
 #include "OpenGL/utils_enum.h"
 
+#include "OpenGL/entrypoints/GL1.0/gl_blend_func.h"
 #include "OpenGL/entrypoints/GL1.0/gl_clear.h"
 #include "OpenGL/entrypoints/GL1.0/gl_clear_color.h"
 #include "OpenGL/entrypoints/GL1.0/gl_clear_depth.h"
@@ -1626,7 +1627,15 @@ void OpenGL::Context::get_parameter(const OpenGL::ContextProperty&    in_pname,
                                     const OpenGL::GetSetArgumentType& in_arg_type,
                                     void*                             out_arg_value_ptr) const
 {
-#if 0
+    if (OpenGL::Utils::is_context_property_gl_constant(in_pname) )
+    {
+        vkgl_assert(m_gl_constants_ptr != nullptr);
+
+        m_gl_constants_ptr->get_parameter(in_pname,
+                                          in_arg_type,
+                                          out_arg_value_ptr);
+    }
+    else
     if (OpenGL::Utils::is_context_property_gl_limit(in_pname) )
     {
         vkgl_assert(m_gl_limits_ptr != nullptr);
@@ -1636,36 +1645,34 @@ void OpenGL::Context::get_parameter(const OpenGL::ContextProperty&    in_pname,
                                        out_arg_value_ptr);
     }
     else
+#if 0
     if (OpenGL::Utils::is_framebuffer_pname(in_pname) ) // todo: gl_doublebuffer, _drawbuffer, _drawbufferN, _readbuffer, samples, sample_buffers, stereo
     {
-        todo;
+        vkgl_not_implemented();
+
     }
     else
+#endif
     if (in_pname == OpenGL::ContextProperty::Renderbuffer_Binding) // todo
     {
+        vkgl_not_implemented()
     }
     else
+#if 0
     if (OpenGL::Utils::is_buffer_binding_pname(in_pname) ) // todo: buffer bindings
     {
-        todo;
+        vkgl_not_implemented();
     }
     else
-    if (OpenGL::Utils::is_gl_constant          (in_pname)  || // todo: gl_major_version, gl_minor_version, 
-        OpenGL::Utils::is_texture_binding_pname(in_pname) )
+#endif
+    if (OpenGL::Utils::is_texture_binding_pname(in_pname) ) // todo
     {
-        vkgl_assert(m_gl_state_manager_ptr != nullptr);
-
-        m_gl_state_manager_ptr->get_parameter(in_pname,
-                                              in_arg_type,
-                                              out_arg_value_ptr);
+        vkgl_not_implemented();
     }
     else
     {
         vkgl_assert_fail();
     }
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::get_parameter_indexed(const OpenGL::ContextProperty&    in_pname,
@@ -1673,7 +1680,20 @@ void OpenGL::Context::get_parameter_indexed(const OpenGL::ContextProperty&    in
                                             const GLuint&                     in_index,
                                             void*                             out_data_ptr) const
 {
-    vkgl_not_implemented();
+    if (OpenGL::Utils::is_context_property_gl_constant(in_pname) )
+    {
+        vkgl_assert(m_gl_constants_ptr != nullptr);
+
+        m_gl_constants_ptr->get_parameter_indexed(in_pname,
+                                                  in_arg_type,
+                                                  in_index,
+                                                  out_data_ptr);
+    }
+    else
+    {
+        /* TODO: See get_parameter() for the remaining bits. */
+        vkgl_not_implemented();
+    }
 }
 
 void OpenGL::Context::get_program_info_log(const GLuint&  in_program,
@@ -1933,6 +1953,28 @@ bool OpenGL::Context::init()
         goto end;
     }
 
+    /* Cache supported extensions */
+    result = init_supported_extensions();
+
+    if (!result)
+    {
+        vkgl_assert(result);
+
+        goto end;
+    }
+
+    /* Set up GL constants container */
+    m_gl_constants_ptr.reset(
+        new OpenGL::GLConstants(dynamic_cast<IContext*>(this) )
+    );
+
+    if (m_gl_constants_ptr == nullptr)
+    {
+        vkgl_assert(m_gl_constants_ptr != nullptr);
+
+        goto end;
+    }
+
     /* Set up GL limits container */
     m_gl_limits_ptr.reset(
         new OpenGL::GLLimits()
@@ -1977,7 +2019,9 @@ bool OpenGL::Context::init_dispatch_table()
 {
     bool result = false;
 
+    m_dispatch_table.bound_context_ptr         = this;
     m_dispatch_table.pGLBindTexture            = OpenGL::vkglBindTexture_with_validation;
+    m_dispatch_table.pGLBlendFunc              = OpenGL::vkglBlendFunc_with_validation;
     m_dispatch_table.pGLClear                  = OpenGL::vkglClear_with_validation;
     m_dispatch_table.pGLClearColor             = OpenGL::vkglClearColor_with_validation;
     m_dispatch_table.pGLClearDepth             = OpenGL::vkglClearDepth_with_validation;
@@ -2303,6 +2347,72 @@ bool OpenGL::Context::init_dispatch_table()
     m_dispatch_table.pGLWaitSync                        = OpenGL::vkglWaitSync_with_validation;
 
     result = true;
+    return result;
+}
+
+bool OpenGL::Context::init_supported_extensions()
+{
+    bool result = false;
+
+    vkgl_assert(m_supported_extensions.size() == 0);
+
+    /* TODO: This array should probably be generated by an external Python script executed at cmake build time
+     *       by looking up directory names under OpenGL/entrypoints and excluding everything that starts with GL{number}* ..
+     */
+    m_supported_extensions =
+    {
+        "GL_ARB_color_buffer_float",
+        "GL_ARB_copy_buffer",
+        "GL_ARB_depth_buffer_float",
+        "GL_ARB_depth_clamp",
+        "GL_ARB_depth_texture",
+        "GL_ARB_draw_buffers",
+        "GL_ARB_draw_elements_base_vertex",
+        "GL_ARB_draw_instanced",
+        "GL_ARB_fragment_coord_conventions",
+        "GL_ARB_fragment_program_shadow",
+        "GL_ARB_fragment_shader",
+        "GL_ARB_framebuffer_object",
+        "GL_ARB_framebuffer_sRGB",
+        "GL_ARB_half_float_pixel",
+        "GL_ARB_half_float_vertex",
+        "GL_ARB_map_buffer_range",
+        "GL_ARB_multisample",
+        "GL_ARB_multitexture",
+        "GL_ARB_occlusion_query",
+        "GL_ARB_pixel_buffer_object",
+        "GL_ARB_point_parameters",
+        "GL_ARB_point_sprite",
+        "GL_ARB_provoking_vertex",
+        "GL_ARB_seamless_cube_map",
+        "GL_ARB_shader_texture_lod",
+        "GL_ARB_shading_language_100",
+        "GL_ARB_shadow",
+        "GL_ARB_sync",
+        "GL_ARB_texture_border_clamp",
+        "GL_ARB_texture_buffer_object",
+        "GL_ARB_texture_compression",
+        "GL_ARB_texture_compression_rgtc",
+        "GL_ARB_texture_cube_map",
+        "GL_ARB_texture_cube_map_array",
+        "GL_ARB_texture_float",
+        "GL_ARB_texture_gather",
+        "GL_ARB_texture_mirrored_repeat",
+        "GL_ARB_texture_multisample",
+        "GL_ARB_texture_non_power_of_two",
+        "GL_ARB_texture_query_lod",
+        "GL_ARB_texture_rectangle",
+        "GL_ARB_texture_rg",
+        "GL_ARB_uniform_buffer_object",
+        "GL_ARB_vertex_array_bgra",
+        "GL_ARB_vertex_array_object",
+        "GL_ARB_vertex_buffer_object",
+        "GL_ARB_vertex_program",
+        "GL_ARB_vertex_shader"
+    };
+
+    result = true;
+end:
     return result;
 }
 
