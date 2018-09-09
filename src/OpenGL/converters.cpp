@@ -288,7 +288,8 @@ void OpenGL::Converters::convert(const OpenGL::GetSetArgumentType& in_src_type,
         {
             const uint32_t val = ((*reinterpret_cast<const bool*>(in_vals_ptr) ) == true);
 
-            vkgl_assert(in_n_vals == 1);
+            static_assert(true      == GL_TRUE, "");
+            vkgl_assert  (in_n_vals == 1);
 
             return convert(OpenGL::GetSetArgumentType::Int,
                           &val,

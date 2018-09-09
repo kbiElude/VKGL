@@ -5,31 +5,60 @@
 #include "Common/macros.h"
 #include "OpenGL/namespace.h"
 
-OpenGL::Namespace::Namespace()
+OpenGL::Namespace::Namespace(const GLuint& in_start_id)
+    :m_n_allocated_ids(0),
+     m_start_id       (in_start_id)
 {
-    vkgl_not_implemented();
+    /* Stub */
 }
 
 OpenGL::Namespace::~Namespace()
 {
-    vkgl_not_implemented();
+    /* Stub */
 }
 
 void OpenGL::Namespace::allocate(const uint32_t& in_n_ids,
                                  GLuint*         out_ids_ptr)
 {
-    vkgl_not_implemented();
-}
+    uint32_t n_allocated_ids = 0;
 
-bool OpenGL::Namespace::is_alive_id(const GLuint& in_id) const
-{
-    vkgl_not_implemented();
+    /* Try to assign IDs from a pool of IDs which have already been distributed & returned. */
+    while (n_allocated_ids != in_n_ids)
+    {
+        if (m_available_ids.size() == 0)
+        {
+            break;
+        }
+        else
+        {
+            out_ids_ptr[n_allocated_ids] = m_available_ids.back();
 
-    return false;
+            m_available_ids.pop_back();
+            n_allocated_ids++;
+        }
+    }
+
+    /* Any remaining IDs have to be unique */
+    while (n_allocated_ids != in_n_ids)
+    {
+        out_ids_ptr[n_allocated_ids] = (m_start_id) + m_n_allocated_ids;
+
+        m_n_allocated_ids++;
+        n_allocated_ids++;
+    }
 }
 
 void OpenGL::Namespace::release(const uint32_t& in_n_ids,
                                 const GLuint*   in_ids_ptr)
 {
-    vkgl_not_implemented();
+    for (uint32_t n_id = 0;
+                  n_id < in_n_ids;
+                ++n_id)
+    {
+        vkgl_assert(std::find(m_available_ids.begin(),
+                              m_available_ids.end(),
+                              in_ids_ptr[n_id]) == m_available_ids.end() );
+
+        m_available_ids.push_back(in_ids_ptr[n_id]);
+    }
 }

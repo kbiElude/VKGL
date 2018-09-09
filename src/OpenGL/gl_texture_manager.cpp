@@ -75,9 +75,15 @@ void OpenGL::GLTextureManager::get_texture_parameter(const OpenGL::TextureProper
 
 bool OpenGL::GLTextureManager::is_alive_id(const GLuint& in_id) const
 {
+#if 0
     vkgl_assert(m_id_manager_ptr != nullptr);
 
     return m_id_manager_ptr->is_alive_id(in_id);
+#else
+    vkgl_not_implemented();
+
+    return false;
+#endif
 }
 
 bool OpenGL::GLTextureManager::init()

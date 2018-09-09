@@ -598,6 +598,7 @@ namespace OpenGL
         Int,
         Int64,
         LogicOpModeVKGL,
+        Pointer,
         PointSpriteCoordOriginVKGL,
         ProvokingVertexConventionVKGL,
         Short,
@@ -606,7 +607,9 @@ namespace OpenGL
         String,
         Unsigned_Byte,
         Unsigned_Int,
+        Unsigned_Int64,
         Unsigned_Short,
+        VertexAttributeArrayType,
 
         Unknown,
     };
@@ -1356,9 +1359,9 @@ namespace OpenGL
         Array_Type,
         Buffer_Binding,
         Current_Vertex_Attribute,
-        Divisor,
         Enabled,
         Integer,
+        Pointer,
         Stride,
         Normalized,
 

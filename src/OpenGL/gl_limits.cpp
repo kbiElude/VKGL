@@ -7,7 +7,7 @@
 
 OpenGL::GLLimits::GLLimits()
 {
-    /* todo */
+    /* todo: extract the values from active backend */
 
     m_aliased_line_width_range[0]                   = 0;
     m_aliased_line_width_range[1]                   = 0;
@@ -54,7 +54,7 @@ OpenGL::GLLimits::GLLimits()
     m_max_uniform_block_size                        = 0;
     m_max_uniform_buffer_bindings                   = 0;
     m_max_varying_components                        = 0;
-    m_max_vertex_attribs                            = 0;
+    m_max_vertex_attribs                            = 16;
     m_max_vertex_output_components                  = 0;
     m_max_vertex_texture_image_units                = 0;
     m_max_vertex_uniform_blocks                     = 0;

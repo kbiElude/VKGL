@@ -2891,7 +2891,6 @@ GLenum OpenGL::Utils::get_gl_enum_for_vertex_attribute_property(const OpenGL::Ve
         case OpenGL::VertexAttributeProperty::Array_Type:               result = GL_VERTEX_ATTRIB_ARRAY_TYPE;           break;
         case OpenGL::VertexAttributeProperty::Buffer_Binding:           result = GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING; break;
         case OpenGL::VertexAttributeProperty::Current_Vertex_Attribute: result = GL_CURRENT_VERTEX_ATTRIB;              break;
-        case OpenGL::VertexAttributeProperty::Divisor:                  result = GL_VERTEX_ATTRIB_ARRAY_DIVISOR;        break;
         case OpenGL::VertexAttributeProperty::Enabled:                  result = GL_VERTEX_ATTRIB_ARRAY_ENABLED;        break;
         case OpenGL::VertexAttributeProperty::Integer:                  result = GL_VERTEX_ATTRIB_ARRAY_INTEGER;        break;
         case OpenGL::VertexAttributeProperty::Normalized:               result = GL_VERTEX_ATTRIB_ARRAY_NORMALIZED;     break;
@@ -5105,7 +5104,6 @@ OpenGL::VertexAttributeProperty OpenGL::Utils::get_vertex_attribute_property_for
         case GL_VERTEX_ATTRIB_ARRAY_TYPE:           result = OpenGL::VertexAttributeProperty::Array_Type;               break;
         case GL_VERTEX_ATTRIB_ARRAY_BUFFER_BINDING: result = OpenGL::VertexAttributeProperty::Buffer_Binding;           break;
         case GL_CURRENT_VERTEX_ATTRIB:              result = OpenGL::VertexAttributeProperty::Current_Vertex_Attribute; break;
-        case GL_VERTEX_ATTRIB_ARRAY_DIVISOR:        result = OpenGL::VertexAttributeProperty::Divisor;                  break;
         case GL_VERTEX_ATTRIB_ARRAY_ENABLED:        result = OpenGL::VertexAttributeProperty::Enabled;                  break;
         case GL_VERTEX_ATTRIB_ARRAY_INTEGER:        result = OpenGL::VertexAttributeProperty::Integer;                  break;
         case GL_VERTEX_ATTRIB_ARRAY_NORMALIZED:     result = OpenGL::VertexAttributeProperty::Normalized;               break;

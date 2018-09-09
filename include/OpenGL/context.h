@@ -10,6 +10,7 @@
 #include "OpenGL/gl_limits.h"
 #include "OpenGL/gl_state_manager.h"
 #include "OpenGL/gl_texture_manager.h"
+#include "OpenGL/gl_vao_manager.h"
 #include "OpenGL/scheduler.h"
 #include "OpenGL/types.h"
 
@@ -323,21 +324,21 @@ namespace OpenGL
 
 
         /* Vertex attributes and attribute arrays (setters): */
-        void disable_vertex_attrib_array(const GLuint&                     in_index);
-        void enable_vertex_attrib_array (const GLuint&                     in_index);
-        void set_vertex_attribute       (const GLuint&                     in_index,
-                                         const OpenGL::GetSetArgumentType& in_src_type,
-                                         const OpenGL::GetSetArgumentType& in_dst_type,
-                                         const uint32_t&                   in_n_components,
-                                         const bool&                       in_normalized,
-                                         const void*                       in_data_ptr);
-        void set_vertex_attrib_pointer  (const GLuint&                     in_index,
-                                         const GLint&                      in_size,
-                                         const OpenGL::VariableType&       in_type,
-                                         const OpenGL::GetSetArgumentType& in_data_type,
-                                         const bool&                       in_normalized,
-                                         const GLsizei&                    in_stride,
-                                         const void*                       in_pointer_ptr);
+        void disable_vertex_attrib_array(const GLuint&                           in_index);
+        void enable_vertex_attrib_array (const GLuint&                           in_index);
+        void set_vertex_attribute       (const GLuint&                           in_index,
+                                         const OpenGL::GetSetArgumentType&       in_src_type,
+                                         const OpenGL::GetSetArgumentType&       in_dst_type,
+                                         const uint32_t&                         in_n_components,
+                                         const bool&                             in_normalized,
+                                         const void*                             in_data_ptr);
+        void set_vertex_attrib_pointer  (const GLuint&                           in_index,
+                                         const GLint&                            in_size,
+                                         const OpenGL::VertexAttributeArrayType& in_type,
+                                         const OpenGL::GetSetArgumentType&       in_data_type,
+                                         const bool&                             in_normalized,
+                                         const GLsizei&                          in_stride,
+                                         const void*                             in_pointer_ptr);
 
 
         /* Sync objects (getters): */
@@ -810,6 +811,9 @@ namespace OpenGL
         bool init_dispatch_table      ();
         bool init_supported_extensions();
 
+        bool set_vaa_enabled_state(const GLuint& in_index,
+                                   const bool&   in_new_state);
+
         /* Private variables */
         OpenGL::DispatchTable    m_dispatch_table;
         std::vector<std::string> m_supported_extensions;
@@ -819,6 +823,7 @@ namespace OpenGL
         GLLimitsUniquePtr         m_gl_limits_ptr;
         GLStateManagerUniquePtr   m_gl_state_manager_ptr;
         GLTextureManagerUniquePtr m_gl_texture_manager_ptr;
+        GLVAOManagerUniquePtr     m_gl_vao_manager_ptr;
         SchedulerUniquePtr        m_scheduler_ptr;
     };
 }

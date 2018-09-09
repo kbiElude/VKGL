@@ -10,23 +10,29 @@
 
 namespace OpenGL
 {
+    /* NOT MT-safe
+     *
+     * MT-safety should not be required, given only one thread at a time is allowed to issue GL commands
+     * against a given GL context.
+     */
     class Namespace
     {
     public:
         /* Public functions */
-         Namespace();
+         Namespace(const GLuint& in_start_id = 0);
         ~Namespace();
 
         void allocate   (const uint32_t& in_n_ids,
                          GLuint*         out_ids_ptr);
-        bool is_alive_id(const GLuint&   in_id) const;
         void release    (const uint32_t& in_n_ids,
                          const GLuint*   in_ids_ptr);
 
     private:
         /* Private variables */
-        std::vector<GLuint> alive_ids;
-        std::vector<GLuint> returned_ids;
+        std::vector<GLuint> m_available_ids;
+
+        GLuint       m_n_allocated_ids;
+        const GLuint m_start_id;
     };
 
     typedef std::unique_ptr<Namespace> NamespaceUniquePtr;

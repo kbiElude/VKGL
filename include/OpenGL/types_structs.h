@@ -593,7 +593,7 @@ namespace OpenGL
 
     typedef struct VertexArrayObjectState
     {
-        uint32_t                               element_array_buffer_binding;
+        GLuint                                 element_array_buffer_binding;
         std::vector<VertexAttributeArrayState> vertex_attribute_arrays;
 
         explicit VertexArrayObjectState(const uint32_t& in_n_vertex_attribute_arrays);
@@ -605,7 +605,7 @@ namespace OpenGL
         bool                     enabled;
         bool                     integer;
         bool                     normalized;
-        void*                    pointer;
+        const void*              pointer;
         uint64_t                 size;
         uint64_t                 stride;
         VertexAttributeArrayType type;

@@ -8,6 +8,7 @@
 #include "Khronos/GL/glcorearb.h"
 #include <stdint.h>
 #include <memory>
+#include <mutex>
 #include <unordered_map>
 #include <vector>
 
@@ -22,8 +23,13 @@ namespace OpenGL
     class GLLimits;
     class GLStateManager;
     class GLTextureManager;
+    class GLVAOBinding;
+    class GLVAOManager;
     class IGLLimits;
     class Scheduler;
+
+    typedef std::unique_ptr<GLVAOBinding,
+                            std::function<void(GLVAOBinding*)> > GLVAOBindingUniquePtr;
 
     typedef struct PropertyData
     {

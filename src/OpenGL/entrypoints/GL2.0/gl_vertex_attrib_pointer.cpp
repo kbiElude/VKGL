@@ -57,7 +57,7 @@ static void vkglVertexAttribPointer_execute(OpenGL::Context* in_context_ptr,
                                             const GLsizei&   in_stride,
                                             const void*      in_pointer_ptr)
 {
-    const auto type_vkgl = OpenGL::Utils::get_variable_type_for_gl_enum(in_type);
+    const auto type_vkgl = OpenGL::Utils::get_vertex_attribute_array_type_for_gl_enum(in_type);
 
     in_context_ptr->set_vertex_attrib_pointer(in_index,
                                               in_size,

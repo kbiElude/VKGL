@@ -6,6 +6,8 @@
 #include "Common/types.h"
 #include "OpenGL/types.h"
 #include "OpenGL/context.h"
+#include "OpenGL/gl_vao_binding.h"
+#include "OpenGL/gl_vao_manager.h"
 #include "OpenGL/utils_enum.h"
 
 #include "OpenGL/entrypoints/GL1.0/gl_blend_func.h"
@@ -540,7 +542,11 @@ void OpenGL::Context::bind_texture(const OpenGL::TextureTarget& in_target,
 
 void OpenGL::Context::bind_vertex_array(const GLuint& in_array)
 {
-    vkgl_not_implemented();
+    m_gl_vao_manager_ptr->mark_id_as_bound(in_array);
+
+    auto vao_handle_ptr = m_gl_vao_manager_ptr->acquire_vao(in_array);
+
+    m_gl_state_manager_ptr->set_bound_vertex_array_object(std::move(vao_handle_ptr) );
 }
 
 void OpenGL::Context::blit_framebuffer(const GLint&                in_src_x0,
@@ -1106,7 +1112,10 @@ void OpenGL::Context::delete_textures(const GLsizei& in_n,
 void OpenGL::Context::delete_vertex_arrays(const GLsizei& in_n,
                                            const GLuint*  in_arrays_ptr)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_vao_manager_ptr != nullptr);
+
+    m_gl_vao_manager_ptr->delete_ids(in_n,
+                                     in_arrays_ptr);
 }
 
 void OpenGL::Context::detach_shader(const GLuint& in_program,
@@ -1134,7 +1143,8 @@ void OpenGL::Context::disable_indexed(const OpenGL::Capability& in_capability,
 
 void OpenGL::Context::disable_vertex_attrib_array(const GLuint& in_index)
 {
-    vkgl_not_implemented();
+    set_vaa_enabled_state(in_index,
+                          false); /* in_new_state */
 }
 
 void OpenGL::Context::draw_arrays(const OpenGL::DrawCallMode& in_mode,
@@ -1256,7 +1266,8 @@ void OpenGL::Context::enable_indexed(const OpenGL::Capability& in_capability,
 
 void OpenGL::Context::enable_vertex_attrib_array(const GLuint& in_index)
 {
-    vkgl_not_implemented();
+    set_vaa_enabled_state(in_index,
+                          true); /* in_new_state */
 }
 
 void OpenGL::Context::end_conditional_render()
@@ -1441,7 +1452,10 @@ void OpenGL::Context::gen_textures(const GLsizei& in_n,
 void OpenGL::Context::gen_vertex_arrays(const GLsizei& in_n,
                                         GLuint*        out_arrays_ptr)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_vao_manager_ptr != nullptr);
+
+    m_gl_vao_manager_ptr->generate_ids(in_n,
+                                       out_arrays_ptr);
 }
 
 void OpenGL::Context::get_active_attrib(const GLuint&         in_program,
@@ -1927,7 +1941,15 @@ void OpenGL::Context::get_vertex_attrib_pointer_property(const GLuint&          
                                                          const OpenGL::VertexAttributePointerProperty& in_pname,
                                                          void**                                        out_pointer_ptr) const
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_vao_manager_ptr != nullptr);
+
+    vkgl_assert(in_pname == OpenGL::VertexAttributePointerProperty::Vertex_Attribute_Array_Pointer);
+
+    m_gl_vao_manager_ptr->get_vaa_property(m_gl_state_manager_ptr->get_bound_vertex_array_object()->get_id(),
+                                           in_index,
+                                           OpenGL::VertexAttributeProperty::Pointer,
+                                           OpenGL::GetSetArgumentType::Pointer,
+                                           out_pointer_ptr);
 }
 
 void OpenGL::Context::get_vertex_attribute_property(const GLuint&                          in_index,
@@ -1936,7 +1958,24 @@ void OpenGL::Context::get_vertex_attribute_property(const GLuint&               
                                                     const OpenGL::GetSetArgumentType&      in_dst_type,
                                                     void*                                  out_params_ptr) const
 {
-    vkgl_not_implemented();
+    if (in_pname == OpenGL::VertexAttributeProperty::Current_Vertex_Attribute)
+    {
+        /* Generic vertex attribute support is TODO
+         *
+         * NOTE: in_src_type is relevant to this case. */
+        vkgl_not_implemented();
+    }
+    else
+    {
+        /* NOTE: in_src_type is irrelevant for this path. */
+        vkgl_assert(m_gl_vao_manager_ptr != nullptr);
+
+        m_gl_vao_manager_ptr->get_vaa_property(m_gl_state_manager_ptr->get_bound_vertex_array_object()->get_id(),
+                                               in_index,
+                                               in_pname,
+                                               in_dst_type,
+                                               out_params_ptr);
+    }
 }
 
 bool OpenGL::Context::init()
@@ -1987,9 +2026,20 @@ bool OpenGL::Context::init()
         goto end;
     }
 
+    /* Set up VAO manager */
+    m_gl_vao_manager_ptr = OpenGL::GLVAOManager::create(dynamic_cast<const IGLLimits*>(m_gl_limits_ptr.get() ));
+
+    if (m_gl_vao_manager_ptr == nullptr)
+    {
+        vkgl_assert(m_gl_vao_manager_ptr != nullptr);
+
+        goto end;
+    }
+
     /* Set up GL state manager */
     m_gl_state_manager_ptr.reset(
-        new OpenGL::GLStateManager(dynamic_cast<IGLLimits*>(m_gl_limits_ptr.get() ))
+        new OpenGL::GLStateManager(dynamic_cast<IGLLimits*>    (m_gl_limits_ptr.get     () ),
+                                   dynamic_cast<IGLVAOManager*>(m_gl_vao_manager_ptr.get() ) )
     );
 
     if (m_gl_state_manager_ptr == nullptr)
@@ -2412,7 +2462,6 @@ bool OpenGL::Context::init_supported_extensions()
     };
 
     result = true;
-end:
     return result;
 }
 
@@ -3032,6 +3081,50 @@ void OpenGL::Context::set_uniform_block_binding(const GLuint& in_program,
     vkgl_not_implemented();
 }
 
+bool OpenGL::Context::set_vaa_enabled_state(const GLuint& in_index,
+                                            const bool&   in_new_state)
+{
+    GLuint                            bound_vao_id;
+    bool                              result       = false;
+    OpenGL::VertexAttributeArrayState vaa_state;
+
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_gl_vao_manager_ptr   != nullptr);
+
+    /* Retrieve properties of the VAA we're about to update.
+     *
+     * This is needed since there's only one setter for VAAs and all states unrelated to "enabled" state of the
+     * VAA are set using a separate entrypoint.
+     **/
+    bound_vao_id = m_gl_state_manager_ptr->get_bound_vertex_array_object()->get_id();
+
+    if (!m_gl_vao_manager_ptr->get_vaa_state_copy(bound_vao_id,
+                                                  in_index,
+                                                 &vaa_state) )
+    {
+        vkgl_assert_fail();
+
+        goto end;
+    }
+
+    vaa_state.buffer_binding = vaa_state.buffer_binding; /* moot as per comment above */
+    vaa_state.enabled        = true;
+    vaa_state.integer        = vaa_state.integer;        /* moot as per comment above */
+    vaa_state.normalized     = vaa_state.normalized;     /* moot as per comment above */
+    vaa_state.pointer        = vaa_state.pointer;        /* moot as per comment above */
+    vaa_state.size           = vaa_state.size;           /* moot as per comment above */
+    vaa_state.stride         = vaa_state.stride;         /* moot as per comment above */
+    vaa_state.type           = vaa_state.type;           /* moot as per comment above */
+
+    m_gl_vao_manager_ptr->set_vaa_state(bound_vao_id,
+                                        in_index,
+                                        vaa_state);
+
+    result = true;
+end:
+    return result;
+}
+
 void OpenGL::Context::set_vertex_attribute(const GLuint&                     in_index,
                                            const OpenGL::GetSetArgumentType& in_src_type,
                                            const OpenGL::GetSetArgumentType& in_dst_type,
@@ -3042,15 +3135,48 @@ void OpenGL::Context::set_vertex_attribute(const GLuint&                     in_
     vkgl_not_implemented();
 }
 
-void OpenGL::Context::set_vertex_attrib_pointer(const GLuint&                     in_index,
-                                                const GLint&                      in_size,
-                                                const OpenGL::VariableType&       in_type,
-                                                const OpenGL::GetSetArgumentType& in_data_type,
-                                                const bool&                       in_normalized,
-                                                const GLsizei&                    in_stride,
-                                                const void*                       in_pointer_ptr)
+void OpenGL::Context::set_vertex_attrib_pointer(const GLuint&                           in_index,
+                                                const GLint&                            in_size,
+                                                const OpenGL::VertexAttributeArrayType& in_type,
+                                                const OpenGL::GetSetArgumentType&       in_data_type,
+                                                const bool&                             in_normalized,
+                                                const GLsizei&                          in_stride,
+                                                const void*                             in_pointer_ptr)
 {
-    vkgl_not_implemented();
+    GLuint                            bound_vao_id;
+    OpenGL::VertexAttributeArrayState vaa_state;
+
+    vkgl_assert(in_data_type           == OpenGL::GetSetArgumentType::Float ||
+                in_data_type           == OpenGL::GetSetArgumentType::Int);
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_gl_vao_manager_ptr   != nullptr);
+
+    /* Retrieve properties of the VAA we're about to update.
+     *
+     * This is needed since there's only one setter for VAAs and disabled/enabled state for these is set
+     * using separate entrypoints.
+     **/
+    bound_vao_id = m_gl_state_manager_ptr->get_bound_vertex_array_object()->get_id();
+
+    if (!m_gl_vao_manager_ptr->get_vaa_state_copy(bound_vao_id,
+                                                  in_index,
+                                                 &vaa_state) )
+    {
+        vkgl_assert_fail();
+    }
+
+    vaa_state.buffer_binding = m_gl_state_manager_ptr->get_bound_buffer_object(OpenGL::BufferTarget::Array_Buffer);
+    vaa_state.enabled        = vaa_state.enabled; /* moot as per comment above */
+    vaa_state.integer        = (in_data_type == OpenGL::GetSetArgumentType::Int);
+    vaa_state.normalized     = in_normalized;
+    vaa_state.pointer        = in_pointer_ptr;
+    vaa_state.size           = in_size;
+    vaa_state.stride         = in_stride;
+    vaa_state.type           = in_type;
+
+    m_gl_vao_manager_ptr->set_vaa_state(bound_vao_id,
+                                        in_index,
+                                        vaa_state);
 }
 
 void OpenGL::Context::set_viewport(const int32_t& in_x,

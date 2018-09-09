@@ -7,7 +7,8 @@
 #include "OpenGL/gl_state_manager.h"
 #include "OpenGL/utils_enum.h"
 
-OpenGL::GLStateManager::GLStateManager(const IGLLimits* in_limits_ptr)
+OpenGL::GLStateManager::GLStateManager(const IGLLimits*     in_limits_ptr,
+                                       const IGLVAOManager* in_vao_manager_ptr)
     :m_current_error_code(OpenGL::ErrorCode::No_Error),
      m_limits_ptr        (in_limits_ptr)
 {
@@ -20,6 +21,8 @@ OpenGL::GLStateManager::GLStateManager(const IGLLimits* in_limits_ptr)
                                  scissor)
     );
     vkgl_assert(m_state_ptr != nullptr);
+
+    m_vao_binding_ptr = in_vao_manager_ptr->get_default_vao_binding();
 
     init_prop_maps    ();
     init_texture_units();
@@ -93,6 +96,21 @@ void OpenGL::GLStateManager::enable(const OpenGL::Capability& in_capability)
             vkgl_assert_fail();
         }
     }
+}
+
+GLuint OpenGL::GLStateManager::get_bound_buffer_object(const OpenGL::BufferTarget& in_target) const
+{
+    vkgl_not_implemented();
+
+    return 0;
+}
+
+const OpenGL::GLVAOBinding* OpenGL::GLStateManager::get_bound_vertex_array_object() const
+{
+    /* NOTE: There is ALWAYS a VAO binding set up for a GL context. */
+    vkgl_assert(m_vao_binding_ptr != nullptr);
+
+    return m_vao_binding_ptr.get();
 }
 
 OpenGL::ErrorCode OpenGL::GLStateManager::get_error(const bool& in_reset_error_code)
@@ -363,6 +381,11 @@ void OpenGL::GLStateManager::set_blend_functions_separate(const OpenGL::BlendFun
     m_state_ptr->blend_func_src_rgb   = in_src_rgb_function;
     m_state_ptr->blend_func_dst_alpha = in_dst_alpha_function;
     m_state_ptr->blend_func_dst_rgb   = in_dst_rgb_function;
+}
+
+void OpenGL::GLStateManager::set_bound_vertex_array_object(OpenGL::GLVAOBindingUniquePtr in_vao_binding_ptr)
+{
+    m_vao_binding_ptr = std::move(in_vao_binding_ptr);
 }
 
 void OpenGL::GLStateManager::set_clear_color_value(const float& in_red,

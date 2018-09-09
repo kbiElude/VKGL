@@ -106,6 +106,28 @@ namespace OpenGL
         virtual uint32_t                                   get_subpixel_bits                                () const = 0;
         virtual uint32_t                                   get_uniform_buffer_offset_alignment              () const = 0;
     };
+
+    class IGLVAOManager
+    {
+    public:
+        virtual ~IGLVAOManager()
+        {
+            /* Stub */
+        }
+
+        virtual GLVAOBindingUniquePtr get_default_vao_binding() const = 0;
+    };
+
+    class IGLVAOManagerRelease
+    {
+    public:
+        virtual ~IGLVAOManagerRelease()
+        {
+            /* Stub */
+        }
+
+        virtual void release_vao(const OpenGL::GLVAOBinding* in_vao_binding_ptr) = 0;
+    };
 };
 
 #endif /* VKGL_TYPES_INTERFACES_H */
