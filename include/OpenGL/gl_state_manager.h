@@ -6,6 +6,7 @@
 #define VKGL_GL_STATE_MANAGER_H
 
 #include "OpenGL/types.h"
+#include "OpenGL/gl_binding.h"
 
 
 namespace OpenGL
@@ -29,10 +30,10 @@ namespace OpenGL
                                                           const OpenGL::GetSetArgumentType&     in_arg_type,
                                                           void*                                 out_arg_value_ptr) const;
 
-        GLuint                      get_bound_buffer_object      (const OpenGL::BufferTarget& in_target) const; /* TODO: Return GLBufferBinding* */
-        const OpenGL::GLVAOBinding* get_bound_vertex_array_object() const;
+        GLuint                   get_bound_buffer_object      (const OpenGL::BufferTarget& in_target) const; /* TODO: Return GLBufferBinding* */
+        const OpenGL::GLBinding* get_bound_vertex_array_object() const;
 
-        void set_bound_vertex_array_object(OpenGL::GLVAOBindingUniquePtr in_vao_binding_ptr);
+        void set_bound_vertex_array_object(OpenGL::GLBindingUniquePtr in_vao_binding_ptr);
 
         void set_active_texture          (const uint32_t&                     in_n_texture_unit);
         void set_blend_color             (const float&                        in_red,
@@ -131,7 +132,7 @@ namespace OpenGL
         const IGLLimits* const                                             m_limits_ptr;
         ContextStateUniquePtr                                              m_state_ptr;
         std::unordered_map<TextureUnit, OpenGL::TextureUnitStateUniquePtr> m_texture_unit_to_state_ptr_map;
-        OpenGL::GLVAOBindingUniquePtr                                      m_vao_binding_ptr;
+        OpenGL::GLBindingUniquePtr                                         m_vao_binding_ptr;
 
         std::unordered_map<OpenGL::ContextProperty,    PropertyData> m_context_prop_map;
         std::unordered_map<OpenGL::PixelStoreProperty, PropertyData> m_pixel_store_prop_map;

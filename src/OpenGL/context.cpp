@@ -6,7 +6,7 @@
 #include "Common/types.h"
 #include "OpenGL/types.h"
 #include "OpenGL/context.h"
-#include "OpenGL/gl_vao_binding.h"
+#include "OpenGL/gl_binding.h"
 #include "OpenGL/gl_vao_manager.h"
 #include "OpenGL/utils_enum.h"
 

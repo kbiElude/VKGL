@@ -20,16 +20,14 @@ namespace OpenGL
 {
     /* Forward declarations */
     class Context;
+    class GLBinding;
     class GLLimits;
     class GLStateManager;
     class GLTextureManager;
-    class GLVAOBinding;
     class GLVAOManager;
     class IGLLimits;
+    class IGLVAOManager;
     class Scheduler;
-
-    typedef std::unique_ptr<GLVAOBinding,
-                            std::function<void(GLVAOBinding*)> > GLVAOBindingUniquePtr;
 
     typedef struct PropertyData
     {

@@ -12,8 +12,19 @@ namespace OpenGL
 {
     typedef std::unique_ptr<GLVAOManager> GLVAOManagerUniquePtr;
 
-    class GLVAOManager : public IGLVAOManager,
-                         public IGLVAOManagerRelease
+    class IGLVAOManager
+    {
+    public:
+        virtual ~IGLVAOManager()
+        {
+            /* Stub */
+        }
+
+        virtual GLBindingUniquePtr get_default_vao_binding() const = 0;
+    };
+
+    class GLVAOManager : public IGLManagerBindingRelease,
+                         public IGLVAOManager
     {
     public:
         /* Public functions */
@@ -41,8 +52,8 @@ namespace OpenGL
                               const OpenGL::GetSetArgumentType&     in_dst_type,
                               void*                                 out_result_ptr) const;
 
-        GLVAOBindingUniquePtr acquire_vao            (const GLuint& in_vao_id);
-        GLVAOBindingUniquePtr get_default_vao_binding()                        const final;
+        GLBindingUniquePtr acquire_vao            (const GLuint& in_vao_id);
+        GLBindingUniquePtr get_default_vao_binding()                        const final;
 
         bool set_element_array_buffer_binding(const GLuint&                    in_vao_id,
                                               const GLuint&                    in_new_buffer_binding);
@@ -66,7 +77,7 @@ namespace OpenGL
 
         typedef struct VAO
         {
-            std::vector<OpenGL::GLVAOBinding*>              bindings;
+            std::vector<OpenGL::GLBinding*>                 bindings;
             GLuint                                          id;
             Status                                          status;
             std::unique_ptr<OpenGL::VertexArrayObjectState> vao_ptr;
@@ -78,8 +89,8 @@ namespace OpenGL
             }
         } VAO;
 
-        /* IGLVaoManagerRelease interface */
-        void release_vao(const OpenGL::GLVAOBinding* in_vao_binding_ptr) final;
+        /* IGLManagerBindingRelease interface */
+        void release_binding(const OpenGL::GLBinding* in_vao_binding_ptr) final;
 
         /* Private functions */
 
@@ -95,9 +106,9 @@ namespace OpenGL
         bool                                              m_releasing;
         std::unordered_map<GLuint, std::unique_ptr<VAO> > m_vao_ptrs;
         mutable std::mutex                                m_vao_ptrs_lock;
-        GLVAOBindingUniquePtr                             m_zero_vao_binding_ptr;
+        GLBindingUniquePtr                                m_zero_vao_binding_ptr;
 
-        friend class GLVAOBinding;
+        friend class GLBinding;
     };
 }
 #endif /* VKGL_GL_VAO_MANAGER_H */

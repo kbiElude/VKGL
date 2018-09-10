@@ -4,7 +4,7 @@
  */
 #include "Common/macros.h"
 #include "OpenGL/converters.h"
-#include "OpenGL/gl_vao_binding.h"
+#include "OpenGL/gl_binding.h"
 #include "OpenGL/gl_vao_manager.h"
 
 OpenGL::GLVAOManager::GLVAOManager(const IGLLimits* in_limits_ptr)
@@ -26,10 +26,10 @@ OpenGL::GLVAOManager::~GLVAOManager()
               &zero_vao_id);
 }
 
-OpenGL::GLVAOBindingUniquePtr OpenGL::GLVAOManager::acquire_vao(const GLuint& in_vao_id)
+OpenGL::GLBindingUniquePtr OpenGL::GLVAOManager::acquire_vao(const GLuint& in_vao_id)
 {
-    OpenGL::GLVAOBindingUniquePtr result_ptr(nullptr,
-                                             std::default_delete<OpenGL::GLVAOBinding>() );
+    OpenGL::GLBindingUniquePtr result_ptr(nullptr,
+                                          std::default_delete<OpenGL::GLBinding>() );
 
     {
         std::unique_lock<std::mutex> lock        (m_vao_ptrs_lock);
@@ -46,8 +46,8 @@ OpenGL::GLVAOBindingUniquePtr OpenGL::GLVAOManager::acquire_vao(const GLuint& in
                     vao_iterator->second->status == Status::Created_Not_Bound);
 
         result_ptr.reset(
-            new OpenGL::GLVAOBinding(in_vao_id,
-                                     dynamic_cast<IGLVAOManagerRelease*>(this) )
+            new GLBinding(in_vao_id,
+                          dynamic_cast<IGLManagerBindingRelease*>(this) )
         );
 
         if (result_ptr == nullptr)
@@ -164,13 +164,13 @@ end:
     return result;
 }
 
-OpenGL::GLVAOBindingUniquePtr OpenGL::GLVAOManager::get_default_vao_binding() const
+OpenGL::GLBindingUniquePtr OpenGL::GLVAOManager::get_default_vao_binding() const
 {
     /* Default VAO NEVER goes out of scope. Hence, we wrap a raw ptr to the pre-baked binding and make
      * sure the destructor never gets called.
      */
-    return OpenGL::GLVAOBindingUniquePtr(m_zero_vao_binding_ptr.get(),
-                                         [](GLVAOBinding*){ /* Stub */});
+    return OpenGL::GLBindingUniquePtr(m_zero_vao_binding_ptr.get(),
+                                      [](OpenGL::GLBinding*){ /* Stub */});
 }
 
 bool OpenGL::GLVAOManager::get_element_array_buffer_binding(const uint32_t& in_vao_id,
@@ -418,7 +418,7 @@ end:
     return result;
 }
 
-void OpenGL::GLVAOManager::release_vao(const OpenGL::GLVAOBinding* in_vao_binding_ptr)
+void OpenGL::GLVAOManager::release_binding(const OpenGL::GLBinding* in_vao_binding_ptr)
 {
     const auto binding_vao_id = in_vao_binding_ptr->get_id();
 
@@ -440,8 +440,9 @@ void OpenGL::GLVAOManager::release_vao(const OpenGL::GLVAOBinding* in_vao_bindin
         /* If the VAO has been destroyed AND there are no more dangling refernces, destroy
          * the container. Otherwise, retain it.
          */
-        if (vao_iterator->second->status          == Status::Deleted_Bindings_Pending &&
-            vao_iterator->second->bindings.size() == 0)
+        if ((vao_iterator->second->status          == Status::Created_Not_Bound         ||
+             vao_iterator->second->status          == Status::Deleted_Bindings_Pending) &&
+            (vao_iterator->second->bindings.size() == 0) )
         {
             m_vao_ptrs.erase(vao_iterator);
         }
