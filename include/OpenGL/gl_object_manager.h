@@ -56,7 +56,8 @@ namespace OpenGL
 
         /* Protected functions */
 
-        GLObjectManager(const IGLLimits* in_limits_ptr);
+        GLObjectManager(const bool&      in_expose_default_object,
+                        const IGLLimits* in_limits_ptr);
 
         bool init();
 
@@ -78,6 +79,7 @@ namespace OpenGL
         const IGLLimits* const     m_limits_ptr;
 
         GLBindingUniquePtr m_default_object_binding_ptr;
+        const bool         m_expose_default_object;
         mutable std::mutex m_lock;
         bool               m_releasing;
 

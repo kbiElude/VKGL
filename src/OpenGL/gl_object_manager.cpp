@@ -6,9 +6,11 @@
 #include "OpenGL/gl_binding.h"
 #include "OpenGL/gl_object_manager.h"
 
-OpenGL::GLObjectManager::GLObjectManager(const IGLLimits* in_limits_ptr)
-    :m_limits_ptr(in_limits_ptr),
-     m_releasing (false)
+OpenGL::GLObjectManager::GLObjectManager(const bool&      in_expose_default_object,
+                                         const IGLLimits* in_limits_ptr)
+    :m_expose_default_object(in_expose_default_object),
+     m_limits_ptr           (in_limits_ptr),
+     m_releasing            (false)
 {
     /*  Stub */
 }
@@ -17,7 +19,14 @@ OpenGL::GLObjectManager::~GLObjectManager()
 {
     m_releasing = true;
 
-    m_default_object_binding_ptr.reset();
+    if (m_expose_default_object)
+    {
+        m_default_object_binding_ptr.reset();
+    }
+    else
+    {
+        vkgl_assert(m_default_object_binding_ptr == nullptr);
+    }
 }
 
 OpenGL::GLBindingUniquePtr OpenGL::GLObjectManager::acquire_binding(const GLuint& in_id)
@@ -145,6 +154,8 @@ OpenGL::GLBindingUniquePtr OpenGL::GLObjectManager::get_default_object_binding()
     /* Default object NEVER goes out of scope. Hence, we wrap a raw ptr to the pre-baked binding and make
      * sure the destructor never gets called.
      */
+    vkgl_assert(m_expose_default_object);
+
     return OpenGL::GLBindingUniquePtr(m_default_object_binding_ptr.get(),
                                       [](OpenGL::GLBinding*){ /* Stub */});
 }
@@ -154,7 +165,8 @@ bool OpenGL::GLObjectManager::init()
     bool result = false;
 
     m_id_manager_ptr.reset(
-        new OpenGL::Namespace(1 /* in_start_id */)
+        new OpenGL::Namespace((m_expose_default_object) ? 1 /* in_start_id */
+                                                        : 0 /* in_start_id */)
     );
 
     if (m_id_manager_ptr == nullptr)
@@ -164,21 +176,23 @@ bool OpenGL::GLObjectManager::init()
         goto end;
     }
 
-    /* Instantiate the default object. .*/
-    result = insert_object(0 /* in_id */);
-    vkgl_assert(result);
-
-    /* ..and bake a binding to the default object. It's going to live until the manager goes out of scope. */
-    m_default_object_binding_ptr = acquire_binding(0 /* in_id */);
-
-    if (m_default_object_binding_ptr == nullptr)
+    if (m_expose_default_object)
     {
-        vkgl_assert(m_default_object_binding_ptr != nullptr);
+        /* Instantiate the default object. .*/
+        result = insert_object(0 /* in_id */);
+        vkgl_assert(result);
 
-        result = false;
-        goto end;
+        /* ..and bake a binding to the default object. It's going to live until the manager goes out of scope. */
+        m_default_object_binding_ptr = acquire_binding(0 /* in_id */);
+
+        if (m_default_object_binding_ptr == nullptr)
+        {
+            vkgl_assert(m_default_object_binding_ptr != nullptr);
+
+            result = false;
+            goto end;
+        }
     }
-
 end:
     return result;
 }

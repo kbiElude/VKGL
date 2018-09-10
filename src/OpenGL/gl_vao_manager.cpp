@@ -23,7 +23,8 @@ OpenGL::GLVAOManager::VAO::VAO(const GLuint&            in_id,
 }
 
 OpenGL::GLVAOManager::GLVAOManager(const IGLLimits* in_limits_ptr)
-    :GLObjectManager(in_limits_ptr)
+    :GLObjectManager(true, /* in_expose_default_object */
+                     in_limits_ptr)
 {
     /*  Stub */
 }
