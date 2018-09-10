@@ -14,8 +14,8 @@ namespace OpenGL
     class GLStateManager
     {
     public:
-        GLStateManager(const IGLLimits*     in_limits_ptr,
-                       const IGLVAOManager* in_vao_manager_ptr);
+        GLStateManager(const IGLLimits*        in_limits_ptr,
+                       const IGLObjectManager* in_vao_manager_ptr);
        ~GLStateManager();
 
         OpenGL::ErrorCode   get_error                    (const bool&                           in_reset_error_code = true);

@@ -13,8 +13,8 @@ namespace OpenGL
     class GLBinding
     {
     public:
-        GLBinding(const GLuint&                     in_id,
-                  OpenGL::IGLManagerBindingRelease* in_manager_ptr)
+        GLBinding(const GLuint&                         in_id,
+                  OpenGL::IObjectManagerBindingRelease* in_manager_ptr)
             :m_id         (in_id),
              m_manager_ptr(in_manager_ptr)
         {
@@ -32,8 +32,8 @@ namespace OpenGL
         }
 
     private:
-        std::unique_ptr<GLBinding, std::function<void(GLBinding*)> > create(const GLuint&                     in_id,
-                                                                            OpenGL::IGLManagerBindingRelease* in_manager_ptr)
+        std::unique_ptr<GLBinding, std::function<void(GLBinding*)> > create(const GLuint&                         in_id,
+                                                                            OpenGL::IObjectManagerBindingRelease* in_manager_ptr)
         {
             std::unique_ptr<GLBinding, std::function<void(GLBinding*)> > result_ptr;
 
@@ -50,8 +50,8 @@ namespace OpenGL
         GLBinding& operator=(const GLBinding&);
 
         /* Private variables */
-        const GLuint                            m_id;
-        OpenGL::IGLManagerBindingRelease* const m_manager_ptr;
+        const GLuint                                m_id;
+        OpenGL::IObjectManagerBindingRelease* const m_manager_ptr;
     };
 
     typedef std::unique_ptr<GLBinding, std::function<void(GLBinding*)> > GLBindingUniquePtr;

@@ -8,8 +8,8 @@
 #include "OpenGL/gl_vao_manager.h"
 #include "OpenGL/utils_enum.h"
 
-OpenGL::GLStateManager::GLStateManager(const IGLLimits*     in_limits_ptr,
-                                       const IGLVAOManager* in_vao_manager_ptr)
+OpenGL::GLStateManager::GLStateManager(const IGLLimits*        in_limits_ptr,
+                                       const IGLObjectManager* in_vao_manager_ptr)
     :m_current_error_code(OpenGL::ErrorCode::No_Error),
      m_limits_ptr        (in_limits_ptr)
 {
@@ -23,7 +23,7 @@ OpenGL::GLStateManager::GLStateManager(const IGLLimits*     in_limits_ptr,
     );
     vkgl_assert(m_state_ptr != nullptr);
 
-    m_vao_binding_ptr = in_vao_manager_ptr->get_default_vao_binding();
+    m_vao_binding_ptr = in_vao_manager_ptr->get_default_object_binding();
 
     init_prop_maps    ();
     init_texture_units();

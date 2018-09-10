@@ -26,7 +26,7 @@ namespace OpenGL
     class GLTextureManager;
     class GLVAOManager;
     class IGLLimits;
-    class IGLVAOManager;
+    class IGLObjectManager;
     class Scheduler;
 
     typedef struct PropertyData

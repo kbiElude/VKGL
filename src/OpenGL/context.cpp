@@ -544,7 +544,7 @@ void OpenGL::Context::bind_vertex_array(const GLuint& in_array)
 {
     m_gl_vao_manager_ptr->mark_id_as_bound(in_array);
 
-    auto vao_handle_ptr = m_gl_vao_manager_ptr->acquire_vao(in_array);
+    auto vao_handle_ptr = m_gl_vao_manager_ptr->acquire_binding(in_array);
 
     m_gl_state_manager_ptr->set_bound_vertex_array_object(std::move(vao_handle_ptr) );
 }
@@ -2038,8 +2038,8 @@ bool OpenGL::Context::init()
 
     /* Set up GL state manager */
     m_gl_state_manager_ptr.reset(
-        new OpenGL::GLStateManager(dynamic_cast<IGLLimits*>    (m_gl_limits_ptr.get     () ),
-                                   dynamic_cast<IGLVAOManager*>(m_gl_vao_manager_ptr.get() ) )
+        new OpenGL::GLStateManager(dynamic_cast<IGLLimits*>       (m_gl_limits_ptr.get     () ),
+                                   dynamic_cast<IGLObjectManager*>(m_gl_vao_manager_ptr.get() ) )
     );
 
     if (m_gl_state_manager_ptr == nullptr)
