@@ -20,22 +20,6 @@ OpenGL::GLShaderManager::~GLShaderManager()
     /* Stub - everything is handled by the base class. */
 }
 
-bool OpenGL::GLShaderManager::add_reference(const GLuint&      in_id,
-                                            const GLReference* in_reference_ptr)
-{
-    bool result     = false;
-    auto shader_ptr = get_shader_ptr(in_id);
-
-    if (shader_ptr != nullptr)
-    {
-        shader_ptr->references.push_back(in_reference_ptr);
-
-        result = true;
-    }
-
-    return result;
-}
-
 OpenGL::GLShaderManagerUniquePtr OpenGL::GLShaderManager::create()
 {
     OpenGL::GLShaderManagerUniquePtr result_ptr;
@@ -60,72 +44,17 @@ end:
     return result_ptr;
 }
 
-bool OpenGL::GLShaderManager::delete_reference(const GLuint&      in_id,
-                                               const GLReference* in_reference_ptr)
+std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLShaderManager::create_internal_data_object(const GLuint& in_id)
 {
-    bool result     = false;
-    auto shader_ptr = get_shader_ptr(in_id);
+    std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
+                                                                  [](void* in_ptr){delete reinterpret_cast<Shader*>(in_ptr); });
 
-    if (shader_ptr != nullptr)
-    {
-        auto reference_iterator = std::find(shader_ptr->references.begin(),
-                                            shader_ptr->references.end  (),
-                                            in_reference_ptr);
+    result_ptr.reset(
+        new Shader()
+    );
 
-        vkgl_assert(reference_iterator != shader_ptr->references.end() );
-        if (reference_iterator != shader_ptr->references.end() )
-        {
-            shader_ptr->references.erase(reference_iterator);
-
-            result = true;
-        }
-    }
-
-    return result;
-}
-
-bool OpenGL::GLShaderManager::delete_object(const GLuint& in_id)
-{
-    bool       result          = false;
-    const auto shader_iterator = m_shader_ptrs.find(in_id);
-
-    vkgl_assert(shader_iterator != m_shader_ptrs.end() );
-    if (shader_iterator != m_shader_ptrs.end() )
-    {
-        vkgl_assert(shader_iterator->second->references.size() == 0);
-
-        m_shader_ptrs.erase(shader_iterator);
-
-        result = true;
-    }
-
-    return result;
-}
-
-uint32_t OpenGL::GLShaderManager::get_n_references(const GLuint& in_id) const
-{
-    uint32_t result     = 0;
-    auto     shader_ptr = get_shader_ptr(in_id);
-
-    if (shader_ptr != nullptr)
-    {
-        result = static_cast<uint32_t>(shader_ptr->references.size() );
-    }
-
-    return result;
-}
-
-OpenGL::GLObjectManager::Status OpenGL::GLShaderManager::get_object_status(const GLuint& in_id) const
-{
-    OpenGL::GLObjectManager::Status result     = OpenGL::GLObjectManager::Status::Unknown;
-    const auto                      shader_ptr = get_shader_ptr(in_id);
-
-    if (shader_ptr != nullptr)
-    {
-        result = shader_ptr->status;
-    }
-
-    return result;
+    vkgl_assert(result_ptr != nullptr);
+    return result_ptr;
 }
 
 bool OpenGL::GLShaderManager::get_shader_glsl(const GLuint&  in_id,
@@ -195,10 +124,17 @@ bool OpenGL::GLShaderManager::get_shader_property(const GLuint&                 
     switch (in_pname)
     {
         case OpenGL::ShaderProperty::Compile_Status:       src_data_type = OpenGL::GetSetArgumentType::Boolean;        src_data.boolean      = shader_ptr->successful_last_compile;                        break;
-        case OpenGL::ShaderProperty::Delete_Status:        src_data_type = OpenGL::GetSetArgumentType::Boolean;        src_data.boolean      = (shader_ptr->status != Status::Deleted_References_Pending); break;
         case OpenGL::ShaderProperty::Info_Log_Length:      src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;   src_data.unsigned_int = static_cast<uint32_t>(shader_ptr->infolog.length() + 1);    break;
         case OpenGL::ShaderProperty::Shader_Source_Length: src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;   src_data.unsigned_int = static_cast<uint32_t>(shader_ptr->glsl.length   () + 1);    break;
         case OpenGL::ShaderProperty::Shader_Type:          src_data_type = OpenGL::GetSetArgumentType::ShaderTypeVKGL; src_data.shader_type  = shader_ptr->type;                                           break;
+
+        case OpenGL::ShaderProperty::Delete_Status:
+        {
+            src_data_type    = OpenGL::GetSetArgumentType::Boolean;
+            src_data.boolean = (get_general_object_props_ptr(in_shader)->status != Status::Deleted_References_Pending);
+
+            break;
+        }
 
         default:
         {
@@ -221,73 +157,12 @@ end:
 
 const OpenGL::GLShaderManager::Shader* OpenGL::GLShaderManager::get_shader_ptr(const GLuint& in_id) const
 {
-    OpenGL::GLShaderManager::Shader* result_ptr      = nullptr;
-    const auto                       shader_iterator = m_shader_ptrs.find(in_id);
-
-    vkgl_assert(shader_iterator != m_shader_ptrs.end() );
-    if (shader_iterator != m_shader_ptrs.end() )
-    {
-        result_ptr = shader_iterator->second.get();
-    }
-
-    return result_ptr;
+    return reinterpret_cast<const OpenGL::GLShaderManager::Shader*>(get_internal_object_props_ptr(in_id) );
 }
 
 OpenGL::GLShaderManager::Shader* OpenGL::GLShaderManager::get_shader_ptr(const GLuint& in_id)
 {
-    OpenGL::GLShaderManager::Shader* result_ptr      = nullptr;
-    const auto                       shader_iterator = m_shader_ptrs.find(in_id);
-
-    vkgl_assert(shader_iterator != m_shader_ptrs.end() );
-    if (shader_iterator != m_shader_ptrs.end() )
-    {
-        result_ptr = shader_iterator->second.get();
-    }
-
-    return result_ptr;
-}
-
-bool OpenGL::GLShaderManager::insert_object(const GLuint& in_id)
-{
-    bool       result          = false;
-    const auto shader_iterator = m_shader_ptrs.find(in_id);
-
-    vkgl_assert(shader_iterator == m_shader_ptrs.end() );
-    if (shader_iterator == m_shader_ptrs.end() )
-    {
-        m_shader_ptrs[in_id].reset(
-            new Shader(in_id)
-        );
-
-        vkgl_assert(m_shader_ptrs.at(in_id) != nullptr);
-
-        result = true;
-    }
-
-    return result;
-}
-
-bool OpenGL::GLShaderManager::is_id_valid(const GLuint& in_id) const
-{
-    const auto shader_iterator = m_shader_ptrs.find(in_id);
-
-    return (shader_iterator != m_shader_ptrs.end() );
-}
-
-bool OpenGL::GLShaderManager::set_object_status(const GLuint& in_id,
-                                                const Status& in_new_status)
-{
-    bool result     = false;
-    auto shader_ptr = get_shader_ptr(in_id);
-
-    if (shader_ptr != nullptr)
-    {
-        shader_ptr->status = in_new_status;
-
-        result = true;
-    }
-
-    return result;
+    return reinterpret_cast<OpenGL::GLShaderManager::Shader*>(get_internal_object_props_ptr(in_id) );
 }
 
 bool OpenGL::GLShaderManager::set_shader_glsl(const GLuint&      in_id,

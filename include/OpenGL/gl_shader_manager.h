@@ -40,43 +40,20 @@ namespace OpenGL
 
     protected:
         /* Protected functions */
-        bool     add_reference    (const GLuint&      in_id,
-                                   const GLReference* in_reference_ptr) final;
-        bool     delete_reference (const GLuint&      in_id,
-                                   const GLReference* in_reference_ptr) final;
-        bool     delete_object    (const GLuint&      in_id)            final;
-        uint32_t get_n_references (const GLuint&      in_id) const      final;
-        Status   get_object_status(const GLuint&      in_id) const      final;
-        bool     insert_object    (const GLuint&      in_id)            final;
-        bool     is_id_valid      (const GLuint&      in_id) const      final;
-        bool     set_object_status(const GLuint&      in_id,
-                                   const Status&      in_new_status)    final;
+        std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object(const GLuint& in_id) final;
 
     private:
         /* Private type definitions */
 
         typedef struct Shader
         {
-            std::string                     glsl;
-            GLuint                          id;
-            std::string                     infolog;
-            std::vector<const GLReference*> references;
-            Status                          status;
-            bool                            successful_last_compile;
-            OpenGL::ShaderType              type;
+            std::string        glsl;
+            std::string        infolog;
+            bool               successful_last_compile;
+            OpenGL::ShaderType type;
 
             Shader()
             {
-                id                      = UINT32_MAX;
-                status                  = Status::Unknown;
-                successful_last_compile = false;
-                type                    = OpenGL::ShaderType::Unknown;
-            }
-
-            Shader(const GLuint& in_id)
-            {
-                id                      = in_id;
-                status                  = Status::Alive;
                 successful_last_compile = false;
                 type                    = OpenGL::ShaderType::Unknown;
             }
@@ -90,7 +67,6 @@ namespace OpenGL
         Shader*       get_shader_ptr(const GLuint& in_id);
 
         /* Private variables */
-        std::unordered_map<GLuint, std::unique_ptr<Shader> > m_shader_ptrs;
     };
 }
 #endif /* VKGL_GL_SHADER_MANAGER_H */

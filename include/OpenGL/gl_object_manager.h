@@ -45,10 +45,30 @@ namespace OpenGL
         {
             Created_Not_Bound,
             Alive,
-            Deleted_Bindings_Pending,
+            Deleted_References_Pending,
 
             Unknown
         };
+
+        typedef struct GeneralObjectProps
+        {
+            GLuint                                             id;
+            std::unique_ptr<void, std::function<void(void*)> > internal_data_ptr;
+            std::vector<const GLReference*>                    references;
+            Status                                             status;
+
+            GeneralObjectProps()
+            {
+                id     = UINT32_MAX;
+                status = Status::Unknown;
+            }
+
+            GeneralObjectProps(const GLuint& in_id)
+            {
+                id     = in_id;
+                status = Status::Created_Not_Bound;
+            }
+        } GeneralObjectProps;
 
         /* IGLObjectManager interface */
         GLReferenceUniquePtr get_default_object_reference() const final;
@@ -61,22 +81,14 @@ namespace OpenGL
         GLObjectManager(const GLuint& in_first_valid_nondefault_id,
                         const bool&   in_expose_default_object);
 
-        bool init();
+        const GeneralObjectProps* get_general_object_props_ptr (const GLuint& in_id) const;
+        const void*               get_internal_object_props_ptr(const GLuint& in_id) const;
+        void*                     get_internal_object_props_ptr(const GLuint& in_id);
+        bool                      init                         ();
 
-        /* NOTE: Functions below are called with m_lock acquired! */
-        virtual bool     add_reference    (const GLuint&      in_id,
-                                           const GLReference* in_reference_ptr) = 0;
-        virtual bool     delete_object    (const GLuint&      in_id)            = 0;
-        virtual bool     delete_reference (const GLuint&      in_id,
-                                           const GLReference* in_reference_ptr) = 0;
-        virtual uint32_t get_n_references (const GLuint&      in_id) const      = 0;
-        virtual Status   get_object_status(const GLuint&      in_id) const      = 0;
-        virtual bool     insert_object    (const GLuint&      in_id)            = 0;
-        virtual bool     is_id_valid      (const GLuint&      in_id) const      = 0;
-        virtual bool     set_object_status(const GLuint&      in_id,
-                                           const Status&      in_new_status)    = 0;
+        virtual std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object(const GLuint& in_id) = 0;
 
-        /* Private variables */
+        /* Protected variables */
         OpenGL::NamespaceUniquePtr m_id_manager_ptr;
 
         GLReferenceUniquePtr m_default_object_reference_ptr;
@@ -84,6 +96,26 @@ namespace OpenGL
         const GLuint         m_first_valid_nondefault_id;
         mutable std::mutex   m_lock;
         bool                 m_releasing;
+
+    private:
+        /* Private functions */
+
+        bool     add_reference    (const GLuint&      in_id,
+                                   const GLReference* in_reference_ptr);
+        bool     delete_object    (const GLuint&      in_id);
+        bool     delete_reference (const GLuint&      in_id,
+                                   const GLReference* in_reference_ptr);
+        uint32_t get_n_references (const GLuint&      in_id) const;
+        Status   get_object_status(const GLuint&      in_id) const;
+        bool     insert_object    (const GLuint&      in_id);
+        bool     is_id_valid      (const GLuint&      in_id) const;
+        bool     set_object_status(const GLuint&      in_id,
+                                   const Status&      in_new_status);
+
+        GeneralObjectProps* get_general_object_props_ptr(const GLuint& in_id);
+
+        /* Private variables */
+        std::unordered_map<GLuint, std::unique_ptr<GeneralObjectProps> > m_object_ptrs;
 
         friend class GLReference;
     };

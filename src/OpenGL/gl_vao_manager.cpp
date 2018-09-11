@@ -7,18 +7,14 @@
 #include "OpenGL/gl_reference.h"
 #include "OpenGL/gl_vao_manager.h"
 
-OpenGL::GLVAOManager::VAO::VAO(const GLuint&            in_id,
-                               const OpenGL::IGLLimits* in_limits_ptr)
+OpenGL::GLVAOManager::VAO::VAO(const OpenGL::IGLLimits* in_limits_ptr)
 {
     vkgl_assert(in_limits_ptr != nullptr);
-
-    id      = in_id;
-    status  = Status::Created_Not_Bound;
 
     vao_ptr.reset(
         new OpenGL::VertexArrayObjectState(in_limits_ptr->get_max_vertex_attribs())
     );
-     
+
     vkgl_assert(vao_ptr != nullptr);
 }
 
@@ -33,23 +29,6 @@ OpenGL::GLVAOManager::GLVAOManager(const IGLLimits* in_limits_ptr)
 OpenGL::GLVAOManager::~GLVAOManager()
 {
     /* Stub - everything is handled by the base class. */
-}
-
-bool OpenGL::GLVAOManager::add_reference(const GLuint&      in_id,
-                                         const GLReference* in_reference_ptr)
-{
-    bool       result       = false;
-    const auto vao_iterator = m_vao_ptrs.find(in_id);
-
-    vkgl_assert(vao_iterator != m_vao_ptrs.end() );
-    if (vao_iterator != m_vao_ptrs.end() )
-    {
-        vao_iterator->second->references.push_back(in_reference_ptr);
-
-        result = true;
-    }
-
-    return result;
 }
 
 OpenGL::GLVAOManagerUniquePtr OpenGL::GLVAOManager::create(const IGLLimits* in_limits_ptr)
@@ -76,61 +55,17 @@ end:
     return result_ptr;
 }
 
-bool OpenGL::GLVAOManager::delete_reference(const GLuint&      in_id,
-                                            const GLReference* in_reference_ptr)
+std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLVAOManager::create_internal_data_object(const GLuint& in_id)
 {
-    bool       result       = false;
-    const auto vao_iterator = m_vao_ptrs.find(in_id);
+    std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
+                                                                  [](void* in_ptr){delete reinterpret_cast<VAO*>(in_ptr); });
 
-    vkgl_assert(vao_iterator != m_vao_ptrs.end() );
-    if (vao_iterator != m_vao_ptrs.end() )
-    {
-        auto reference_iterator = std::find(vao_iterator->second->references.begin(),
-                                            vao_iterator->second->references.end  (),
-                                            in_reference_ptr);
+    result_ptr.reset(
+        new VAO(m_limits_ptr)
+    );
 
-        vkgl_assert(reference_iterator != vao_iterator->second->references.end() );
-        if (reference_iterator != vao_iterator->second->references.end() )
-        {
-            vao_iterator->second->references.erase(reference_iterator);
-
-            result = true;
-        }
-    }
-
-    return result;
-}
-
-bool OpenGL::GLVAOManager::delete_object(const GLuint& in_id)
-{
-    bool       result       = false;
-    const auto vao_iterator = m_vao_ptrs.find(in_id);
-
-    vkgl_assert(vao_iterator != m_vao_ptrs.end() );
-    if (vao_iterator != m_vao_ptrs.end() )
-    {
-        vkgl_assert(vao_iterator->second->references.size() == 0);
-
-        m_vao_ptrs.erase(vao_iterator);
-
-        result = true;
-    }
-
-    return result;
-}
-
-uint32_t OpenGL::GLVAOManager::get_n_references(const GLuint& in_id) const
-{
-    uint32_t   result       = 0;
-    const auto vao_iterator = m_vao_ptrs.find(in_id);
-
-    vkgl_assert(vao_iterator != m_vao_ptrs.end() );
-    if (vao_iterator != m_vao_ptrs.end() )
-    {
-        result = static_cast<uint32_t>(vao_iterator->second->references.size() );
-    }
-
-    return result;
+    vkgl_assert(result_ptr != nullptr);
+    return result_ptr;
 }
 
 bool OpenGL::GLVAOManager::get_element_array_buffer_binding(const uint32_t& in_vao_id,
@@ -139,37 +74,23 @@ bool OpenGL::GLVAOManager::get_element_array_buffer_binding(const uint32_t& in_v
     bool result = false;
 
     {
-        std::unique_lock<std::mutex> lock        (m_lock);
-        auto                         vao_iterator(m_vao_ptrs.find(in_vao_id) );
+        std::unique_lock<std::mutex> lock         (m_lock);
+        auto                         vao_props_ptr(get_vao_ptr(in_vao_id) );
 
-        if (vao_iterator == m_vao_ptrs.end() )
+        if (vao_props_ptr == nullptr)
         {
-            vkgl_assert(vao_iterator != m_vao_ptrs.end() );
+            vkgl_assert(vao_props_ptr != nullptr);
 
             goto end;
         }
 
-        vkgl_assert(vao_iterator->second->status == Status::Alive);
+        vkgl_assert(get_general_object_props_ptr(in_vao_id)->status == Status::Alive);
 
-        *out_result_ptr = vao_iterator->second->vao_ptr->element_array_buffer_binding;
+        *out_result_ptr = vao_props_ptr->vao_ptr->element_array_buffer_binding;
     }
 
     result = true;
 end:
-    return result;
-}
-
-OpenGL::GLObjectManager::Status OpenGL::GLVAOManager::get_object_status(const GLuint& in_id) const
-{
-    OpenGL::GLObjectManager::Status result       = OpenGL::GLObjectManager::Status::Unknown;
-    const auto                      vao_iterator = m_vao_ptrs.find(in_id);
-
-    vkgl_assert(vao_iterator != m_vao_ptrs.end() );
-    if (vao_iterator != m_vao_ptrs.end() )
-    {
-        result = vao_iterator->second->status;
-    }
-
     return result;
 }
 
@@ -184,21 +105,21 @@ bool OpenGL::GLVAOManager::get_vaa_property(const GLuint&                       
     OpenGL::GetSetArgumentType src_data_type = OpenGL::GetSetArgumentType::Unknown;
 
     {
-        std::unique_lock<std::mutex>             lock        (m_lock);
-        const OpenGL::VertexAttributeArrayState* vaa_ptr     (nullptr);
-        auto                                     vao_iterator(m_vao_ptrs.find(in_vao_id) );
+        std::unique_lock<std::mutex>             lock         (m_lock);
+        const OpenGL::VertexAttributeArrayState* vaa_ptr      (nullptr);
+        auto                                     vao_props_ptr(get_vao_ptr(in_vao_id) );
 
-        if (vao_iterator == m_vao_ptrs.end() )
+        if (vao_props_ptr == nullptr)
         {
-            vkgl_assert(vao_iterator != m_vao_ptrs.end() );
+            vkgl_assert(vao_props_ptr != nullptr);
 
             goto end;
         }
 
-        vkgl_assert(vao_iterator->second->status                                  == Status::Alive);
-        vkgl_assert(vao_iterator->second->vao_ptr->vertex_attribute_arrays.size() >  in_n_vao_vaa);
+        vkgl_assert(get_general_object_props_ptr(in_vao_id)->status        == Status::Alive);
+        vkgl_assert(vao_props_ptr->vao_ptr->vertex_attribute_arrays.size() >  in_n_vao_vaa);
 
-        vaa_ptr = &vao_iterator->second->vao_ptr->vertex_attribute_arrays.at(in_n_vao_vaa);
+        vaa_ptr = &vao_props_ptr->vao_ptr->vertex_attribute_arrays.at(in_n_vao_vaa);
 
         switch (in_pname)
         {
@@ -246,20 +167,20 @@ bool OpenGL::GLVAOManager::get_vaa_state_copy(const GLuint&              in_vao_
     bool result = false;
 
     {
-        std::unique_lock<std::mutex> lock        (m_lock);
-        auto                         vao_iterator(m_vao_ptrs.find(in_vao_id) );
+        std::unique_lock<std::mutex> lock         (m_lock);
+        auto                         vao_props_ptr(get_vao_ptr(in_vao_id) );
 
-        if (vao_iterator == m_vao_ptrs.end() )
+        if (vao_props_ptr == nullptr)
         {
-            vkgl_assert(vao_iterator != m_vao_ptrs.end() );
+            vkgl_assert(vao_props_ptr != nullptr);
 
             goto end;
         }
 
-        vkgl_assert(vao_iterator->second->status                                  == Status::Alive);
-        vkgl_assert(vao_iterator->second->vao_ptr->vertex_attribute_arrays.size() >  in_n_vao_vaa);
+        vkgl_assert(get_general_object_props_ptr(in_vao_id)->status        == Status::Alive);
+        vkgl_assert(vao_props_ptr->vao_ptr->vertex_attribute_arrays.size() >  in_n_vao_vaa);
 
-        *out_result_ptr = vao_iterator->second->vao_ptr->vertex_attribute_arrays.at(in_n_vao_vaa);
+        *out_result_ptr = vao_props_ptr->vao_ptr->vertex_attribute_arrays.at(in_n_vao_vaa);
     }
 
     result = true;
@@ -267,32 +188,14 @@ end:
     return result;
 }
 
-bool OpenGL::GLVAOManager::insert_object(const GLuint& in_id)
+const OpenGL::GLVAOManager::VAO* OpenGL::GLVAOManager::get_vao_ptr(const GLuint& in_id) const
 {
-    bool       result       = false;
-    const auto vao_iterator = m_vao_ptrs.find(in_id);
-
-    vkgl_assert(vao_iterator == m_vao_ptrs.end() );
-    if (vao_iterator == m_vao_ptrs.end() )
-    {
-        m_vao_ptrs[in_id].reset(
-            new VAO(in_id,
-                    m_limits_ptr)
-        );
-
-        vkgl_assert(m_vao_ptrs.at(in_id) != nullptr);
-
-        result = true;
-    }
-
-    return result;
+    return reinterpret_cast<const OpenGL::GLVAOManager::VAO*>(get_internal_object_props_ptr(in_id) );
 }
 
-bool OpenGL::GLVAOManager::is_id_valid(const GLuint& in_id) const
+OpenGL::GLVAOManager::VAO* OpenGL::GLVAOManager::get_vao_ptr(const GLuint& in_id)
 {
-    const auto vao_iterator = m_vao_ptrs.find(in_id);
-
-    return (vao_iterator != m_vao_ptrs.end() );
+    return reinterpret_cast<OpenGL::GLVAOManager::VAO*>(get_internal_object_props_ptr(in_id) );
 }
 
 bool OpenGL::GLVAOManager::set_element_array_buffer_binding(const GLuint& in_vao_id,
@@ -301,40 +204,23 @@ bool OpenGL::GLVAOManager::set_element_array_buffer_binding(const GLuint& in_vao
     bool result = false;
 
     {
-        std::unique_lock<std::mutex> lock        (m_lock);
-        auto                         vao_iterator(m_vao_ptrs.find(in_vao_id) );
+        std::unique_lock<std::mutex> lock         (m_lock);
+        auto                         vao_props_ptr(get_vao_ptr(in_vao_id) );
 
-        if (vao_iterator == m_vao_ptrs.end() )
+        if (vao_props_ptr == nullptr)
         {
-            vkgl_assert(vao_iterator != m_vao_ptrs.end() );
+            vkgl_assert(vao_props_ptr != nullptr);
 
             goto end;
         }
 
-        vkgl_assert(vao_iterator->second->status == Status::Alive);
+        vkgl_assert(reinterpret_cast<const GLVAOManager*>(this)->get_general_object_props_ptr(in_vao_id)->status == Status::Alive);
 
-        vao_iterator->second->vao_ptr->element_array_buffer_binding = in_new_buffer_binding;
+        vao_props_ptr->vao_ptr->element_array_buffer_binding = in_new_buffer_binding;
     }
 
     result = true;
 end:
-    return result;
-}
-
-bool OpenGL::GLVAOManager::set_object_status(const GLuint& in_id,
-                                             const Status& in_new_status)
-{
-    bool       result       = false;
-    const auto vao_iterator = m_vao_ptrs.find(in_id);
-
-    vkgl_assert(vao_iterator != m_vao_ptrs.end() );
-    if (vao_iterator != m_vao_ptrs.end() )
-    {
-        vao_iterator->second->status = in_new_status;
-
-        result = true;
-    }
-
     return result;
 }
 
@@ -345,20 +231,20 @@ bool OpenGL::GLVAOManager::set_vaa_state(const GLuint&                    in_vao
     bool result = false;
 
     {
-        std::unique_lock<std::mutex> lock        (m_lock);
-        auto                         vao_iterator(m_vao_ptrs.find(in_vao_id) );
+        std::unique_lock<std::mutex> lock         (m_lock);
+        auto                         vao_props_ptr(get_vao_ptr(in_vao_id) );
 
-        if (vao_iterator == m_vao_ptrs.end() )
+        if (vao_props_ptr == nullptr)
         {
-            vkgl_assert(vao_iterator != m_vao_ptrs.end() );
+            vkgl_assert(vao_props_ptr != nullptr);
 
             goto end;
         }
 
-        vkgl_assert(vao_iterator->second->status                                  == Status::Alive);
-        vkgl_assert(vao_iterator->second->vao_ptr->vertex_attribute_arrays.size() >  in_n_vao_vaa);
+        vkgl_assert(reinterpret_cast<const GLVAOManager*>(this)->get_general_object_props_ptr(in_vao_id)->status == Status::Alive);
+        vkgl_assert(vao_props_ptr->vao_ptr->vertex_attribute_arrays.size()                                       >  in_n_vao_vaa);
 
-        vao_iterator->second->vao_ptr->vertex_attribute_arrays.at(in_n_vao_vaa) = in_state;
+        vao_props_ptr->vao_ptr->vertex_attribute_arrays.at(in_n_vao_vaa) = in_state;
     }
 
     result = true;

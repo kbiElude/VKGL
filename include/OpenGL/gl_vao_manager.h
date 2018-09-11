@@ -42,45 +42,29 @@ namespace OpenGL
 
     protected:
         /* Protected functions */
-        bool     add_reference    (const GLuint&      in_id,
-                                   const GLReference* in_reference_ptr) final;
-        bool     delete_object    (const GLuint&      in_id)            final;
-        bool     delete_reference (const GLuint&      in_id,
-                                   const GLReference* in_reference_ptr) final;
-        uint32_t get_n_references (const GLuint&      in_id) const    final;
-        Status   get_object_status(const GLuint&      in_id) const    final;
-        bool     insert_object    (const GLuint&      in_id)          final;
-        bool     is_id_valid      (const GLuint&      in_id) const    final;
-        bool     set_object_status(const GLuint&      in_id,
-                                   const Status&      in_new_status)  final;
+        std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object(const GLuint& in_id) final;
 
     private:
         /* Private type definitions */
 
         typedef struct VAO
         {
-            GLuint                                          id;
-            std::vector<const OpenGL::GLReference*>         references;
-            Status                                          status;
             std::unique_ptr<OpenGL::VertexArrayObjectState> vao_ptr;
 
-            VAO()
-            {
-                id     = UINT32_MAX;
-                status = Status::Unknown;
-            }
+            VAO();
 
-            VAO(const GLuint&    in_id,
-                const IGLLimits* in_limits_ptr);
+            VAO(const IGLLimits* in_limits_ptr);
         } VAO;
 
         /* Private functions */
 
         GLVAOManager(const IGLLimits* in_limits_ptr);
 
+        const VAO* get_vao_ptr(const GLuint& in_id) const;
+        VAO*       get_vao_ptr(const GLuint& in_id);
+
         /* Private variables */
-        const IGLLimits* const                            m_limits_ptr;
-        std::unordered_map<GLuint, std::unique_ptr<VAO> > m_vao_ptrs;
+        const IGLLimits* const m_limits_ptr;
     };
 }
 #endif /* VKGL_GL_VAO_MANAGER_H */
