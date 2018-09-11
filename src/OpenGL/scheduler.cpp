@@ -20,6 +20,11 @@ void OpenGL::Scheduler::clear(const OpenGL::ClearBufferBits& in_buffers_to_clear
     vkgl_not_implemented();
 }
 
+void OpenGL::Scheduler::compile_shader(const GLuint& in_id)
+{
+    vkgl_not_implemented();
+}
+
 void OpenGL::Scheduler::compressed_tex_image_1d(const GLuint&                 in_id,
                                                 const GLint&                  in_level,
                                                 const OpenGL::InternalFormat& in_internalformat,

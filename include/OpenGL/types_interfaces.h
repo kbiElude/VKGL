@@ -107,15 +107,15 @@ namespace OpenGL
         virtual uint32_t                                   get_uniform_buffer_offset_alignment              () const = 0;
     };
 
-    class IObjectManagerBindingRelease
+    class IObjectManagerReferenceRelease
     {
     public:
-        virtual ~IObjectManagerBindingRelease()
+        virtual ~IObjectManagerReferenceRelease()
         {
             /* Stub */
         }
 
-        virtual void release_binding(const GLBinding* in_binding_ptr) = 0;
+        virtual void release_reference(const GLReference* in_reference_ptr) = 0;
     };
 };
 

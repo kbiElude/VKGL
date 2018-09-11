@@ -8,6 +8,7 @@
 #include "Common/types.h"
 #include "OpenGL/gl_constants.h"
 #include "OpenGL/gl_limits.h"
+#include "OpenGL/gl_shader_manager.h"
 #include "OpenGL/gl_state_manager.h"
 #include "OpenGL/gl_texture_manager.h"
 #include "OpenGL/gl_vao_manager.h"
@@ -821,6 +822,7 @@ namespace OpenGL
 
         GLConstantsUniquePtr      m_gl_constants_ptr;
         GLLimitsUniquePtr         m_gl_limits_ptr;
+        GLShaderManagerUniquePtr  m_gl_shader_manager_ptr;
         GLStateManagerUniquePtr   m_gl_state_manager_ptr;
         GLTextureManagerUniquePtr m_gl_texture_manager_ptr;
         GLVAOManagerUniquePtr     m_gl_vao_manager_ptr;

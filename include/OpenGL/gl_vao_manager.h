@@ -42,25 +42,25 @@ namespace OpenGL
 
     protected:
         /* Protected functions */
-        bool     add_binding      (const GLuint&    in_id,
-                                   const GLBinding* in_binding_ptr) final;
-        bool     delete_binding   (const GLuint&    in_id,
-                                   const GLBinding* in_binding_ptr) final;
-        bool     delete_object    (const GLuint&    in_id)          final;
-        uint32_t get_n_bindings   (const GLuint&    in_id) const    final;
-        Status   get_object_status(const GLuint&    in_id) const    final;
-        bool     insert_object    (const GLuint&    in_id)          final;
-        bool     is_id_valid      (const GLuint&    in_id) const    final;
-        bool     set_object_status(const GLuint&    in_id,
-                                   const Status&    in_new_status)  final;
+        bool     add_reference    (const GLuint&      in_id,
+                                   const GLReference* in_reference_ptr) final;
+        bool     delete_object    (const GLuint&      in_id)            final;
+        bool     delete_reference (const GLuint&      in_id,
+                                   const GLReference* in_reference_ptr) final;
+        uint32_t get_n_references (const GLuint&      in_id) const    final;
+        Status   get_object_status(const GLuint&      in_id) const    final;
+        bool     insert_object    (const GLuint&      in_id)          final;
+        bool     is_id_valid      (const GLuint&      in_id) const    final;
+        bool     set_object_status(const GLuint&      in_id,
+                                   const Status&      in_new_status)  final;
 
     private:
         /* Private type definitions */
 
         typedef struct VAO
         {
-            std::vector<const OpenGL::GLBinding*>           bindings;
             GLuint                                          id;
+            std::vector<const OpenGL::GLReference*>         references;
             Status                                          status;
             std::unique_ptr<OpenGL::VertexArrayObjectState> vao_ptr;
 
@@ -78,9 +78,8 @@ namespace OpenGL
 
         GLVAOManager(const IGLLimits* in_limits_ptr);
 
-        bool insert_new_vao(const GLuint& in_id);
-
         /* Private variables */
+        const IGLLimits* const                            m_limits_ptr;
         std::unordered_map<GLuint, std::unique_ptr<VAO> > m_vao_ptrs;
     };
 }

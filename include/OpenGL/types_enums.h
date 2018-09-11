@@ -601,6 +601,7 @@ namespace OpenGL
         Pointer,
         PointSpriteCoordOriginVKGL,
         ProvokingVertexConventionVKGL,
+        ShaderTypeVKGL,
         Short,
         StencilFunctionVKGL,
         StencilOperationVKGL,

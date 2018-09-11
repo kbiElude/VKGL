@@ -5,8 +5,8 @@
 #ifndef VKGL_GL_OBJECT_MANAGER_H
 #define VKGL_GL_OBJECT_MANAGER_H
 
+#include "OpenGL/gl_reference.h"
 #include "OpenGL/namespace.h"
-#include "OpenGL/types.h"
 
 namespace OpenGL
 {
@@ -18,10 +18,10 @@ namespace OpenGL
             /* Stub */
         }
 
-        virtual GLBindingUniquePtr get_default_object_binding() const = 0;
+        virtual GLReferenceUniquePtr get_default_object_reference() const = 0;
     };
 
-    class GLObjectManager : public IObjectManagerBindingRelease,
+    class GLObjectManager : public IObjectManagerReferenceRelease,
                             public IGLObjectManager
     {
     public:
@@ -32,10 +32,9 @@ namespace OpenGL
         bool generate_ids    (const uint32_t& in_n_ids,
                               GLuint*         out_ids_ptr);
         bool is_alive_id     (const GLuint&   in_id)       const;
-        bool mark_id_as_bound(const GLuint&   in_id);
+        bool mark_id_as_alive(const GLuint&   in_id);
 
-        GLBindingUniquePtr acquire_binding           (const GLuint& in_id);
-        GLBindingUniquePtr get_default_object_binding()                    const final;
+        GLReferenceUniquePtr acquire_reference(const GLuint& in_id);
 
         virtual ~GLObjectManager();
 
@@ -51,39 +50,42 @@ namespace OpenGL
             Unknown
         };
 
-        /* IObjectManagerBindingRelease interface */
-        void release_binding(const OpenGL::GLBinding* in_binding_ptr) final;
+        /* IGLObjectManager interface */
+        GLReferenceUniquePtr get_default_object_reference() const final;
+
+        /* IObjectManagerReferenceRelease interface */
+        void release_reference(const OpenGL::GLReference* in_reference_ptr) final;
 
         /* Protected functions */
 
-        GLObjectManager(const bool&      in_expose_default_object,
-                        const IGLLimits* in_limits_ptr);
+        GLObjectManager(const GLuint& in_first_valid_nondefault_id,
+                        const bool&   in_expose_default_object);
 
         bool init();
 
         /* NOTE: Functions below are called with m_lock acquired! */
-        virtual bool     add_binding      (const GLuint&    in_id,
-                                           const GLBinding* in_binding_ptr) = 0;
-        virtual bool     delete_binding   (const GLuint&    in_id,
-                                           const GLBinding* in_binding_ptr) = 0;
-        virtual bool     delete_object    (const GLuint&    in_id)          = 0;
-        virtual uint32_t get_n_bindings   (const GLuint&    in_id) const    = 0;
-        virtual Status   get_object_status(const GLuint&    in_id) const    = 0;
-        virtual bool     insert_object    (const GLuint&    in_id)          = 0;
-        virtual bool     is_id_valid      (const GLuint&    in_id) const    = 0;
-        virtual bool     set_object_status(const GLuint&    in_id,
-                                           const Status&    in_new_status)  = 0;
+        virtual bool     add_reference    (const GLuint&      in_id,
+                                           const GLReference* in_reference_ptr) = 0;
+        virtual bool     delete_object    (const GLuint&      in_id)            = 0;
+        virtual bool     delete_reference (const GLuint&      in_id,
+                                           const GLReference* in_reference_ptr) = 0;
+        virtual uint32_t get_n_references (const GLuint&      in_id) const      = 0;
+        virtual Status   get_object_status(const GLuint&      in_id) const      = 0;
+        virtual bool     insert_object    (const GLuint&      in_id)            = 0;
+        virtual bool     is_id_valid      (const GLuint&      in_id) const      = 0;
+        virtual bool     set_object_status(const GLuint&      in_id,
+                                           const Status&      in_new_status)    = 0;
 
         /* Private variables */
         OpenGL::NamespaceUniquePtr m_id_manager_ptr;
-        const IGLLimits* const     m_limits_ptr;
 
-        GLBindingUniquePtr m_default_object_binding_ptr;
-        const bool         m_expose_default_object;
-        mutable std::mutex m_lock;
-        bool               m_releasing;
+        GLReferenceUniquePtr m_default_object_reference_ptr;
+        const bool           m_expose_default_object;
+        const GLuint         m_first_valid_nondefault_id;
+        mutable std::mutex   m_lock;
+        bool                 m_releasing;
 
-        friend class GLBinding;
+        friend class GLReference;
     };
 }
 #endif /* VKGL_GL_OBJECT_MANAGER_H */

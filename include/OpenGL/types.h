@@ -20,8 +20,9 @@ namespace OpenGL
 {
     /* Forward declarations */
     class Context;
-    class GLBinding;
     class GLLimits;
+    class GLReference;
+    class GLShaderManager;
     class GLStateManager;
     class GLTextureManager;
     class GLVAOManager;

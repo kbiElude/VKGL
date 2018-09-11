@@ -19,6 +19,8 @@ namespace OpenGL
 
         ~Scheduler();
 
+        void compile_shader(const GLuint& in_id);
+
         void draw_arrays        (const OpenGL::DrawCallMode&      in_mode,
                                  const GLint&                     in_first,
                                  const GLsizei&                   in_count);

@@ -23,7 +23,7 @@ OpenGL::GLStateManager::GLStateManager(const IGLLimits*        in_limits_ptr,
     );
     vkgl_assert(m_state_ptr != nullptr);
 
-    m_vao_binding_ptr = in_vao_manager_ptr->get_default_object_binding();
+    m_vao_binding_ptr = in_vao_manager_ptr->get_default_object_reference();
 
     init_prop_maps    ();
     init_texture_units();
@@ -106,7 +106,7 @@ GLuint OpenGL::GLStateManager::get_bound_buffer_object(const OpenGL::BufferTarge
     return 0;
 }
 
-const OpenGL::GLBinding* OpenGL::GLStateManager::get_bound_vertex_array_object() const
+const OpenGL::GLReference* OpenGL::GLStateManager::get_bound_vertex_array_object() const
 {
     /* NOTE: There is ALWAYS a VAO binding set up for a GL context. */
     vkgl_assert(m_vao_binding_ptr != nullptr);
@@ -384,7 +384,7 @@ void OpenGL::GLStateManager::set_blend_functions_separate(const OpenGL::BlendFun
     m_state_ptr->blend_func_dst_rgb   = in_dst_rgb_function;
 }
 
-void OpenGL::GLStateManager::set_bound_vertex_array_object(OpenGL::GLBindingUniquePtr in_vao_binding_ptr)
+void OpenGL::GLStateManager::set_bound_vertex_array_object(OpenGL::GLReferenceUniquePtr in_vao_binding_ptr)
 {
     m_vao_binding_ptr = std::move(in_vao_binding_ptr);
 }

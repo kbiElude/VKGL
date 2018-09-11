@@ -3,14 +3,14 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Common/macros.h"
-#include "OpenGL/gl_binding.h"
 #include "OpenGL/gl_object_manager.h"
+#include "OpenGL/gl_reference.h"
 
-OpenGL::GLObjectManager::GLObjectManager(const bool&      in_expose_default_object,
-                                         const IGLLimits* in_limits_ptr)
-    :m_expose_default_object(in_expose_default_object),
-     m_limits_ptr           (in_limits_ptr),
-     m_releasing            (false)
+OpenGL::GLObjectManager::GLObjectManager(const GLuint& in_first_valid_nondefault_id,
+                                         const bool&   in_expose_default_object)
+    :m_expose_default_object    (in_expose_default_object),
+     m_first_valid_nondefault_id(in_first_valid_nondefault_id),
+     m_releasing                (false)
 {
     /*  Stub */
 }
@@ -21,18 +21,18 @@ OpenGL::GLObjectManager::~GLObjectManager()
 
     if (m_expose_default_object)
     {
-        m_default_object_binding_ptr.reset();
+        m_default_object_reference_ptr.reset();
     }
     else
     {
-        vkgl_assert(m_default_object_binding_ptr == nullptr);
+        vkgl_assert(m_default_object_reference_ptr == nullptr);
     }
 }
 
-OpenGL::GLBindingUniquePtr OpenGL::GLObjectManager::acquire_binding(const GLuint& in_id)
+OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_reference(const GLuint& in_id)
 {
-    OpenGL::GLBindingUniquePtr result_ptr(nullptr,
-                                          std::default_delete<OpenGL::GLBinding>() );
+    OpenGL::GLReferenceUniquePtr result_ptr(nullptr,
+                                            std::default_delete<OpenGL::GLReference>() );
 
     {
         std::unique_lock<std::mutex> lock(m_lock);
@@ -47,8 +47,8 @@ OpenGL::GLBindingUniquePtr OpenGL::GLObjectManager::acquire_binding(const GLuint
         #endif
 
         result_ptr.reset(
-            new GLBinding(in_id,
-                          dynamic_cast<IObjectManagerBindingRelease*>(this) )
+            new GLReference(in_id,
+                            dynamic_cast<IObjectManagerReferenceRelease*>(this) )
         );
 
         if (result_ptr == nullptr)
@@ -58,8 +58,8 @@ OpenGL::GLBindingUniquePtr OpenGL::GLObjectManager::acquire_binding(const GLuint
             goto end;
         }
 
-        add_binding(in_id,
-                    result_ptr.get() );
+        add_reference(in_id,
+                      result_ptr.get() );
     }
 
 end:
@@ -94,10 +94,10 @@ bool OpenGL::GLObjectManager::delete_ids(const uint32_t& in_n_ids,
                 continue;
             }
 
-            /* Only destroy the object *IF* there are no remaining active bindings. Otherwise, assign
+            /* Only destroy the object *IF* there are no remaining active references. Otherwise, assign
              * a corresponding status to the object and leave it alone.
              */
-            if (get_n_bindings(current_id) == 0)
+            if (get_n_references(current_id) == 0)
             {
                 delete_object(current_id);
             }
@@ -149,15 +149,15 @@ end:
     return result;
 }
 
-OpenGL::GLBindingUniquePtr OpenGL::GLObjectManager::get_default_object_binding() const
+OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::get_default_object_reference() const
 {
-    /* Default object NEVER goes out of scope. Hence, we wrap a raw ptr to the pre-baked binding and make
+    /* Default object NEVER goes out of scope. Hence, we wrap a raw ptr to the pre-baked reference and make
      * sure the destructor never gets called.
      */
     vkgl_assert(m_expose_default_object);
 
-    return OpenGL::GLBindingUniquePtr(m_default_object_binding_ptr.get(),
-                                      [](OpenGL::GLBinding*){ /* Stub */});
+    return OpenGL::GLReferenceUniquePtr(m_default_object_reference_ptr.get(),
+                                        [](OpenGL::GLReference*){ /* Stub */});
 }
 
 bool OpenGL::GLObjectManager::init()
@@ -165,8 +165,7 @@ bool OpenGL::GLObjectManager::init()
     bool result = false;
 
     m_id_manager_ptr.reset(
-        new OpenGL::Namespace((m_expose_default_object) ? 1 /* in_start_id */
-                                                        : 0 /* in_start_id */)
+        new OpenGL::Namespace(m_first_valid_nondefault_id)
     );
 
     if (m_id_manager_ptr == nullptr)
@@ -182,17 +181,19 @@ bool OpenGL::GLObjectManager::init()
         result = insert_object(0 /* in_id */);
         vkgl_assert(result);
 
-        /* ..and bake a binding to the default object. It's going to live until the manager goes out of scope. */
-        m_default_object_binding_ptr = acquire_binding(0 /* in_id */);
+        /* ..and bake a reference to the default object. It's going to live until the manager goes out of scope. */
+        m_default_object_reference_ptr = acquire_reference(0 /* in_id */);
 
-        if (m_default_object_binding_ptr == nullptr)
+        if (m_default_object_reference_ptr == nullptr)
         {
-            vkgl_assert(m_default_object_binding_ptr != nullptr);
+            vkgl_assert(m_default_object_reference_ptr != nullptr);
 
             result = false;
             goto end;
         }
     }
+
+    result = true;
 end:
     return result;
 }
@@ -215,7 +216,7 @@ bool OpenGL::GLObjectManager::is_alive_id(const GLuint& in_id) const
     return result;
 }
 
-bool OpenGL::GLObjectManager::mark_id_as_bound(const GLuint& in_id)
+bool OpenGL::GLObjectManager::mark_id_as_alive(const GLuint& in_id)
 {
     bool result = false;
 
@@ -238,9 +239,9 @@ bool OpenGL::GLObjectManager::mark_id_as_bound(const GLuint& in_id)
     return result;
 }
 
-void OpenGL::GLObjectManager::release_binding(const OpenGL::GLBinding* in_binding_ptr)
+void OpenGL::GLObjectManager::release_reference(const OpenGL::GLReference* in_reference_ptr)
 {
-    const auto object_id = in_binding_ptr->get_id();
+    const auto object_id = in_reference_ptr->get_id();
 
     if (m_releasing)
     {
@@ -257,18 +258,18 @@ void OpenGL::GLObjectManager::release_binding(const OpenGL::GLBinding* in_bindin
         auto       lock   = std::unique_lock<std::mutex>(m_lock);
         const auto status = get_object_status           (object_id);
 
-        /* Release the binding .. */
+        /* Release the reference .. */
         vkgl_assert(is_id_valid(object_id) );
 
-        delete_binding(object_id,
-                       in_binding_ptr);
+        delete_reference(object_id,
+                         in_reference_ptr);
 
         /* If the object has been destroyed AND there are no more dangling refernces, destroy
          * the container. Otherwise, retain it.
          */
-        if ((status                    == Status::Created_Not_Bound         ||
-             status                    == Status::Deleted_Bindings_Pending) &&
-            (get_n_bindings(object_id) == 0) )
+        if ((status                      == Status::Created_Not_Bound         ||
+             status                      == Status::Deleted_Bindings_Pending) &&
+            (get_n_references(object_id) == 0) )
         {
             delete_object(object_id);
         }

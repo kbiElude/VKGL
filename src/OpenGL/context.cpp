@@ -6,7 +6,8 @@
 #include "Common/types.h"
 #include "OpenGL/types.h"
 #include "OpenGL/context.h"
-#include "OpenGL/gl_binding.h"
+#include "OpenGL/gl_reference.h"
+#include "OpenGL/gl_shader_manager.h"
 #include "OpenGL/gl_vao_manager.h"
 #include "OpenGL/utils_enum.h"
 
@@ -429,7 +430,12 @@
 #include "OpenGL/entrypoints/GL_ARB_vertex_shader/gl_get_active_attrib_arb.h"
 #include "OpenGL/entrypoints/GL_ARB_vertex_shader/gl_get_attrib_location_arb.h"
 
+#include <algorithm>
+#include <sstream>
 
+#ifdef min
+    #undef min
+#endif
 OpenGL::Context::Context(const VKGL::IWSIContext* in_wsi_context_ptr)
     :m_wsi_context_ptr(in_wsi_context_ptr)
 {
@@ -542,9 +548,9 @@ void OpenGL::Context::bind_texture(const OpenGL::TextureTarget& in_target,
 
 void OpenGL::Context::bind_vertex_array(const GLuint& in_array)
 {
-    m_gl_vao_manager_ptr->mark_id_as_bound(in_array);
+    m_gl_vao_manager_ptr->mark_id_as_alive(in_array);
 
-    auto vao_handle_ptr = m_gl_vao_manager_ptr->acquire_binding(in_array);
+    auto vao_handle_ptr = m_gl_vao_manager_ptr->acquire_reference(in_array);
 
     m_gl_state_manager_ptr->set_bound_vertex_array_object(std::move(vao_handle_ptr) );
 }
@@ -645,7 +651,9 @@ OpenGL::WaitResult OpenGL::Context::client_wait_sync(const GLsync&              
 
 void OpenGL::Context::compile_shader(const GLuint& in_shader)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_scheduler_ptr != nullptr);
+
+    m_scheduler_ptr->compile_shader(in_shader);
 }
 
 void OpenGL::Context::compressed_tex_image_1d(const OpenGL::TextureTarget&  in_target,
@@ -1017,9 +1025,28 @@ GLuint OpenGL::Context::create_program()
 
 GLuint OpenGL::Context::create_shader(const OpenGL::ShaderType& in_type)
 {
-    vkgl_not_implemented();
+    GLuint result_id = 0;
 
-    return 0;
+    vkgl_assert(m_gl_shader_manager_ptr != nullptr);
+
+    if (!m_gl_shader_manager_ptr->generate_ids(1, /* in_n_ids */
+                                              &result_id) )
+    {
+        vkgl_assert_fail();
+
+        goto end;
+    }
+
+    if (!m_gl_shader_manager_ptr->set_shader_type(result_id,
+                                                  in_type) )
+    {
+        vkgl_assert_fail();
+
+        goto end;
+    }
+
+end:
+    return result_id;
 }
 
 void OpenGL::Context::delete_buffers(const GLsizei&  in_n,
@@ -1048,7 +1075,7 @@ void OpenGL::Context::delete_framebuffers(const GLsizei&  in_n,
     vkgl_not_implemented();
 }
 
-void OpenGL::Context::delete_program (const GLuint& in_id)
+void OpenGL::Context::delete_program(const GLuint& in_id)
 {
     vkgl_not_implemented();
 }
@@ -1081,7 +1108,10 @@ void OpenGL::Context::delete_renderbuffers(const GLsizei& in_n,
 
 void OpenGL::Context::delete_shader(const GLuint& in_id)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_shader_manager_ptr != nullptr);
+
+    m_gl_shader_manager_ptr->delete_ids(1, /* in_n_ids */
+                                       &in_id);
 }
 
 void OpenGL::Context::delete_sync(const GLsync& in_sync)
@@ -1779,7 +1809,36 @@ void OpenGL::Context::get_shader_info_log(const GLuint&  in_shader,
                                           GLsizei*       inout_length_ptr,
                                           GLchar*        out_info_log_ptr) const
 {
-    vkgl_not_implemented();
+    const char* infolog_ptr      = nullptr;
+    uint32_t    infolog_length   = 0;
+    uint32_t    n_bytes_to_write = 0;
+
+    if (!m_gl_shader_manager_ptr->get_shader_infolog(in_shader,
+                                                    &infolog_ptr) )
+    {
+        vkgl_assert_fail();
+
+        goto end;
+    }
+
+    infolog_length   = strlen(infolog_ptr);
+    n_bytes_to_write = std::min(infolog_length, static_cast<uint32_t>(in_buf_size) );
+
+    if (inout_length_ptr != nullptr)
+    {
+        *inout_length_ptr = n_bytes_to_write;
+    }
+
+    if (out_info_log_ptr != nullptr &&
+        in_buf_size      != 0)
+    {
+        memcpy(out_info_log_ptr,
+               infolog_ptr,
+               n_bytes_to_write);
+    }
+
+end:
+    ;
 }
 
 void OpenGL::Context::get_shader_property(const GLuint&                     in_shader,
@@ -1788,7 +1847,16 @@ void OpenGL::Context::get_shader_property(const GLuint&                     in_s
                                           const uint32_t&                   in_n_params_components,
                                           GLint*                            out_params_ptr) const
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_shader_manager_ptr != nullptr);
+
+    if (!m_gl_shader_manager_ptr->get_shader_property(in_shader,
+                                                      in_pname,
+                                                      in_params_type,
+                                                      in_n_params_components,
+                                                      out_params_ptr) )
+    {
+        vkgl_assert_fail();
+    }
 }
 
 void OpenGL::Context::get_shader_source(const GLuint&  in_shader,
@@ -1796,7 +1864,34 @@ void OpenGL::Context::get_shader_source(const GLuint&  in_shader,
                                         GLsizei*       inout_length_ptr,
                                         GLchar*        out_source_ptr) const
 {
-    vkgl_not_implemented();
+    const char* glsl_ptr         = nullptr;
+    uint32_t    glsl_length      = 0;
+    uint32_t    n_bytes_to_write = 0;
+
+    if (!m_gl_shader_manager_ptr->get_shader_glsl(in_shader,
+                                                 &glsl_ptr) )
+    {
+        vkgl_assert_fail();
+
+        goto end;
+    }
+
+    glsl_length      = strlen(glsl_ptr);
+    n_bytes_to_write = std::min(glsl_length, static_cast<uint32_t>(in_buf_size) );
+
+    if (inout_length_ptr != nullptr)
+    {
+        *inout_length_ptr = n_bytes_to_write;
+    }
+
+    if (out_source_ptr != nullptr)
+    {
+        memcpy(out_source_ptr,
+               glsl_ptr,
+               n_bytes_to_write);
+    }
+end:
+    ;
 }
 
 void OpenGL::Context::get_sync_property(const GLsync&                     in_sync,
@@ -2022,6 +2117,16 @@ bool OpenGL::Context::init()
     if (m_gl_limits_ptr == nullptr)
     {
         vkgl_assert(m_gl_limits_ptr != nullptr);
+
+        goto end;
+    }
+
+    /* Set up shader manager */
+    m_gl_shader_manager_ptr = OpenGL::GLShaderManager::create();
+
+    if (m_gl_shader_manager_ptr == nullptr)
+    {
+        vkgl_assert(m_gl_shader_manager_ptr != nullptr);
 
         goto end;
     }
@@ -2535,9 +2640,7 @@ bool OpenGL::Context::is_renderbuffer(const GLuint& in_renderbuffer) const
 
 bool OpenGL::Context::is_shader(const GLuint& in_shader) const
 {
-    vkgl_not_implemented();
-
-    return false;
+    return m_gl_shader_manager_ptr->is_alive_id(in_shader);
 }
 
 bool OpenGL::Context::is_sync(const GLsync& in_sync)
@@ -2974,7 +3077,42 @@ void OpenGL::Context::set_shader_source(const GLuint&        in_shader,
                                         const GLchar* const* in_string_ptr_ptr,
                                         const GLint*         in_length_ptr)
 {
-    vkgl_not_implemented();
+    std::stringstream result_stream;
+
+    /* Form the GLSL string */
+    for (uint32_t n_chunk = 0;
+                  n_chunk < static_cast<uint32_t>(in_count);
+                ++n_chunk)
+    {
+        const auto current_string_ptr = in_string_ptr_ptr[n_chunk];
+
+        if (in_length_ptr == nullptr)
+        {
+            result_stream << current_string_ptr;
+        }
+        else
+        {
+            const auto& current_length = in_length_ptr[n_chunk];
+
+            vkgl_assert(current_string_ptr != nullptr);
+
+            if (current_length < 0)
+            {
+                result_stream << current_string_ptr;
+            }
+            else
+            {
+                result_stream << std::string(current_string_ptr,
+                                             current_length);
+            }
+        }
+    }
+
+    /* Assign it to the shader obhject */
+    vkgl_assert(m_gl_shader_manager_ptr != nullptr);
+
+    m_gl_shader_manager_ptr->set_shader_glsl(in_shader,
+                                             result_stream.str() );
 }
 
 void OpenGL::Context::set_stencil_function(const OpenGL::StencilFunction& in_func,
