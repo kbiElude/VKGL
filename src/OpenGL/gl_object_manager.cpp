@@ -41,7 +41,7 @@ OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_reference(const GL
         {
             const auto object_status = get_object_status(in_id);
 
-            vkgl_assert(object_status != Status::Deleted_Bindings_Pending &&
+            vkgl_assert(object_status != Status::Deleted_References_Pending &&
                         object_status != Status::Unknown);
         }
         #endif
@@ -113,7 +113,7 @@ bool OpenGL::GLObjectManager::delete_ids(const uint32_t& in_n_ids,
                 #endif
 
                 set_object_status(current_id,
-                                  Status::Deleted_Bindings_Pending);
+                                  Status::Deleted_References_Pending);
             }
         }
     }
@@ -267,8 +267,8 @@ void OpenGL::GLObjectManager::release_reference(const OpenGL::GLReference* in_re
         /* If the object has been destroyed AND there are no more dangling refernces, destroy
          * the container. Otherwise, retain it.
          */
-        if ((status                      == Status::Created_Not_Bound         ||
-             status                      == Status::Deleted_Bindings_Pending) &&
+        if ((status                      == Status::Created_Not_Bound           ||
+             status                      == Status::Deleted_References_Pending) &&
             (get_n_references(object_id) == 0) )
         {
             delete_object(object_id);

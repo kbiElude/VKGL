@@ -194,11 +194,11 @@ bool OpenGL::GLShaderManager::get_shader_property(const GLuint&                 
 
     switch (in_pname)
     {
-        case OpenGL::ShaderProperty::Compile_Status:       src_data_type = OpenGL::GetSetArgumentType::Boolean;        src_data.boolean      = shader_ptr->successful_last_compile;                      break;
-        case OpenGL::ShaderProperty::Delete_Status:        src_data_type = OpenGL::GetSetArgumentType::Boolean;        src_data.boolean      = (shader_ptr->status != Status::Deleted_Bindings_Pending); break;
-        case OpenGL::ShaderProperty::Info_Log_Length:      src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;   src_data.unsigned_int = static_cast<uint32_t>(shader_ptr->infolog.length() + 1);  break;
-        case OpenGL::ShaderProperty::Shader_Source_Length: src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;   src_data.unsigned_int = static_cast<uint32_t>(shader_ptr->glsl.length   () + 1);  break;
-        case OpenGL::ShaderProperty::Shader_Type:          src_data_type = OpenGL::GetSetArgumentType::ShaderTypeVKGL; src_data.shader_type  = shader_ptr->type;                                         break;
+        case OpenGL::ShaderProperty::Compile_Status:       src_data_type = OpenGL::GetSetArgumentType::Boolean;        src_data.boolean      = shader_ptr->successful_last_compile;                        break;
+        case OpenGL::ShaderProperty::Delete_Status:        src_data_type = OpenGL::GetSetArgumentType::Boolean;        src_data.boolean      = (shader_ptr->status != Status::Deleted_References_Pending); break;
+        case OpenGL::ShaderProperty::Info_Log_Length:      src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;   src_data.unsigned_int = static_cast<uint32_t>(shader_ptr->infolog.length() + 1);    break;
+        case OpenGL::ShaderProperty::Shader_Source_Length: src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;   src_data.unsigned_int = static_cast<uint32_t>(shader_ptr->glsl.length   () + 1);    break;
+        case OpenGL::ShaderProperty::Shader_Type:          src_data_type = OpenGL::GetSetArgumentType::ShaderTypeVKGL; src_data.shader_type  = shader_ptr->type;                                           break;
 
         default:
         {
