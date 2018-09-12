@@ -48,7 +48,7 @@ OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_reference(const GL
 
         result_ptr.reset(
             new GLReference(in_id,
-                            dynamic_cast<IObjectManagerReferenceRelease*>(this) )
+                            dynamic_cast<IGLObjectManager*>(this) )
         );
 
         if (result_ptr == nullptr)

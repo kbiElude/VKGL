@@ -6,6 +6,7 @@
 #define VKGL_CONTEXT_H
 
 #include "Common/types.h"
+#include "OpenGL/gl_buffer_manager.h"
 #include "OpenGL/gl_constants.h"
 #include "OpenGL/gl_limits.h"
 #include "OpenGL/gl_shader_manager.h"
@@ -820,6 +821,7 @@ namespace OpenGL
         std::vector<std::string> m_supported_extensions;
         const VKGL::IWSIContext* m_wsi_context_ptr;
 
+        GLBufferManagerUniquePtr  m_gl_buffer_manager_ptr;
         GLConstantsUniquePtr      m_gl_constants_ptr;
         GLLimitsUniquePtr         m_gl_limits_ptr;
         GLShaderManagerUniquePtr  m_gl_shader_manager_ptr;

@@ -18,7 +18,8 @@ namespace OpenGL
             /* Stub */
         }
 
-        virtual GLReferenceUniquePtr get_default_object_reference() const = 0;
+        virtual GLReferenceUniquePtr acquire_reference           (const GLuint& in_id)       = 0;
+        virtual GLReferenceUniquePtr get_default_object_reference()                    const = 0;
     };
 
     class GLObjectManager : public IObjectManagerReferenceRelease,

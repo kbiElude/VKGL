@@ -15,6 +15,21 @@ OpenGL::Scheduler::~Scheduler()
     /* Stub */
 }
 
+void OpenGL::Scheduler::buffer_data(const GLuint&     in_id,
+                                    const GLsizeiptr& in_size,
+                                    const void*       in_data_ptr)
+{
+    vkgl_not_implemented();
+}
+
+void OpenGL::Scheduler::buffer_sub_data(const GLuint&     in_id,
+                                        const GLsizeiptr& in_start_offset,
+                                        const GLsizeiptr& in_size,
+                                        const void*       in_data_ptr)
+{
+    vkgl_not_implemented();
+}
+
 void OpenGL::Scheduler::clear(const OpenGL::ClearBufferBits& in_buffers_to_clear)
 {
     vkgl_not_implemented();
@@ -96,6 +111,15 @@ void OpenGL::Scheduler::compressed_tex_sub_image_3d(const GLuint&              i
                                                     const OpenGL::PixelFormat& in_format,
                                                     const GLsizei&             in_image_size,
                                                     const void*                in_data)
+{
+    vkgl_not_implemented();
+}
+
+void OpenGL::Scheduler::copy_buffer_sub_data(const GLuint&     in_read_buffer_id,
+                                             const GLuint&     in_write_buffer_id,
+                                             const GLintptr&   in_read_offset,
+                                             const GLintptr&   in_write_offset,
+                                             const GLsizeiptr& in_size)
 {
     vkgl_not_implemented();
 }
@@ -187,6 +211,21 @@ void OpenGL::Scheduler::flush()
     vkgl_not_implemented();
 }
 
+void OpenGL::Scheduler::flush_mapped_buffer_range(const GLuint&     in_id,
+                                                  const GLintptr&   in_offset,
+                                                  const GLsizeiptr& in_length)
+{
+    vkgl_not_implemented();
+}
+
+void OpenGL::Scheduler::get_buffer_sub_data(const GLuint&     in_id,
+                                            const GLintptr&   in_offset,
+                                            const GLsizeiptr& in_size,
+                                            void*             out_data_ptr)
+{
+    vkgl_not_implemented();
+}
+
 void OpenGL::Scheduler::get_texture_image(const GLuint&              in_id,
                                           const uint32_t&            in_level,
                                           const OpenGL::PixelFormat& in_format,
@@ -204,6 +243,16 @@ bool OpenGL::Scheduler::init()
 
     result = true;
     return result;
+}
+
+void* OpenGL::Scheduler::map_buffer(const GLuint&               in_id,
+                                    const OpenGL::BufferAccess& in_access,
+                                    const GLintptr&             in_start_offset,
+                                    const GLsizeiptr&           in_length)
+{
+    vkgl_not_implemented();
+
+    return nullptr;
 }
 
 void OpenGL::Scheduler::multi_draw_arrays(const OpenGL::DrawCallMode& in_mode,
@@ -296,4 +345,11 @@ void OpenGL::Scheduler::tex_sub_image_3d(const GLuint&              in_id,
                                          const void*                in_pixels)
 {
     vkgl_not_implemented();
+}
+
+bool OpenGL::Scheduler::unmap_buffer(const GLuint& in_id)
+{
+    vkgl_not_implemented();
+
+    return false;
 }

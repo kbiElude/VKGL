@@ -20,6 +20,7 @@ namespace OpenGL
 {
     /* Forward declarations */
     class Context;
+    class GLBufferManager;
     class GLLimits;
     class GLReference;
     class GLShaderManager;
@@ -29,6 +30,8 @@ namespace OpenGL
     class IGLLimits;
     class IGLObjectManager;
     class Scheduler;
+
+    typedef std::unique_ptr<GLReference, std::function<void(GLReference*)> > GLReferenceUniquePtr;
 
     typedef struct PropertyData
     {

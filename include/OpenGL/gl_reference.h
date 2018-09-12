@@ -5,6 +5,7 @@
 #ifndef VKGL_GL_REFERENCE_H
 #define VKGL_GL_REFERENCE_H
 
+#include "Common/macros.h"
 #include "OpenGL/types.h"
 #include "OpenGL/types_interfaces.h"
 
@@ -13,18 +14,17 @@ namespace OpenGL
     class GLReference
     {
     public:
-        GLReference(const GLuint&                           in_id,
-                    OpenGL::IObjectManagerReferenceRelease* in_manager_ptr)
+        GLReference(const GLuint&             in_id,
+                    OpenGL::IGLObjectManager* in_manager_ptr)
             :m_id         (in_id),
              m_manager_ptr(in_manager_ptr)
         {
             vkgl_assert(m_manager_ptr != nullptr);
         }
 
-        ~GLReference()
-        {
-            m_manager_ptr->release_reference(this);
-        }
+        ~GLReference();
+
+        GLReferenceUniquePtr clone() const;
 
         const GLuint& get_id() const
         {
@@ -32,8 +32,8 @@ namespace OpenGL
         }
 
     private:
-        std::unique_ptr<GLReference, std::function<void(GLReference*)> > create(const GLuint&                           in_id,
-                                                                                OpenGL::IObjectManagerReferenceRelease* in_manager_ptr)
+        std::unique_ptr<GLReference, std::function<void(GLReference*)> > create(const GLuint&             in_id,
+                                                                                OpenGL::IGLObjectManager* in_manager_ptr)
         {
             std::unique_ptr<GLReference, std::function<void(GLReference*)> > result_ptr;
 
@@ -50,11 +50,9 @@ namespace OpenGL
         GLReference& operator=(const GLReference&);
 
         /* Private variables */
-        const GLuint                                  m_id;
-        OpenGL::IObjectManagerReferenceRelease* const m_manager_ptr;
+        const GLuint                    m_id;
+        OpenGL::IGLObjectManager* const m_manager_ptr;
     };
-
-    typedef std::unique_ptr<GLReference, std::function<void(GLReference*)> > GLReferenceUniquePtr;
 }
 
 #endif /* VKGL_GL_REFERENCE_H */

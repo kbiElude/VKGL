@@ -601,7 +601,7 @@ namespace OpenGL
 
     typedef struct VertexAttributeArrayState
     {
-        uint32_t                 buffer_binding;
+        GLReferenceUniquePtr     buffer_binding_ptr;
         bool                     enabled;
         bool                     integer;
         bool                     normalized;
@@ -611,6 +611,8 @@ namespace OpenGL
         VertexAttributeArrayType type;
 
         VertexAttributeArrayState();
+
+        VertexAttributeArrayState& operator=(const VertexAttributeArrayState&);
     } VertexAttributeArrayState;
 
 

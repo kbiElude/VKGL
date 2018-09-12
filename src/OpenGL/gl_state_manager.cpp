@@ -8,7 +8,28 @@
 #include "OpenGL/gl_vao_manager.h"
 #include "OpenGL/utils_enum.h"
 
+static const OpenGL::BufferTarget g_indexed_buffer_targets[] =
+{
+    OpenGL::BufferTarget::Transform_Feedback_Buffer,
+    OpenGL::BufferTarget::Uniform_Buffer,
+};
+
+static const OpenGL::BufferTarget g_nonindexed_buffer_targets[] =
+{
+    OpenGL::BufferTarget::Array_Buffer,
+    OpenGL::BufferTarget::Copy_Read_Buffer,
+    OpenGL::BufferTarget::Copy_Write_Buffer,
+    OpenGL::BufferTarget::Element_Array_Buffer,
+    OpenGL::BufferTarget::Pixel_Pack_Buffer,
+    OpenGL::BufferTarget::Pixel_Unpack_Buffer,
+    OpenGL::BufferTarget::Texture_Buffer,
+    OpenGL::BufferTarget::Transform_Feedback_Buffer,
+    OpenGL::BufferTarget::Uniform_Buffer,
+};
+
+
 OpenGL::GLStateManager::GLStateManager(const IGLLimits*        in_limits_ptr,
+                                       const IGLObjectManager* in_buffer_manager_ptr,
                                        const IGLObjectManager* in_vao_manager_ptr)
     :m_current_error_code(OpenGL::ErrorCode::No_Error),
      m_limits_ptr        (in_limits_ptr)
@@ -23,6 +44,28 @@ OpenGL::GLStateManager::GLStateManager(const IGLLimits*        in_limits_ptr,
     );
     vkgl_assert(m_state_ptr != nullptr);
 
+    /* Set up default buffer bindings */
+    for (const auto& current_indexed_target : g_indexed_buffer_targets)
+    {
+        const auto n_max_bindings = (current_indexed_target == OpenGL::BufferTarget::Transform_Feedback_Buffer) ? in_limits_ptr->get_max_transform_feedback_separate_attribs()
+                                                                                                                : in_limits_ptr->get_max_uniform_buffer_bindings            ();
+
+        for (uint32_t n_binding = 0;
+                      n_binding < n_max_bindings;
+                    ++n_binding)
+        {
+            m_indexed_buffer_binding_ptrs[IndexedBufferTarget(current_indexed_target, n_binding)] = IndexedBufferBinding(in_buffer_manager_ptr->get_default_object_reference(),
+                                                                                                                         0,  /* in_start_offset */
+                                                                                                                         0); /* in_size         */
+        }
+    }
+
+    for (const auto& current_nonindexed_target : g_nonindexed_buffer_targets)
+    {
+        m_nonindexed_buffer_binding_ptrs[current_nonindexed_target] = in_buffer_manager_ptr->get_default_object_reference();
+    }
+
+    /* Set up default VAO binding */
     m_vao_binding_ptr = in_vao_manager_ptr->get_default_object_reference();
 
     init_prop_maps    ();
@@ -99,11 +142,19 @@ void OpenGL::GLStateManager::enable(const OpenGL::Capability& in_capability)
     }
 }
 
-GLuint OpenGL::GLStateManager::get_bound_buffer_object(const OpenGL::BufferTarget& in_target) const
+const OpenGL::GLReference* OpenGL::GLStateManager::get_bound_buffer_object(const OpenGL::BufferTarget& in_target) const
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_nonindexed_buffer_binding_ptrs.find(in_target) != m_nonindexed_buffer_binding_ptrs.end() );
 
-    return 0;
+    return m_nonindexed_buffer_binding_ptrs.at(in_target).get();
+}
+
+const OpenGL::GLReference* OpenGL::GLStateManager::get_bound_buffer_object(const OpenGL::BufferTarget& in_target,
+                                                                           const uint32_t&             in_index) const
+{
+    vkgl_assert(m_indexed_buffer_binding_ptrs.find(IndexedBufferTarget(in_target, in_index) ) != m_indexed_buffer_binding_ptrs.end() );
+
+    return m_indexed_buffer_binding_ptrs.at(IndexedBufferTarget(in_target, in_index) ).reference_ptr.get();
 }
 
 const OpenGL::GLReference* OpenGL::GLStateManager::get_bound_vertex_array_object() const
@@ -382,6 +433,27 @@ void OpenGL::GLStateManager::set_blend_functions_separate(const OpenGL::BlendFun
     m_state_ptr->blend_func_src_rgb   = in_src_rgb_function;
     m_state_ptr->blend_func_dst_alpha = in_dst_alpha_function;
     m_state_ptr->blend_func_dst_rgb   = in_dst_rgb_function;
+}
+
+void OpenGL::GLStateManager::set_bound_buffer_object(const OpenGL::BufferTarget&  in_target,
+                                                     OpenGL::GLReferenceUniquePtr in_buffer_reference_ptr)
+{
+    vkgl_assert(m_nonindexed_buffer_binding_ptrs.find(in_target) != m_nonindexed_buffer_binding_ptrs.end() );
+
+    m_nonindexed_buffer_binding_ptrs[in_target] = std::move(in_buffer_reference_ptr);
+}
+
+void OpenGL::GLStateManager::set_bound_buffer_object(const OpenGL::BufferTarget&  in_target,
+                                                     const uint32_t&              in_index,
+                                                     OpenGL::GLReferenceUniquePtr in_buffer_reference_ptr,
+                                                     const size_t&                in_start_offset,
+                                                     const size_t&                in_size)
+{
+    vkgl_assert(m_indexed_buffer_binding_ptrs.find(IndexedBufferTarget(in_target, in_index) ) != m_indexed_buffer_binding_ptrs.end() );
+
+    m_indexed_buffer_binding_ptrs[IndexedBufferTarget(in_target, in_index)] = IndexedBufferBinding(std::move(in_buffer_reference_ptr),
+                                                                                                   in_start_offset,
+                                                                                                   in_size);
 }
 
 void OpenGL::GLStateManager::set_bound_vertex_array_object(OpenGL::GLReferenceUniquePtr in_vao_binding_ptr)

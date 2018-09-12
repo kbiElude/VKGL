@@ -123,14 +123,21 @@ bool OpenGL::GLVAOManager::get_vaa_property(const GLuint&                       
 
         switch (in_pname)
         {
-            case OpenGL::VertexAttributeProperty::Array_Size:               src_data_ptr = &vaa_ptr->size;           src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int64;           break;
-            case OpenGL::VertexAttributeProperty::Array_Type:               src_data_ptr = &vaa_ptr->type;           src_data_type = OpenGL::GetSetArgumentType::VertexAttributeArrayType; break;
-            case OpenGL::VertexAttributeProperty::Buffer_Binding:           src_data_ptr = &vaa_ptr->buffer_binding; src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;             break;
-            case OpenGL::VertexAttributeProperty::Enabled:                  src_data_ptr = &vaa_ptr->enabled;        src_data_type = OpenGL::GetSetArgumentType::Boolean;                  break;
-            case OpenGL::VertexAttributeProperty::Integer:                  src_data_ptr = &vaa_ptr->integer;        src_data_type = OpenGL::GetSetArgumentType::Boolean;                  break;
-            case OpenGL::VertexAttributeProperty::Normalized:               src_data_ptr = &vaa_ptr->normalized;     src_data_type = OpenGL::GetSetArgumentType::Boolean;                  break;
-            case OpenGL::VertexAttributeProperty::Pointer:                  src_data_ptr = &vaa_ptr->pointer;        src_data_type = OpenGL::GetSetArgumentType::Pointer;                  break;
-            case OpenGL::VertexAttributeProperty::Stride:                   src_data_ptr = &vaa_ptr->stride;         src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int64;           break;
+            case OpenGL::VertexAttributeProperty::Array_Size: src_data_ptr = &vaa_ptr->size;       src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int64;           break;
+            case OpenGL::VertexAttributeProperty::Array_Type: src_data_ptr = &vaa_ptr->type;       src_data_type = OpenGL::GetSetArgumentType::VertexAttributeArrayType; break;
+            case OpenGL::VertexAttributeProperty::Enabled:    src_data_ptr = &vaa_ptr->enabled;    src_data_type = OpenGL::GetSetArgumentType::Boolean;                  break;
+            case OpenGL::VertexAttributeProperty::Integer:    src_data_ptr = &vaa_ptr->integer;    src_data_type = OpenGL::GetSetArgumentType::Boolean;                  break;
+            case OpenGL::VertexAttributeProperty::Normalized: src_data_ptr = &vaa_ptr->normalized; src_data_type = OpenGL::GetSetArgumentType::Boolean;                  break;
+            case OpenGL::VertexAttributeProperty::Pointer:    src_data_ptr = &vaa_ptr->pointer;    src_data_type = OpenGL::GetSetArgumentType::Pointer;                  break;
+            case OpenGL::VertexAttributeProperty::Stride:     src_data_ptr = &vaa_ptr->stride;     src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int64;           break;
+
+            case OpenGL::VertexAttributeProperty::Buffer_Binding:
+            {
+                src_data_ptr  = &vaa_ptr->buffer_binding_ptr->get_id();
+                src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;
+
+                break;
+            }
 
             case OpenGL::VertexAttributeProperty::Current_Vertex_Attribute:
             {

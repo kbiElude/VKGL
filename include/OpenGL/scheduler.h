@@ -19,6 +19,31 @@ namespace OpenGL
 
         ~Scheduler();
 
+        void  buffer_data              (const GLuint&               in_id,
+                                        const GLsizeiptr&           in_size,
+                                        const void*                 in_data_ptr);
+        void  buffer_sub_data          (const GLuint&               in_id,
+                                        const GLsizeiptr&           in_start_offset,
+                                        const GLsizeiptr&           in_size,
+                                        const void*                 in_data_ptr);
+        void  copy_buffer_sub_data     (const GLuint&               in_read_buffer_id,
+                                        const GLuint&               in_write_buffer_id,
+                                        const GLintptr&             in_read_offset,
+                                        const GLintptr&             in_write_offset,
+                                        const GLsizeiptr&           in_size);
+        void  flush_mapped_buffer_range(const GLuint&               in_id,
+                                        const GLintptr&             in_offset,
+                                        const GLsizeiptr&           in_length);
+        void  get_buffer_sub_data      (const GLuint&               in_id,
+                                        const GLintptr&             in_offset,
+                                        const GLsizeiptr&           in_size,
+                                        void*                       out_data_ptr);
+        void* map_buffer               (const GLuint&               in_id,
+                                        const OpenGL::BufferAccess& in_access,
+                                        const GLintptr&             in_start_offset,
+                                        const GLsizeiptr&           in_length);
+        bool  unmap_buffer             (const GLuint&               in_id);
+
         void compile_shader(const GLuint& in_id);
 
         void draw_arrays        (const OpenGL::DrawCallMode&      in_mode,

@@ -6,6 +6,7 @@
 #include "Common/types.h"
 #include "OpenGL/types.h"
 #include "OpenGL/context.h"
+#include "OpenGL/gl_buffer_manager.h"
 #include "OpenGL/gl_reference.h"
 #include "OpenGL/gl_shader_manager.h"
 #include "OpenGL/gl_vao_manager.h"
@@ -487,21 +488,33 @@ void OpenGL::Context::bind_attrib_location(const GLuint& in_program,
 void OpenGL::Context::bind_buffer(const OpenGL::BufferTarget& in_target,
                                   const uint32_t&             in_id)
 {
-#if 0
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr  != nullptr);
 
-    m_gl_state_manager_ptr->set_buffer_binding(in_target,
-                                               in_id);
-#else
-    vkgl_not_implemented();
-#endif
+    auto buffer_reference_ptr = m_gl_buffer_manager_ptr->acquire_reference(in_id);
+
+    if (buffer_reference_ptr == nullptr)
+    {
+        vkgl_assert(buffer_reference_ptr != nullptr);
+    }
+    else
+    {
+        m_gl_state_manager_ptr->set_bound_buffer_object(in_target,
+                                                        std::move(buffer_reference_ptr) );
+    }
 }
 
 void OpenGL::Context::bind_buffer_base(const OpenGL::BufferTarget& in_target,
                                        const GLuint&               in_index,
                                        const GLuint&               in_buffer)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
+
+    return bind_buffer_range(in_target,
+                             in_index,
+                             in_buffer,
+                             0, /* in_offset */
+                             m_gl_buffer_manager_ptr->get_buffer_size(in_buffer) );
 }
 
 void OpenGL::Context::bind_buffer_range(const OpenGL::BufferTarget& in_target,
@@ -510,7 +523,14 @@ void OpenGL::Context::bind_buffer_range(const OpenGL::BufferTarget& in_target,
                                         const GLintptr&             in_offset,
                                         const GLsizeiptr&           in_size)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr  != nullptr);
+
+    m_gl_state_manager_ptr->set_bound_buffer_object(in_target,
+                                                    in_index,
+                                                    m_gl_buffer_manager_ptr->acquire_reference(in_buffer),
+                                                    in_offset,
+                                                    in_size);
 }
 
 void OpenGL::Context::bind_frag_data_location(const GLuint& in_program,
@@ -574,20 +594,20 @@ void OpenGL::Context::buffer_data(const OpenGL::BufferTarget& in_target,
                                   const void*                 in_data_ptr,
                                   const OpenGL::BufferUsage&  in_usage)
 {
-#if 0
     vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr  != nullptr);
 
-    const auto buffer_id = m_gl_state_manager_ptr->get_buffer_binding(in_target);
+    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
     vkgl_assert(buffer_id != 0);
 
-    m_gl_buffer_manager_ptr->buffer_data(buffer_id,
-                                         in_size,
-                                         in_data_ptr,
-                                         in_usage);
-#else
-    vkgl_not_implemented();
-#endif
+    m_scheduler_ptr->buffer_data(buffer_id,
+                                 in_size,
+                                 in_data_ptr);
+
+    m_gl_buffer_manager_ptr->set_buffer_store_size(buffer_id,
+                                                   in_size);
+    m_gl_buffer_manager_ptr->set_buffer_usage     (buffer_id,
+                                                   in_usage);
 }
 
 void OpenGL::Context::buffer_sub_data(const OpenGL::BufferTarget& in_target,
@@ -595,20 +615,16 @@ void OpenGL::Context::buffer_sub_data(const OpenGL::BufferTarget& in_target,
                                       const GLsizeiptr&           in_size,
                                       const void*                 in_data_ptr)
 {
-#if 0
     vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr  != nullptr);
 
-    const auto buffer_id = m_gl_state_manager_ptr->get_buffer_binding(in_target);
+    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
     vkgl_assert(buffer_id != 0);
 
-    m_gl_buffer_manager_ptr->buffer_sub_data(buffer_id,
-                                             in_offset,
-                                             in_size,
-                                             in_data_ptr);
-#else
-    vkgl_not_implemented();
-#endif
+    m_scheduler_ptr->buffer_sub_data(buffer_id,
+                                     in_offset,
+                                     in_size,
+                                     in_data_ptr);
 }
 
 OpenGL::FramebufferStatus OpenGL::Context::check_framebuffer_status(const OpenGL::FramebufferTarget& in_target) const
@@ -848,7 +864,16 @@ void OpenGL::Context::copy_buffer_sub_data(const OpenGL::BufferTarget& in_read_t
                                            const GLintptr&             in_write_offset,
                                            const GLsizeiptr&           in_size)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_state_manager_ptr  != nullptr);
+
+    const auto dst_buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_write_target)->get_id();
+    const auto src_buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_read_target)->get_id ();
+
+    m_scheduler_ptr->copy_buffer_sub_data(src_buffer_id,
+                                          dst_buffer_id,
+                                          in_read_offset,
+                                          in_write_offset,
+                                          in_size);
 }
 
 void OpenGL::Context::copy_tex_image_1d(const OpenGL::TextureTarget&  in_target,
@@ -1052,7 +1077,6 @@ end:
 void OpenGL::Context::delete_buffers(const GLsizei&  in_n,
                                      const uint32_t* in_ids_ptr)
 {
-#if 0
     bool result;
 
     vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
@@ -1064,9 +1088,6 @@ void OpenGL::Context::delete_buffers(const GLsizei&  in_n,
     {
         vkgl_assert_fail();
     }
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::delete_framebuffers(const GLsizei&  in_n,
@@ -1358,7 +1379,14 @@ void OpenGL::Context::flush_mapped_buffer_range(const OpenGL::BufferTarget& in_t
                                                 const GLintptr&             in_offset,
                                                 const GLsizeiptr&           in_length)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_scheduler_ptr        != nullptr);
+
+    const auto dst_buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
+
+    m_scheduler_ptr->flush_mapped_buffer_range(dst_buffer_id,
+                                               in_offset,
+                                               in_length);
 }
 
 void OpenGL::Context::framebuffer_renderbuffer(const OpenGL::FramebufferTarget&          in_target,
@@ -1422,7 +1450,6 @@ void OpenGL::Context::generate_mipmap(const OpenGL::MipmapGenerationTextureTarge
 void OpenGL::Context::gen_buffers(const uint32_t& in_n,
                                   uint32_t*       out_ids_ptr)
 {
-#if 0
     vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
 
     if (!m_gl_buffer_manager_ptr->generate_ids(in_n,
@@ -1430,9 +1457,6 @@ void OpenGL::Context::gen_buffers(const uint32_t& in_n,
     {
         vkgl_assert_fail();
     }
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::gen_framebuffers(const GLsizei& in_n,
@@ -1566,18 +1590,13 @@ void OpenGL::Context::get_buffer_pointerv(const OpenGL::BufferTarget&          i
                                           const OpenGL::BufferPointerProperty& in_pname,
                                           void**                               out_params_ptr) const
 {
-#if 0
+    vkgl_assert(in_pname                == OpenGL::BufferPointerProperty::Buffer_Map_Pointer);
     vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr  != nullptr);
 
-    const auto buffer_id = m_gl_state_manager_ptr->get_buffer_binding(in_target);
+    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
 
-    m_gl_buffer_manager_ptr->get_buffer_pointerv(buffer_id,
-                                                 in_pname,
-                                                 out_params_ptr);
-#else
-    vkgl_not_implemented();
-#endif
+    *out_params_ptr = m_gl_buffer_manager_ptr->get_buffer_map_pointer(buffer_id);
 }
 
 void OpenGL::Context::get_buffer_property(const OpenGL::BufferTarget&       in_target,
@@ -1586,20 +1605,16 @@ void OpenGL::Context::get_buffer_property(const OpenGL::BufferTarget&       in_t
                                           const uint32_t&                   in_n_args,
                                           void*                             out_result_ptr) const
 {
-#if 0
     vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr  != nullptr);
 
-    const auto buffer_id = m_gl_state_manager_ptr->get_buffer_binding(in_target);
+    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
 
     m_gl_buffer_manager_ptr->get_buffer_property(buffer_id,
                                                  in_pname,
                                                  in_arg_type,
                                                  in_n_args,
                                                  out_result_ptr);
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::get_buffer_sub_data(const OpenGL::BufferTarget& in_target,
@@ -1607,19 +1622,15 @@ void OpenGL::Context::get_buffer_sub_data(const OpenGL::BufferTarget& in_target,
                                           const GLsizeiptr&           in_size,
                                           void*                       out_data_ptr)
 {
-#if 0
     vkgl_assert(m_gl_state_manager_ptr != nullptr);
 
-    const auto buffer_id = m_gl_state_manager_ptr->get_buffer_binding(in_target);
+    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
     vkgl_assert(buffer_id != 0);
 
     m_scheduler_ptr->get_buffer_sub_data(buffer_id,
                                          in_offset,
                                          in_size,
                                          out_data_ptr);
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::get_compressed_tex_image(const OpenGL::TextureTarget& in_target,
@@ -2141,10 +2152,21 @@ bool OpenGL::Context::init()
         goto end;
     }
 
+    /* Set up GL buffer manager */
+    m_gl_buffer_manager_ptr = OpenGL::GLBufferManager::create();
+
+    if (m_gl_buffer_manager_ptr == nullptr)
+    {
+        vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
+
+        goto end;
+    }
+
     /* Set up GL state manager */
     m_gl_state_manager_ptr.reset(
-        new OpenGL::GLStateManager(dynamic_cast<IGLLimits*>       (m_gl_limits_ptr.get     () ),
-                                   dynamic_cast<IGLObjectManager*>(m_gl_vao_manager_ptr.get() ) )
+        new OpenGL::GLStateManager(dynamic_cast<IGLLimits*>       (m_gl_limits_ptr.get        () ),
+                                   dynamic_cast<IGLObjectManager*>(m_gl_buffer_manager_ptr.get() ),
+                                   dynamic_cast<IGLObjectManager*>(m_gl_vao_manager_ptr.get   () ) )
     );
 
     if (m_gl_state_manager_ptr == nullptr)
@@ -2572,15 +2594,9 @@ bool OpenGL::Context::init_supported_extensions()
 
 bool OpenGL::Context::is_buffer(const GLuint& in_id) const
 {
-#if 0
     vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
 
     return m_gl_buffer_manager_ptr->is_alive_id(in_id);
-#else
-    vkgl_not_implemented();
-
-    return false;
-#endif
 }
 
 bool OpenGL::Context::is_enabled(const OpenGL::Capability& in_capability) const
@@ -2678,20 +2694,19 @@ void OpenGL::Context::link_program(const GLuint& in_program)
 void* OpenGL::Context::map_buffer(const OpenGL::BufferTarget& in_target,
                                   const OpenGL::BufferAccess& in_access)
 {
-#if 0
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
-    vkgl_assert(m_scheduler_ptr        != nullptr);
+    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr  != nullptr);
+    vkgl_assert(m_scheduler_ptr         != nullptr);
 
-    const auto buffer_id = m_gl_state_manager_ptr->get_buffer_binding(in_target);
+    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
     vkgl_assert(buffer_id != 0);
 
-    return m_scheduler_ptr->map_buffer(in_target,
-                                       in_access);
-#else
-    vkgl_not_implemented();
+    const auto buffer_size = m_gl_buffer_manager_ptr->get_buffer_size(buffer_id);
 
-    return nullptr;
-#endif
+    return m_scheduler_ptr->map_buffer(buffer_id,
+                                       in_access,
+                                       0, /* in_start_offset */
+                                       buffer_size);
 }
 
 void* OpenGL::Context::map_buffer_range(const OpenGL::BufferTarget& in_target,
@@ -2699,9 +2714,16 @@ void* OpenGL::Context::map_buffer_range(const OpenGL::BufferTarget& in_target,
                                         const GLsizeiptr&           in_length,
                                         const OpenGL::BufferAccess& in_access)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_scheduler_ptr        != nullptr);
 
-    return nullptr;
+    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
+    vkgl_assert(buffer_id != 0);
+
+    return m_scheduler_ptr->map_buffer(buffer_id,
+                                       in_access,
+                                       in_offset,
+                                       in_length);
 }
 
 void OpenGL::Context::multi_draw_arrays(const OpenGL::DrawCallMode& in_mode,
@@ -3223,7 +3245,7 @@ bool OpenGL::Context::set_vaa_enabled_state(const GLuint& in_index,
                                             const bool&   in_new_state)
 {
     GLuint                            bound_vao_id;
-    bool                              result       = false;
+    bool                              result        = false;
     OpenGL::VertexAttributeArrayState vaa_state;
 
     vkgl_assert(m_gl_state_manager_ptr != nullptr);
@@ -3245,14 +3267,14 @@ bool OpenGL::Context::set_vaa_enabled_state(const GLuint& in_index,
         goto end;
     }
 
-    vaa_state.buffer_binding = vaa_state.buffer_binding; /* moot as per comment above */
-    vaa_state.enabled        = true;
-    vaa_state.integer        = vaa_state.integer;        /* moot as per comment above */
-    vaa_state.normalized     = vaa_state.normalized;     /* moot as per comment above */
-    vaa_state.pointer        = vaa_state.pointer;        /* moot as per comment above */
-    vaa_state.size           = vaa_state.size;           /* moot as per comment above */
-    vaa_state.stride         = vaa_state.stride;         /* moot as per comment above */
-    vaa_state.type           = vaa_state.type;           /* moot as per comment above */
+    vaa_state.buffer_binding_ptr = std::move(vaa_state.buffer_binding_ptr); /* moot as per comment above */
+    vaa_state.enabled            = true;
+    vaa_state.integer            = vaa_state.integer;        /* moot as per comment above */
+    vaa_state.normalized         = vaa_state.normalized;     /* moot as per comment above */
+    vaa_state.pointer            = vaa_state.pointer;        /* moot as per comment above */
+    vaa_state.size               = vaa_state.size;           /* moot as per comment above */
+    vaa_state.stride             = vaa_state.stride;         /* moot as per comment above */
+    vaa_state.type               = vaa_state.type;           /* moot as per comment above */
 
     m_gl_vao_manager_ptr->set_vaa_state(bound_vao_id,
                                         in_index,
@@ -3303,7 +3325,13 @@ void OpenGL::Context::set_vertex_attrib_pointer(const GLuint&                   
         vkgl_assert_fail();
     }
 
-    vaa_state.buffer_binding = m_gl_state_manager_ptr->get_bound_buffer_object(OpenGL::BufferTarget::Array_Buffer);
+    {
+        const auto buffer_id            = m_gl_state_manager_ptr->get_bound_buffer_object(OpenGL::BufferTarget::Array_Buffer)->get_id();
+        auto       buffer_reference_ptr = m_gl_buffer_manager_ptr->acquire_reference(buffer_id);
+
+        vaa_state.buffer_binding_ptr = std::move(buffer_reference_ptr);
+    }
+
     vaa_state.enabled        = vaa_state.enabled; /* moot as per comment above */
     vaa_state.integer        = (in_data_type == OpenGL::GetSetArgumentType::Int);
     vaa_state.normalized     = in_normalized;
@@ -3551,19 +3579,13 @@ void OpenGL::Context::tex_sub_image_3d(const OpenGL::TextureTarget& in_target,
 
 bool OpenGL::Context::unmap_buffer(const OpenGL::BufferTarget& in_target)
 {
-#if 0
     vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr  != nullptr);
 
-    const auto buffer_id = m_gl_state_manager_ptr->get_buffer_binding(in_target);
+    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
     vkgl_assert(buffer_id != 0);
 
     return m_scheduler_ptr->unmap_buffer(buffer_id);
-#else
-    vkgl_not_implemented();
-
-    return false;
-#endif
 }
 
 void OpenGL::Context::use_program(const GLuint& in_program)

@@ -21,7 +21,6 @@ namespace OpenGL
         bool get_element_array_buffer_binding(const uint32_t& in_vao_id,
                                               GLuint*         out_result_ptr) const;
 
-        /* NOTE: We return a copy here due to anticipated MT support requirements. */
         bool get_vaa_state_copy(const GLuint&              in_vao_id,
                                 const uint32_t&            in_n_vao_vaa,
                                 VertexAttributeArrayState* out_result_ptr) const;

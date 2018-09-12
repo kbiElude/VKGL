@@ -3,6 +3,7 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Common/macros.h"
+#include "OpenGL/gl_reference.h"
 #include "OpenGL/types.h"
 
 OpenGL::ActiveAttributeState::ActiveAttributeState()
@@ -345,12 +346,26 @@ OpenGL::VertexArrayObjectState::VertexArrayObjectState(const uint32_t& in_n_vert
 OpenGL::VertexAttributeArrayState::VertexAttributeArrayState()
 {
     /* As per table 6.4, core GL 3.2 spec */
-    buffer_binding = 0;
-    enabled        = false;
-    integer        = false;
-    normalized     = false;
-    pointer        = nullptr;
-    size           = 4;
-    stride         = 0;
-    type           = VertexAttributeArrayType::Float;
+    enabled    = false;
+    integer    = false;
+    normalized = false;
+    pointer    = nullptr;
+    size       = 4;
+    stride     = 0;
+    type       = VertexAttributeArrayType::Float;
+}
+
+OpenGL::VertexAttributeArrayState& OpenGL::VertexAttributeArrayState::operator=(const VertexAttributeArrayState& in_state)
+{
+    buffer_binding_ptr = (in_state.buffer_binding_ptr != nullptr) ? in_state.buffer_binding_ptr->clone()
+                                                                  : GLReferenceUniquePtr();
+    enabled            = in_state.enabled;
+    integer            = in_state.integer;
+    normalized         = in_state.normalized;
+    pointer            = in_state.pointer;
+    size               = in_state.size;
+    stride             = in_state.stride;
+    type               = in_state.type;
+
+    return *this;
 }
