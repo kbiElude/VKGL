@@ -44,7 +44,9 @@ namespace OpenGL
                                         const GLsizeiptr&           in_length);
         bool  unmap_buffer             (const GLuint&               in_id);
 
-        void compile_shader(const GLuint& in_id);
+        void compile_shader  (const GLuint& in_id);
+        void link_program    (const GLuint& in_program_id);
+        void validate_program(const GLuint& in_program_id);
 
         void draw_arrays        (const OpenGL::DrawCallMode&      in_mode,
                                  const GLint&                     in_first,

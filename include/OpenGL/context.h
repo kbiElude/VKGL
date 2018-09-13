@@ -9,6 +9,7 @@
 #include "OpenGL/gl_buffer_manager.h"
 #include "OpenGL/gl_constants.h"
 #include "OpenGL/gl_limits.h"
+#include "OpenGL/gl_program_manager.h"
 #include "OpenGL/gl_shader_manager.h"
 #include "OpenGL/gl_state_manager.h"
 #include "OpenGL/gl_texture_manager.h"
@@ -116,7 +117,7 @@ namespace OpenGL
         void  get_active_uniform_name(const GLuint&                     in_program,
                                       const GLuint&                     in_uniform_index,
                                       const GLsizei&                    in_buf_size,
-                                      GLsizei*                          inout_length_ptr,
+                                      GLsizei*                          out_length_ptr,
                                       GLchar*                           out_uniform_name_ptr) const;
         void  get_active_uniforms    (const GLuint&                     in_program,
                                       const GLsizei&                    in_uniform_count,
@@ -136,8 +137,8 @@ namespace OpenGL
 
         void   get_active_uniform_block_name    (const GLuint&                       in_program,
                                                  const GLuint&                       in_uniform_block_index,
-                                                 const GLsizei&                      in_buf_size_ptr,
-                                                 GLsizei*                            inout_length_ptr,
+                                                 const GLsizei&                      in_buf_size,
+                                                 GLsizei*                            out_length_ptr,
                                                  GLchar*                             out_uniform_block_name_ptr) const;
         void   get_active_uniform_block_property(const GLuint&                       in_program,
                                                  const GLuint&                       in_uniform_block_index,
@@ -155,7 +156,7 @@ namespace OpenGL
                                      const GLchar*                     in_name_ptr)           const;
         void  get_program_info_log  (const GLuint&                     in_program,
                                      const GLsizei&                    in_buf_size,
-                                     GLsizei*                          inout_length_ptr,
+                                     GLsizei*                          out_length_ptr,
                                      GLchar*                           out_info_log_ptr)      const;
         void  get_program_property  (const GLuint&                     in_program,
                                      const OpenGL::ProgramProperty&    in_pname,
@@ -824,6 +825,7 @@ namespace OpenGL
         GLBufferManagerUniquePtr  m_gl_buffer_manager_ptr;
         GLConstantsUniquePtr      m_gl_constants_ptr;
         GLLimitsUniquePtr         m_gl_limits_ptr;
+        GLProgramManagerUniquePtr m_gl_program_manager_ptr;
         GLShaderManagerUniquePtr  m_gl_shader_manager_ptr;
         GLStateManagerUniquePtr   m_gl_state_manager_ptr;
         GLTextureManagerUniquePtr m_gl_texture_manager_ptr;

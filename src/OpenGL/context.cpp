@@ -7,6 +7,7 @@
 #include "OpenGL/types.h"
 #include "OpenGL/context.h"
 #include "OpenGL/gl_buffer_manager.h"
+#include "OpenGL/gl_program_manager.h"
 #include "OpenGL/gl_reference.h"
 #include "OpenGL/gl_shader_manager.h"
 #include "OpenGL/gl_vao_manager.h"
@@ -437,6 +438,7 @@
 #ifdef min
     #undef min
 #endif
+
 OpenGL::Context::Context(const VKGL::IWSIContext* in_wsi_context_ptr)
     :m_wsi_context_ptr(in_wsi_context_ptr)
 {
@@ -451,7 +453,26 @@ OpenGL::Context::~Context()
 void OpenGL::Context::attach_shader(const GLuint& in_program,
                                     const GLuint& in_shader)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+    vkgl_assert(m_gl_shader_manager_ptr  != nullptr);
+
+    auto shader_reference_ptr = m_gl_shader_manager_ptr->acquire_reference(in_shader);
+
+    if (shader_reference_ptr == nullptr)
+    {
+        vkgl_assert(shader_reference_ptr != nullptr);
+
+        goto end;
+    }
+
+    if (!m_gl_program_manager_ptr->attach_shader(in_program,
+                                                 std::move(shader_reference_ptr) ))
+    {
+        vkgl_assert_fail();
+    }
+
+end:
+    ;
 }
 
 void OpenGL::Context::begin_conditional_render(const GLuint&                        in_occlusion_query_id,
@@ -482,7 +503,14 @@ void OpenGL::Context::bind_attrib_location(const GLuint& in_program,
                                            const GLuint& in_index,
                                            const GLchar* in_name)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    if (!m_gl_program_manager_ptr->cache_attribute_location_binding(in_program,
+                                                                    in_name,
+                                                                    in_index) )
+    {
+        vkgl_assert_fail();
+    }
 }
 
 void OpenGL::Context::bind_buffer(const OpenGL::BufferTarget& in_target,
@@ -537,7 +565,14 @@ void OpenGL::Context::bind_frag_data_location(const GLuint& in_program,
                                               const GLuint& in_color,
                                               const GLchar* in_name)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    if (!m_gl_program_manager_ptr->cache_frag_data_location(in_program,
+                                                            in_name,
+                                                            in_color) )
+    {
+        vkgl_assert_fail();
+    }
 }
 
 void OpenGL::Context::bind_framebuffer(const OpenGL::FramebufferTarget& in_target,
@@ -1043,9 +1078,20 @@ OpenGL::ContextUniquePtr OpenGL::Context::create(const VKGL::IWSIContext* in_wsi
 
 GLuint OpenGL::Context::create_program()
 {
-    vkgl_not_implemented();
+    GLuint result_id = 0;
 
-    return 0;
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    if (!m_gl_program_manager_ptr->generate_ids(1, /* in_n_ids */
+                                               &result_id) )
+    {
+        vkgl_assert_fail();
+
+        goto end;
+    }
+
+end:
+    return result_id;
 }
 
 GLuint OpenGL::Context::create_shader(const OpenGL::ShaderType& in_type)
@@ -1098,7 +1144,10 @@ void OpenGL::Context::delete_framebuffers(const GLsizei&  in_n,
 
 void OpenGL::Context::delete_program(const GLuint& in_id)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    m_gl_program_manager_ptr->delete_ids(1, /* in_n_ids */
+                                        &in_id);
 }
 
 void OpenGL::Context::delete_queries(const GLsizei&  in_n,
@@ -1172,7 +1221,13 @@ void OpenGL::Context::delete_vertex_arrays(const GLsizei& in_n,
 void OpenGL::Context::detach_shader(const GLuint& in_program,
                                     const GLuint& in_shader)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    if (!m_gl_program_manager_ptr->detach_shader(in_program,
+                                                 in_shader) )
+    {
+        vkgl_assert_fail();
+    }
 }
 
 void OpenGL::Context::disable(const OpenGL::Capability& in_capability)
@@ -1520,7 +1575,45 @@ void OpenGL::Context::get_active_attrib(const GLuint&         in_program,
                                         OpenGL::VariableType* out_type_ptr,
                                         GLchar*               out_name_ptr) const
 {
-    vkgl_not_implemented();
+    uint32_t     attribute_name_length   = 0;
+    const char*  attribute_name_ptr      = nullptr;
+    GLuint       attribute_size          = 0;
+    VariableType attribute_variable_type = VariableType::Unknown;
+
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    if (!m_gl_program_manager_ptr->get_active_attribute(in_program,
+                                                        in_index,
+                                                       &attribute_name_ptr,
+                                                       &attribute_size,
+                                                       &attribute_variable_type) )
+    {
+        vkgl_assert_fail();
+
+        goto end;
+    }
+
+    vkgl_assert(attribute_name_ptr != nullptr);
+
+    attribute_name_length = strlen(attribute_name_ptr);
+
+    if (out_length_ptr != nullptr)
+    {
+        *out_length_ptr = attribute_name_length;
+    }
+
+    *out_size_ptr = attribute_size;
+    *out_type_ptr = attribute_variable_type;
+
+    if (out_name_ptr != nullptr)
+    {
+        memcpy(out_name_ptr,
+               attribute_name_ptr,
+               std::min(static_cast<uint32_t>(in_buf_size), attribute_name_length + 1) );
+    }
+
+end:
+    ;
 }
 
 void OpenGL::Context::get_active_uniform(const GLuint&         in_program,
@@ -1531,16 +1624,86 @@ void OpenGL::Context::get_active_uniform(const GLuint&         in_program,
                                          OpenGL::VariableType* out_type_ptr,
                                          GLchar*               out_name_ptr) const
 {
-    vkgl_not_implemented();
+    uint32_t     uniform_name_length   = 0;
+    const char*  uniform_name_ptr      = nullptr;
+    GLuint       uniform_size          = 0;
+    VariableType uniform_variable_type = VariableType::Unknown;
+
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    if (!m_gl_program_manager_ptr->get_active_uniform(in_program,
+                                                      in_index,
+                                                      OpenGL::GLProgramManager::DEFAULT_UNIFORM_BLOCK_INDEX,
+                                                     &uniform_name_ptr,
+                                                     &uniform_size,
+                                                     &uniform_variable_type) )
+    {
+        vkgl_assert_fail();
+
+        goto end;
+    }
+
+    vkgl_assert(uniform_name_ptr != nullptr);
+
+    uniform_name_length = strlen(uniform_name_ptr);
+
+    if (out_length_ptr != nullptr)
+    {
+        *out_length_ptr = uniform_name_length;
+    }
+
+    *out_size_ptr = uniform_size;
+    *out_type_ptr = uniform_variable_type;
+
+    if (out_name_ptr != nullptr)
+    {
+        memcpy(out_name_ptr,
+               uniform_name_ptr,
+               std::min(static_cast<uint32_t>(in_buf_size), uniform_name_length + 1) );
+    }
+
+end:
+    ;
 }
 
 void OpenGL::Context::get_active_uniform_block_name(const GLuint&  in_program,
                                                     const GLuint&  in_uniform_block_index,
-                                                    const GLsizei& in_buf_size_ptr,
-                                                    GLsizei*       inout_length_ptr,
+                                                    const GLsizei& in_buf_size,
+                                                    GLsizei*       out_length_ptr,
                                                     GLchar*        out_uniform_block_name_ptr) const
 {
-    vkgl_not_implemented();
+    uint32_t     uniform_block_name_length   = 0;
+    const char*  uniform_block_name_ptr      = nullptr;
+
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    if (!m_gl_program_manager_ptr->get_active_uniform_block_name(in_program,
+                                                                 in_uniform_block_index,
+                                                                &uniform_block_name_ptr) )
+    {
+        vkgl_assert_fail();
+
+        goto end;
+    }
+
+    vkgl_assert(uniform_block_name_ptr != nullptr);
+
+    uniform_block_name_length = strlen(uniform_block_name_ptr);
+
+    if (out_length_ptr != nullptr)
+    {
+        *out_length_ptr = uniform_block_name_length;
+    }
+
+    if (out_uniform_block_name_ptr != nullptr)
+    {
+        memcpy(out_uniform_block_name_ptr,
+               uniform_block_name_ptr,
+               std::min(static_cast<uint32_t>(in_buf_size), uniform_block_name_length + 1) );
+    }
+
+end:
+    ;
 }
 
 void OpenGL::Context::get_active_uniform_block_property(const GLuint&                       in_program,
@@ -1549,16 +1712,75 @@ void OpenGL::Context::get_active_uniform_block_property(const GLuint&           
                                                         const OpenGL::GetSetArgumentType&   in_params_type,
                                                         void*                               out_params_ptr) const
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    if (!m_gl_program_manager_ptr->get_active_uniform_block_property(in_program,
+                                                                     in_uniform_block_index,
+                                                                     in_pname,
+                                                                     in_params_type,
+                                                                     out_params_ptr) )
+    {
+        vkgl_assert_fail();
+    }
 }
 
 void OpenGL::Context::get_active_uniform_name(const GLuint&  in_program,
                                               const GLuint&  in_uniform_index,
                                               const GLsizei& in_buf_size,
-                                              GLsizei*       inout_length_ptr,
+                                              GLsizei*       out_length_ptr,
                                               GLchar*        out_uniform_name_ptr) const
 {
-    vkgl_not_implemented();
+    uint32_t     uniform_block_index   = UINT32_MAX;
+    uint32_t     uniform_index         = UINT32_MAX;
+    uint32_t     uniform_name_length   = 0;
+    const char*  uniform_name_ptr      = nullptr;
+    GLuint       uniform_size          = 0;
+    VariableType uniform_variable_type = VariableType::Unknown;
+
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    /* 1. Convert the input "flattened" index to a <uniform block index , uniform index> pair. */
+    if (!m_gl_program_manager_ptr->map_global_uniform_index_to_uniform_and_ub_indices(in_program,
+                                                                                      in_uniform_index,
+                                                                                     &uniform_block_index,
+                                                                                     &uniform_index) )
+    {
+        vkgl_assert_fail();
+
+        goto end;
+    }
+
+    /* 2. Retrieve the name. */
+    if (!m_gl_program_manager_ptr->get_active_uniform(in_program,
+                                                      uniform_index,
+                                                      uniform_block_index,
+                                                     &uniform_name_ptr,
+                                                      nullptr,   /* out_opt_size_ptr     */
+                                                      nullptr) ) /* out_opt_variable_ptr */
+    {
+        vkgl_assert_fail();
+
+        goto end;
+    }
+
+    vkgl_assert(uniform_name_ptr != nullptr);
+
+    uniform_name_length = strlen(uniform_name_ptr);
+
+    if (out_length_ptr != nullptr)
+    {
+        *out_length_ptr = uniform_name_length;
+    }
+
+    if (out_uniform_name_ptr != nullptr)
+    {
+        memcpy(out_uniform_name_ptr,
+               uniform_name_ptr,
+               std::min(static_cast<uint32_t>(in_buf_size), uniform_name_length + 1) );
+    }
+
+end:
+    ;
 }
 
 void OpenGL::Context::get_active_uniforms(const GLuint&                  in_program,
@@ -1567,7 +1789,16 @@ void OpenGL::Context::get_active_uniforms(const GLuint&                  in_prog
                                           const OpenGL::UniformProperty& in_pname,
                                           GLint*                         out_params_ptr) const
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    if (!m_gl_program_manager_ptr->get_active_uniforms_property(in_program,
+                                                                in_uniform_count,
+                                                                in_uniform_indices_ptr,
+                                                                in_pname,
+                                                                out_params_ptr) )
+    {
+        vkgl_assert_fail();
+    }
 }
 
 void OpenGL::Context::get_attached_shaders(const GLuint&  in_program,
@@ -1575,15 +1806,55 @@ void OpenGL::Context::get_attached_shaders(const GLuint&  in_program,
                                            GLsizei*       out_count_ptr,
                                            GLuint*        out_shaders_ptr) const
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    const auto attached_shader_refs_ptr = m_gl_program_manager_ptr->get_attached_shaders(in_program);
+    uint32_t   n_attached_shader_refs   = 0;
+    uint32_t   n_shader_ids_to_store   = 0;
+
+    if (attached_shader_refs_ptr == nullptr)
+    {
+        vkgl_assert(attached_shader_refs_ptr != nullptr);
+
+        goto end;
+    }
+
+    n_attached_shader_refs = static_cast<uint32_t>(attached_shader_refs_ptr->size() );
+
+    if (out_count_ptr != nullptr)
+    {
+        *out_count_ptr = n_attached_shader_refs;
+    }
+
+    n_shader_ids_to_store = std::min(static_cast<uint32_t>(in_max_count), n_attached_shader_refs);
+
+    for (uint32_t n_shader_id = 0;
+                  n_shader_id < n_shader_ids_to_store;
+                ++n_shader_id)
+    {
+        out_shaders_ptr[n_shader_id] = (*attached_shader_refs_ptr)[n_shader_id]->get_id();
+    }
+
+end:
+    ;
 }
 
 GLint OpenGL::Context::get_attrib_location(const GLuint& in_program,
                                            const GLchar* in_name) const
 {
-    vkgl_not_implemented();
+    GLint result = -1;
 
-    return -1;
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    if (!m_gl_program_manager_ptr->get_active_attribute_location(in_program,
+                                                                 in_name,
+                                                                &result) )
+    {
+        goto end;
+    }
+
+end:
+    return result;
 }
 
 void OpenGL::Context::get_buffer_pointerv(const OpenGL::BufferTarget&          in_target,
@@ -1664,9 +1935,21 @@ OpenGL::ErrorCode OpenGL::Context::get_error()
 GLint OpenGL::Context::get_frag_data_location(const GLuint& in_program,
                                               const GLchar* in_name_ptr) const
 {
-    vkgl_not_implemented();
+    GLint result = -1;
 
-    return -1;
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    if (!m_gl_program_manager_ptr->get_frag_data_location(in_program,
+                                                          in_name_ptr,
+                                                         &result) )
+    {
+        vkgl_assert_fail();
+
+        goto end;
+    }
+
+end:
+    return result;
 }
 
 void OpenGL::Context::get_framebuffer_attachment_property(const OpenGL::FramebufferTarget&             in_target,
@@ -1753,10 +2036,38 @@ void OpenGL::Context::get_parameter_indexed(const OpenGL::ContextProperty&    in
 
 void OpenGL::Context::get_program_info_log(const GLuint&  in_program,
                                            const GLsizei& in_buf_size,
-                                           GLsizei*       inout_length_ptr,
+                                           GLsizei*       out_length_ptr,
                                            GLchar*        out_info_log_ptr) const
 {
-    vkgl_not_implemented();
+    uint32_t    info_log_length = 0;
+    const char* info_log_ptr    = nullptr;
+
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    if (!m_gl_program_manager_ptr->get_program_info_log(in_program,
+                                                       &info_log_ptr) )
+    {
+        vkgl_assert_fail();
+
+        goto end;
+    }
+
+    info_log_length = strlen(info_log_ptr) + 1; /* null terminator */
+
+    if (out_length_ptr != nullptr)
+    {
+        *out_length_ptr = info_log_length;
+    }
+
+    if (out_info_log_ptr != nullptr)
+    {
+        memcpy(out_info_log_ptr,
+               info_log_ptr,
+               std::min(info_log_length, static_cast<uint32_t>(in_buf_size) ));
+    }
+
+end:
+    ;
 }
 
 void OpenGL::Context::get_program_property(const GLuint&                     in_program,
@@ -1765,8 +2076,18 @@ void OpenGL::Context::get_program_property(const GLuint&                     in_
                                            const uint32_t&                   in_n_params_components,
                                            void*                             out_params_ptr) const
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    if (!m_gl_program_manager_ptr->get_program_property(in_program,
+                                                        in_pname,
+                                                        in_params_type,
+                                                        in_n_params_components,
+                                                        out_params_ptr) )
+    {
+        vkgl_assert_fail();
+    }
 }
+
 void OpenGL::Context::get_query_property(const uint32_t&                   in_id,
                                          const OpenGL::QueryProperty&      in_pname,
                                          const OpenGL::GetSetArgumentType& in_arg_type,
@@ -2014,9 +2335,18 @@ void OpenGL::Context::get_transform_feedback_varying(const GLuint&         in_pr
 GLuint OpenGL::Context::get_uniform_block_index(const GLuint& in_program,
                                                 const GLchar* in_uniform_block_name) const
 {
-    vkgl_not_implemented();
+    GLuint result = GL_INVALID_INDEX;
 
-    return UINT32_MAX;
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    if (!m_gl_program_manager_ptr->get_uniform_block_index(in_program,
+                                                           in_uniform_block_name,
+                                                          &result) )
+    {
+        result = GL_INVALID_INDEX;
+    }
+
+    return result;
 }
 
 void OpenGL::Context::get_uniform_indices(const GLuint&        in_program,
@@ -2024,15 +2354,32 @@ void OpenGL::Context::get_uniform_indices(const GLuint&        in_program,
                                           const GLchar* const* in_uniform_names_ptr_ptr,
                                           GLuint*              out_uniform_indices_ptr) const
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    if (!m_gl_program_manager_ptr->get_active_uniform_indices(in_program,
+                                                              in_uniform_count,
+                                                              in_uniform_names_ptr_ptr,
+                                                              out_uniform_indices_ptr) )
+    {
+        vkgl_assert_fail();
+    }
 }
 
 GLint OpenGL::Context::get_uniform_location(const GLuint& in_program,
                                             const GLchar* in_name) const
 {
-    vkgl_not_implemented();
+    GLint result = GL_INVALID_INDEX;
 
-    return -1;
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    if (!m_gl_program_manager_ptr->get_active_uniform_by_name(in_program,
+                                                              in_name,
+                                                             &result) )
+    {
+        vkgl_assert_fail();
+    }
+
+    return result;
 }
 
 void OpenGL::Context::get_uniform_value(const GLuint&                     in_program,
@@ -2138,6 +2485,16 @@ bool OpenGL::Context::init()
     if (m_gl_shader_manager_ptr == nullptr)
     {
         vkgl_assert(m_gl_shader_manager_ptr != nullptr);
+
+        goto end;
+    }
+
+    /* Set up program manager */
+    m_gl_program_manager_ptr = OpenGL::GLProgramManager::create();
+
+    if (m_gl_program_manager_ptr == nullptr)
+    {
+        vkgl_assert(m_gl_program_manager_ptr != nullptr);
 
         goto end;
     }
@@ -2629,9 +2986,9 @@ bool OpenGL::Context::is_framebuffer(const GLuint& in_framebuffer) const
 
 bool OpenGL::Context::is_program(const GLuint& in_program) const
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
 
-    return false;
+    return m_gl_program_manager_ptr->is_alive_id(in_program);
 }
 
 bool OpenGL::Context::is_query(const GLuint& in_id) const
@@ -2688,7 +3045,9 @@ bool OpenGL::Context::is_vertex_array(const GLuint& in_array) const
 
 void OpenGL::Context::link_program(const GLuint& in_program)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_scheduler_ptr != nullptr);
+
+    m_scheduler_ptr->link_program(in_program);
 }
 
 void* OpenGL::Context::map_buffer(const OpenGL::BufferTarget& in_target,
@@ -3238,7 +3597,11 @@ void OpenGL::Context::set_uniform_block_binding(const GLuint& in_program,
                                                 const GLuint& in_uniform_block_index,
                                                 const GLuint& in_uniform_block_binding)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+    m_gl_program_manager_ptr->set_uniform_block_binding(in_program,
+                                                        in_uniform_block_index,
+                                                        in_uniform_block_binding);
 }
 
 bool OpenGL::Context::set_vaa_enabled_state(const GLuint& in_index,
@@ -3590,12 +3953,29 @@ bool OpenGL::Context::unmap_buffer(const OpenGL::BufferTarget& in_target)
 
 void OpenGL::Context::use_program(const GLuint& in_program)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr   != nullptr);
+
+    auto program_reference_ptr = m_gl_program_manager_ptr->acquire_reference(in_program);
+
+    if (program_reference_ptr == nullptr)
+    {
+        vkgl_assert(program_reference_ptr != nullptr);
+
+        goto end;
+    }
+
+    m_gl_state_manager_ptr->set_bound_program_object(std::move(program_reference_ptr) );
+
+end:
+    ;
 }
 
 void OpenGL::Context::validate_program(const GLuint& in_program)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_scheduler_ptr != nullptr);
+
+    m_scheduler_ptr->validate_program(in_program);
 }
 
 void OpenGL::Context::wait_sync(const GLsync&   in_sync,

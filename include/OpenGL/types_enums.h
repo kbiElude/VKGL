@@ -1310,6 +1310,7 @@ namespace OpenGL
         Array_Stride,
         Block_Index,
         Is_Row_Major,
+        Location,
         Matrix_Stride,
         Name_Length,
         Offset,
