@@ -43,6 +43,7 @@ namespace OpenGL
                                            OpenGL::GLReferenceUniquePtr in_buffer_reference_ptr,
                                            const size_t&                in_start_offset,
                                            const size_t&                in_size);
+        void set_bound_program_object     (OpenGL::GLReferenceUniquePtr in_program_reference_ptr);
         void set_bound_vertex_array_object(OpenGL::GLReferenceUniquePtr in_vao_reference_ptr);
 
         void set_active_texture          (const uint32_t&                     in_n_texture_unit);
@@ -178,6 +179,7 @@ namespace OpenGL
 
         OpenGL::ErrorCode                                                      m_current_error_code;
         const IGLLimits* const                                                 m_limits_ptr;
+        OpenGL::GLReferenceUniquePtr                                           m_program_binding_ptr;
         ContextStateUniquePtr                                                  m_state_ptr;
         std::unordered_map<TextureUnit, OpenGL::TextureUnitStateUniquePtr>     m_texture_unit_to_state_ptr_map;
         OpenGL::GLReferenceUniquePtr                                           m_vao_binding_ptr;

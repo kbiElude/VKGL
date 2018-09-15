@@ -456,6 +456,12 @@ void OpenGL::GLStateManager::set_bound_buffer_object(const OpenGL::BufferTarget&
                                                                                                    in_size);
 }
 
+void OpenGL::GLStateManager::set_bound_program_object(OpenGL::GLReferenceUniquePtr in_program_binding_ptr)
+{
+    m_program_binding_ptr = std::move(in_program_binding_ptr);
+}
+
+
 void OpenGL::GLStateManager::set_bound_vertex_array_object(OpenGL::GLReferenceUniquePtr in_vao_binding_ptr)
 {
     m_vao_binding_ptr = std::move(in_vao_binding_ptr);

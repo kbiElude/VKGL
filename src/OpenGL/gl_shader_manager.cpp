@@ -9,8 +9,8 @@
 
 
 OpenGL::GLShaderManager::GLShaderManager()
-    :GLObjectManager(1,     /* in_first_valid_nondefault_id */
-                     false) /* in_expose_default_object     */
+    :GLObjectManager(1,    /* in_first_valid_nondefault_id */
+                     true) /* in_expose_default_object     */
 {
     /*  Stub */
 }
