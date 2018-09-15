@@ -245,6 +245,11 @@ bool OpenGL::Scheduler::init()
     return result;
 }
 
+void OpenGL::Scheduler::link_program(const GLuint& in_program_id)
+{
+    vkgl_not_implemented();
+}
+
 void* OpenGL::Scheduler::map_buffer(const GLuint&               in_id,
                                     const OpenGL::BufferAccess& in_access,
                                     const GLintptr&             in_start_offset,
@@ -352,4 +357,9 @@ bool OpenGL::Scheduler::unmap_buffer(const GLuint& in_id)
     vkgl_not_implemented();
 
     return false;
+}
+
+void OpenGL::Scheduler::validate_program(const GLuint& in_program_id)
+{
+    vkgl_not_implemented();
 }

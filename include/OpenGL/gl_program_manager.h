@@ -37,8 +37,8 @@ namespace OpenGL
         bool get_active_attribute             (const GLuint&                       in_program,
                                                const GLuint&                       in_index,
                                                const char**                        out_opt_name_ptr_ptr,
-                                               const uint32_t*                     out_opt_size_ptr,
-                                               const VariableType*                 out_opt_variable_ptr) const;
+                                               uint32_t*                           out_opt_size_ptr,
+                                               VariableType*                       out_opt_variable_ptr) const;
         bool get_active_attribute_location    (const GLuint&                       in_program,
                                                const char*                         in_name,
                                                GLint*                              out_result_ptr) const;
@@ -46,8 +46,8 @@ namespace OpenGL
                                                const GLuint&                       in_index,
                                                const uint32_t                      in_uniform_block_index = DEFAULT_UNIFORM_BLOCK_INDEX,
                                                const char**                        out_opt_name_ptr_ptr   = nullptr,
-                                               const uint32_t*                     out_opt_size_ptr       = nullptr,
-                                               const VariableType*                 out_opt_variable_ptr   = nullptr) const;
+                                               uint32_t*                           out_opt_size_ptr       = nullptr,
+                                               VariableType*                       out_opt_variable_ptr   = nullptr) const;
         bool get_active_uniform_block_name    (const GLuint&                       in_program,
                                                const GLuint&                       in_index,
                                                const char**                        out_opt_name_ptr_ptr) const;
@@ -100,8 +100,8 @@ namespace OpenGL
     private:
         /* Private type definitions */
 
-        typedef std::unordered_map<std::string, uint32_t> AttributeLocationBinding;
-        typedef std::unordered_map<std::string, uint32_t> FragDataLocation;
+        typedef std::unordered_map<std::string, uint32_t> AttributeLocationBindingMap;
+        typedef std::unordered_map<std::string, uint32_t> FragDataLocationMap;
 
         typedef struct ActiveAttributeProperties
         {
@@ -134,6 +134,7 @@ namespace OpenGL
         typedef struct ActiveUniformProperties
         {
             int32_t      array_stride;  /* 0 for non array uniforms,                     -1 for default UB uniforms */
+            int32_t      index;
             uint32_t     is_row_major;  /* 1 = true,                                      0 otherwise */
             int32_t      location;
             int32_t      matrix_stride; /* 0 for non matrix uniforms in non-default UBs, -1 for default UB uniforms */
@@ -145,6 +146,7 @@ namespace OpenGL
 
             ActiveUniformProperties()
                :array_stride       (-1),
+                index              (GL_INVALID_INDEX),
                 is_row_major       (UINT32_MAX),
                 location           (-1),
                 matrix_stride      (-1),
@@ -164,8 +166,10 @@ namespace OpenGL
                                     const int32_t&      in_array_stride,
                                     const int32_t&      in_matrix_stride,
                                     const bool&         in_is_row_major,
-                                    const int32_t&      in_location)
+                                    const int32_t&      in_location,
+                                    const int32_t&      in_index)
                 :array_stride       (in_array_stride),
+                 index              (in_index),
                  is_row_major       ( (in_is_row_major) ? 1 : 0),
                  location           (in_location),
                  matrix_stride      (in_matrix_stride),
@@ -184,6 +188,7 @@ namespace OpenGL
             std::vector<ActiveUniformProperties> active_uniforms;
             uint32_t                             binding_point;
             uint32_t                             data_size;
+            int32_t                              index;
             std::string                          name;
             bool                                 referenced_by_fs;
             bool                                 referenced_by_gs;
@@ -192,6 +197,7 @@ namespace OpenGL
             ActiveUniformBlock()
                 :binding_point   (0),
                  data_size       (0),
+                 index           (GL_INVALID_INDEX),
                  referenced_by_fs(false),
                  referenced_by_gs(false),
                  referenced_by_vs(false)
@@ -199,9 +205,11 @@ namespace OpenGL
                 /* Stub */
             }
 
-            ActiveUniformBlock(const std::string& in_name)
+            ActiveUniformBlock(const int32_t&     in_index,
+                               const std::string& in_name)
                 :binding_point   (0),
                  data_size       (0),
+                 index           (in_index),
                  name            (in_name),
                  referenced_by_fs(false),
                  referenced_by_gs(false),
@@ -211,22 +219,32 @@ namespace OpenGL
             }
         } ActiveUniformBlock;
 
+        typedef std::pair<int32_t, uint32_t> UniformBlockAndUniformIndexPair;
 
         typedef struct PostLinkData
         {
-            std::vector<ActiveAttributeProperties>            active_attributes;
-            std::vector<ActiveUniformBlock>                   active_uniform_blocks;
-            std::vector<ActiveUniformProperties>              active_uniforms;
-            std::unordered_map<std::string, FragDataLocation> frag_data_locations;
-            std::string                                       link_info_log;
+            std::unordered_map<std::string, uint32_t>                       active_attribute_name_to_location_map;
+            std::vector<ActiveAttributeProperties>                          active_attributes;
+            std::unordered_map<std::string, const ActiveUniformBlock*>      active_uniform_block_by_name_map;
+            std::vector<ActiveUniformBlock>                                 active_uniform_blocks;
+            std::unordered_map<std::string, const ActiveUniformProperties*> active_uniform_by_name_map;
+            std::vector<ActiveUniformProperties>                            active_uniforms;
+            FragDataLocationMap                                             frag_data_locations;
+            std::unordered_map<uint32_t, UniformBlockAndUniformIndexPair>   index_to_ub_and_uniform_index_pair;
+            std::string                                                     link_info_log;
 
+            uint32_t active_attribute_max_length;
+            uint32_t active_uniform_block_max_name_length;
+            uint32_t active_uniform_max_length;
+
+            PostLinkData();
         } PostLinkData;
 
         typedef struct Program
         {
             std::vector<GLReferenceUniquePtr>     attached_shaders;
-            std::vector<AttributeLocationBinding> cached_attribute_location_bindings; //< Locations to force for specific generic vertex attributes.
-            std::vector<FragDataLocation>         cached_frag_data_locations;         //< Bindings to force for specific fragment color outputs.
+            AttributeLocationBindingMap           cached_attribute_location_bindings; //< Locations to force for specific generic vertex attributes.
+            FragDataLocationMap                   cached_frag_data_locations;         //< Bindings to force for specific fragment color outputs.
             std::string                           infolog;
             std::unique_ptr<PostLinkData>         post_link_data_ptr;
 
@@ -236,13 +254,23 @@ namespace OpenGL
 
             OpenGL::TransformFeedbackBufferMode   tf_buffer_mode;              //< GL_TRANSFORM_FEEDBACK_BUFFER_MODE
             std::vector<std::string>              tf_varyings;
+            uint32_t                              tf_varying_max_length;
 
             std::unordered_map<uint32_t, uint32_t> ub_index_to_ub_binding;
 
+            bool delete_status;
+            bool link_status;
+            bool validate_status;
+
             Program()
-                :gs_input_type (OpenGL::GeometryInputType::Triangles),
-                 gs_output_type(OpenGL::GeometryOutputType::Triangle_Strip),
-                 tf_buffer_mode(OpenGL::TransformFeedbackBufferMode::Interleaved_Attribs)
+                :delete_status              (false),
+                 gs_input_type              (OpenGL::GeometryInputType::Triangles),
+                 gs_output_type             (OpenGL::GeometryOutputType::Triangle_Strip),
+                 link_status                (false),
+                 n_max_gs_vertices_generated(0),
+                 tf_buffer_mode             (OpenGL::TransformFeedbackBufferMode::Interleaved_Attribs),
+                 tf_varying_max_length      (0),
+                 validate_status            (false)
             {
                 /* Stub */
             }

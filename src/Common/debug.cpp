@@ -2,6 +2,12 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+#if defined(_WIN32)
+    #define _WIN32_WINNT 0x0501
+
+    #include <Windows.h>
+#endif
+
 #include "Common/debug.h"
 #include "Common/logger.h"
 
@@ -19,7 +25,10 @@ void VKGL::Debug::assert_failed(const char*  in_filename,
     {
         #if defined(_WIN32)
         {
-            _CrtDbgBreak();
+            if (::IsDebuggerPresent() )
+            {
+                _CrtDbgBreak();
+            }
         }
         #else
         {
