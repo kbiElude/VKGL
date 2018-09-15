@@ -671,13 +671,10 @@ OpenGL::FramebufferStatus OpenGL::Context::check_framebuffer_status(const OpenGL
 
 void OpenGL::Context::clear(const OpenGL::ClearBufferBits& in_buffers_to_clear)
 {
-#if 0
+
     vkgl_assert(m_scheduler_ptr != nullptr);
 
     m_scheduler_ptr->clear(in_buffers_to_clear);
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::clear_buffer(const OpenGL::ClearBuffer&        in_buffer,
@@ -1257,15 +1254,11 @@ void OpenGL::Context::draw_arrays(const OpenGL::DrawCallMode& in_mode,
                                   const GLint&                in_first,
                                   const GLsizei&              in_count)
 {
-#if 0
     vkgl_assert(m_scheduler_ptr != nullptr);
 
     m_scheduler_ptr->draw_arrays(in_mode,
                                  in_first,
                                  in_count);
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::draw_arrays_instanced(const OpenGL::DrawCallMode& in_mode,

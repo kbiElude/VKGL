@@ -201,6 +201,13 @@ OpenGL::SchedulerUniquePtr OpenGL::Scheduler::create()
     return result_ptr;
 }
 
+void OpenGL::Scheduler::draw_arrays(const OpenGL::DrawCallMode& in_mode,
+                                    const GLint&                in_first,
+                                    const GLsizei&              in_count)
+{
+    vkgl_not_implemented();
+}
+
 void OpenGL::Scheduler::finish()
 {
     vkgl_not_implemented();
