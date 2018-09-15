@@ -4,3 +4,6 @@
 [submodule "deps/Anvil"]
 	path = deps/Anvil
 	url = https://github.com/GPUOpen-LibrariesAndSDKs/Anvil
+[submodule "deps/LearnOpenGL"]
+	path = deps/LearnOpenGL
+	url = https://github.com/JoeyDeVries/LearnOpenGL
