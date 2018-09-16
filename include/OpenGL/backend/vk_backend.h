@@ -9,7 +9,8 @@
 
 namespace OpenGL
 {
-    class VKBackend : public IBackendGLCallbacks
+    class VKBackend : public IBackendCapabilities,
+                      public IBackendGLCallbacks
     {
     public:
         /* Public functions */
@@ -19,6 +20,13 @@ namespace OpenGL
         ~VKBackend();
 
     private:
+        /* IBackendCapabilities functions */
+
+        void get_capability(const OpenGL::BackendCapability&  in_capability,
+                            const OpenGL::GetSetArgumentType& in_arg_type,
+                            const uint32_t&                   in_n_vals,
+                            void*                             out_result_ptr) const final;
+
         /* IBackendGLCallbacks functions */
 
         void  buffer_data              (const GLuint&               in_id,

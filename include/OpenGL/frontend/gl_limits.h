@@ -12,7 +12,7 @@ namespace OpenGL
     class GLLimits : public OpenGL::IGLLimits
     {
     public:
-         GLLimits();
+         GLLimits(const OpenGL::IBackendCapabilities* in_caps_ptr);
         ~GLLimits();
 
         void get_parameter(const OpenGL::ContextProperty&    in_pname,

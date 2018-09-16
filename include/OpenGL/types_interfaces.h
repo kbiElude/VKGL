@@ -9,6 +9,20 @@
 
 namespace OpenGL
 {
+    class IBackendCapabilities
+    {
+    public:
+        virtual ~IBackendCapabilities()
+        {
+            /* Stub */
+        }
+
+        virtual void get_capability(const OpenGL::BackendCapability&  in_capability,
+                                    const OpenGL::GetSetArgumentType& in_arg_type,
+                                    const uint32_t&                   in_n_vals,
+                                    void*                             out_result_ptr) const = 0;
+    };
+
     class IBackendGLCallbacks
     {
     public:

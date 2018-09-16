@@ -26,7 +26,8 @@ namespace OpenGL
         /* Public functions */
 
         static ContextUniquePtr create(const VKGL::IWSIContext*     in_wsi_context_ptr,
-                                       OpenGL::IBackendGLCallbacks* in_backend_ptr);
+                                       OpenGL::IBackendGLCallbacks* in_backend_gl_callbacks_ptr,
+                                       const IBackendCapabilities*  in_backend_caps_ptr)
 
         ~Context();
 
@@ -808,8 +809,9 @@ namespace OpenGL
     private:
         /* Private functions */
 
-        Context(const VKGL::IWSIContext*     in_wsi_context_ptr,
-                OpenGL::IBackendGLCallbacks* in_backend_ptr);
+        Context(const VKGL::IWSIContext*            in_wsi_context_ptr,
+                OpenGL::IBackendGLCallbacks*        in_backend_gl_callbacks_ptr,
+                const OpenGL::IBackendCapabilities* in_backend_caps_ptr);
 
         bool init                     ();
         bool init_dispatch_table      ();
@@ -819,7 +821,9 @@ namespace OpenGL
                                    const bool&   in_new_state);
 
         /* Private variables */
-        OpenGL::IBackendGLCallbacks* m_backend_ptr;
+        const OpenGL::IBackendCapabilities* m_backend_caps_ptr;
+        OpenGL::IBackendGLCallbacks*        m_backend_gl_callbacks_ptr;
+
         OpenGL::DispatchTable        m_dispatch_table;
         std::vector<std::string>     m_supported_extensions;
         const VKGL::IWSIContext*     m_wsi_context_ptr;

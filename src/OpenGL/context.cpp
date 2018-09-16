@@ -440,9 +440,11 @@
 #endif
 
 OpenGL::Context::Context(const VKGL::IWSIContext*     in_wsi_context_ptr,
-                         OpenGL::IBackendGLCallbacks* in_backend_ptr)
-    :m_backend_ptr    (in_backend_ptr),
-     m_wsi_context_ptr(in_wsi_context_ptr)
+                         OpenGL::IBackendGLCallbacks* in_backend_gl_callbacks_ptr,
+                         const IBackendCapabilities*  in_backend_caps_ptr)
+    :m_backend_caps_ptr        (in_backend_caps_ptr),
+     m_backend_gl_callbacks_ptr(in_backend_gl_callbacks_ptr),
+     m_wsi_context_ptr         (in_wsi_context_ptr)
 {
     /* Stub */
 }
@@ -2468,7 +2470,7 @@ bool OpenGL::Context::init()
 
     /* Set up GL limits container */
     m_gl_limits_ptr.reset(
-        new OpenGL::GLLimits()
+        new OpenGL::GLLimits(dynamic_cast<const OpenGL::IBackendCapabilities*>(m_backend_ptr))
     );
 
     if (m_gl_limits_ptr == nullptr)
