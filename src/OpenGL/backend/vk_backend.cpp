@@ -3,26 +3,27 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Common/macros.h"
-#include "OpenGL/scheduler.h"
+#include "OpenGL/types.h"
+#include "OpenGL/backend/vk_backend.h"
 
-OpenGL::Scheduler::Scheduler()
+OpenGL::VKBackend::VKBackend()
 {
-    /* Stub */
+    // todo
 }
 
-OpenGL::Scheduler::~Scheduler()
+OpenGL::VKBackend::~VKBackend()
 {
-    /* Stub */
+    // todo
 }
 
-void OpenGL::Scheduler::buffer_data(const GLuint&     in_id,
+void OpenGL::VKBackend::buffer_data(const GLuint&     in_id,
                                     const GLsizeiptr& in_size,
                                     const void*       in_data_ptr)
 {
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::buffer_sub_data(const GLuint&     in_id,
+void OpenGL::VKBackend::buffer_sub_data(const GLuint&     in_id,
                                         const GLsizeiptr& in_start_offset,
                                         const GLsizeiptr& in_size,
                                         const void*       in_data_ptr)
@@ -30,17 +31,17 @@ void OpenGL::Scheduler::buffer_sub_data(const GLuint&     in_id,
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::clear(const OpenGL::ClearBufferBits& in_buffers_to_clear)
+void OpenGL::VKBackend::clear(const OpenGL::ClearBufferBits& in_buffers_to_clear)
 {
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::compile_shader(const GLuint& in_id)
+void OpenGL::VKBackend::compile_shader(const GLuint& in_id)
 {
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::compressed_tex_image_1d(const GLuint&                 in_id,
+void OpenGL::VKBackend::compressed_tex_image_1d(const GLuint&                 in_id,
                                                 const GLint&                  in_level,
                                                 const OpenGL::InternalFormat& in_internalformat,
                                                 const GLsizei                 in_width,
@@ -51,7 +52,7 @@ void OpenGL::Scheduler::compressed_tex_image_1d(const GLuint&                 in
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::compressed_tex_image_2d(const GLuint&                 in_id,
+void OpenGL::VKBackend::compressed_tex_image_2d(const GLuint&                 in_id,
                                                 const GLint&                  in_level,
                                                 const OpenGL::InternalFormat& in_internalformat,
                                                 const GLsizei&                in_width,
@@ -63,7 +64,7 @@ void OpenGL::Scheduler::compressed_tex_image_2d(const GLuint&                 in
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::compressed_tex_image_3d(const GLuint&                 in_id,
+void OpenGL::VKBackend::compressed_tex_image_3d(const GLuint&                 in_id,
                                                 const GLint&                  in_level,
                                                 const OpenGL::InternalFormat& in_internalformat,
                                                 const GLsizei&                in_width,
@@ -76,7 +77,7 @@ void OpenGL::Scheduler::compressed_tex_image_3d(const GLuint&                 in
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::compressed_tex_sub_image_1d(const GLuint&              in_id,
+void OpenGL::VKBackend::compressed_tex_sub_image_1d(const GLuint&              in_id,
                                                     const GLint&               in_level,
                                                     const GLint&               in_xoffset,
                                                     const GLsizei&             in_width,
@@ -87,7 +88,7 @@ void OpenGL::Scheduler::compressed_tex_sub_image_1d(const GLuint&              i
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::compressed_tex_sub_image_2d(const GLuint&              in_id,
+void OpenGL::VKBackend::compressed_tex_sub_image_2d(const GLuint&              in_id,
                                                     const GLint&               in_level,
                                                     const GLint&               in_xoffset,
                                                     const GLint&               in_yoffset,
@@ -100,7 +101,7 @@ void OpenGL::Scheduler::compressed_tex_sub_image_2d(const GLuint&              i
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::compressed_tex_sub_image_3d(const GLuint&              in_id,
+void OpenGL::VKBackend::compressed_tex_sub_image_3d(const GLuint&              in_id,
                                                     const GLint&               in_level,
                                                     const GLint&               in_xoffset,
                                                     const GLint&               in_yoffset,
@@ -115,7 +116,7 @@ void OpenGL::Scheduler::compressed_tex_sub_image_3d(const GLuint&              i
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::copy_buffer_sub_data(const GLuint&     in_read_buffer_id,
+void OpenGL::VKBackend::copy_buffer_sub_data(const GLuint&     in_read_buffer_id,
                                              const GLuint&     in_write_buffer_id,
                                              const GLintptr&   in_read_offset,
                                              const GLintptr&   in_write_offset,
@@ -124,7 +125,7 @@ void OpenGL::Scheduler::copy_buffer_sub_data(const GLuint&     in_read_buffer_id
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::copy_tex_image_1d(const GLuint&                 in_id,
+void OpenGL::VKBackend::copy_tex_image_1d(const GLuint&                 in_id,
                                           const GLint                   in_level,
                                           const OpenGL::InternalFormat& in_internalformat,
                                           const GLint&                  in_x,
@@ -135,7 +136,7 @@ void OpenGL::Scheduler::copy_tex_image_1d(const GLuint&                 in_id,
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::copy_tex_image_2d(const GLuint&                 in_id,
+void OpenGL::VKBackend::copy_tex_image_2d(const GLuint&                 in_id,
                                           const GLint&                  in_level,
                                           const OpenGL::InternalFormat& in_internalformat,
                                           const GLint&                  in_x,
@@ -147,7 +148,7 @@ void OpenGL::Scheduler::copy_tex_image_2d(const GLuint&                 in_id,
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::copy_tex_sub_image_1d(const GLuint&  in_id,
+void OpenGL::VKBackend::copy_tex_sub_image_1d(const GLuint&  in_id,
                                               const GLint&   in_level,
                                               const GLint&   in_xoffset,
                                               const GLint&   in_x,
@@ -157,7 +158,7 @@ void OpenGL::Scheduler::copy_tex_sub_image_1d(const GLuint&  in_id,
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::copy_tex_sub_image_2d(const GLuint&  in_id,
+void OpenGL::VKBackend::copy_tex_sub_image_2d(const GLuint&  in_id,
                                               const GLint&   in_level,
                                               const GLint&   in_xoffset,
                                               const GLint&   in_yoffset,
@@ -169,7 +170,7 @@ void OpenGL::Scheduler::copy_tex_sub_image_2d(const GLuint&  in_id,
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::copy_tex_sub_image_3d(const GLuint&  in_id,
+void OpenGL::VKBackend::copy_tex_sub_image_3d(const GLuint&  in_id,
                                               const GLint&   in_level,
                                               const GLint&   in_xoffset,
                                               const GLint&   in_yoffset,
@@ -182,13 +183,11 @@ void OpenGL::Scheduler::copy_tex_sub_image_3d(const GLuint&  in_id,
     vkgl_not_implemented();
 }
 
-OpenGL::SchedulerUniquePtr OpenGL::Scheduler::create()
+OpenGL::VKBackendUniquePtr OpenGL::VKBackend::create()
 {
-    OpenGL::SchedulerUniquePtr result_ptr;
+    OpenGL::VKBackendUniquePtr result_ptr;
 
-    result_ptr.reset(
-        new OpenGL::Scheduler()
-    );
+    result_ptr.reset(new OpenGL::VKBackend() );
 
     if (result_ptr != nullptr)
     {
@@ -201,31 +200,49 @@ OpenGL::SchedulerUniquePtr OpenGL::Scheduler::create()
     return result_ptr;
 }
 
-void OpenGL::Scheduler::draw_arrays(const OpenGL::DrawCallMode& in_mode,
+void OpenGL::VKBackend::draw_arrays(const OpenGL::DrawCallMode& in_mode,
                                     const GLint&                in_first,
                                     const GLsizei&              in_count)
 {
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::finish()
+void OpenGL::VKBackend::draw_elements(const OpenGL::DrawCallMode&      in_mode,
+                                      const GLsizei&                   in_count,
+                                      const OpenGL::DrawCallIndexType& in_type,
+                                      const void*                      in_indices)
 {
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::flush()
+void OpenGL::VKBackend::draw_range_elements(const OpenGL::DrawCallMode&      in_mode,
+                                            const GLuint&                    in_start,
+                                            const GLuint&                    in_end,
+                                            const GLsizei&                   in_count,
+                                            const OpenGL::DrawCallIndexType& in_type,
+                                            const void*                      in_indices)
 {
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::flush_mapped_buffer_range(const GLuint&     in_id,
+void OpenGL::VKBackend::finish()
+{
+    vkgl_not_implemented();
+}
+
+void OpenGL::VKBackend::flush()
+{
+    vkgl_not_implemented();
+}
+
+void OpenGL::VKBackend::flush_mapped_buffer_range(const GLuint&     in_id,
                                                   const GLintptr&   in_offset,
                                                   const GLsizeiptr& in_length)
 {
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::get_buffer_sub_data(const GLuint&     in_id,
+void OpenGL::VKBackend::get_buffer_sub_data(const GLuint&     in_id,
                                             const GLintptr&   in_offset,
                                             const GLsizeiptr& in_size,
                                             void*             out_data_ptr)
@@ -233,7 +250,14 @@ void OpenGL::Scheduler::get_buffer_sub_data(const GLuint&     in_id,
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::get_texture_image(const GLuint&              in_id,
+void OpenGL::VKBackend::get_compressed_tex_image(const GLuint& in_id,
+                                                 const GLint&  in_level,
+                                                 void*         in_img)
+{
+    vkgl_not_implemented();
+}
+
+void OpenGL::VKBackend::get_texture_image(const GLuint&              in_id,
                                           const uint32_t&            in_level,
                                           const OpenGL::PixelFormat& in_format,
                                           const OpenGL::PixelType&   in_type,
@@ -242,22 +266,19 @@ void OpenGL::Scheduler::get_texture_image(const GLuint&              in_id,
     vkgl_not_implemented();
 }
 
-bool OpenGL::Scheduler::init()
+bool OpenGL::VKBackend::init()
 {
-    bool result = false;
+    // todo
 
-    // ..
-
-    result = true;
-    return result;
+    return true;
 }
 
-void OpenGL::Scheduler::link_program(const GLuint& in_program_id)
+void OpenGL::VKBackend::link_program(const GLuint& in_program_id)
 {
     vkgl_not_implemented();
 }
 
-void* OpenGL::Scheduler::map_buffer(const GLuint&               in_id,
+void* OpenGL::VKBackend::map_buffer(const GLuint&               in_id,
                                     const OpenGL::BufferAccess& in_access,
                                     const GLintptr&             in_start_offset,
                                     const GLsizeiptr&           in_length)
@@ -267,7 +288,7 @@ void* OpenGL::Scheduler::map_buffer(const GLuint&               in_id,
     return nullptr;
 }
 
-void OpenGL::Scheduler::multi_draw_arrays(const OpenGL::DrawCallMode& in_mode,
+void OpenGL::VKBackend::multi_draw_arrays(const OpenGL::DrawCallMode& in_mode,
                                           const GLint*                in_first_ptr,
                                           const GLsizei*              in_count_ptr,
                                           const GLsizei&              in_drawcount)
@@ -275,7 +296,7 @@ void OpenGL::Scheduler::multi_draw_arrays(const OpenGL::DrawCallMode& in_mode,
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::multi_draw_elements(const OpenGL::DrawCallMode&      in_mode,
+void OpenGL::VKBackend::multi_draw_elements(const OpenGL::DrawCallMode&      in_mode,
                                             const GLsizei*                   in_count_ptr,
                                             const OpenGL::DrawCallIndexType& in_type,
                                             const void* const*               in_indices_ptr,
@@ -284,7 +305,7 @@ void OpenGL::Scheduler::multi_draw_elements(const OpenGL::DrawCallMode&      in_
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::read_pixels(const int32_t&             in_x,
+void OpenGL::VKBackend::read_pixels(const int32_t&             in_x,
                                     const int32_t&             in_y,
                                     const size_t&              in_width,
                                     const size_t&              in_height,
@@ -295,7 +316,7 @@ void OpenGL::Scheduler::read_pixels(const int32_t&             in_x,
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::tex_image_1d(const GLuint&                 in_id,
+void OpenGL::VKBackend::tex_image_1d(const GLuint&                 in_id,
                                      const int32_t&                in_level,
                                      const OpenGL::InternalFormat& in_internalformat,
                                      const int32_t&                in_width,
@@ -307,7 +328,7 @@ void OpenGL::Scheduler::tex_image_1d(const GLuint&                 in_id,
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::tex_image_2d(const GLuint&                 in_id,
+void OpenGL::VKBackend::tex_image_2d(const GLuint&                 in_id,
                                      const GLint&                  in_level,
                                      const OpenGL::InternalFormat& in_internalformat,
                                      const GLsizei&                in_width,
@@ -320,7 +341,21 @@ void OpenGL::Scheduler::tex_image_2d(const GLuint&                 in_id,
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::tex_sub_image_1d(const GLuint&              in_id,
+void OpenGL::VKBackend::tex_image_3d(const GLuint&                 in_id,
+                                     const GLint&                  in_level,
+                                     const OpenGL::InternalFormat& in_internalformat,
+                                     const GLsizei&                in_width,
+                                     const GLsizei&                in_height,
+                                     const GLsizei&                in_depth,
+                                     const GLint&                  in_border,
+                                     const OpenGL::PixelFormat&    in_format,
+                                     const OpenGL::PixelType&      in_type,
+                                     const void*                   in_pixels_ptr)
+{
+    vkgl_not_implemented();
+}
+
+void OpenGL::VKBackend::tex_sub_image_1d(const GLuint&              in_id,
                                          const GLint&               in_level,
                                          const GLint&               in_xoffset,
                                          const GLsizei&             in_width,
@@ -331,7 +366,7 @@ void OpenGL::Scheduler::tex_sub_image_1d(const GLuint&              in_id,
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::tex_sub_image_2d(const GLuint&              in_id,
+void OpenGL::VKBackend::tex_sub_image_2d(const GLuint&              in_id,
                                          const GLint&               in_level,
                                          const GLint&               in_xoffset,
                                          const GLint&               in_yoffset,
@@ -344,7 +379,7 @@ void OpenGL::Scheduler::tex_sub_image_2d(const GLuint&              in_id,
     vkgl_not_implemented();
 }
 
-void OpenGL::Scheduler::tex_sub_image_3d(const GLuint&              in_id,
+void OpenGL::VKBackend::tex_sub_image_3d(const GLuint&              in_id,
                                          const GLint&               in_level,
                                          const GLint&               in_xoffset,
                                          const GLint&               in_yoffset,
@@ -359,14 +394,15 @@ void OpenGL::Scheduler::tex_sub_image_3d(const GLuint&              in_id,
     vkgl_not_implemented();
 }
 
-bool OpenGL::Scheduler::unmap_buffer(const GLuint& in_id)
+bool OpenGL::VKBackend::unmap_buffer(const GLuint& in_id)
 {
     vkgl_not_implemented();
 
     return false;
 }
 
-void OpenGL::Scheduler::validate_program(const GLuint& in_program_id)
+void OpenGL::VKBackend::validate_program(const GLuint& in_program_id)
 {
     vkgl_not_implemented();
 }
+

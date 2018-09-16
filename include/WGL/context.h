@@ -12,6 +12,7 @@
     #error WGL requires OpenGL component for successful compilation
 #else
     #include "OpenGL/context.h"
+    #include "OpenGL/types.h"
 #endif
 
 #include <stdint.h>
@@ -96,7 +97,8 @@ namespace WGL
 
         /* Private variables */
 
-        OpenGL::ContextUniquePtr m_gl_context_ptr;
+        OpenGL::ContextUniquePtr   m_gl_context_ptr;
+        OpenGL::VKBackendUniquePtr m_vk_backend_ptr;
 
         HDC                   m_current_hdc;
         bool                  m_is_debug_context;

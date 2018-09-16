@@ -14,7 +14,6 @@
 #include "OpenGL/frontend/gl_state_manager.h"
 #include "OpenGL/frontend/gl_texture_manager.h"
 #include "OpenGL/frontend/gl_vao_manager.h"
-#include "OpenGL/scheduler.h"
 #include "OpenGL/types.h"
 
 namespace OpenGL
@@ -26,7 +25,8 @@ namespace OpenGL
     public:
         /* Public functions */
 
-        static ContextUniquePtr create(const VKGL::IWSIContext* in_wsi_context_ptr);
+        static ContextUniquePtr create(const VKGL::IWSIContext*     in_wsi_context_ptr,
+                                       OpenGL::IBackendGLCallbacks* in_backend_ptr);
 
         ~Context();
 
@@ -808,7 +808,8 @@ namespace OpenGL
     private:
         /* Private functions */
 
-        Context(const VKGL::IWSIContext* in_wsi_context_ptr);
+        Context(const VKGL::IWSIContext*     in_wsi_context_ptr,
+                OpenGL::IBackendGLCallbacks* in_backend_ptr);
 
         bool init                     ();
         bool init_dispatch_table      ();
@@ -818,9 +819,10 @@ namespace OpenGL
                                    const bool&   in_new_state);
 
         /* Private variables */
-        OpenGL::DispatchTable    m_dispatch_table;
-        std::vector<std::string> m_supported_extensions;
-        const VKGL::IWSIContext* m_wsi_context_ptr;
+        OpenGL::IBackendGLCallbacks* m_backend_ptr;
+        OpenGL::DispatchTable        m_dispatch_table;
+        std::vector<std::string>     m_supported_extensions;
+        const VKGL::IWSIContext*     m_wsi_context_ptr;
 
         GLBufferManagerUniquePtr  m_gl_buffer_manager_ptr;
         GLConstantsUniquePtr      m_gl_constants_ptr;
@@ -830,7 +832,6 @@ namespace OpenGL
         GLStateManagerUniquePtr   m_gl_state_manager_ptr;
         GLTextureManagerUniquePtr m_gl_texture_manager_ptr;
         GLVAOManagerUniquePtr     m_gl_vao_manager_ptr;
-        SchedulerUniquePtr        m_scheduler_ptr;
     };
 }
 

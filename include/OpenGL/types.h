@@ -30,9 +30,10 @@ namespace OpenGL
     class GLVAOManager;
     class IGLLimits;
     class IGLObjectManager;
-    class Scheduler;
+    class VKBackend;
 
     typedef std::unique_ptr<GLReference, std::function<void(GLReference*)> > GLReferenceUniquePtr;
+    typedef std::unique_ptr<VKBackend>                                       VKBackendUniquePtr;
 
     typedef struct PropertyData
     {

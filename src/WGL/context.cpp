@@ -7,6 +7,7 @@
 #include "GDI32/globals.h"
 #include "Khronos/GL/glcorearb.h"
 #include "Khronos/GL/wglext.h"
+#include "OpenGL/backend/vk_backend.h"
 #include "WGL/context.h"
 #include "WGL/globals.h"
 
@@ -212,7 +213,19 @@ bool WGL::Context::init_gl_context()
 {
     bool result = false;
 
-    m_gl_context_ptr = OpenGL::Context::create(reinterpret_cast<VKGL::IWSIContext*>(this) );
+    /* First, spawn a Vulkan backend instance we're going to use to translate all the GL calls to */
+    m_vk_backend_ptr = OpenGL::VKBackend::create();
+
+    if (m_vk_backend_ptr == nullptr)
+    {
+        vkgl_assert(m_vk_backend_ptr != nullptr);
+
+        goto end;
+    }
+
+    /* Good to create the GL context instance, now that we have a functional backend instance. */
+    m_gl_context_ptr = OpenGL::Context::create(reinterpret_cast<VKGL::IWSIContext*>      (this),
+                                               dynamic_cast<OpenGL::IBackendGLCallbacks*>(m_vk_backend_ptr.get() ));
 
     if (m_gl_context_ptr == nullptr)
     {

@@ -133,8 +133,10 @@ if (VKGL_INCLUDE_OPENGL)
                                                                                                   )
                                                                                                   
     FILE(GLOB OpenGL32Includes "${VK_GL_SOURCE_DIR}/include/OpenGL/*.h"
+                               "${VK_GL_SOURCE_DIR}/include/OpenGL/backend/*.h"
                                "${VK_GL_SOURCE_DIR}/include/OpenGL/frontend/*.h")
     FILE(GLOB OpenGL32Sources  "${VK_GL_SOURCE_DIR}/src/OpenGL/*.cpp"
+                               "${VK_GL_SOURCE_DIR}/src/OpenGL/backend/*.cpp"
                                "${VK_GL_SOURCE_DIR}/src/OpenGL/frontend/*.cpp"
                                 )
 
