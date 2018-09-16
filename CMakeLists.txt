@@ -132,8 +132,11 @@ if (VKGL_INCLUDE_OPENGL)
                                           "${VK_GL_SOURCE_DIR}/src/OpenGL/entrypoints/GL3.2/*.cpp"
                                                                                                   )
                                                                                                   
-    FILE(GLOB OpenGL32Includes "${VK_GL_SOURCE_DIR}/include/OpenGL/*.h")
-    FILE(GLOB OpenGL32Sources  "${VK_GL_SOURCE_DIR}/src/OpenGL/*.cpp")
+    FILE(GLOB OpenGL32Includes "${VK_GL_SOURCE_DIR}/include/OpenGL/*.h"
+                               "${VK_GL_SOURCE_DIR}/include/OpenGL/frontend/*.h")
+    FILE(GLOB OpenGL32Sources  "${VK_GL_SOURCE_DIR}/src/OpenGL/*.cpp"
+                               "${VK_GL_SOURCE_DIR}/src/OpenGL/frontend/*.cpp"
+                                )
 
     add_library(OpenGL STATIC ${CommonIncludes}
                               ${KhronosIncludes}

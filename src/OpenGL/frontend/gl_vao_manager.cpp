@@ -4,8 +4,8 @@
  */
 #include "Common/macros.h"
 #include "OpenGL/converters.h"
-#include "OpenGL/gl_reference.h"
-#include "OpenGL/gl_vao_manager.h"
+#include "OpenGL/frontend/gl_reference.h"
+#include "OpenGL/frontend/gl_vao_manager.h"
 
 OpenGL::GLVAOManager::VAO::VAO(const OpenGL::IGLLimits* in_limits_ptr)
 {

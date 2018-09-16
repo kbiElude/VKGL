@@ -5,7 +5,7 @@
 #ifndef VKGL_GL_PROGRAM_MANAGER_H
 #define VKGL_GL_PROGRAM_MANAGER_H
 
-#include "OpenGL/gl_object_manager.h"
+#include "OpenGL/frontend/gl_object_manager.h"
 #include "OpenGL/types.h"
 
 namespace OpenGL

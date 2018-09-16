@@ -6,14 +6,14 @@
 #define VKGL_CONTEXT_H
 
 #include "Common/types.h"
-#include "OpenGL/gl_buffer_manager.h"
-#include "OpenGL/gl_constants.h"
-#include "OpenGL/gl_limits.h"
-#include "OpenGL/gl_program_manager.h"
-#include "OpenGL/gl_shader_manager.h"
-#include "OpenGL/gl_state_manager.h"
-#include "OpenGL/gl_texture_manager.h"
-#include "OpenGL/gl_vao_manager.h"
+#include "OpenGL/frontend/gl_buffer_manager.h"
+#include "OpenGL/frontend/gl_constants.h"
+#include "OpenGL/frontend/gl_limits.h"
+#include "OpenGL/frontend/gl_program_manager.h"
+#include "OpenGL/frontend/gl_shader_manager.h"
+#include "OpenGL/frontend/gl_state_manager.h"
+#include "OpenGL/frontend/gl_texture_manager.h"
+#include "OpenGL/frontend/gl_vao_manager.h"
 #include "OpenGL/scheduler.h"
 #include "OpenGL/types.h"
 

@@ -4,8 +4,8 @@
  */
 #include "Common/macros.h"
 #include "OpenGL/converters.h"
-#include "OpenGL/gl_state_manager.h"
-#include "OpenGL/gl_vao_manager.h"
+#include "OpenGL/frontend/gl_state_manager.h"
+#include "OpenGL/frontend/gl_vao_manager.h"
 #include "OpenGL/utils_enum.h"
 
 static const OpenGL::BufferTarget g_indexed_buffer_targets[] =

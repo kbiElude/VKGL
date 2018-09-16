@@ -6,7 +6,7 @@
 #define VKGL_GL_STATE_MANAGER_H
 
 #include "OpenGL/types.h"
-#include "OpenGL/gl_reference.h"
+#include "OpenGL/frontend/gl_reference.h"
 
 
 namespace OpenGL

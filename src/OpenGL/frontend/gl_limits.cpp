@@ -3,7 +3,7 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Common/macros.h"
-#include "OpenGL/gl_limits.h"
+#include "OpenGL/frontend/gl_limits.h"
 
 OpenGL::GLLimits::GLLimits()
 {

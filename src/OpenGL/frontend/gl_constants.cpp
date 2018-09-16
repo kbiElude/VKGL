@@ -4,7 +4,7 @@
  */
 #include "Common/macros.h"
 #include "OpenGL/converters.h"
-#include "OpenGL/gl_constants.h"
+#include "OpenGL/frontend/gl_constants.h"
 
 OpenGL::GLConstants::GLConstants(const IContext* in_context_ptr)
     :m_context_ptr(in_context_ptr)

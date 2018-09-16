@@ -4,8 +4,8 @@
  */
 #include "Common/macros.h"
 #include "OpenGL/converters.h"
-#include "OpenGL/gl_buffer_manager.h"
-#include "OpenGL/gl_reference.h"
+#include "OpenGL/frontend/gl_buffer_manager.h"
+#include "OpenGL/frontend/gl_reference.h"
 
 
 OpenGL::GLBufferManager::GLBufferManager()

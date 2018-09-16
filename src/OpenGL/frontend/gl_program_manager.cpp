@@ -4,8 +4,8 @@
  */
 #include "Common/macros.h"
 #include "OpenGL/converters.h"
-#include "OpenGL/gl_program_manager.h"
-#include "OpenGL/gl_reference.h"
+#include "OpenGL/frontend/gl_program_manager.h"
+#include "OpenGL/frontend/gl_reference.h"
 #include <algorithm>
 
 

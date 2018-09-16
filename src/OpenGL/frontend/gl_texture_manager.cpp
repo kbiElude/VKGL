@@ -3,7 +3,7 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Common/macros.h"
-#include "OpenGL/gl_texture_manager.h"
+#include "OpenGL/frontend/gl_texture_manager.h"
 
 OpenGL::GLTextureManager::GLTextureManager(const IGLLimits* in_limits_ptr)
     :m_limits_ptr(in_limits_ptr)

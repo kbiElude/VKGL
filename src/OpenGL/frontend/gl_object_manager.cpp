@@ -3,8 +3,8 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Common/macros.h"
-#include "OpenGL/gl_object_manager.h"
-#include "OpenGL/gl_reference.h"
+#include "OpenGL/frontend/gl_object_manager.h"
+#include "OpenGL/frontend/gl_reference.h"
 
 OpenGL::GLObjectManager::GLObjectManager(const GLuint& in_first_valid_nondefault_id,
                                          const bool&   in_expose_default_object)
