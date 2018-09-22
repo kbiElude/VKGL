@@ -48,7 +48,7 @@ OpenGL::GLConstants::GLConstants(const IContext* in_context_ptr)
 
 OpenGL::GLConstants::~GLConstants()
 {
-    vkgl_not_implemented();
+    /* Stub */
 }
 
 void OpenGL::GLConstants::get_parameter(const OpenGL::ContextProperty&    in_pname,

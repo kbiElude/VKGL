@@ -4,6 +4,7 @@
  */
 #include "Common/macros.h"
 #include "OpenGL/types.h"
+#include "OpenGL/converters.h"
 #include "OpenGL/backend/vk_backend.h"
 
 OpenGL::VKBackend::VKBackend()
@@ -250,6 +251,37 @@ void OpenGL::VKBackend::get_buffer_sub_data(const GLuint&     in_id,
     vkgl_not_implemented();
 }
 
+void OpenGL::VKBackend::get_capability(const OpenGL::BackendCapability&  in_capability,
+                                       const OpenGL::GetSetArgumentType& in_arg_type,
+                                       const uint32_t&                   in_n_vals,
+                                       void*                             out_result_ptr) const
+{
+    const auto cap_iterator = m_capabilities.find(in_capability);
+
+    if (cap_iterator == m_capabilities.end() )
+    {
+        vkgl_assert(cap_iterator != m_capabilities.end() );
+
+        goto end;
+    }
+
+    if (cap_iterator->second.n_vals < in_n_vals)
+    {
+        vkgl_assert(cap_iterator->second.n_vals >= in_n_vals);
+
+        goto end;
+    }
+
+    OpenGL::Converters::convert(cap_iterator->second.data_type,
+                                cap_iterator->second.data.u32,
+                                cap_iterator->second.n_vals,
+                                in_arg_type,
+                                out_result_ptr);
+
+end:
+    ;
+}
+
 void OpenGL::VKBackend::get_compressed_tex_image(const GLuint& in_id,
                                                  const GLint&  in_level,
                                                  void*         in_img)
@@ -268,7 +300,80 @@ void OpenGL::VKBackend::get_texture_image(const GLuint&              in_id,
 
 bool OpenGL::VKBackend::init()
 {
-    // todo
+    bool result = false;
+
+    result = init_capabilities();
+
+    return result;
+}
+
+bool OpenGL::VKBackend::init_capabilities()
+{
+    static const float    dummy_data_f32[2] = {0, 0}; /* todo */
+    static const uint32_t dummy_data_u32[2] = {0, 0}; /* todo */
+
+    m_capabilities = decltype(m_capabilities)
+    {
+        {OpenGL::BackendCapability::Aliased_Line_Width_Range,                      CapabilityData(dummy_data_f32, 2)},
+        {OpenGL::BackendCapability::Max_3D_Texture_Size,                           CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Array_Texture_Layers,                      CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Clip_Distances,                            CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Color_Attachments,                         CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Color_Texture_Samples,                     CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Combined_Fragment_Uniform_Components,      CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Combined_Geometry_Uniform_Components,      CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Combined_Texture_Image_Units,              CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Combined_Vertex_Uniform_Components,        CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Combined_Uniform_Blocks,                   CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Cube_Map_Texture_Size,                     CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Depth_Texture_Samples,                     CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Draw_Buffers,                              CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Elements_Indices,                          CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Elements_Vertices,                         CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Fragment_Input_Components,                 CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Fragment_Uniform_Blocks,                   CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Fragment_Uniform_Components,               CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Geometry_Input_Components,                 CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Geometry_Output_Components,                CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Geometry_Output_Vertices,                  CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Geometry_Texture_Image_Units,              CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Geometry_Total_Output_Components,          CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Geometry_Uniform_Blocks,                   CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Geometry_Uniform_Components,               CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Integer_Samples,                           CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Program_Texel_Offset,                      CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Rectangle_Texture_Size,                    CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Renderbuffer_Size,                         CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Sample_Mask_Words,                         CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Samples,                                   CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Server_Wait_Timeout,                       CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Texture_Buffer_Size,                       CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Texture_Image_Units,                       CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Texture_LOD_Bias,                          CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Texture_Size,                              CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Transform_Feedback_Buffers,                CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Transform_Feedback_Interleaved_Components, CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Transform_Feedback_Separate_Attribs,       CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Transform_Feedback_Separate_Components,    CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Uniform_Block_Size,                        CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Uniform_Buffer_Bindings,                   CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Varying_Components,                        CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Vertex_Attribs,                            CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Vertex_Output_Components,                  CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Vertex_Texture_Image_Units,                CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Vertex_Uniform_Blocks,                     CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Vertex_Uniform_Components,                 CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Max_Viewport_Dims,                             CapabilityData(dummy_data_u32, 2)},
+        {OpenGL::BackendCapability::Min_Program_Texel_Offset,                      CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Point_Fade_Threshold_Size,                     CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Point_Size_Granularity,                        CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Point_Size_Range,                              CapabilityData(dummy_data_f32, 2)},
+        {OpenGL::BackendCapability::Query_Counter_Bits,                            CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Smooth_Line_Width_Granularity,                 CapabilityData(dummy_data_f32, 1)},
+        {OpenGL::BackendCapability::Smooth_Line_Width_Range,                       CapabilityData(dummy_data_f32, 2)},
+        {OpenGL::BackendCapability::Subpixel_Bits,                                 CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Uniform_Buffer_Offset_Alignment,               CapabilityData(dummy_data_u32, 1)},
+    };
 
     return true;
 }

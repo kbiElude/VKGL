@@ -27,7 +27,7 @@ namespace OpenGL
 
         static ContextUniquePtr create(const VKGL::IWSIContext*     in_wsi_context_ptr,
                                        OpenGL::IBackendGLCallbacks* in_backend_gl_callbacks_ptr,
-                                       const IBackendCapabilities*  in_backend_caps_ptr)
+                                       const IBackendCapabilities*  in_backend_caps_ptr);
 
         ~Context();
 

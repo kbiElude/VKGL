@@ -4,6 +4,7 @@
  */
 #include "Common/macros.h"
 #include "OpenGL/frontend/gl_limits.h"
+#include "OpenGL/converters.h"
 #include "OpenGL/types.h"
 
 OpenGL::GLLimits::GLLimits(const OpenGL::IBackendCapabilities* in_caps_ptr)
@@ -92,7 +93,7 @@ OpenGL::GLLimits::GLLimits(const OpenGL::IBackendCapabilities* in_caps_ptr)
     m_prop_map =
     {
         /* NOTE: This must stay in sync with OpenGL::Utils::is_context_property_gl_limit() ! */
-        {OpenGL::ContextProperty::Aliased_Line_Width_Range,                      PropertyData(OpenGL::GetSetArgumentType::Float,        2, m_aliased_line_width_range)},
+        {OpenGL::ContextProperty::Aliased_Line_Width_Range,                      PropertyData(OpenGL::GetSetArgumentType::Float,        2,  m_aliased_line_width_range)},
         {OpenGL::ContextProperty::Max_3D_Texture_Size,                           PropertyData(OpenGL::GetSetArgumentType::Unsigned_Int, 1, &m_max_3d_texture_size)},
         {OpenGL::ContextProperty::Max_Array_Texture_Layers,                      PropertyData(OpenGL::GetSetArgumentType::Unsigned_Int, 1, &m_max_array_texture_layers)},
         {OpenGL::ContextProperty::Max_Clip_Distances,                            PropertyData(OpenGL::GetSetArgumentType::Unsigned_Int, 1, &m_max_clip_distances)},
@@ -141,14 +142,14 @@ OpenGL::GLLimits::GLLimits(const OpenGL::IBackendCapabilities* in_caps_ptr)
         {OpenGL::ContextProperty::Max_Vertex_Texture_Image_Units,                PropertyData(OpenGL::GetSetArgumentType::Unsigned_Int, 1, &m_max_vertex_texture_image_units)},
         {OpenGL::ContextProperty::Max_Vertex_Uniform_Blocks,                     PropertyData(OpenGL::GetSetArgumentType::Unsigned_Int, 1, &m_max_vertex_uniform_blocks)},
         {OpenGL::ContextProperty::Max_Vertex_Uniform_Components,                 PropertyData(OpenGL::GetSetArgumentType::Unsigned_Int, 1, &m_max_vertex_uniform_components)},
-        {OpenGL::ContextProperty::Max_Viewport_Dims,                             PropertyData(OpenGL::GetSetArgumentType::Unsigned_Int, 2, m_max_viewport_dims)},
+        {OpenGL::ContextProperty::Max_Viewport_Dims,                             PropertyData(OpenGL::GetSetArgumentType::Unsigned_Int, 2,  m_max_viewport_dims)},
         {OpenGL::ContextProperty::Min_Program_Texel_Offset,                      PropertyData(OpenGL::GetSetArgumentType::Int,          1, &m_min_program_texel_offset)},
         {OpenGL::ContextProperty::Point_Fade_Threshold_Size,                     PropertyData(OpenGL::GetSetArgumentType::Float,        1, &m_point_fade_threshold_size)},
         {OpenGL::ContextProperty::Point_Size_Granularity,                        PropertyData(OpenGL::GetSetArgumentType::Float,        1, &m_point_size_granularity)},
-        {OpenGL::ContextProperty::Point_Size_Range,                              PropertyData(OpenGL::GetSetArgumentType::Float,        2, m_point_size_range)},
+        {OpenGL::ContextProperty::Point_Size_Range,                              PropertyData(OpenGL::GetSetArgumentType::Float,        2,  m_point_size_range)},
         {OpenGL::ContextProperty::Query_Counter_Bits,                            PropertyData(OpenGL::GetSetArgumentType::Unsigned_Int, 1, &m_query_counter_bits)},
         {OpenGL::ContextProperty::Smooth_Line_Width_Granularity,                 PropertyData(OpenGL::GetSetArgumentType::Float,        1, &m_smooth_line_width_granularity)},
-        {OpenGL::ContextProperty::Smooth_Line_Width_Range,                       PropertyData(OpenGL::GetSetArgumentType::Float,        2, m_smooth_line_width_range)},
+        {OpenGL::ContextProperty::Smooth_Line_Width_Range,                       PropertyData(OpenGL::GetSetArgumentType::Float,        2,  m_smooth_line_width_range)},
         {OpenGL::ContextProperty::Subpixel_Bits,                                 PropertyData(OpenGL::GetSetArgumentType::Unsigned_Int, 1, &m_subpixel_bits)},
         {OpenGL::ContextProperty::Uniform_Buffer_Offset_Alignment,               PropertyData(OpenGL::GetSetArgumentType::Unsigned_Int, 1, &m_uniform_buffer_offset_alignment)},
 
@@ -157,12 +158,27 @@ OpenGL::GLLimits::GLLimits(const OpenGL::IBackendCapabilities* in_caps_ptr)
 
 OpenGL::GLLimits::~GLLimits()
 {
-    vkgl_not_implemented();
+    /* Stub */
 }
 
 void OpenGL::GLLimits::get_parameter(const OpenGL::ContextProperty&    in_pname,
                                      const OpenGL::GetSetArgumentType& in_arg_type,
                                      void*                             out_arg_value_ptr) const
 {
-    vkgl_not_implemented();
+    const auto prop_iterator = m_prop_map.find(in_pname);
+
+    if (prop_iterator == m_prop_map.end() )
+    {
+        vkgl_assert(prop_iterator != m_prop_map.end() );
+
+        goto end;
+    }
+
+    OpenGL::Converters::convert(prop_iterator->second.type,
+                                prop_iterator->second.data_ptr,
+                                prop_iterator->second.n_components,
+                                in_arg_type,
+                                out_arg_value_ptr);
+end:
+    ;
 }

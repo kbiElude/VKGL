@@ -20,6 +20,51 @@ namespace OpenGL
         ~VKBackend();
 
     private:
+        /* Private type definitions */
+        typedef struct CapabilityData
+        {
+            union
+            {
+                float    f32[2];
+                uint32_t u32[2];
+            } data;
+
+            OpenGL::GetSetArgumentType data_type;
+            uint32_t                   n_vals;
+
+            CapabilityData()
+            {
+                data.u32[0] = 0;
+                data.u32[1] = 0;
+                data_type   = OpenGL::GetSetArgumentType::Unknown;
+                n_vals      = 0;
+            }
+
+            CapabilityData(const float*    in_data_f32_ptr,
+                           const uint32_t& in_data_n_vals)
+            {
+                vkgl_assert(in_data_n_vals < 3);
+
+                data.f32[0] = (in_data_n_vals >= 1) ? in_data_f32_ptr[0] : 0;
+                data.f32[1] = (in_data_n_vals >= 2) ? in_data_f32_ptr[1] : 0;
+                data_type   = OpenGL::GetSetArgumentType::Float;
+                n_vals      = in_data_n_vals;
+
+            }
+            CapabilityData(const uint32_t* in_data_u32_ptr,
+                           const uint32_t& in_data_n_vals)
+            {
+                vkgl_assert(in_data_n_vals < 3);
+
+                data.u32[0] = (in_data_n_vals >= 1) ? in_data_u32_ptr[0] : 0;
+                data.u32[1] = (in_data_n_vals >= 2) ? in_data_u32_ptr[1] : 0;
+                data_type   = OpenGL::GetSetArgumentType::Unsigned_Int;
+                n_vals      = in_data_n_vals;
+            }
+        } CapabilityData;
+
+        std::unordered_map<OpenGL::BackendCapability, CapabilityData> m_capabilities;
+
         /* IBackendCapabilities functions */
 
         void get_capability(const OpenGL::BackendCapability&  in_capability,
@@ -254,7 +299,8 @@ namespace OpenGL
 
         VKBackend();
 
-        bool init();
+        bool init             ();
+        bool init_capabilities();
 
         /* Private variables */
 
