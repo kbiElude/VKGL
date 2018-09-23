@@ -79,9 +79,7 @@ OpenGL::GLLimits::GLLimits(const OpenGL::IBackendCapabilities* in_caps_ptr)
     QUERY_UINT_CAP (OpenGL::BackendCapability::Max_Vertex_Texture_Image_Units,                &m_max_vertex_texture_image_units);
     QUERY_UINT_CAP (OpenGL::BackendCapability::Max_Vertex_Uniform_Blocks,                     &m_max_vertex_uniform_blocks);
     QUERY_UINT_CAP (OpenGL::BackendCapability::Max_Vertex_Uniform_Components,                 &m_max_vertex_uniform_components);
-    QUERY_UVEC2_CAP(OpenGL::BackendCapability::Max_Viewport_Dims,                              m_max_viewport_dims);
     QUERY_FLOAT_CAP(OpenGL::BackendCapability::Min_Program_Texel_Offset,                      &m_min_program_texel_offset);
-    QUERY_FLOAT_CAP(OpenGL::BackendCapability::Point_Fade_Threshold_Size,                     &m_point_fade_threshold_size);
     QUERY_FLOAT_CAP(OpenGL::BackendCapability::Point_Size_Granularity,                        &m_point_size_granularity);
     QUERY_VEC2_CAP (OpenGL::BackendCapability::Point_Size_Range,                               m_point_size_range);
     QUERY_UINT_CAP (OpenGL::BackendCapability::Query_Counter_Bits,                            &m_query_counter_bits);
@@ -142,9 +140,7 @@ OpenGL::GLLimits::GLLimits(const OpenGL::IBackendCapabilities* in_caps_ptr)
         {OpenGL::ContextProperty::Max_Vertex_Texture_Image_Units,                PropertyData(OpenGL::GetSetArgumentType::Unsigned_Int, 1, &m_max_vertex_texture_image_units)},
         {OpenGL::ContextProperty::Max_Vertex_Uniform_Blocks,                     PropertyData(OpenGL::GetSetArgumentType::Unsigned_Int, 1, &m_max_vertex_uniform_blocks)},
         {OpenGL::ContextProperty::Max_Vertex_Uniform_Components,                 PropertyData(OpenGL::GetSetArgumentType::Unsigned_Int, 1, &m_max_vertex_uniform_components)},
-        {OpenGL::ContextProperty::Max_Viewport_Dims,                             PropertyData(OpenGL::GetSetArgumentType::Unsigned_Int, 2,  m_max_viewport_dims)},
         {OpenGL::ContextProperty::Min_Program_Texel_Offset,                      PropertyData(OpenGL::GetSetArgumentType::Int,          1, &m_min_program_texel_offset)},
-        {OpenGL::ContextProperty::Point_Fade_Threshold_Size,                     PropertyData(OpenGL::GetSetArgumentType::Float,        1, &m_point_fade_threshold_size)},
         {OpenGL::ContextProperty::Point_Size_Granularity,                        PropertyData(OpenGL::GetSetArgumentType::Float,        1, &m_point_size_granularity)},
         {OpenGL::ContextProperty::Point_Size_Range,                              PropertyData(OpenGL::GetSetArgumentType::Float,        2,  m_point_size_range)},
         {OpenGL::ContextProperty::Query_Counter_Bits,                            PropertyData(OpenGL::GetSetArgumentType::Unsigned_Int, 1, &m_query_counter_bits)},

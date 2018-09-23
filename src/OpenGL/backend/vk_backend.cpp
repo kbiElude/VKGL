@@ -2,10 +2,16 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+#include "Anvil/include/wrappers/device.h"
+#include "Anvil/include/wrappers/instance.h"
 #include "Common/macros.h"
 #include "OpenGL/types.h"
 #include "OpenGL/converters.h"
 #include "OpenGL/backend/vk_backend.h"
+
+#ifdef min
+    #undef min
+#endif
 
 OpenGL::VKBackend::VKBackend()
 {
@@ -14,7 +20,8 @@ OpenGL::VKBackend::VKBackend()
 
 OpenGL::VKBackend::~VKBackend()
 {
-    // todo
+    m_device_ptr.reset  ();
+    m_instance_ptr.reset();
 }
 
 void OpenGL::VKBackend::buffer_data(const GLuint&     in_id,
@@ -302,78 +309,329 @@ bool OpenGL::VKBackend::init()
 {
     bool result = false;
 
-    result = init_capabilities();
+    if (!init_anvil() )
+    {
+        vkgl_assert_fail();
 
+        goto end;
+    }
+
+    if (!init_capabilities() )
+    {
+        vkgl_assert_fail();
+
+        goto end;
+    }
+
+    result = true;
+end:
+    return result;
+}
+
+bool OpenGL::VKBackend::init_anvil()
+{
+    const Anvil::PhysicalDevice* physical_device_ptr = nullptr;
+    bool                         result              = false;
+
+    /* Create a Vulkan instance. */
+    m_instance_ptr = Anvil::Instance::create("VKGL",
+                                             "VKGL",
+                                             Anvil::DebugCallbackFunction(),
+                                             true); /* in_mt_safe */
+
+    if (m_instance_ptr == nullptr)
+    {
+        vkgl_assert(m_instance_ptr != nullptr);
+
+        goto end;
+    }
+
+    /* Pick the zerorth physical device reported. */
+    physical_device_ptr = m_instance_ptr->get_physical_device(0);
+
+    /* Create a Vulkan device */
+    m_device_ptr = Anvil::SGPUDevice::create(physical_device_ptr,
+                                             true, /* in_enable_shader_module_cache */
+                                             Anvil::DeviceExtensionConfiguration(),
+                                             std::vector<std::string>(),
+                                             false, /* in_transient_command_buffer_allocs_only     */
+                                             true,  /* in_support_resettable_command_buffer_allocs */
+                                             true); /* in_mt_safe                                  */
+
+    if (m_device_ptr == nullptr)
+    {
+        vkgl_assert(m_device_ptr != nullptr);
+
+        goto end;
+    }
+
+    result = true;
+end:
     return result;
 }
 
 bool OpenGL::VKBackend::init_capabilities()
 {
-    static const float    dummy_data_f32[2] = {0, 0}; /* todo */
-    static const uint32_t dummy_data_u32[2] = {0, 0}; /* todo */
+    /* NOTE: Taken from GL 3.2 spec */
+    const float    min_aliased_line_width_range[2]                   = {1.0f, 1.0f};
+    const auto     min_max_3d_texture_size                           = 256;
+    const auto     min_max_array_texture_layers                      = 256;
+    const auto     min_max_clip_distances                            = 8;
+    const auto     min_max_color_attachments                         = 8;
+    const auto     min_max_color_texture_samples                     = 1;
+    const auto     min_max_combined_texture_image_units              = 48;
+    const auto     min_max_combined_uniform_blocks                   = 36;
+    const auto     min_max_cube_map_texture_size                     = 1024;
+    const auto     min_max_depth_texture_samples                     = 1;
+    const auto     min_max_draw_buffers                              = 8;
+    const auto     min_max_fragment_input_components                 = 128;
+    const auto     min_max_fragment_uniform_blocks                   = 12;
+    const auto     min_max_fragment_uniform_components               = 1024;
+    const auto     min_max_geometry_input_components                 = 64;
+    const auto     min_max_geometry_output_components                = 128;
+    const auto     min_max_geometry_output_vertices                  = 256;
+    const auto     min_max_geometry_texture_image_units              = 16;
+    const auto     min_max_geometry_total_output_components          = 1024;
+    const auto     min_max_geometry_uniform_blocks                   = 12;
+    const auto     min_max_geometry_uniform_components               = 1024; /* missing in 3.2 and 4.0? */
+    const auto     min_max_integer_samples                           = 1;
+    const auto     min_max_program_texel_offset                      = 7;
+    const auto     min_max_rectangle_texture_size                    = 1024;
+    const auto     min_max_renderbuffer_size                         = 1024;
+    const auto     min_max_sample_mask_words                         = 1;
+    const auto     min_max_samples                                   = 4;
+    const auto     min_max_server_wait_timeout                       = 0LL;
+    const auto     min_max_texture_buffer_size                       = 65536;
+    const auto     min_max_texture_image_units                       = 16;
+    const auto     min_max_texture_lod_bias                          = 2.0f;
+    const auto     min_max_transform_feedback_buffers                = 4; /* taken from GL 4.0 spec, apparently missing in 3.2 */
+    const auto     min_max_transform_feedback_interleaved_components = 64;
+    const auto     min_max_transform_feedback_separate_attribs       = 4;
+    const auto     min_max_transform_feedback_separate_components    = 4;
+    const auto     min_max_uniform_block_size                        = 16384;
+    const auto     min_max_uniform_buffer_bindings                   = 36;
+    const auto     min_max_varying_components                        = 60;
+    const auto     min_max_vertex_attribs                            = 16;
+    const auto     min_max_vertex_output_components                  = 64;
+    const auto     min_max_vertex_texture_image_units                = 16;
+    const auto     min_max_vertex_uniform_blocks                     = 12;
+    const auto     min_max_vertex_uniform_components                 = 1024;
+    const auto     max_min_program_texel_offset                      = -8;
+    const auto     min_point_size_granularity                        = 0.0f; /* as per 3.4 */
+    const float    min_point_size_range[2]                           = {1.0f, 1.0f};
+    const auto     min_query_counter_bits                            = 0; /* as per 6.1.6 */
+    const float    min_smooth_line_width_range                   [2] = {1.0f, 1.0f};
+    const auto     min_subpixel_bits                                 = 4;
+    const auto     min_max_combined_fragment_uniform_components      = sizeof(uint32_t) / (min_max_fragment_uniform_blocks * min_max_uniform_block_size + min_max_fragment_uniform_components);
+    const auto     min_max_combined_geometry_uniform_components      = sizeof(uint32_t) / (min_max_geometry_uniform_blocks * min_max_uniform_block_size + min_max_geometry_uniform_components);
+    const auto     min_max_combined_vertex_uniform_components        = sizeof(uint32_t) / (min_max_vertex_uniform_blocks   * min_max_uniform_block_size + min_max_vertex_uniform_components);
+    const auto     min_max_texture_size                              = std::min(std::min(min_max_3d_texture_size, min_max_cube_map_texture_size),
+                                                                                min_max_rectangle_texture_size);
+
+
+    const auto&           physical_device_limits                   = m_device_ptr->get_physical_device_properties().core_vk1_0_properties_ptr->limits;
+    static const uint32_t max_combined_fragment_uniform_components = physical_device_limits.max_uniform_buffer_range  / sizeof(uint32_t);
+    static const uint32_t max_combined_geometry_uniform_components = physical_device_limits.max_uniform_buffer_range  / sizeof(uint32_t);
+    static const uint32_t max_combined_vertex_uniform_components   = physical_device_limits.max_uniform_buffer_range  / sizeof(uint32_t);
+    static const uint32_t max_texture_buffer_size                  = physical_device_limits.max_texel_buffer_elements / sizeof(uint32_t); /* worst-case scenario */
+    static const uint32_t query_counter_bits                       = 64;
+    static const uint32_t uint32_max_u32                           = UINT32_MAX;
+    static const uint64_t uint64_max_u64                           = UINT64_MAX;
+
+    /* NOTE: These are examples of over-simpification but should be harmless. */
+    static const uint32_t max_fragment_uniform_components          = max_combined_fragment_uniform_components;
+    static const uint32_t max_geometry_uniform_components          = max_combined_geometry_uniform_components;
+    static const uint32_t max_vertex_uniform_components            = max_combined_vertex_uniform_components;
+
+    /* NOTE: These are arbitrary to an extent. Let's shoot for GL 3.2 core profile min maxes for now. */
+    static const uint32_t max_varying_components                        = 60;
+    static const uint32_t max_transform_feedback_buffers                = 4; /* NOTE: no min-max defined in GL 3.2 spec? Value comes from 4.0 */
+    static const uint32_t max_transform_feedback_interleaved_components = 64;
+    static const uint32_t max_transform_feedback_separate_attribs       = 4;
+    static const uint32_t max_transform_feedback_separate_components    = 4;
+
+    /* TODO: MS support is not implemented yet so report up to 1 sample for each renderable format. */
+    static const uint32_t max_color_texture_samples = 1;
+    static const uint32_t max_depth_texture_samples = 1;
+    static const uint32_t max_integer_samples       = 1;
+    static const uint32_t max_samples               = 1;
 
     m_capabilities = decltype(m_capabilities)
     {
-        {OpenGL::BackendCapability::Aliased_Line_Width_Range,                      CapabilityData(dummy_data_f32, 2)},
-        {OpenGL::BackendCapability::Max_3D_Texture_Size,                           CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Array_Texture_Layers,                      CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Clip_Distances,                            CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Color_Attachments,                         CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Color_Texture_Samples,                     CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Combined_Fragment_Uniform_Components,      CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Combined_Geometry_Uniform_Components,      CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Combined_Texture_Image_Units,              CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Combined_Vertex_Uniform_Components,        CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Combined_Uniform_Blocks,                   CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Cube_Map_Texture_Size,                     CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Depth_Texture_Samples,                     CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Draw_Buffers,                              CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Elements_Indices,                          CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Elements_Vertices,                         CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Fragment_Input_Components,                 CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Fragment_Uniform_Blocks,                   CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Fragment_Uniform_Components,               CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Geometry_Input_Components,                 CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Geometry_Output_Components,                CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Geometry_Output_Vertices,                  CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Geometry_Texture_Image_Units,              CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Geometry_Total_Output_Components,          CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Geometry_Uniform_Blocks,                   CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Geometry_Uniform_Components,               CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Integer_Samples,                           CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Program_Texel_Offset,                      CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Rectangle_Texture_Size,                    CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Renderbuffer_Size,                         CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Sample_Mask_Words,                         CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Samples,                                   CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Server_Wait_Timeout,                       CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Texture_Buffer_Size,                       CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Texture_Image_Units,                       CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Texture_LOD_Bias,                          CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Texture_Size,                              CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Transform_Feedback_Buffers,                CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Transform_Feedback_Interleaved_Components, CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Transform_Feedback_Separate_Attribs,       CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Transform_Feedback_Separate_Components,    CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Uniform_Block_Size,                        CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Uniform_Buffer_Bindings,                   CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Varying_Components,                        CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Vertex_Attribs,                            CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Vertex_Output_Components,                  CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Vertex_Texture_Image_Units,                CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Vertex_Uniform_Blocks,                     CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Vertex_Uniform_Components,                 CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Max_Viewport_Dims,                             CapabilityData(dummy_data_u32, 2)},
-        {OpenGL::BackendCapability::Min_Program_Texel_Offset,                      CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Point_Fade_Threshold_Size,                     CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Point_Size_Granularity,                        CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Point_Size_Range,                              CapabilityData(dummy_data_f32, 2)},
-        {OpenGL::BackendCapability::Query_Counter_Bits,                            CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Smooth_Line_Width_Granularity,                 CapabilityData(dummy_data_f32, 1)},
-        {OpenGL::BackendCapability::Smooth_Line_Width_Range,                       CapabilityData(dummy_data_f32, 2)},
-        {OpenGL::BackendCapability::Subpixel_Bits,                                 CapabilityData(dummy_data_u32, 1)},
-        {OpenGL::BackendCapability::Uniform_Buffer_Offset_Alignment,               CapabilityData(dummy_data_u32, 1)},
+        {OpenGL::BackendCapability::Aliased_Line_Width_Range,                      CapabilityData( physical_device_limits.line_width_range,                         2)},
+        {OpenGL::BackendCapability::Max_3D_Texture_Size,                           CapabilityData(&physical_device_limits.max_image_dimension_3D,                   1)},
+        {OpenGL::BackendCapability::Max_Array_Texture_Layers,                      CapabilityData(&physical_device_limits.max_image_array_layers,                   1)},
+        {OpenGL::BackendCapability::Max_Clip_Distances,                            CapabilityData(&physical_device_limits.max_clip_distances,                       1)},
+        {OpenGL::BackendCapability::Max_Color_Attachments,                         CapabilityData(&physical_device_limits.max_color_attachments,                    1)},
+        {OpenGL::BackendCapability::Max_Color_Texture_Samples,                     CapabilityData(&max_color_texture_samples,                                       1)},
+        {OpenGL::BackendCapability::Max_Combined_Fragment_Uniform_Components,      CapabilityData(&max_combined_fragment_uniform_components,                        1)},
+        {OpenGL::BackendCapability::Max_Combined_Geometry_Uniform_Components,      CapabilityData(&max_combined_geometry_uniform_components,                        1)},
+        {OpenGL::BackendCapability::Max_Combined_Texture_Image_Units,              CapabilityData(&physical_device_limits.max_per_stage_descriptor_samplers,        1)},
+        {OpenGL::BackendCapability::Max_Combined_Vertex_Uniform_Components,        CapabilityData(&max_combined_vertex_uniform_components,                          1)},
+        {OpenGL::BackendCapability::Max_Combined_Uniform_Blocks,                   CapabilityData(&physical_device_limits.max_descriptor_set_uniform_buffers,       1)},
+        {OpenGL::BackendCapability::Max_Cube_Map_Texture_Size,                     CapabilityData(&physical_device_limits.max_image_dimension_cube,                 1)},
+        {OpenGL::BackendCapability::Max_Depth_Texture_Samples,                     CapabilityData(&max_depth_texture_samples,                                       1)},
+        {OpenGL::BackendCapability::Max_Draw_Buffers,                              CapabilityData(&physical_device_limits.max_color_attachments,                    1)},
+        {OpenGL::BackendCapability::Max_Elements_Indices,                          CapabilityData(&physical_device_limits.max_draw_indexed_index_value,             1)},
+        {OpenGL::BackendCapability::Max_Elements_Vertices,                         CapabilityData(&uint32_max_u32,                                                  1)},
+        {OpenGL::BackendCapability::Max_Fragment_Input_Components,                 CapabilityData(&physical_device_limits.max_fragment_input_components,            1)},
+        {OpenGL::BackendCapability::Max_Fragment_Uniform_Blocks,                   CapabilityData(&physical_device_limits.max_per_stage_descriptor_uniform_buffers, 1)},
+        {OpenGL::BackendCapability::Max_Fragment_Uniform_Components,               CapabilityData(&max_fragment_uniform_components,                                 1)},
+        {OpenGL::BackendCapability::Max_Geometry_Input_Components,                 CapabilityData(&physical_device_limits.max_geometry_input_components,            1)},
+        {OpenGL::BackendCapability::Max_Geometry_Output_Components,                CapabilityData(&physical_device_limits.max_geometry_output_components,           1)},
+        {OpenGL::BackendCapability::Max_Geometry_Output_Vertices,                  CapabilityData(&physical_device_limits.max_geometry_output_vertices,             1)},
+        {OpenGL::BackendCapability::Max_Geometry_Texture_Image_Units,              CapabilityData(&physical_device_limits.max_per_stage_descriptor_samplers,        1)},
+        {OpenGL::BackendCapability::Max_Geometry_Total_Output_Components,          CapabilityData(&physical_device_limits.max_geometry_total_output_components,     1)},
+        {OpenGL::BackendCapability::Max_Geometry_Uniform_Blocks,                   CapabilityData(&physical_device_limits.max_per_stage_descriptor_uniform_buffers, 1)},
+        {OpenGL::BackendCapability::Max_Geometry_Uniform_Components,               CapabilityData(&max_geometry_uniform_components,                                 1)},
+        {OpenGL::BackendCapability::Max_Integer_Samples,                           CapabilityData(&max_integer_samples,                                             1)},
+        {OpenGL::BackendCapability::Max_Program_Texel_Offset,                      CapabilityData(&physical_device_limits.max_texel_offset,                         1)},
+        {OpenGL::BackendCapability::Max_Rectangle_Texture_Size,                    CapabilityData(&physical_device_limits.max_image_dimension_2D,                   1)},
+        {OpenGL::BackendCapability::Max_Renderbuffer_Size,                         CapabilityData(&physical_device_limits.max_image_dimension_2D,                   1)},
+        {OpenGL::BackendCapability::Max_Sample_Mask_Words,                         CapabilityData(&physical_device_limits.max_sample_mask_words,                    1)},
+        {OpenGL::BackendCapability::Max_Samples,                                   CapabilityData(&max_samples,                                                     1)},
+        {OpenGL::BackendCapability::Max_Server_Wait_Timeout,                       CapabilityData(&uint64_max_u64,                                                  1)},
+        {OpenGL::BackendCapability::Max_Texture_Buffer_Size,                       CapabilityData(&max_texture_buffer_size,                                         1)},
+        {OpenGL::BackendCapability::Max_Texture_Image_Units,                       CapabilityData(&physical_device_limits.max_per_stage_descriptor_samplers,        1)},
+        {OpenGL::BackendCapability::Max_Texture_LOD_Bias,                          CapabilityData(&physical_device_limits.max_sampler_lod_bias,                     1)},
+        {OpenGL::BackendCapability::Max_Texture_Size,                              CapabilityData(&physical_device_limits.max_image_dimension_cube,                 1)},
+        {OpenGL::BackendCapability::Max_Transform_Feedback_Buffers,                CapabilityData(&max_transform_feedback_buffers,                                  1)},
+        {OpenGL::BackendCapability::Max_Transform_Feedback_Interleaved_Components, CapabilityData(&max_transform_feedback_interleaved_components,                   1)},
+        {OpenGL::BackendCapability::Max_Transform_Feedback_Separate_Attribs,       CapabilityData(&max_transform_feedback_separate_attribs,                         1)},
+        {OpenGL::BackendCapability::Max_Transform_Feedback_Separate_Components,    CapabilityData(&max_transform_feedback_separate_components,                      1)},
+        {OpenGL::BackendCapability::Max_Uniform_Block_Size,                        CapabilityData(&physical_device_limits.max_uniform_buffer_range,                 1)},
+        {OpenGL::BackendCapability::Max_Uniform_Buffer_Bindings,                   CapabilityData(&physical_device_limits.max_descriptor_set_uniform_buffers,       1)},
+        {OpenGL::BackendCapability::Max_Varying_Components,                        CapabilityData(&max_varying_components,                                          1)},
+        {OpenGL::BackendCapability::Max_Vertex_Attribs,                            CapabilityData(&physical_device_limits.max_vertex_input_attributes,              1)},
+        {OpenGL::BackendCapability::Max_Vertex_Output_Components,                  CapabilityData(&physical_device_limits.max_vertex_output_components,             1)},
+        {OpenGL::BackendCapability::Max_Vertex_Texture_Image_Units,                CapabilityData(&physical_device_limits.max_per_stage_descriptor_samplers,        1)},
+        {OpenGL::BackendCapability::Max_Vertex_Uniform_Blocks,                     CapabilityData(&physical_device_limits.max_per_stage_descriptor_uniform_buffers, 1)},
+        {OpenGL::BackendCapability::Max_Vertex_Uniform_Components,                 CapabilityData(&max_vertex_uniform_components,                                   1)},
+        {OpenGL::BackendCapability::Min_Program_Texel_Offset,                      CapabilityData(&physical_device_limits.min_texel_offset,                         1)},
+        {OpenGL::BackendCapability::Point_Size_Granularity,                        CapabilityData(&physical_device_limits.point_size_granularity,                   1)},
+        {OpenGL::BackendCapability::Point_Size_Range,                              CapabilityData( physical_device_limits.point_size_range,                         2)},
+        {OpenGL::BackendCapability::Query_Counter_Bits,                            CapabilityData(&query_counter_bits,                                              1)},
+        {OpenGL::BackendCapability::Smooth_Line_Width_Granularity,                 CapabilityData(&physical_device_limits.line_width_granularity,                   1)},
+        {OpenGL::BackendCapability::Smooth_Line_Width_Range,                       CapabilityData( physical_device_limits.line_width_range,                         2)},
+        {OpenGL::BackendCapability::Subpixel_Bits,                                 CapabilityData(&physical_device_limits.viewport_sub_pixel_bits,                  1)},
+        {OpenGL::BackendCapability::Uniform_Buffer_Offset_Alignment,               CapabilityData(&physical_device_limits.min_uniform_buffer_offset_alignment,      1)},
     };
+
+    /* Verify the values we have at this point are not lower than the required min maxes, as per GL 3.2 spec. */
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Aliased_Line_Width_Range).data.f32[0]                      <= min_aliased_line_width_range[0]);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Aliased_Line_Width_Range).data.f32[1]                      >= min_aliased_line_width_range[1]);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_3D_Texture_Size).data.u32[0]                           >= min_max_3d_texture_size);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Array_Texture_Layers).data.u32[0]                      >= min_max_array_texture_layers);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Clip_Distances).data.u32[0]                            >= min_max_clip_distances);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Color_Attachments).data.u32[0]                         >= min_max_color_attachments);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Color_Texture_Samples).data.u32[0]                     >= min_max_color_texture_samples);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Combined_Fragment_Uniform_Components).data.u32[0]      >= min_max_combined_fragment_uniform_components);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Combined_Geometry_Uniform_Components).data.u32[0]      >= min_max_combined_geometry_uniform_components);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Combined_Texture_Image_Units).data.u32[0]              >= min_max_combined_texture_image_units);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Combined_Uniform_Blocks).data.u32[0]                   >= min_max_combined_uniform_blocks);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Combined_Vertex_Uniform_Components).data.u32[0]        >= min_max_combined_vertex_uniform_components);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Cube_Map_Texture_Size).data.u32[0]                     >= min_max_cube_map_texture_size);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Depth_Texture_Samples).data.u32[0]                     >= min_max_depth_texture_samples);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Draw_Buffers).data.u32[0]                              >= min_max_draw_buffers);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Fragment_Input_Components).data.u32[0]                 >= min_max_fragment_input_components);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Fragment_Uniform_Blocks).data.u32[0]                   >= min_max_fragment_uniform_blocks);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Fragment_Uniform_Components).data.u32[0]               >= min_max_fragment_uniform_components);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Geometry_Input_Components).data.u32[0]                 >= min_max_geometry_input_components);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Geometry_Output_Components).data.u32[0]                >= min_max_geometry_output_components);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Geometry_Output_Vertices).data.u32[0]                  >= min_max_geometry_output_vertices);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Geometry_Texture_Image_Units).data.u32[0]              >= min_max_geometry_texture_image_units);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Geometry_Total_Output_Components).data.u32[0]          >= min_max_geometry_total_output_components);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Geometry_Uniform_Blocks).data.u32[0]                   >= min_max_geometry_uniform_blocks);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Geometry_Uniform_Components).data.u32[0]               >= min_max_geometry_uniform_components);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Integer_Samples).data.u32[0]                           >= min_max_integer_samples);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Program_Texel_Offset).data.i32[0]                      >= min_max_program_texel_offset);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Rectangle_Texture_Size).data.u32[0]                    >= min_max_rectangle_texture_size);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Renderbuffer_Size).data.u32[0]                         >= min_max_renderbuffer_size);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Sample_Mask_Words).data.u32[0]                         >= min_max_sample_mask_words);
+    // TODO (MS SUPPORT): vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Samples).data.u32[0]                                   >= min_max_samples);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Server_Wait_Timeout).data.u64[0]                       >= min_max_server_wait_timeout);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Texture_Buffer_Size).data.u32[0]                       >= min_max_texture_buffer_size);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Texture_Image_Units).data.u32[0]                       >= min_max_texture_image_units);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Texture_LOD_Bias).data.f32[0]                          >= min_max_texture_lod_bias);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Texture_Size).data.u32[0]                              >= min_max_texture_size);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Transform_Feedback_Buffers).data.u32[0]                >= min_max_transform_feedback_buffers);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Transform_Feedback_Interleaved_Components).data.u32[0] >= min_max_transform_feedback_interleaved_components);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Transform_Feedback_Separate_Attribs).data.u32[0]       >= min_max_transform_feedback_separate_attribs);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Transform_Feedback_Separate_Components).data.u32[0]    >= min_max_transform_feedback_separate_components);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Uniform_Block_Size).data.u32[0]                        >= min_max_uniform_block_size);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Uniform_Buffer_Bindings).data.u32[0]                   >= min_max_uniform_buffer_bindings);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Varying_Components).data.u32[0]                        >= min_max_varying_components);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Vertex_Attribs).data.u32[0]                            >= min_max_vertex_attribs);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Vertex_Output_Components).data.u32[0]                  >= min_max_vertex_output_components);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Vertex_Texture_Image_Units).data.u32[0]                >= min_max_vertex_texture_image_units);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Vertex_Uniform_Blocks).data.u32[0]                     >= min_max_vertex_uniform_blocks);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Max_Vertex_Uniform_Components).data.u32[0]                 >= min_max_vertex_uniform_components);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Min_Program_Texel_Offset).data.i32[0]                      <= max_min_program_texel_offset);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Point_Size_Granularity).data.f32[0]                        >= min_point_size_granularity);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Point_Size_Range).data.f32[0]                              <= min_point_size_range[0]);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Point_Size_Range).data.f32[1]                              >= min_point_size_range[1]);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Query_Counter_Bits).data.u32[0]                            >= min_query_counter_bits);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Smooth_Line_Width_Range).data.f32[0]                       <= min_smooth_line_width_range[0]);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Smooth_Line_Width_Range).data.f32[1]                       >= min_smooth_line_width_range[1]);
+    vkgl_assert(m_capabilities.at(OpenGL::BackendCapability::Subpixel_Bits).data.u32[0]                                 >= min_subpixel_bits);
+
+    /* Clamp the values to the min maxes. No need to expose more than we are obliged to handle. */
+    m_capabilities.at(OpenGL::BackendCapability::Aliased_Line_Width_Range).data.f32[0]                      = min_aliased_line_width_range[0];
+    m_capabilities.at(OpenGL::BackendCapability::Aliased_Line_Width_Range).data.f32[1]                      = min_aliased_line_width_range[1];
+    m_capabilities.at(OpenGL::BackendCapability::Max_3D_Texture_Size).data.u32[0]                           = min_max_3d_texture_size;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Array_Texture_Layers).data.u32[0]                      = min_max_array_texture_layers;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Clip_Distances).data.u32[0]                            = min_max_clip_distances;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Color_Attachments).data.u32[0]                         = min_max_color_attachments;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Color_Texture_Samples).data.u32[0]                     = min_max_color_texture_samples;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Combined_Fragment_Uniform_Components).data.u32[0]      = min_max_combined_fragment_uniform_components;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Combined_Geometry_Uniform_Components).data.u32[0]      = min_max_combined_geometry_uniform_components;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Combined_Texture_Image_Units).data.u32[0]              = min_max_combined_texture_image_units;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Combined_Uniform_Blocks).data.u32[0]                   = min_max_combined_uniform_blocks;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Combined_Vertex_Uniform_Components).data.u32[0]        = min_max_combined_vertex_uniform_components;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Cube_Map_Texture_Size).data.u32[0]                     = min_max_cube_map_texture_size;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Depth_Texture_Samples).data.u32[0]                     = min_max_depth_texture_samples;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Draw_Buffers).data.u32[0]                              = min_max_draw_buffers;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Fragment_Input_Components).data.u32[0]                 = min_max_fragment_input_components;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Fragment_Uniform_Blocks).data.u32[0]                   = min_max_fragment_uniform_blocks;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Fragment_Uniform_Components).data.u32[0]               = min_max_fragment_uniform_components;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Geometry_Input_Components).data.u32[0]                 = min_max_geometry_input_components;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Geometry_Output_Components).data.u32[0]                = min_max_geometry_output_components;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Geometry_Output_Vertices).data.u32[0]                  = min_max_geometry_output_vertices;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Geometry_Texture_Image_Units).data.u32[0]              = min_max_geometry_texture_image_units;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Geometry_Total_Output_Components).data.u32[0]          = min_max_geometry_total_output_components;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Geometry_Uniform_Blocks).data.u32[0]                   = min_max_geometry_uniform_blocks;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Geometry_Uniform_Components).data.u32[0]               = min_max_geometry_uniform_components;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Integer_Samples).data.u32[0]                           = min_max_integer_samples;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Program_Texel_Offset).data.i32[0]                      = min_max_program_texel_offset;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Rectangle_Texture_Size).data.u32[0]                    = min_max_rectangle_texture_size;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Renderbuffer_Size).data.u32[0]                         = min_max_renderbuffer_size;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Sample_Mask_Words).data.u32[0]                         = min_max_sample_mask_words;
+    // TODO (MS SUPPORT): m_capabilities.at(OpenGL::BackendCapability::Max_Samples).data.u32[0]                                   = min_max_samples;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Server_Wait_Timeout).data.u64[0]                       = min_max_server_wait_timeout;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Texture_Buffer_Size).data.u32[0]                       = min_max_texture_buffer_size;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Texture_Image_Units).data.u32[0]                       = min_max_texture_image_units;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Texture_LOD_Bias).data.f32[0]                          = min_max_texture_lod_bias;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Texture_Size).data.u32[0]                              = min_max_texture_size;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Transform_Feedback_Buffers).data.u32[0]                = min_max_transform_feedback_buffers;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Transform_Feedback_Interleaved_Components).data.u32[0] = min_max_transform_feedback_interleaved_components;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Transform_Feedback_Separate_Attribs).data.u32[0]       = min_max_transform_feedback_separate_attribs;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Transform_Feedback_Separate_Components).data.u32[0]    = min_max_transform_feedback_separate_components;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Uniform_Block_Size).data.u32[0]                        = min_max_uniform_block_size;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Uniform_Buffer_Bindings).data.u32[0]                   = min_max_uniform_buffer_bindings;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Varying_Components).data.u32[0]                        = min_max_varying_components;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Vertex_Attribs).data.u32[0]                            = min_max_vertex_attribs;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Vertex_Output_Components).data.u32[0]                  = min_max_vertex_output_components;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Vertex_Texture_Image_Units).data.u32[0]                = min_max_vertex_texture_image_units;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Vertex_Uniform_Blocks).data.u32[0]                     = min_max_vertex_uniform_blocks;
+    m_capabilities.at(OpenGL::BackendCapability::Max_Vertex_Uniform_Components).data.u32[0]                 = min_max_vertex_uniform_components;
+    m_capabilities.at(OpenGL::BackendCapability::Min_Program_Texel_Offset).data.i32[0]                      = max_min_program_texel_offset;
+    m_capabilities.at(OpenGL::BackendCapability::Point_Size_Granularity).data.f32[0]                        = min_point_size_granularity;
+    m_capabilities.at(OpenGL::BackendCapability::Point_Size_Range).data.f32[0]                              = min_point_size_range[0];
+    m_capabilities.at(OpenGL::BackendCapability::Point_Size_Range).data.f32[1]                              = min_point_size_range[1];
+    m_capabilities.at(OpenGL::BackendCapability::Query_Counter_Bits).data.u32[0]                            = min_query_counter_bits;
+    m_capabilities.at(OpenGL::BackendCapability::Smooth_Line_Width_Range).data.f32[0]                       = min_smooth_line_width_range[0];
+    m_capabilities.at(OpenGL::BackendCapability::Smooth_Line_Width_Range).data.f32[1]                       = min_smooth_line_width_range[1];
+    m_capabilities.at(OpenGL::BackendCapability::Subpixel_Bits).data.u32[0]                                 = min_subpixel_bits;
 
     return true;
 }

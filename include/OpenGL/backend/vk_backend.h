@@ -5,6 +5,7 @@
 #ifndef VKGL_VK_BACKEND_H
 #define VKGL_VK_BACKEND_H
 
+#include "Anvil/include/misc/types.h"
 #include "OpenGL/types.h"
 
 namespace OpenGL
@@ -26,7 +27,9 @@ namespace OpenGL
             union
             {
                 float    f32[2];
+                int32_t  i32[2];
                 uint32_t u32[2];
+                uint64_t u64[2];
             } data;
 
             OpenGL::GetSetArgumentType data_type;
@@ -51,6 +54,16 @@ namespace OpenGL
                 n_vals      = in_data_n_vals;
 
             }
+            CapabilityData(const int32_t*  in_data_i32_ptr,
+                           const uint32_t& in_data_n_vals)
+            {
+                vkgl_assert(in_data_n_vals < 3);
+
+                data.i32[0] = (in_data_n_vals >= 1) ? in_data_i32_ptr[0] : 0;
+                data.i32[1] = (in_data_n_vals >= 2) ? in_data_i32_ptr[1] : 0;
+                data_type   = OpenGL::GetSetArgumentType::Int;
+                n_vals      = in_data_n_vals;
+            }
             CapabilityData(const uint32_t* in_data_u32_ptr,
                            const uint32_t& in_data_n_vals)
             {
@@ -61,9 +74,17 @@ namespace OpenGL
                 data_type   = OpenGL::GetSetArgumentType::Unsigned_Int;
                 n_vals      = in_data_n_vals;
             }
-        } CapabilityData;
+            CapabilityData(const uint64_t* in_data_u64_ptr,
+                           const uint32_t& in_data_n_vals)
+            {
+                vkgl_assert(in_data_n_vals < 3);
 
-        std::unordered_map<OpenGL::BackendCapability, CapabilityData> m_capabilities;
+                data.u64[0] = (in_data_n_vals >= 1) ? in_data_u64_ptr[0] : 0;
+                data.u64[1] = (in_data_n_vals >= 2) ? in_data_u64_ptr[1] : 0;
+                data_type   = OpenGL::GetSetArgumentType::Unsigned_Int64;
+                n_vals      = in_data_n_vals;
+            }
+        } CapabilityData;
 
         /* IBackendCapabilities functions */
 
@@ -300,10 +321,14 @@ namespace OpenGL
         VKBackend();
 
         bool init             ();
+        bool init_anvil       ();
         bool init_capabilities();
 
         /* Private variables */
 
+        std::unordered_map<OpenGL::BackendCapability, CapabilityData> m_capabilities;
+        Anvil::SGPUDeviceUniquePtr                                    m_device_ptr;
+        Anvil::InstanceUniquePtr                                      m_instance_ptr;
     };
 };
 #endif /* VKGL_VK_BACKEND_H */

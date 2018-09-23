@@ -266,11 +266,6 @@ namespace OpenGL
             return m_max_vertex_uniform_components;
         }
 
-        const uint32_t* get_max_viewport_dims_uvec2() const final
-        {
-            return m_max_viewport_dims;
-        }
-
         int32_t get_min_program_texel_offset() const final
         {
             return m_min_program_texel_offset;
@@ -386,9 +381,7 @@ namespace OpenGL
         uint32_t                            m_max_vertex_texture_image_units;
         uint32_t                            m_max_vertex_uniform_blocks;
         uint32_t                            m_max_vertex_uniform_components;
-        uint32_t                            m_max_viewport_dims[2];
         int32_t                             m_min_program_texel_offset;
-        float                               m_point_fade_threshold_size;
         float                               m_point_size_granularity;
         float                               m_point_size_range[2];
         uint32_t                            m_query_counter_bits;

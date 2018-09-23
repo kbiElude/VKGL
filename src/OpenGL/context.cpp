@@ -2000,6 +2000,12 @@ void OpenGL::Context::get_parameter(const OpenGL::ContextProperty&    in_pname,
         vkgl_not_implemented()
     }
     else
+    if (in_pname == OpenGL::ContextProperty::Max_Viewport_Dims) // todo
+    {
+        /* Can change in time, so this is neither a GL constant, nor a GL limit in a typical sense. */
+        vkgl_not_implemented()
+    }
+    else
 #if 0
     if (OpenGL::Utils::is_buffer_binding_pname(in_pname) ) // todo: buffer bindings
     {

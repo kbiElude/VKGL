@@ -5199,9 +5199,7 @@ bool OpenGL::Utils::is_context_property_gl_limit(const OpenGL::ContextProperty& 
         case OpenGL::ContextProperty::Max_Vertex_Texture_Image_Units:
         case OpenGL::ContextProperty::Max_Vertex_Uniform_Blocks:
         case OpenGL::ContextProperty::Max_Vertex_Uniform_Components:
-        case OpenGL::ContextProperty::Max_Viewport_Dims:
         case OpenGL::ContextProperty::Min_Program_Texel_Offset:
-        case OpenGL::ContextProperty::Point_Fade_Threshold_Size:
         case OpenGL::ContextProperty::Point_Size_Granularity:
         case OpenGL::ContextProperty::Point_Size_Range:
         case OpenGL::ContextProperty::Query_Counter_Bits:

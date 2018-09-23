@@ -5,6 +5,11 @@
 #include "Common/macros.h"
 #include "OpenGL/converters.h"
 #include "OpenGL/utils_enum.h"
+#include <algorithm>
+
+#ifdef max
+    #undef max
+#endif
 
 static void convert_from_f32(const void*                       in_vals_ptr,
                              const uint32_t&                   in_n_vals,
@@ -250,6 +255,72 @@ static void convert_from_u32(const void*                       in_vals_ptr,
     }
 }
 
+static void convert_from_u64(const void*                       in_vals_ptr,
+                             const uint32_t&                   in_n_vals,
+                             const OpenGL::GetSetArgumentType& in_dst_type,
+                             void*                             out_result_ptr)
+{
+    const uint64_t* in_vals_u64_ptr = reinterpret_cast<const uint64_t*>(in_vals_ptr);
+
+    for (uint32_t n_val = 0;
+                  n_val < in_n_vals;
+                ++n_val)
+    {
+        switch (in_dst_type)
+        {
+            case OpenGL::GetSetArgumentType::Boolean:
+            {
+                bool* result_ptr = reinterpret_cast<bool*>(out_result_ptr) + n_val;
+
+                *result_ptr = (in_vals_u64_ptr[n_val] != 0);
+                break;
+            }
+
+            case OpenGL::GetSetArgumentType::Double:
+            {
+                double* result_ptr = reinterpret_cast<double*>(out_result_ptr) + n_val;
+
+                *result_ptr = static_cast<double>(in_vals_u64_ptr[n_val]);
+                break;
+            }
+
+            case OpenGL::GetSetArgumentType::Float:
+            {
+                float* result_ptr = reinterpret_cast<float*>(out_result_ptr) + n_val;
+
+                *result_ptr = static_cast<float>(in_vals_u64_ptr[n_val]);
+                break;
+            }
+
+            case OpenGL::GetSetArgumentType::Int:
+            {
+                int32_t* result_ptr = reinterpret_cast<int32_t*>(out_result_ptr) + n_val;
+
+                *result_ptr = static_cast<int32_t>(std::max(in_vals_u64_ptr[n_val],
+                                                   static_cast<uint64_t>(UINT32_MAX) ));
+
+                break;
+            }
+
+            case OpenGL::GetSetArgumentType::Unsigned_Int:
+            {
+                uint32_t* result_ptr = reinterpret_cast<uint32_t*>(out_result_ptr) + n_val;
+
+                *result_ptr = static_cast<uint32_t>(std::max(in_vals_u64_ptr[n_val],
+                                                             static_cast<uint64_t>(UINT32_MAX) ));
+
+                break;
+            }
+
+            default:
+            {
+                vkgl_assert_fail();
+            }
+        }
+    }
+}
+
+
 void OpenGL::Converters::convert(const OpenGL::GetSetArgumentType& in_src_type,
                                  const void*                       in_vals_ptr,
                                  const uint32_t&                   in_n_vals,
@@ -439,6 +510,14 @@ void OpenGL::Converters::convert(const OpenGL::GetSetArgumentType& in_src_type,
         case OpenGL::GetSetArgumentType::Unsigned_Int:
         {
             return convert_from_u32(in_vals_ptr,
+                                    in_n_vals,
+                                    in_dst_type,
+                                    out_result_ptr);
+        }
+
+        case OpenGL::GetSetArgumentType::Unsigned_Int64:
+        {
+            return convert_from_u64(in_vals_ptr,
                                     in_n_vals,
                                     in_dst_type,
                                     out_result_ptr);

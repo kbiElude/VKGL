@@ -340,7 +340,6 @@ namespace OpenGL
         virtual uint32_t                                   get_max_vertex_texture_image_units               () const = 0;
         virtual uint32_t                                   get_max_vertex_uniform_blocks                    () const = 0;
         virtual uint32_t                                   get_max_vertex_uniform_components                () const = 0;
-        virtual const uint32_t*                            get_max_viewport_dims_uvec2                      () const = 0;
         virtual int32_t                                    get_min_program_texel_offset                     () const = 0;
         virtual float                                      get_point_size_granularity                       () const = 0;
         virtual const float*                               get_point_size_range_vec2                        () const = 0;
