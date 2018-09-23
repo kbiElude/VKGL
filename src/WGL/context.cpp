@@ -224,8 +224,9 @@ bool WGL::Context::init_gl_context()
     }
 
     /* Good to create the GL context instance, now that we have a functional backend instance. */
-    m_gl_context_ptr = OpenGL::Context::create(reinterpret_cast<VKGL::IWSIContext*>      (this),
-                                               dynamic_cast<OpenGL::IBackendGLCallbacks*>(m_vk_backend_ptr.get() ));
+    m_gl_context_ptr = OpenGL::Context::create(reinterpret_cast<VKGL::IWSIContext*>             (this),
+                                               dynamic_cast<OpenGL::IBackendGLCallbacks*>       (m_vk_backend_ptr.get() ),
+                                               dynamic_cast<const OpenGL::IBackendCapabilities*>(m_vk_backend_ptr.get() ));
 
     if (m_gl_context_ptr == nullptr)
     {

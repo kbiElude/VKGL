@@ -440,9 +440,11 @@
 #endif
 
 OpenGL::Context::Context(const VKGL::IWSIContext*     in_wsi_context_ptr,
-                         OpenGL::IBackendGLCallbacks* in_backend_ptr)
-    :m_backend_ptr    (in_backend_ptr),
-     m_wsi_context_ptr(in_wsi_context_ptr)
+                         OpenGL::IBackendGLCallbacks* in_backend_gl_callbacks_ptr,
+                         const IBackendCapabilities*  in_backend_caps_ptr)
+    :m_backend_caps_ptr        (in_backend_caps_ptr),
+     m_backend_gl_callbacks_ptr(in_backend_gl_callbacks_ptr),
+     m_wsi_context_ptr         (in_wsi_context_ptr)
 {
     /* Stub */
 }
@@ -631,16 +633,16 @@ void OpenGL::Context::buffer_data(const OpenGL::BufferTarget& in_target,
                                   const void*                 in_data_ptr,
                                   const OpenGL::BufferUsage&  in_usage)
 {
-    vkgl_assert(m_backend_ptr           != nullptr);
-    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr  != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_buffer_manager_ptr    != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
     vkgl_assert(buffer_id != 0);
 
-    m_backend_ptr->buffer_data(buffer_id,
-                               in_size,
-                               in_data_ptr);
+    m_backend_gl_callbacks_ptr->buffer_data(buffer_id,
+                                            in_size,
+                                            in_data_ptr);
 
     m_gl_buffer_manager_ptr->set_buffer_store_size(buffer_id,
                                                    in_size);
@@ -653,16 +655,17 @@ void OpenGL::Context::buffer_sub_data(const OpenGL::BufferTarget& in_target,
                                       const GLsizeiptr&           in_size,
                                       const void*                 in_data_ptr)
 {
-    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr  != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_buffer_manager_ptr    != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
     vkgl_assert(buffer_id != 0);
 
-    m_backend_ptr->buffer_sub_data(buffer_id,
-                                   in_offset,
-                                   in_size,
-                                   in_data_ptr);
+    m_backend_gl_callbacks_ptr->buffer_sub_data(buffer_id,
+                                                in_offset,
+                                                in_size,
+                                                in_data_ptr);
 }
 
 OpenGL::FramebufferStatus OpenGL::Context::check_framebuffer_status(const OpenGL::FramebufferTarget& in_target) const
@@ -674,9 +677,9 @@ OpenGL::FramebufferStatus OpenGL::Context::check_framebuffer_status(const OpenGL
 
 void OpenGL::Context::clear(const OpenGL::ClearBufferBits& in_buffers_to_clear)
 {
-    vkgl_assert(m_backend_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
-    m_backend_ptr->clear(in_buffers_to_clear);
+    m_backend_gl_callbacks_ptr->clear(in_buffers_to_clear);
 }
 
 void OpenGL::Context::clear_buffer(const OpenGL::ClearBuffer&        in_buffer,
@@ -701,9 +704,9 @@ OpenGL::WaitResult OpenGL::Context::client_wait_sync(const GLsync&              
 
 void OpenGL::Context::compile_shader(const GLuint& in_shader)
 {
-    vkgl_assert(m_backend_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
-    m_backend_ptr->compile_shader(in_shader);
+    m_backend_gl_callbacks_ptr->compile_shader(in_shader);
 }
 
 void OpenGL::Context::compressed_tex_image_1d(const OpenGL::TextureTarget&  in_target,
@@ -715,20 +718,20 @@ void OpenGL::Context::compressed_tex_image_1d(const OpenGL::TextureTarget&  in_t
                                               const void*                   in_data)
 {
 #if 0
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->compressed_tex_image_1d(texture_id,
-                                           in_level,
-                                           in_internalformat,
-                                           in_width,
-                                           in_border,
-                                           in_image_size,
-                                           in_data);
+    m_backend_gl_callbacks_ptr->compressed_tex_image_1d(texture_id,
+                                                        in_level,
+                                                        in_internalformat,
+                                                        in_width,
+                                                        in_border,
+                                                        in_image_size,
+                                                        in_data);
 #else
     vkgl_not_implemented();
 #endif
@@ -744,21 +747,21 @@ void OpenGL::Context::compressed_tex_image_2d(const OpenGL::TextureTarget&  in_t
                                               const void*                   in_data)
 {
 #if 0
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->compressed_tex_image_2d(texture_id,
-                                           in_level,
-                                           in_internalformat,
-                                           in_width,
-                                           in_height,
-                                           in_border,
-                                           in_image_size,
-                                           in_data);
+    m_backend_gl_callbacks_ptr->compressed_tex_image_2d(texture_id,
+                                                        in_level,
+                                                        in_internalformat,
+                                                        in_width,
+                                                        in_height,
+                                                        in_border,
+                                                        in_image_size,
+                                                        in_data);
 #else
     vkgl_not_implemented();
 #endif
@@ -775,22 +778,22 @@ void OpenGL::Context::compressed_tex_image_3d(const OpenGL::TextureTarget&  in_t
                                               const void*                   in_data)
 {
 #if 0
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->compressed_tex_image_3d(texture_id,
-                                           in_level,
-                                           in_internalformat,
-                                           in_width,
-                                           in_height,
-                                           in_depth,
-                                           in_border,
-                                           in_image_size,
-                                           in_data);
+    m_backend_gl_callbacks_ptr->compressed_tex_image_3d(texture_id,
+                                                        in_level,
+                                                        in_internalformat,
+                                                        in_width,
+                                                        in_height,
+                                                        in_depth,
+                                                        in_border,
+                                                        in_image_size,
+                                                        in_data);
 #else
     vkgl_not_implemented();
 #endif
@@ -805,20 +808,20 @@ void OpenGL::Context::compressed_tex_sub_image_1d(const OpenGL::TextureTarget& i
                                                   const void*                  in_data)
 {
 #if 0
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->compressed_tex_sub_image_1d(texture_id,
-                                               in_level,
-                                               in_xoffset,
-                                               in_width,
-                                               in_format,
-                                               in_image_size,
-                                               in_data);
+    m_backend_gl_callbacks_ptr->compressed_tex_sub_image_1d(texture_id,
+                                                            in_level,
+                                                            in_xoffset,
+                                                            in_width,
+                                                            in_format,
+                                                            in_image_size,
+                                                            in_data);
 #else
     vkgl_not_implemented();
 #endif
@@ -835,22 +838,22 @@ void OpenGL::Context::compressed_tex_sub_image_2d(const OpenGL::TextureTarget& i
                                                   const void*                  in_data)
 {
 #if 0
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
-    vkgl_assert(m_backend_ptr          != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->compressed_tex_sub_image_2d(texture_id,
-                                               in_level,
-                                               in_xoffset,
-                                               in_yoffset,
-                                               in_width,
-                                               in_height,
-                                               in_format,
-                                               in_image_size,
-                                               in_data);
+    m_backend_gl_callbacks_ptr->compressed_tex_sub_image_2d(texture_id,
+                                                            in_level,
+                                                            in_xoffset,
+                                                            in_yoffset,
+                                                            in_width,
+                                                            in_height,
+                                                            in_format,
+                                                            in_image_size,
+                                                            in_data);
 #else
     vkgl_not_implemented();
 #endif
@@ -869,24 +872,24 @@ void OpenGL::Context::compressed_tex_sub_image_3d(const OpenGL::TextureTarget& i
                                                   const void*                  in_data)
 {
 #if 0
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
-    vkgl_assert(m_backend_ptr          != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->compressed_tex_sub_image_3d(texture_id,
-                                               in_level,
-                                               in_xoffset,
-                                               in_yoffset,
-                                               in_zoffset,
-                                               in_width,
-                                               in_height,
-                                               in_depth,
-                                               in_format,
-                                               in_image_size,
-                                               in_data);
+    m_backend_gl_callbacks_ptr->compressed_tex_sub_image_3d(texture_id,
+                                                            in_level,
+                                                            in_xoffset,
+                                                            in_yoffset,
+                                                            in_zoffset,
+                                                            in_width,
+                                                            in_height,
+                                                            in_depth,
+                                                            in_format,
+                                                            in_image_size,
+                                                            in_data);
 #else
     vkgl_not_implemented();
 #endif
@@ -898,17 +901,17 @@ void OpenGL::Context::copy_buffer_sub_data(const OpenGL::BufferTarget& in_read_t
                                            const GLintptr&             in_write_offset,
                                            const GLsizeiptr&           in_size)
 {
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto dst_buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_write_target)->get_id();
     const auto src_buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_read_target)->get_id ();
 
-    m_backend_ptr->copy_buffer_sub_data(src_buffer_id,
-                                        dst_buffer_id,
-                                        in_read_offset,
-                                        in_write_offset,
-                                        in_size);
+    m_backend_gl_callbacks_ptr->copy_buffer_sub_data(src_buffer_id,
+                                                     dst_buffer_id,
+                                                     in_read_offset,
+                                                     in_write_offset,
+                                                     in_size);
 }
 
 void OpenGL::Context::copy_tex_image_1d(const OpenGL::TextureTarget&  in_target,
@@ -920,20 +923,20 @@ void OpenGL::Context::copy_tex_image_1d(const OpenGL::TextureTarget&  in_target,
                                         const GLint&                  in_border)
 {
 #if 0
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->copy_tex_image_1d(texture_id,
-                                     in_level,
-                                     in_internalformat,
-                                     in_x,
-                                     in_y,
-                                     in_width,
-                                     in_border);
+    m_backend_gl_callbacks_ptr->copy_tex_image_1d(texture_id,
+                                                  in_level,
+                                                  in_internalformat,
+                                                  in_x,
+                                                  in_y,
+                                                  in_width,
+                                                  in_border);
 #else
     vkgl_not_implemented();
 #endif
@@ -949,21 +952,21 @@ void OpenGL::Context::copy_tex_image_2d(const OpenGL::TextureTarget&  in_target,
                                         const GLint&                  in_border)
 {
 #if 0
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->copy_tex_image_2d(texture_id,
-                                     in_level,
-                                     in_internalformat,
-                                     in_x,
-                                     in_y,
-                                     in_width,
-                                     in_height,
-                                     in_border);
+    m_backend_gl_callbacks_ptr->copy_tex_image_2d(texture_id,
+                                                  in_level,
+                                                  in_internalformat,
+                                                  in_x,
+                                                  in_y,
+                                                  in_width,
+                                                  in_height,
+                                                  in_border);
 #else
     vkgl_not_implemented();
 #endif
@@ -977,19 +980,19 @@ void OpenGL::Context::copy_tex_sub_image_1d(const OpenGL::TextureTarget& in_targ
                                             const GLsizei&               in_width)
 {
 #if 0
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->copy_tex_sub_image_1d(texture_id,
-                                         in_level,
-                                         in_xoffset,
-                                         in_x,
-                                         in_y,
-                                         in_width);
+    m_backend_gl_callbacks_ptr->copy_tex_sub_image_1d(texture_id,
+                                                      in_level,
+                                                      in_xoffset,
+                                                      in_x,
+                                                      in_y,
+                                                      in_width);
 #else
     vkgl_not_implemented();
 #endif
@@ -1005,21 +1008,21 @@ void OpenGL::Context::copy_tex_sub_image_2d(const OpenGL::TextureTarget& in_targ
                                             const GLsizei&               in_height)
 {
 #if 0
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
-    vkgl_assert(m_backend_ptr          != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->copy_tex_sub_image_2d(texture_id,
-                                         in_level,
-                                         in_xoffset,
-                                         in_yoffset,
-                                         in_x,
-                                         in_y,
-                                         in_width,
-                                         in_height);
+    m_backend_gl_callbacks_ptr->copy_tex_sub_image_2d(texture_id,
+                                                      in_level,
+                                                      in_xoffset,
+                                                      in_yoffset,
+                                                      in_x,
+                                                      in_y,
+                                                      in_width,
+                                                      in_height);
 #else
     vkgl_not_implemented();
 #endif
@@ -1036,35 +1039,37 @@ void OpenGL::Context::copy_tex_sub_image_3d(const OpenGL::TextureTarget& in_targ
                                             const GLsizei&               in_height)
 {
 #if 0
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
-    vkgl_assert(m_backend_ptr          != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->copy_tex_sub_image_3d(texture_id,
-                                         in_level,
-                                         in_xoffset,
-                                         in_yoffset,
-                                         in_zoffset,
-                                         in_x,
-                                         in_y,
-                                         in_width,
-                                         in_height);
+    m_backend_gl_callbacks_ptr->copy_tex_sub_image_3d(texture_id,
+                                                      in_level,
+                                                      in_xoffset,
+                                                      in_yoffset,
+                                                      in_zoffset,
+                                                      in_x,
+                                                      in_y,
+                                                      in_width,
+                                                      in_height);
 #else
     vkgl_not_implemented();
 #endif
 }
 
 OpenGL::ContextUniquePtr OpenGL::Context::create(const VKGL::IWSIContext*     in_wsi_context_ptr,
-                                                 OpenGL::IBackendGLCallbacks* in_backend_ptr)
+                                                 OpenGL::IBackendGLCallbacks* in_backend_gl_callbacks_ptr,
+                                                 const IBackendCapabilities*  in_backend_caps_ptr)
 {
     OpenGL::ContextUniquePtr result_ptr;
 
     result_ptr.reset(
         new OpenGL::Context(in_wsi_context_ptr,
-                            in_backend_ptr)
+                            in_backend_gl_callbacks_ptr,
+                            in_backend_caps_ptr)
     );
 
     if (result_ptr != nullptr)
@@ -1259,11 +1264,11 @@ void OpenGL::Context::draw_arrays(const OpenGL::DrawCallMode& in_mode,
                                   const GLint&                in_first,
                                   const GLsizei&              in_count)
 {
-    vkgl_assert(m_backend_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
-    m_backend_ptr->draw_arrays(in_mode,
-                               in_first,
-                               in_count);
+    m_backend_gl_callbacks_ptr->draw_arrays(in_mode,
+                                            in_first,
+                                            in_count);
 }
 
 void OpenGL::Context::draw_arrays_instanced(const OpenGL::DrawCallMode& in_mode,
@@ -1280,12 +1285,12 @@ void OpenGL::Context::draw_elements(const OpenGL::DrawCallMode&      in_mode,
                                     const void*                      in_indices)
 {
 #if 0
-    vkgl_assert(m_backend_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
-    m_backend_ptr->draw_elements(in_mode,
-                                 in_count,
-                                 in_type,
-                                 in_indices);
+    m_backend_gl_callbacks_ptr->draw_elements(in_mode,
+                                              in_count,
+                                              in_type,
+                                              in_indices);
 #else
     vkgl_not_implemented();
 #endif
@@ -1327,14 +1332,14 @@ void OpenGL::Context::draw_range_elements(const OpenGL::DrawCallMode&      in_mo
                                           const void*                      in_indices)
 {
 #if 0
-    vkgl_assert(m_backend_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
-    m_backend_ptr->draw_range_elements(in_mode,
-                                       in_start,
-                                       in_end,
-                                       in_count,
-                                       in_type,
-                                       in_indices);
+    m_backend_gl_callbacks_ptr->draw_range_elements(in_mode,
+                                                    in_start,
+                                                    in_end,
+                                                    in_count,
+                                                    in_type,
+                                                    in_indices);
 #else
     vkgl_not_implemented();
 #endif
@@ -1409,9 +1414,9 @@ GLsync OpenGL::Context::fence_sync(const OpenGL::SyncCondition& in_condition)
 void OpenGL::Context::finish()
 {
 #if 0
-    vkgl_assert(m_backend_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
-    m_backend_ptr->finish();
+    m_backend_gl_callbacks_ptr->finish();
 #else
     vkgl_not_implemented();
 #endif
@@ -1420,9 +1425,9 @@ void OpenGL::Context::finish()
 void OpenGL::Context::flush()
 {
 #if 0
-    vkgl_assert(m_backend_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
-    m_backend_ptr->flush();
+    m_backend_gl_callbacks_ptr->flush();
 #else
     vkgl_not_implemented();
 #endif
@@ -1432,14 +1437,14 @@ void OpenGL::Context::flush_mapped_buffer_range(const OpenGL::BufferTarget& in_t
                                                 const GLintptr&             in_offset,
                                                 const GLsizeiptr&           in_length)
 {
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
-    vkgl_assert(m_backend_ptr          != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto dst_buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
 
-    m_backend_ptr->flush_mapped_buffer_range(dst_buffer_id,
-                                             in_offset,
-                                             in_length);
+    m_backend_gl_callbacks_ptr->flush_mapped_buffer_range(dst_buffer_id,
+                                                          in_offset,
+                                                          in_length);
 }
 
 void OpenGL::Context::framebuffer_renderbuffer(const OpenGL::FramebufferTarget&          in_target,
@@ -1891,16 +1896,16 @@ void OpenGL::Context::get_buffer_sub_data(const OpenGL::BufferTarget& in_target,
                                           const GLsizeiptr&           in_size,
                                           void*                       out_data_ptr)
 {
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
     vkgl_assert(buffer_id != 0);
 
-    m_backend_ptr->get_buffer_sub_data(buffer_id,
-                                       in_offset,
-                                       in_size,
-                                       out_data_ptr);
+    m_backend_gl_callbacks_ptr->get_buffer_sub_data(buffer_id,
+                                                    in_offset,
+                                                    in_size,
+                                                    out_data_ptr);
 }
 
 void OpenGL::Context::get_compressed_tex_image(const OpenGL::TextureTarget& in_target,
@@ -1908,17 +1913,17 @@ void OpenGL::Context::get_compressed_tex_image(const OpenGL::TextureTarget& in_t
                                                void*                        in_img)
 {
 #if 0
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto& context_state_ptr   = m_gl_state_manager_ptr->get_state();
     const auto  active_texture_unit = context_state_ptr->active_texture_unit;
     const auto  texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                   in_target);
 
-    m_backend_ptr->get_compressed_tex_image(texture_id,
-                                            in_level,
-                                            in_img);
+    m_backend_gl_callbacks_ptr->get_compressed_tex_image(texture_id,
+                                                         in_level,
+                                                         in_img);
 #else
     vkgl_not_implemented();
 #endif
@@ -1992,6 +1997,12 @@ void OpenGL::Context::get_parameter(const OpenGL::ContextProperty&    in_pname,
 #endif
     if (in_pname == OpenGL::ContextProperty::Renderbuffer_Binding) // todo
     {
+        vkgl_not_implemented()
+    }
+    else
+    if (in_pname == OpenGL::ContextProperty::Max_Viewport_Dims) // todo
+    {
+        /* Can change in time, so this is neither a GL constant, nor a GL limit in a typical sense. */
         vkgl_not_implemented()
     }
     else
@@ -2242,19 +2253,19 @@ void OpenGL::Context::get_texture_image(const OpenGL::TextureTarget& in_target,
                                         void*                        out_pixels_ptr)
 {
 #if 0
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto& context_state_ptr   = m_gl_state_manager_ptr->get_state();
     const auto  active_texture_unit = context_state_ptr->active_texture_unit;
     const auto  texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                   in_target);
 
-    m_backend_ptr->get_texture_image(texture_id,
-                                     in_level,
-                                     in_format,
-                                     in_type,
-                                     out_pixels_ptr);
+    m_backend_gl_callbacks_ptr->get_texture_image(texture_id,
+                                                  in_level,
+                                                  in_format,
+                                                  in_type,
+                                                  out_pixels_ptr);
 #else
     vkgl_not_implemented();
 #endif
@@ -2468,7 +2479,7 @@ bool OpenGL::Context::init()
 
     /* Set up GL limits container */
     m_gl_limits_ptr.reset(
-        new OpenGL::GLLimits()
+        new OpenGL::GLLimits(m_backend_caps_ptr)
     );
 
     if (m_gl_limits_ptr == nullptr)
@@ -3034,27 +3045,27 @@ bool OpenGL::Context::is_vertex_array(const GLuint& in_array) const
 
 void OpenGL::Context::link_program(const GLuint& in_program)
 {
-    vkgl_assert(m_backend_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
-    m_backend_ptr->link_program(in_program);
+    m_backend_gl_callbacks_ptr->link_program(in_program);
 }
 
 void* OpenGL::Context::map_buffer(const OpenGL::BufferTarget& in_target,
                                   const OpenGL::BufferAccess& in_access)
 {
-    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr  != nullptr);
-    vkgl_assert(m_backend_ptr           != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_buffer_manager_ptr    != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
     vkgl_assert(buffer_id != 0);
 
     const auto buffer_size = m_gl_buffer_manager_ptr->get_buffer_size(buffer_id);
 
-    return m_backend_ptr->map_buffer(buffer_id,
-                                     in_access,
-                                     0, /* in_start_offset */
-                                     buffer_size);
+    return m_backend_gl_callbacks_ptr->map_buffer(buffer_id,
+                                                  in_access,
+                                                  0, /* in_start_offset */
+                                                  buffer_size);
 }
 
 void* OpenGL::Context::map_buffer_range(const OpenGL::BufferTarget& in_target,
@@ -3062,16 +3073,16 @@ void* OpenGL::Context::map_buffer_range(const OpenGL::BufferTarget& in_target,
                                         const GLsizeiptr&           in_length,
                                         const OpenGL::BufferAccess& in_access)
 {
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
-    vkgl_assert(m_backend_ptr          != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
     vkgl_assert(buffer_id != 0);
 
-    return m_backend_ptr->map_buffer(buffer_id,
-                                     in_access,
-                                     in_offset,
-                                     in_length);
+    return m_backend_gl_callbacks_ptr->map_buffer(buffer_id,
+                                                  in_access,
+                                                  in_offset,
+                                                  in_length);
 }
 
 void OpenGL::Context::multi_draw_arrays(const OpenGL::DrawCallMode& in_mode,
@@ -3080,12 +3091,12 @@ void OpenGL::Context::multi_draw_arrays(const OpenGL::DrawCallMode& in_mode,
                                         const GLsizei&              in_drawcount)
 {
 #if 0
-    vkgl_assert(m_backend_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
-    m_backend_ptr->multi_draw_arrays(in_mode,
-                                     in_first_ptr,
-                                     in_count_ptr,
-                                     in_drawcount);
+    m_backend_gl_callbacks_ptr->multi_draw_arrays(in_mode,
+                                                  in_first_ptr,
+                                                  in_count_ptr,
+                                                  in_drawcount);
 #else
     vkgl_not_implemented();
 #endif
@@ -3098,13 +3109,13 @@ void OpenGL::Context::multi_draw_elements(const OpenGL::DrawCallMode&      in_mo
                                           const GLsizei&                   in_drawcount)
 {
 #if 0
-    vkgl_assert(m_backend_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
-    m_backend_ptr->multi_draw_elements(in_mode,
-                                       in_count_ptr,
-                                       in_type,
-                                       in_indices_ptr,
-                                       in_drawcount);
+    m_backend_gl_callbacks_ptr->multi_draw_elements(in_mode,
+                                                    in_count_ptr,
+                                                    in_type,
+                                                    in_indices_ptr,
+                                                    in_drawcount);
 #else
     vkgl_not_implemented();
 #endif
@@ -3129,15 +3140,15 @@ void OpenGL::Context::read_pixels(const int32_t&             in_x,
                                   void*                      out_pixels_ptr)
 {
 #if 0
-    vkgl_assert(m_backend_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
-    m_backend_ptr->read_pixels(in_x,
-                               in_y,
-                               in_width,
-                               in_height,
-                               in_format,
-                               in_type,
-                               out_pixels_ptr);
+    m_backend_gl_callbacks_ptr->read_pixels(in_x,
+                                            in_y,
+                                            in_width,
+                                            in_height,
+                                            in_format,
+                                            in_type,
+                                            out_pixels_ptr);
 #else
     vkgl_not_implemented();
 #endif
@@ -3726,21 +3737,21 @@ void OpenGL::Context::tex_image_1d(const OpenGL::TextureTarget&  in_target,
                                    const void*                   in_pixels_ptr)
 {
 #if 0
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->tex_image_1d(texture_id,
-                                in_level,
-                                in_internalformat,
-                                in_width,
-                                in_border,
-                                in_format,
-                                in_type,
-                                in_pixels_ptr);
+    m_backend_gl_callbacks_ptr->tex_image_1d(texture_id,
+                                             in_level,
+                                             in_internalformat,
+                                             in_width,
+                                             in_border,
+                                             in_format,
+                                             in_type,
+                                             in_pixels_ptr);
 #else
     vkgl_not_implemented();
 #endif
@@ -3757,22 +3768,22 @@ void OpenGL::Context::tex_image_2d(const OpenGL::TextureTarget&  in_target,
                                    const void*                   in_pixels_ptr)
 {
 #if 0
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->tex_image_2d(texture_id,
-                                in_level,
-                                in_internalformat,
-                                in_width,
-                                in_height,
-                                in_border,
-                                in_format,
-                                in_type,
-                                in_pixels_ptr);
+    m_backend_gl_callbacks_ptr->tex_image_2d(texture_id,
+                                             in_level,
+                                             in_internalformat,
+                                             in_width,
+                                             in_height,
+                                             in_border,
+                                             in_format,
+                                             in_type,
+                                             in_pixels_ptr);
 #else
     vkgl_not_implemented();
 #endif
@@ -3800,23 +3811,23 @@ void OpenGL::Context::tex_image_3d(const OpenGL::TextureTarget&  in_target,
                                    const void*                   in_pixels_ptr)
 {
 #if 0
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->tex_image_3d(texture_id,
-                                in_level,
-                                in_internalformat,
-                                in_width,
-                                in_height,
-                                in_depth,
-                                in_border,
-                                in_format,
-                                in_type,
-                                in_pixels_ptr);
+    m_backend_gl_callbacks_ptr->tex_image_3d(texture_id,
+                                             in_level,
+                                             in_internalformat,
+                                             in_width,
+                                             in_height,
+                                             in_depth,
+                                             in_border,
+                                             in_format,
+                                             in_type,
+                                             in_pixels_ptr);
 #else
     vkgl_not_implemented();
 #endif
@@ -3842,20 +3853,20 @@ void OpenGL::Context::tex_sub_image_1d(const OpenGL::TextureTarget& in_target,
                                        const void*                  in_pixels)
 {
 #if 0
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->tex_sub_image_1d(texture_id,
-                                    in_level,
-                                    in_xoffset,
-                                    in_width,
-                                    in_format,
-                                    in_type,
-                                    in_pixels);
+    m_backend_gl_callbacks_ptr->tex_sub_image_1d(texture_id,
+                                                 in_level,
+                                                 in_xoffset,
+                                                 in_width,
+                                                 in_format,
+                                                 in_type,
+                                                 in_pixels);
 #else
     vkgl_not_implemented();
 #endif
@@ -3872,22 +3883,22 @@ void OpenGL::Context::tex_sub_image_2d(const OpenGL::TextureTarget& in_target,
                                        const void*                  in_pixels)
 {
 #if 0
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->tex_sub_image_2d(texture_id,
-                                    in_level,
-                                    in_xoffset,
-                                    in_yoffset,
-                                    in_width,
-                                    in_height,
-                                    in_format,
-                                    in_type,
-                                    in_pixels);
+    m_backend_gl_callbacks_ptr->tex_sub_image_2d(texture_id,
+                                                 in_level,
+                                                 in_xoffset,
+                                                 in_yoffset,
+                                                 in_width,
+                                                 in_height,
+                                                 in_format,
+                                                 in_type,
+                                                 in_pixels);
 #else
     vkgl_not_implemented();
 #endif
@@ -3906,24 +3917,24 @@ void OpenGL::Context::tex_sub_image_3d(const OpenGL::TextureTarget& in_target,
                                        const void*                  in_pixels)
 {
 #if 0
-    vkgl_assert(m_backend_ptr          != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
 
-    m_backend_ptr->tex_sub_image_3d(texture_id,
-                                    in_level,
-                                    in_xoffset,
-                                    in_yoffset,
-                                    in_zoffset,
-                                    in_width,
-                                    in_height,
-                                    in_depth,
-                                    in_format,
-                                    in_type,
-                                    in_pixels);
+    m_backend_gl_callbacks_ptr->tex_sub_image_3d(texture_id,
+                                                 in_level,
+                                                 in_xoffset,
+                                                 in_yoffset,
+                                                 in_zoffset,
+                                                 in_width,
+                                                 in_height,
+                                                 in_depth,
+                                                 in_format,
+                                                 in_type,
+                                                 in_pixels);
 #else
     vkgl_not_implemented();
 #endif
@@ -3931,14 +3942,14 @@ void OpenGL::Context::tex_sub_image_3d(const OpenGL::TextureTarget& in_target,
 
 bool OpenGL::Context::unmap_buffer(const OpenGL::BufferTarget& in_target)
 {
-    vkgl_assert(m_backend_ptr           != nullptr);
-    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
-    vkgl_assert(m_gl_state_manager_ptr  != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_buffer_manager_ptr    != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
     vkgl_assert(buffer_id != 0);
 
-    return m_backend_ptr->unmap_buffer(buffer_id);
+    return m_backend_gl_callbacks_ptr->unmap_buffer(buffer_id);
 }
 
 void OpenGL::Context::use_program(const GLuint& in_program)
@@ -3963,9 +3974,9 @@ end:
 
 void OpenGL::Context::validate_program(const GLuint& in_program)
 {
-    vkgl_assert(m_backend_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
-    m_backend_ptr->validate_program(in_program);
+    m_backend_gl_callbacks_ptr->validate_program(in_program);
 }
 
 void OpenGL::Context::wait_sync(const GLsync&   in_sync,

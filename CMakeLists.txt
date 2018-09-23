@@ -22,6 +22,7 @@ set(CMAKE_INCLUDE_PATH             "${VK_GL_SOURCE_DIR}/include")
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${VK_GL_BINARY_DIR}/bin")
 
 include_directories("${Anvil_BINARY_DIR}/include"
+                    "${Anvil_SOURCE_DIR}/include"
                     "${VK_GL_BINARY_DIR}"
                     "${VK_GL_SOURCE_DIR}/deps"
                     "${VK_GL_SOURCE_DIR}/include"

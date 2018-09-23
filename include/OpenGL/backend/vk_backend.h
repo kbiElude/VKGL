@@ -5,11 +5,13 @@
 #ifndef VKGL_VK_BACKEND_H
 #define VKGL_VK_BACKEND_H
 
+#include "Anvil/include/misc/types.h"
 #include "OpenGL/types.h"
 
 namespace OpenGL
 {
-    class VKBackend : public IBackendGLCallbacks
+    class VKBackend : public IBackendCapabilities,
+                      public IBackendGLCallbacks
     {
     public:
         /* Public functions */
@@ -19,6 +21,78 @@ namespace OpenGL
         ~VKBackend();
 
     private:
+        /* Private type definitions */
+        typedef struct CapabilityData
+        {
+            union
+            {
+                float    f32[2];
+                int32_t  i32[2];
+                uint32_t u32[2];
+                uint64_t u64[2];
+            } data;
+
+            OpenGL::GetSetArgumentType data_type;
+            uint32_t                   n_vals;
+
+            CapabilityData()
+            {
+                data.u32[0] = 0;
+                data.u32[1] = 0;
+                data_type   = OpenGL::GetSetArgumentType::Unknown;
+                n_vals      = 0;
+            }
+
+            CapabilityData(const float*    in_data_f32_ptr,
+                           const uint32_t& in_data_n_vals)
+            {
+                vkgl_assert(in_data_n_vals < 3);
+
+                data.f32[0] = (in_data_n_vals >= 1) ? in_data_f32_ptr[0] : 0;
+                data.f32[1] = (in_data_n_vals >= 2) ? in_data_f32_ptr[1] : 0;
+                data_type   = OpenGL::GetSetArgumentType::Float;
+                n_vals      = in_data_n_vals;
+
+            }
+            CapabilityData(const int32_t*  in_data_i32_ptr,
+                           const uint32_t& in_data_n_vals)
+            {
+                vkgl_assert(in_data_n_vals < 3);
+
+                data.i32[0] = (in_data_n_vals >= 1) ? in_data_i32_ptr[0] : 0;
+                data.i32[1] = (in_data_n_vals >= 2) ? in_data_i32_ptr[1] : 0;
+                data_type   = OpenGL::GetSetArgumentType::Int;
+                n_vals      = in_data_n_vals;
+            }
+            CapabilityData(const uint32_t* in_data_u32_ptr,
+                           const uint32_t& in_data_n_vals)
+            {
+                vkgl_assert(in_data_n_vals < 3);
+
+                data.u32[0] = (in_data_n_vals >= 1) ? in_data_u32_ptr[0] : 0;
+                data.u32[1] = (in_data_n_vals >= 2) ? in_data_u32_ptr[1] : 0;
+                data_type   = OpenGL::GetSetArgumentType::Unsigned_Int;
+                n_vals      = in_data_n_vals;
+            }
+            CapabilityData(const uint64_t* in_data_u64_ptr,
+                           const uint32_t& in_data_n_vals)
+            {
+                vkgl_assert(in_data_n_vals < 3);
+
+                data.u64[0] = (in_data_n_vals >= 1) ? in_data_u64_ptr[0] : 0;
+                data.u64[1] = (in_data_n_vals >= 2) ? in_data_u64_ptr[1] : 0;
+                data_type   = OpenGL::GetSetArgumentType::Unsigned_Int64;
+                n_vals      = in_data_n_vals;
+            }
+        } CapabilityData;
+
+        /* IBackendCapabilities functions */
+
+        void get_capability(const OpenGL::BackendCapability&  in_capability,
+                            const OpenGL::GetSetArgumentType& in_arg_type,
+                            const uint32_t&                   in_n_vals,
+                            void*                             out_result_ptr) const final;
+
         /* IBackendGLCallbacks functions */
 
         void  buffer_data              (const GLuint&               in_id,
@@ -246,10 +320,15 @@ namespace OpenGL
 
         VKBackend();
 
-        bool init();
+        bool init             ();
+        bool init_anvil       ();
+        bool init_capabilities();
 
         /* Private variables */
 
+        std::unordered_map<OpenGL::BackendCapability, CapabilityData> m_capabilities;
+        Anvil::SGPUDeviceUniquePtr                                    m_device_ptr;
+        Anvil::InstanceUniquePtr                                      m_instance_ptr;
     };
 };
 #endif /* VKGL_VK_BACKEND_H */

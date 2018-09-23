@@ -9,6 +9,20 @@
 
 namespace OpenGL
 {
+    class IBackendCapabilities
+    {
+    public:
+        virtual ~IBackendCapabilities()
+        {
+            /* Stub */
+        }
+
+        virtual void get_capability(const OpenGL::BackendCapability&  in_capability,
+                                    const OpenGL::GetSetArgumentType& in_arg_type,
+                                    const uint32_t&                   in_n_vals,
+                                    void*                             out_result_ptr) const = 0;
+    };
+
     class IBackendGLCallbacks
     {
     public:
@@ -326,7 +340,6 @@ namespace OpenGL
         virtual uint32_t                                   get_max_vertex_texture_image_units               () const = 0;
         virtual uint32_t                                   get_max_vertex_uniform_blocks                    () const = 0;
         virtual uint32_t                                   get_max_vertex_uniform_components                () const = 0;
-        virtual const uint32_t*                            get_max_viewport_dims_uvec2                      () const = 0;
         virtual int32_t                                    get_min_program_texel_offset                     () const = 0;
         virtual float                                      get_point_size_granularity                       () const = 0;
         virtual const float*                               get_point_size_range_vec2                        () const = 0;
