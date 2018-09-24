@@ -9,6 +9,22 @@
 
 namespace OpenGL
 {
+    /* TODO.
+     *
+     * State snapshot will hold GL references to snapshots of general context state, active PO, bound VBO, etc.
+     * Snapshots will be maintained by corresponding object managers (in principle: the base class behind these),
+     * and will only be released if NOT the latest bound version AND no backend ops are pending.
+     * A setter call issued over current snapshot does not result in a snapshot re-creation IF no backend ops are pending.
+     * Otherwise, the new version needs to be stored under a new hash.
+     */
+    /* TODO: GLReferenceUniquePtr also needs to be updated to refer to a snapshot of a particular object, NOT the
+     *       active frontend state. Backend and frontend are expected to live completely separately.
+     *
+     *       They key goal is to avoid doing deep state copy ops, which would likely occur many times per frame, potentially
+     *       causing a notable amount of frame time, not to mention memory fragmentation.
+     */
+    typedef std::unique_ptr<char> GLStateSnapshotUniquePtr;
+
     enum class CommandType
     {
         BUFFER_DATA,
@@ -548,20 +564,20 @@ namespace OpenGL
 
     struct DrawArraysCommand : public CommandBase
     {
-        GLsizei                        count;
-        GLint                          first;
-        OpenGL::DrawCallMode           mode;
-        OpenGL::StateSnapshotUniquePtr state_snapshot_ptr;
+        GLsizei                          count;
+        GLint                            first;
+        OpenGL::DrawCallMode             mode;
+        OpenGL::GLStateSnapshotUniquePtr state_snapshot_ptr;
 
-        DrawArraysCommand(const GLsizei&                 in_count,
-                          const GLint&                   in_first,
-                          const OpenGL::DrawCallMode&    in_mode,
-                          OpenGL::StateSnapshotUniquePtr in_state_snapshot_ptr)
+        DrawArraysCommand(const GLsizei&                   in_count,
+                          const GLint&                     in_first,
+                          const OpenGL::DrawCallMode&      in_mode,
+                          OpenGL::GLStateSnapshotUniquePtr in_state_snapshot_ptr)
             :CommandBase       (CommandType::DRAW_ARRAYS),
              count             (in_count),
              first             (in_first),
              mode              (in_mode),
-             state_snapshot_ptr(in_state_snapshot_ptr)
+             state_snapshot_ptr(std::move(in_state_snapshot_ptr) )
         {
             /* Stub */
         }
@@ -569,16 +585,16 @@ namespace OpenGL
 
     struct DrawElementsCommand : public CommandBase
     {
-        GLsizei                        count;
-        OpenGL::DataUniquePtr          index_data_ptr;
-        OpenGL::DrawCallMode           mode;
-        OpenGL::StateSnapshotUniquePtr state_snapshot_ptr;
-        OpenGL::DrawCallIndexType      type;
+        GLsizei                          count;
+        OpenGL::DataUniquePtr            index_data_ptr;
+        OpenGL::DrawCallMode             mode;
+        OpenGL::GLStateSnapshotUniquePtr state_snapshot_ptr;
+        OpenGL::DrawCallIndexType        type;
 
         DrawElementsCommand(const GLsizei&                   in_count,
                             OpenGL::DataUniquePtr            in_index_data_ptr,
                             const OpenGL::DrawCallMode&      in_mode,
-                            OpenGL::StateSnapshotUniquePtr   in_state_snapshot_ptr,
+                            OpenGL::GLStateSnapshotUniquePtr in_state_snapshot_ptr,
                             const OpenGL::DrawCallIndexType& in_type)
             :CommandBase       (CommandType::DRAW_ELEMENTS),
              count             (in_count),
@@ -593,20 +609,20 @@ namespace OpenGL
 
     struct DrawRangeElementsCommand : public CommandBase
     {
-        GLsizei                        count;
-        GLuint                         end_index;
-        OpenGL::DataUniquePtr          index_data_ptr;
-        OpenGL::DrawCallMode           mode;
-        GLuint                         start_index;
-        OpenGL::StateSnapshotUniquePtr state_snapshot_ptr;
-        OpenGL::DrawCallIndexType      type;
+        GLsizei                          count;
+        GLuint                           end_index;
+        OpenGL::DataUniquePtr            index_data_ptr;
+        OpenGL::DrawCallMode             mode;
+        GLuint                           start_index;
+        OpenGL::GLStateSnapshotUniquePtr state_snapshot_ptr;
+        OpenGL::DrawCallIndexType        type;
 
         DrawRangeElementsCommand(const GLsizei&                   in_count,
                                  const GLuint&                    in_end_index,
                                  OpenGL::DataUniquePtr            in_index_data_ptr,
                                  const OpenGL::DrawCallMode&      in_mode,
                                  const GLuint&                    in_start_index,
-                                 OpenGL::StateSnapshotUniquePtr   in_state_snapshot_ptr,
+                                 OpenGL::GLStateSnapshotUniquePtr in_state_snapshot_ptr,
                                  const OpenGL::DrawCallIndexType& in_type)
             :CommandBase       (CommandType::DRAW_RANGE_ELEMENTS),
              count             (in_count),
@@ -758,17 +774,17 @@ namespace OpenGL
 
     struct MultiDrawArraysCommand : public CommandBase
     {
-        OpenGL::GLSizeiArrayUniquePtr  count_ptr;
-        GLsizei                        drawcount;
-        OpenGL::GLIntArrayUniquePtr    first_ptr;
-        OpenGL::DrawCallMode           mode;
-        OpenGL::StateSnapshotUniquePtr state_snapshot_ptr;
+        OpenGL::GLSizeiArrayUniquePtr    count_ptr;
+        GLsizei                          drawcount;
+        OpenGL::GLIntArrayUniquePtr      first_ptr;
+        OpenGL::DrawCallMode             mode;
+        OpenGL::GLStateSnapshotUniquePtr state_snapshot_ptr;
 
-        MultiDrawArraysCommand(OpenGL::GLSizeiArrayUniquePtr  in_count_ptr,
-                               const GLsizei&                 in_drawcount,
-                               OpenGL::GLIntArrayUniquePtr    in_first_ptr,
-                               const OpenGL::DrawCallMode&    in_mode,
-                               OpenGL::StateSnapshotUniquePtr in_state_snapshot_ptr)
+        MultiDrawArraysCommand(OpenGL::GLSizeiArrayUniquePtr    in_count_ptr,
+                               const GLsizei&                   in_drawcount,
+                               OpenGL::GLIntArrayUniquePtr      in_first_ptr,
+                               const OpenGL::DrawCallMode&      in_mode,
+                               OpenGL::GLStateSnapshotUniquePtr in_state_snapshot_ptr)
             :CommandBase       (CommandType::MULTI_DRAW_ARRAYS),
              count_ptr         (std::move(count_ptr) ),
              drawcount         (drawcount),
@@ -782,18 +798,18 @@ namespace OpenGL
 
     struct MultiDrawElementsCommand : public CommandBase
     {
-        OpenGL::GLSizeiArrayUniquePtr  count_ptr;
-        GLsizei                        drawcount;
-        OpenGL::DataUniquePtr          indices_ptr;
-        OpenGL::DrawCallMode           mode;
-        OpenGL::StateSnapshotUniquePtr state_snapshot_ptr;
-        OpenGL::DrawCallIndexType      type;
+        OpenGL::GLSizeiArrayUniquePtr    count_ptr;
+        GLsizei                          drawcount;
+        OpenGL::DataUniquePtr            indices_ptr;
+        OpenGL::DrawCallMode             mode;
+        OpenGL::GLStateSnapshotUniquePtr state_snapshot_ptr;
+        OpenGL::DrawCallIndexType        type;
 
         MultiDrawElementsCommand(OpenGL::GLSizeiArrayUniquePtr    in_count_ptr,
                                  const GLsizei&                   in_drawcount,
                                  OpenGL::DataUniquePtr            in_indices_ptr,
                                  const OpenGL::DrawCallMode&      in_mode,
-                                 OpenGL::StateSnapshotUniquePtr   in_state_snapshot_ptr,
+                                 OpenGL::GLStateSnapshotUniquePtr in_state_snapshot_ptr,
                                  const OpenGL::DrawCallIndexType& in_type)
             :CommandBase       (CommandType::MULTI_DRAW_ELEMENTS),
              count_ptr         (std::move(in_count_ptr) ),
