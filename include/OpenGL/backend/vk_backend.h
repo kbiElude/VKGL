@@ -329,6 +329,7 @@ namespace OpenGL
         std::unordered_map<OpenGL::BackendCapability, CapabilityData> m_capabilities;
         Anvil::SGPUDeviceUniquePtr                                    m_device_ptr;
         Anvil::InstanceUniquePtr                                      m_instance_ptr;
+        OpenGL::VKSchedulerUniquePtr                                  m_scheduler_ptr;
     };
 };
 #endif /* VKGL_VK_BACKEND_H */

@@ -8,14 +8,24 @@
 #include "OpenGL/types.h"
 #include "OpenGL/converters.h"
 #include "OpenGL/backend/vk_backend.h"
+#include "OpenGL/backend/vk_scheduler.h"
 
+/* TODO: Touching heap memory is awful, but right now this happens in every command handler because
+ *       command processing happens in scheduler's thread to ensure the app never gets blocked by VKGL.
+ *
+ *       A custom memory allocator relying on preallocated memory chunks should be fit in here, instead
+ *       of the ugly new invocations.
+ *
+ *       What we do in here will work for a PoC but is expected to be one of the major bottlenecks in the
+ *       near future.
+ */
 #ifdef min
     #undef min
 #endif
 
 OpenGL::VKBackend::VKBackend()
 {
-    // todo
+    /* Stub */
 }
 
 OpenGL::VKBackend::~VKBackend()
@@ -41,7 +51,12 @@ void OpenGL::VKBackend::buffer_sub_data(const GLuint&     in_id,
 
 void OpenGL::VKBackend::clear(const OpenGL::ClearBufferBits& in_buffers_to_clear)
 {
-    vkgl_not_implemented();
+    OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::ClearCommand(in_buffers_to_clear),
+                                         std::default_delete<OpenGL::CommandBase>() );
+
+    vkgl_assert(cmd_ptr != nullptr);
+
+    m_scheduler_ptr->submit(std::move(cmd_ptr) );
 }
 
 void OpenGL::VKBackend::compile_shader(const GLuint& in_id)
@@ -309,6 +324,7 @@ bool OpenGL::VKBackend::init()
 {
     bool result = false;
 
+    /* Init low-level Vulkan guts provider facility first.. */
     if (!init_anvil() )
     {
         vkgl_assert_fail();
@@ -316,6 +332,7 @@ bool OpenGL::VKBackend::init()
         goto end;
     }
 
+    /* Init all the caps we expose to the frontend .. */
     if (!init_capabilities() )
     {
         vkgl_assert_fail();
@@ -323,6 +340,17 @@ bool OpenGL::VKBackend::init()
         goto end;
     }
 
+    /* OK, go ahead and proceed with kicking off the scheduler. */
+    m_scheduler_ptr = OpenGL::VKScheduler::create();
+
+    if (m_scheduler_ptr == nullptr)
+    {
+        vkgl_assert(m_scheduler_ptr != nullptr);
+
+        goto end;
+    }
+
+    /* All done */
     result = true;
 end:
     return result;

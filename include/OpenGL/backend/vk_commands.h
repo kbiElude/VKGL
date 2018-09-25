@@ -95,6 +95,8 @@ namespace OpenGL
         }
     } CommandBase;
 
+    typedef std::unique_ptr<CommandBase, std::function<void(CommandBase*) > > CommandBaseUniquePtr;
+
     struct BufferDataCommand : public CommandBase
     {
         OpenGL::GLReferenceUniquePtr buffer_reference_ptr;

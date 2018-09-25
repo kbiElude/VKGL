@@ -31,9 +31,11 @@ namespace OpenGL
     class IGLLimits;
     class IGLObjectManager;
     class VKBackend;
+    class VKScheduler;
 
     typedef std::unique_ptr<GLReference, std::function<void(GLReference*)> > GLReferenceUniquePtr;
     typedef std::unique_ptr<VKBackend>                                       VKBackendUniquePtr;
+    typedef std::unique_ptr<VKScheduler>                                     VKSchedulerUniquePtr;
 
     typedef struct PropertyData
     {
