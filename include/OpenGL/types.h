@@ -6,7 +6,8 @@
 #define VKGL_TYPES_H
 
 #include "Khronos/GL/glcorearb.h"
-#include <stdint.h>
+#include <cstdint>
+#include <chrono>
 #include <memory>
 #include <mutex>
 #include <unordered_map>
@@ -36,6 +37,8 @@ namespace OpenGL
     typedef std::unique_ptr<GLReference, std::function<void(GLReference*)> > GLReferenceUniquePtr;
     typedef std::unique_ptr<VKBackend>                                       VKBackendUniquePtr;
     typedef std::unique_ptr<VKScheduler>                                     VKSchedulerUniquePtr;
+
+    typedef std::chrono::high_resolution_clock::time_point TimeMarker;
 
     typedef struct PropertyData
     {

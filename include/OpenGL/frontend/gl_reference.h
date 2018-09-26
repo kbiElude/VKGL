@@ -31,6 +31,15 @@ namespace OpenGL
             return m_id;
         }
 
+        bool operator==(const GLReference& in_ref) const
+        {
+            return (m_id == in_ref.m_id);
+        }
+
+        bool operator!=(const GLReference& in_ref) const
+        {
+            return (m_id != in_ref.m_id);
+        }
     private:
         std::unique_ptr<GLReference, std::function<void(GLReference*)> > create(const GLuint&             in_id,
                                                                                 OpenGL::IGLObjectManager* in_manager_ptr)

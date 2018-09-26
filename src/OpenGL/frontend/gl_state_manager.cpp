@@ -7,6 +7,7 @@
 #include "OpenGL/frontend/gl_state_manager.h"
 #include "OpenGL/frontend/gl_vao_manager.h"
 #include "OpenGL/utils_enum.h"
+#include <cmath>
 
 static const OpenGL::BufferTarget g_indexed_buffer_targets[] =
 {
@@ -32,6 +33,7 @@ OpenGL::GLStateManager::GLStateManager(const IGLLimits*        in_limits_ptr,
                                        const IGLObjectManager* in_buffer_manager_ptr,
                                        const IGLObjectManager* in_vao_manager_ptr)
     :m_current_error_code(OpenGL::ErrorCode::No_Error),
+     m_last_modified_time(std::chrono::high_resolution_clock::now() ),
      m_limits_ptr        (in_limits_ptr)
 {
     const int32_t scissor [4] = {0, 0, 0, 0}; /* TODO */
@@ -74,71 +76,504 @@ OpenGL::GLStateManager::GLStateManager(const IGLLimits*        in_limits_ptr,
 
 OpenGL::GLStateManager::~GLStateManager()
 {
+    /* Stub */
 }
 
 void OpenGL::GLStateManager::disable(const OpenGL::Capability& in_capability)
 {
+    bool modified = false;
+
     switch (in_capability)
     {
-        case OpenGL::Capability::Blend:                     m_state_ptr->is_blend_enabled_for_draw_buffers    = 0;     break;
-        case OpenGL::Capability::Color_Logic_Op:            m_state_ptr->is_color_logic_op_enabled            = false; break;
-        case OpenGL::Capability::Cull_Face:                 m_state_ptr->is_cull_face_enabled                 = false; break;
-        case OpenGL::Capability::Depth_Clamp:               m_state_ptr->is_depth_clamp_enabled               = false; break;
-        case OpenGL::Capability::Depth_Test:                m_state_ptr->is_depth_test_enabled                = false; break;
-        case OpenGL::Capability::Dither:                    m_state_ptr->is_dither_enabled                    = false; break;
-        case OpenGL::Capability::Framebuffer_SRGB:          m_state_ptr->is_framebuffer_srgb_enabled          = false; break;
-        case OpenGL::Capability::Line_Smooth:               m_state_ptr->is_line_smooth_enabled               = false; break;
-        case OpenGL::Capability::Multisample:               m_state_ptr->is_multisample_enabled               = false; break;
-        case OpenGL::Capability::Polygon_Offset_Fill:       m_state_ptr->is_polygon_offset_fill_enabled       = false; break;
-        case OpenGL::Capability::Polygon_Offset_Line:       m_state_ptr->is_polygon_offset_line_enabled       = false; break;
-        case OpenGL::Capability::Polygon_Offset_Point:      m_state_ptr->is_polygon_offset_point_enabled      = false; break;
-        case OpenGL::Capability::Polygon_Smooth:            m_state_ptr->is_polygon_smooth_enabled            = false; break;
-        case OpenGL::Capability::Primitive_Restart:         m_state_ptr->is_primitive_restart_enabled         = false; break;
-        case OpenGL::Capability::Program_Point_Size:        m_state_ptr->is_program_point_size_enabled        = false; break;
-        case OpenGL::Capability::Sample_Alpha_To_Coverage:  m_state_ptr->is_sample_alpha_to_coverage_enabled  = false; break;
-        case OpenGL::Capability::Sample_Alpha_To_One:       m_state_ptr->is_sample_alpha_to_one_enabled       = false; break;
-        case OpenGL::Capability::Sample_Coverage:           m_state_ptr->is_sample_coverage_enabled           = false; break;
-        case OpenGL::Capability::Scissor_Test:              m_state_ptr->is_scissor_test_enabled              = false; break;
-        case OpenGL::Capability::Stencil_Test:              m_state_ptr->is_stencil_test_enabled              = false; break;
-        case OpenGL::Capability::Texture_Cube_Map_Seamless: m_state_ptr->is_texture_cube_map_seamless_enabled = false; break;
+        case OpenGL::Capability::Blend:
+        {
+            if (m_state_ptr->is_blend_enabled_for_draw_buffers != 0)
+            {
+                m_state_ptr->is_blend_enabled_for_draw_buffers = 0;
+                modified                                       = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Color_Logic_Op:
+        {
+            if (m_state_ptr->is_color_logic_op_enabled)
+            {
+                m_state_ptr->is_color_logic_op_enabled = false;
+                modified                               = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Cull_Face:
+        {
+            if (m_state_ptr->is_cull_face_enabled)
+            {
+                m_state_ptr->is_cull_face_enabled = false;
+                modified                          = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Depth_Clamp:
+        {
+            if (m_state_ptr->is_depth_clamp_enabled)
+            {
+                m_state_ptr->is_depth_clamp_enabled = false;
+                modified                            = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Depth_Test:
+        {
+            if (m_state_ptr->is_depth_test_enabled)
+            {
+                m_state_ptr->is_depth_test_enabled = false;
+                modified                           = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Dither:
+        {
+            if (m_state_ptr->is_dither_enabled)
+            {
+                m_state_ptr->is_dither_enabled = false;
+                modified                       = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Framebuffer_SRGB:
+        {
+            if (m_state_ptr->is_framebuffer_srgb_enabled)
+            {
+                m_state_ptr->is_framebuffer_srgb_enabled = false;
+                modified                                 = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Line_Smooth:
+        {
+            if (m_state_ptr->is_line_smooth_enabled)
+            {
+                m_state_ptr->is_line_smooth_enabled = false;
+                modified                            = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Multisample:
+        {
+            if (m_state_ptr->is_multisample_enabled)
+            {
+                m_state_ptr->is_multisample_enabled = false;
+                modified                            = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Polygon_Offset_Fill:
+        {
+            if (m_state_ptr->is_polygon_offset_fill_enabled)
+            {
+                m_state_ptr->is_polygon_offset_fill_enabled = false;
+                modified                                    = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Polygon_Offset_Line:
+        {
+            if (m_state_ptr->is_polygon_offset_line_enabled)
+            {
+                m_state_ptr->is_polygon_offset_line_enabled = false;
+                modified                                    = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Polygon_Offset_Point:
+        {
+            if (m_state_ptr->is_polygon_offset_point_enabled)
+            {
+                m_state_ptr->is_polygon_offset_point_enabled = false;
+                modified                                     = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Polygon_Smooth:
+        {
+            if (m_state_ptr->is_polygon_smooth_enabled)
+            {
+                m_state_ptr->is_polygon_smooth_enabled = false;
+                modified                               = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Primitive_Restart:
+        {
+            if (m_state_ptr->is_primitive_restart_enabled)
+            {
+                m_state_ptr->is_primitive_restart_enabled = false;
+                modified                                  = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Program_Point_Size:
+        {
+            if (m_state_ptr->is_program_point_size_enabled)
+            {
+                m_state_ptr->is_program_point_size_enabled = false;
+                modified                                   = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Sample_Alpha_To_Coverage:
+        {
+            if (m_state_ptr->is_sample_alpha_to_coverage_enabled)
+            {
+                m_state_ptr->is_sample_alpha_to_coverage_enabled = false;
+                modified                                         = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Sample_Alpha_To_One:
+        {
+            if (m_state_ptr->is_sample_alpha_to_one_enabled)
+            {
+                m_state_ptr->is_sample_alpha_to_one_enabled = false;
+                modified                                    = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Sample_Coverage:
+        {
+            if (m_state_ptr->is_sample_coverage_enabled)
+            {
+                m_state_ptr->is_sample_coverage_enabled = false;
+                modified                                = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Scissor_Test:
+        {
+            if (m_state_ptr->is_scissor_test_enabled)
+            {
+                m_state_ptr->is_scissor_test_enabled = false;
+                modified                             = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Stencil_Test:
+        {
+            if (m_state_ptr->is_stencil_test_enabled)
+            {
+                m_state_ptr->is_stencil_test_enabled = false;
+                modified                             = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Texture_Cube_Map_Seamless:
+        {
+            if (m_state_ptr->is_texture_cube_map_seamless_enabled)
+            {
+                m_state_ptr->is_texture_cube_map_seamless_enabled = false;
+                modified                                          = true;
+            }
+
+            break;
+        }
 
         default:
         {
             vkgl_assert_fail();
         }
     }
+
+    if (modified)
+    {
+        m_last_modified_time = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::enable(const OpenGL::Capability& in_capability)
 {
+    bool modified = false;
+
     switch (in_capability)
     {
-        case OpenGL::Capability::Blend:                     m_state_ptr->is_blend_enabled_for_draw_buffers    = ~0;    break;
-        case OpenGL::Capability::Color_Logic_Op:            m_state_ptr->is_color_logic_op_enabled            = true;  break;
-        case OpenGL::Capability::Cull_Face:                 m_state_ptr->is_cull_face_enabled                 = true;  break;
-        case OpenGL::Capability::Depth_Clamp:               m_state_ptr->is_depth_clamp_enabled               = true;  break;
-        case OpenGL::Capability::Depth_Test:                m_state_ptr->is_depth_test_enabled                = true;  break;
-        case OpenGL::Capability::Dither:                    m_state_ptr->is_dither_enabled                    = true;  break;
-        case OpenGL::Capability::Framebuffer_SRGB:          m_state_ptr->is_framebuffer_srgb_enabled          = true;  break;
-        case OpenGL::Capability::Line_Smooth:               m_state_ptr->is_line_smooth_enabled               = true;  break;
-        case OpenGL::Capability::Multisample:               m_state_ptr->is_multisample_enabled               = true;  break;
-        case OpenGL::Capability::Polygon_Offset_Fill:       m_state_ptr->is_polygon_offset_fill_enabled       = true;  break;
-        case OpenGL::Capability::Polygon_Offset_Line:       m_state_ptr->is_polygon_offset_line_enabled       = true;  break;
-        case OpenGL::Capability::Polygon_Offset_Point:      m_state_ptr->is_polygon_offset_point_enabled      = true;  break;
-        case OpenGL::Capability::Polygon_Smooth:            m_state_ptr->is_polygon_smooth_enabled            = true;  break;
-        case OpenGL::Capability::Primitive_Restart:         m_state_ptr->is_primitive_restart_enabled         = true;  break;
-        case OpenGL::Capability::Program_Point_Size:        m_state_ptr->is_program_point_size_enabled        = true;  break;
-        case OpenGL::Capability::Sample_Alpha_To_Coverage:  m_state_ptr->is_sample_alpha_to_coverage_enabled  = true;  break;
-        case OpenGL::Capability::Sample_Alpha_To_One:       m_state_ptr->is_sample_alpha_to_one_enabled       = true;  break;
-        case OpenGL::Capability::Sample_Coverage:           m_state_ptr->is_sample_coverage_enabled           = true;  break;
-        case OpenGL::Capability::Scissor_Test:              m_state_ptr->is_scissor_test_enabled              = true;  break;
-        case OpenGL::Capability::Stencil_Test:              m_state_ptr->is_stencil_test_enabled              = true;  break;
-        case OpenGL::Capability::Texture_Cube_Map_Seamless: m_state_ptr->is_texture_cube_map_seamless_enabled = true;  break;
+        case OpenGL::Capability::Blend:
+        {
+            if (m_state_ptr->is_blend_enabled_for_draw_buffers != ~0)
+            {
+                m_state_ptr->is_blend_enabled_for_draw_buffers = ~0;
+                modified                                       = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Color_Logic_Op:
+        {
+            if (!m_state_ptr->is_color_logic_op_enabled)
+            {
+                m_state_ptr->is_color_logic_op_enabled = true;
+                modified                               = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Cull_Face:
+        {
+            if (!m_state_ptr->is_cull_face_enabled)
+            {
+                m_state_ptr->is_cull_face_enabled = true;
+                modified                          = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Depth_Clamp:
+        {
+            if (!m_state_ptr->is_depth_clamp_enabled)
+            {
+                m_state_ptr->is_depth_clamp_enabled = true;
+                modified                            = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Depth_Test:
+        {
+            if (!m_state_ptr->is_depth_test_enabled)
+            {
+                m_state_ptr->is_depth_test_enabled = true;
+                modified                           = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Dither:
+        {
+            if (!m_state_ptr->is_dither_enabled)
+            {
+                m_state_ptr->is_dither_enabled = true;
+                modified                       = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Framebuffer_SRGB:
+        {
+            if (!m_state_ptr->is_framebuffer_srgb_enabled)
+            {
+                m_state_ptr->is_framebuffer_srgb_enabled = true;
+                modified                                 = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Line_Smooth:
+        {
+            if (!m_state_ptr->is_line_smooth_enabled)
+            {
+                m_state_ptr->is_line_smooth_enabled = true;
+                modified                            = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Multisample:
+        {
+            if (!m_state_ptr->is_multisample_enabled)
+            {
+                m_state_ptr->is_multisample_enabled = true;
+                modified                            = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Polygon_Offset_Fill:
+        {
+            if (!m_state_ptr->is_polygon_offset_fill_enabled)
+            {
+                m_state_ptr->is_polygon_offset_fill_enabled = true;
+                modified                                    = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Polygon_Offset_Line:
+        {
+            if (!m_state_ptr->is_polygon_offset_line_enabled)
+            {
+                m_state_ptr->is_polygon_offset_line_enabled = true;
+                modified                                    = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Polygon_Offset_Point:
+        {
+            if (!m_state_ptr->is_polygon_offset_point_enabled)
+            {
+                m_state_ptr->is_polygon_offset_point_enabled = true;
+                modified                                     = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Polygon_Smooth:
+        {
+            if (!m_state_ptr->is_polygon_smooth_enabled)
+            {
+                m_state_ptr->is_polygon_smooth_enabled = true;
+                modified                               = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Primitive_Restart:
+        {
+            if (!m_state_ptr->is_primitive_restart_enabled)
+            {
+                m_state_ptr->is_primitive_restart_enabled = true;
+                modified                                  = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Program_Point_Size:
+        {
+            if (!m_state_ptr->is_program_point_size_enabled)
+            {
+                m_state_ptr->is_program_point_size_enabled = true;
+                modified                                   = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Sample_Alpha_To_Coverage:
+        {
+            if (!m_state_ptr->is_sample_alpha_to_coverage_enabled)
+            {
+                m_state_ptr->is_sample_alpha_to_coverage_enabled = true;
+                modified                                         = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Sample_Alpha_To_One:
+        {
+            if (!m_state_ptr->is_sample_alpha_to_one_enabled)
+            {
+                m_state_ptr->is_sample_alpha_to_one_enabled = true;
+                modified                                    = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Sample_Coverage:
+        {
+            if (!m_state_ptr->is_sample_coverage_enabled)
+            {
+                m_state_ptr->is_sample_coverage_enabled = true;
+                modified                                = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Scissor_Test:
+        {
+            if (!m_state_ptr->is_scissor_test_enabled)
+            {
+                m_state_ptr->is_scissor_test_enabled = true;
+                modified                             = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Stencil_Test:
+        {
+            if (!m_state_ptr->is_stencil_test_enabled)
+            {
+                m_state_ptr->is_stencil_test_enabled = true;
+                modified                             = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::Capability::Texture_Cube_Map_Seamless:
+        {
+            if (!m_state_ptr->is_texture_cube_map_seamless_enabled)
+            {
+                m_state_ptr->is_texture_cube_map_seamless_enabled = true;
+                modified                                          = true;
+            }
+
+            break;
+        }
 
         default:
         {
             vkgl_assert_fail();
         }
+    }
+
+    if (modified)
+    {
+        m_last_modified_time = std::chrono::high_resolution_clock::now();
     }
 }
 
@@ -394,7 +829,12 @@ void OpenGL::GLStateManager::init_texture_units()
 
 void OpenGL::GLStateManager::set_active_texture(const uint32_t& in_n_texture_unit)
 {
-    m_state_ptr->active_texture_unit = in_n_texture_unit;
+    if (m_state_ptr->active_texture_unit != in_n_texture_unit)
+    {
+        m_state_ptr->active_texture_unit = in_n_texture_unit;
+        m_last_modified_time             = std::chrono::high_resolution_clock::now();
+    }
+
 }
 
 void OpenGL::GLStateManager::set_blend_color(const float& in_red,
@@ -402,26 +842,44 @@ void OpenGL::GLStateManager::set_blend_color(const float& in_red,
                                              const float& in_blue,
                                              const float& in_alpha)
 {
-    m_state_ptr->blend_color[0] = in_red;
-    m_state_ptr->blend_color[1] = in_green;
-    m_state_ptr->blend_color[2] = in_blue;
-    m_state_ptr->blend_color[3] = in_alpha;
+    if (fabs(m_state_ptr->blend_color[0] - in_red)   > 1.0f / 255.0 /* r8 */ ||
+        fabs(m_state_ptr->blend_color[1] - in_green) > 1.0f / 255.0 /* g8 */ ||
+        fabs(m_state_ptr->blend_color[2] - in_blue)  > 1.0f / 255.0 /* b8 */ ||
+        fabs(m_state_ptr->blend_color[3] - in_alpha) > 1.0f / 255.0 /* a8 */)
+    {
+        m_state_ptr->blend_color[0] = in_red;
+        m_state_ptr->blend_color[1] = in_green;
+        m_state_ptr->blend_color[2] = in_blue;
+        m_state_ptr->blend_color[3] = in_alpha;
+        m_last_modified_time        = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_blend_equation(const OpenGL::BlendEquation& in_blend_equation)
 {
-    m_state_ptr->blend_equation_alpha = in_blend_equation;
-    m_state_ptr->blend_equation_rgb   = in_blend_equation;
+    if (m_state_ptr->blend_equation_alpha != in_blend_equation ||
+        m_state_ptr->blend_equation_rgb   != in_blend_equation)
+    {
+        m_state_ptr->blend_equation_alpha = in_blend_equation;
+        m_state_ptr->blend_equation_rgb   = in_blend_equation;
+        m_last_modified_time              = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_blend_functions(const OpenGL::BlendFunction& in_src_rgba_function,
                                                  const OpenGL::BlendFunction& in_dst_rgba_function)
 {
-    m_state_ptr->blend_func_src_alpha = in_src_rgba_function;
-    m_state_ptr->blend_func_src_rgb   = in_src_rgba_function;
-    m_state_ptr->blend_func_dst_alpha = in_dst_rgba_function;
-    m_state_ptr->blend_func_dst_rgb   = in_dst_rgba_function;
-
+    if (m_state_ptr->blend_func_src_alpha != in_src_rgba_function ||
+        m_state_ptr->blend_func_src_rgb   != in_src_rgba_function ||
+        m_state_ptr->blend_func_dst_alpha != in_dst_rgba_function ||
+        m_state_ptr->blend_func_dst_rgb   != in_dst_rgba_function)
+    {
+        m_state_ptr->blend_func_src_alpha = in_src_rgba_function;
+        m_state_ptr->blend_func_src_rgb   = in_src_rgba_function;
+        m_state_ptr->blend_func_dst_alpha = in_dst_rgba_function;
+        m_state_ptr->blend_func_dst_rgb   = in_dst_rgba_function;
+        m_last_modified_time              = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_blend_functions_separate(const OpenGL::BlendFunction& in_src_rgb_function,
@@ -429,18 +887,33 @@ void OpenGL::GLStateManager::set_blend_functions_separate(const OpenGL::BlendFun
                                                           const OpenGL::BlendFunction& in_src_alpha_function,
                                                           const OpenGL::BlendFunction& in_dst_alpha_function)
 {
-    m_state_ptr->blend_func_src_alpha = in_src_alpha_function;
-    m_state_ptr->blend_func_src_rgb   = in_src_rgb_function;
-    m_state_ptr->blend_func_dst_alpha = in_dst_alpha_function;
-    m_state_ptr->blend_func_dst_rgb   = in_dst_rgb_function;
+    if (m_state_ptr->blend_func_src_alpha != in_src_alpha_function ||
+        m_state_ptr->blend_func_src_rgb   != in_src_rgb_function   ||
+        m_state_ptr->blend_func_dst_alpha != in_dst_alpha_function ||
+        m_state_ptr->blend_func_dst_rgb   != in_dst_rgb_function)
+    {
+        m_state_ptr->blend_func_src_alpha = in_src_alpha_function;
+        m_state_ptr->blend_func_src_rgb   = in_src_rgb_function;
+        m_state_ptr->blend_func_dst_alpha = in_dst_alpha_function;
+        m_state_ptr->blend_func_dst_rgb   = in_dst_rgb_function;
+        m_last_modified_time              = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_bound_buffer_object(const OpenGL::BufferTarget&  in_target,
                                                      OpenGL::GLReferenceUniquePtr in_buffer_reference_ptr)
 {
-    vkgl_assert(m_nonindexed_buffer_binding_ptrs.find(in_target) != m_nonindexed_buffer_binding_ptrs.end() );
+    auto map_iterator = m_nonindexed_buffer_binding_ptrs.find(in_target);
 
-    m_nonindexed_buffer_binding_ptrs[in_target] = std::move(in_buffer_reference_ptr);
+    vkgl_assert(map_iterator != m_nonindexed_buffer_binding_ptrs.end() );
+
+    if ((in_buffer_reference_ptr == nullptr && map_iterator->second != nullptr)                                                      ||
+        (in_buffer_reference_ptr != nullptr && map_iterator->second == nullptr)                                                      ||
+        (in_buffer_reference_ptr != nullptr && map_iterator->second != nullptr && *in_buffer_reference_ptr != *map_iterator->second) )
+    {
+        m_nonindexed_buffer_binding_ptrs[in_target] = std::move(in_buffer_reference_ptr);
+        m_last_modified_time                        = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_bound_buffer_object(const OpenGL::BufferTarget&  in_target,
@@ -449,22 +922,43 @@ void OpenGL::GLStateManager::set_bound_buffer_object(const OpenGL::BufferTarget&
                                                      const size_t&                in_start_offset,
                                                      const size_t&                in_size)
 {
-    vkgl_assert(m_indexed_buffer_binding_ptrs.find(IndexedBufferTarget(in_target, in_index) ) != m_indexed_buffer_binding_ptrs.end() );
+    auto map_iterator = m_indexed_buffer_binding_ptrs.find(IndexedBufferTarget(in_target, in_index) );
 
-    m_indexed_buffer_binding_ptrs[IndexedBufferTarget(in_target, in_index)] = IndexedBufferBinding(std::move(in_buffer_reference_ptr),
-                                                                                                   in_start_offset,
-                                                                                                   in_size);
+    vkgl_assert(map_iterator != m_indexed_buffer_binding_ptrs.end() );
+
+    if ((in_buffer_reference_ptr == nullptr && map_iterator->second.reference_ptr != nullptr)                                                                    ||
+        (in_buffer_reference_ptr != nullptr && map_iterator->second.reference_ptr == nullptr)                                                                    ||
+        (in_buffer_reference_ptr != nullptr && map_iterator->second.reference_ptr != nullptr && *in_buffer_reference_ptr != *map_iterator->second.reference_ptr) )
+    {
+        m_indexed_buffer_binding_ptrs[IndexedBufferTarget(in_target, in_index)] = IndexedBufferBinding(std::move(in_buffer_reference_ptr),
+                                                                                                       in_start_offset,
+                                                                                                       in_size);
+
+        m_last_modified_time = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_bound_program_object(OpenGL::GLReferenceUniquePtr in_program_binding_ptr)
 {
-    m_program_binding_ptr = std::move(in_program_binding_ptr);
+    if ((in_program_binding_ptr == nullptr && m_program_binding_ptr != nullptr)                                                      ||
+        (in_program_binding_ptr != nullptr && m_program_binding_ptr == nullptr)                                                      ||
+        (in_program_binding_ptr != nullptr && m_program_binding_ptr != nullptr && *in_program_binding_ptr != *m_program_binding_ptr) )
+    {
+        m_program_binding_ptr = std::move(in_program_binding_ptr);
+        m_last_modified_time  = std::chrono::high_resolution_clock::now();
+    }
 }
 
 
 void OpenGL::GLStateManager::set_bound_vertex_array_object(OpenGL::GLReferenceUniquePtr in_vao_binding_ptr)
 {
-    m_vao_binding_ptr = std::move(in_vao_binding_ptr);
+    if ((in_vao_binding_ptr == nullptr && m_vao_binding_ptr != nullptr)                                              ||
+        (in_vao_binding_ptr != nullptr && m_vao_binding_ptr == nullptr)                                              ||
+        (in_vao_binding_ptr != nullptr && m_vao_binding_ptr != nullptr && *in_vao_binding_ptr != *m_vao_binding_ptr) )
+    {
+        m_vao_binding_ptr    = std::move(in_vao_binding_ptr);
+        m_last_modified_time = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_clear_color_value(const float& in_red,
@@ -472,20 +966,35 @@ void OpenGL::GLStateManager::set_clear_color_value(const float& in_red,
                                                    const float& in_blue,
                                                    const float& in_alpha)
 {
-    m_state_ptr->color_clear_value[0] = in_red;
-    m_state_ptr->color_clear_value[1] = in_green;
-    m_state_ptr->color_clear_value[2] = in_blue;
-    m_state_ptr->color_clear_value[3] = in_alpha;
+    if (fabs(m_state_ptr->color_clear_value[0] - in_red)   > 1.0f / 255.0 /* r8 */ ||
+        fabs(m_state_ptr->color_clear_value[1] - in_green) > 1.0f / 255.0 /* g8 */ ||
+        fabs(m_state_ptr->color_clear_value[2] - in_blue)  > 1.0f / 255.0 /* b8 */ ||
+        fabs(m_state_ptr->color_clear_value[3] - in_alpha) > 1.0f / 255.0 /* a8 */)
+    {
+        m_state_ptr->color_clear_value[0] = in_red;
+        m_state_ptr->color_clear_value[1] = in_green;
+        m_state_ptr->color_clear_value[2] = in_blue;
+        m_state_ptr->color_clear_value[3] = in_alpha;
+        m_last_modified_time              = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_clear_depth_value(const double& in_value)
 {
-    m_state_ptr->depth_clear_value = in_value;
+    if (fabs(m_state_ptr->depth_clear_value - in_value) > 1e-5f)
+    {
+        m_state_ptr->depth_clear_value = in_value;
+        m_last_modified_time           = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_clear_stencil_value(const int& in_value)
 {
-    m_state_ptr->stencil_clear_value = in_value;
+    if (m_state_ptr->stencil_clear_value != in_value)
+    {
+        m_state_ptr->stencil_clear_value = in_value;
+        m_last_modified_time             = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_color_mask(const bool& in_red,
@@ -498,66 +1007,153 @@ void OpenGL::GLStateManager::set_color_mask(const bool& in_red,
     const uint32_t blue_mask  = (in_blue)  ? ((1 << 2) | (1 << 6) | (1 << 10) | (1 << 14) | (1 << 18) | (1 << 22) | (1 << 26) | (1 << 30)) : 0;
     const uint32_t alpha_mask = (in_alpha) ? ((1 << 3) | (1 << 7) | (1 << 11) | (1 << 15) | (1 << 19) | (1 << 23) | (1 << 27) | (1 << 31)) : 0;
 
-    m_state_ptr->color_writemask_for_draw_buffers = red_mask | green_mask | blue_mask | alpha_mask;
+    if ((red_mask | green_mask | blue_mask | alpha_mask) != m_state_ptr->color_writemask_for_draw_buffers)
+    {
+        m_state_ptr->color_writemask_for_draw_buffers = red_mask | green_mask | blue_mask | alpha_mask;
+        m_last_modified_time                          = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_cull_mode(const OpenGL::CullMode& in_mode)
 {
-    m_state_ptr->cull_face_mode = in_mode;
+    if (m_state_ptr->cull_face_mode != in_mode)
+    {
+        m_state_ptr->cull_face_mode = in_mode;
+        m_last_modified_time        = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_depth_function(const OpenGL::DepthFunction& in_function)
 {
-    m_state_ptr->depth_function = in_function;
+    if (m_state_ptr->depth_function != in_function)
+    {
+        m_state_ptr->depth_function = in_function;
+        m_last_modified_time        = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_depth_mask(const bool& in_flag)
 {
-    m_state_ptr->depth_writemask = in_flag;
+    if (m_state_ptr->depth_writemask != in_flag)
+    {
+        m_state_ptr->depth_writemask = in_flag;
+        m_last_modified_time         = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_depth_range(const double& in_near,
                                              const double& in_far)
 {
-    m_state_ptr->depth_range[0] = in_near;
-    m_state_ptr->depth_range[1] = in_far;
+    if (fabs(m_state_ptr->depth_range[0] - in_near) > 1e-5f ||
+        fabs(m_state_ptr->depth_range[1] - in_far)  > 1e-5f)
+    {
+        m_state_ptr->depth_range[0] = in_near;
+        m_state_ptr->depth_range[1] = in_far;
+        m_last_modified_time        = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_draw_buffer(const OpenGL::DrawBuffer& in_draw_buffer)
 {
     vkgl_not_implemented();
+
+#if 0
+    if (modified)
+    {
+        m_last_modified_time = std::chrono::high_resolution_clock::now();
+    }
+#endif
 }
 
 void OpenGL::GLStateManager::set_front_face_orientation(const OpenGL::FrontFaceOrientation& in_orientation)
 {
-    m_state_ptr->front_face = in_orientation;
+    if (m_state_ptr->front_face != in_orientation)
+    {
+        m_state_ptr->front_face = in_orientation;
+        m_last_modified_time    = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_hint(const OpenGL::HintTarget& in_target,
                                       const OpenGL::HintMode&   in_mode)
 {
+    bool modified = false;
+
     switch (in_target)
     {
-        case OpenGL::HintTarget::Fragment_Shader_Derivative: m_state_ptr->hint_fragment_shader_derivative = in_mode; break;
-        case OpenGL::HintTarget::Line_Smooth:                m_state_ptr->hint_line_smooth                = in_mode; break;
-        case OpenGL::HintTarget::Polygon_Smooth:             m_state_ptr->hint_polygon_smooth             = in_mode; break;
-        case OpenGL::HintTarget::Texture_Compression:        m_state_ptr->hint_texture_compression        = in_mode; break;
+        case OpenGL::HintTarget::Fragment_Shader_Derivative:
+        {
+            if (m_state_ptr->hint_fragment_shader_derivative != in_mode)
+            {
+                m_state_ptr->hint_fragment_shader_derivative = in_mode;
+                modified                                     = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::HintTarget::Line_Smooth:
+        {
+            if (m_state_ptr->hint_line_smooth != in_mode)
+            {
+                m_state_ptr->hint_line_smooth = in_mode;
+                modified                      = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::HintTarget::Polygon_Smooth:
+        {
+            if (m_state_ptr->hint_polygon_smooth != in_mode)
+            {
+                m_state_ptr->hint_polygon_smooth = in_mode;
+                modified                         = true;
+            }
+
+            break;
+        }
+
+        case OpenGL::HintTarget::Texture_Compression:
+        {
+            if (m_state_ptr->hint_texture_compression != in_mode)
+            {
+                m_state_ptr->hint_texture_compression = in_mode;
+                modified                              = true;
+            }
+
+            break;
+        }
 
         default:
         {
             vkgl_assert_fail();
         }
     }
+
+    if (modified)
+    {
+        m_last_modified_time = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_line_width(const float& in_width)
 {
-    m_state_ptr->line_width = in_width;
+    /* TODO: Use actually supported line granularity here. */
+    if (fabs(m_state_ptr->line_width - in_width) > 1e-5f)
+    {
+        m_state_ptr->line_width = in_width;
+        m_last_modified_time    = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_logic_op(const OpenGL::LogicOpMode& in_mode)
 {
-    m_state_ptr->logic_op_mode = in_mode;
+    if (m_state_ptr->logic_op_mode != in_mode)
+    {
+        m_state_ptr->logic_op_mode = in_mode;
+        m_last_modified_time       = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_pixel_store_property(const OpenGL::PixelStoreProperty& in_property,
@@ -576,6 +1172,11 @@ void OpenGL::GLStateManager::set_pixel_store_property(const OpenGL::PixelStorePr
                                     prop_props.n_value_components,
                                     prop_props.getter_value_type,
                                     prop_map_iterator->second.value_ptr);
+    }
+
+    /* TODO: if (modified) */
+    {
+        m_last_modified_time = std::chrono::high_resolution_clock::now();
     }
 }
 
@@ -596,35 +1197,66 @@ void OpenGL::GLStateManager::set_point_property(const OpenGL::PointProperty&    
                                     prop_props.getter_value_type,
                                     prop_map_iterator->second.value_ptr);
     }
+
+    /* TODO: if (modified) */
+    {
+        m_last_modified_time = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_point_size(const float& in_size)
 {
-    m_state_ptr->point_size = in_size;
+    /* TODO: Use actually supported point granularity for the check below. */
+    if (fabs(m_state_ptr->point_size - in_size) > 1e-5f)
+    {
+        m_state_ptr->point_size = in_size;
+        m_last_modified_time    = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_polygon_mode(const OpenGL::PolygonMode& in_mode)
 {
-    m_state_ptr->polygon_mode = in_mode;
+    if (m_state_ptr->polygon_mode != in_mode)
+    {
+        m_state_ptr->polygon_mode = in_mode;
+        m_last_modified_time      = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_polygon_offset(const float& in_factor,
                                                 const float& in_units)
 {
-    m_state_ptr->polygon_offset_factor = in_factor;
-    m_state_ptr->polygon_offset_units  = in_units;
+    if (fabs(m_state_ptr->polygon_offset_factor - in_factor) > 1e-5f ||
+        fabs(m_state_ptr->polygon_offset_units  - in_units)  > 1e-5f)
+    {
+        m_state_ptr->polygon_offset_factor = in_factor;
+        m_state_ptr->polygon_offset_units  = in_units;
+        m_last_modified_time               = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_read_buffer(const OpenGL::ReadBuffer& in_read_buffer)
 {
     vkgl_not_implemented();
+
+#if 0
+    if (modified)
+    {
+        m_last_modified_time = std::chrono::high_resolution_clock::now();
+    }
+#endif
 }
 
 void OpenGL::GLStateManager::set_sample_coverage(const float& in_value,
                                                  const bool&  in_invert)
 {
-    m_state_ptr->is_sample_coverage_invert_enabled = in_invert;
-    m_state_ptr->sample_coverage_value             = in_value;
+    if (m_state_ptr->is_sample_coverage_invert_enabled      != in_invert ||
+        fabs(m_state_ptr->sample_coverage_value - in_value) >  1e-5f)
+    {
+        m_state_ptr->is_sample_coverage_invert_enabled = in_invert;
+        m_state_ptr->sample_coverage_value             = in_value;
+        m_last_modified_time                           = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_scissor(const int32_t& in_x,
@@ -632,46 +1264,77 @@ void OpenGL::GLStateManager::set_scissor(const int32_t& in_x,
                                          const size_t&  in_width,
                                          const size_t&  in_height)
 {
-    m_state_ptr->scissor_box[0] = in_x;
-    m_state_ptr->scissor_box[1] = in_y;
-    m_state_ptr->scissor_box[2] = static_cast<int32_t>(in_width);
-    m_state_ptr->scissor_box[3] = static_cast<int32_t>(in_height);
+    if (m_state_ptr->scissor_box[0] != in_x                            ||
+        m_state_ptr->scissor_box[1] != in_y                            ||
+        m_state_ptr->scissor_box[2] != static_cast<int32_t>(in_width)  ||
+        m_state_ptr->scissor_box[3] != static_cast<int32_t>(in_height) )
+    {
+        m_state_ptr->scissor_box[0] = in_x;
+        m_state_ptr->scissor_box[1] = in_y;
+        m_state_ptr->scissor_box[2] = static_cast<int32_t>(in_width);
+        m_state_ptr->scissor_box[3] = static_cast<int32_t>(in_height);
+        m_last_modified_time        = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_stencil_function(const OpenGL::StencilFunction& in_func,
                                                   const int32_t&                 in_ref,
                                                   const uint32_t&                in_mask)
 {
-    m_state_ptr->stencil_function_back         = in_func;
-    m_state_ptr->stencil_function_front        = in_func;
-    m_state_ptr->stencil_reference_value_back  = in_ref;
-    m_state_ptr->stencil_reference_value_front = in_ref;
-    m_state_ptr->stencil_value_mask_back       = in_mask;
-    m_state_ptr->stencil_value_mask_front      = in_mask;
+    if (m_state_ptr->stencil_function_back         != in_func ||
+        m_state_ptr->stencil_function_front        != in_func ||
+        m_state_ptr->stencil_reference_value_back  != in_ref  ||
+        m_state_ptr->stencil_reference_value_front != in_ref  ||
+        m_state_ptr->stencil_value_mask_back       != in_mask ||
+        m_state_ptr->stencil_value_mask_front      != in_mask)
+    {
+        m_state_ptr->stencil_function_back         = in_func;
+        m_state_ptr->stencil_function_front        = in_func;
+        m_state_ptr->stencil_reference_value_back  = in_ref;
+        m_state_ptr->stencil_reference_value_front = in_ref;
+        m_state_ptr->stencil_value_mask_back       = in_mask;
+        m_state_ptr->stencil_value_mask_front      = in_mask;
+        m_last_modified_time = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_stencil_mask(const uint32_t& in_mask)
 {
-    m_state_ptr->stencil_writemask_back  = in_mask;
-    m_state_ptr->stencil_writemask_front = in_mask;
+    if (m_state_ptr->stencil_writemask_back  != in_mask ||
+        m_state_ptr->stencil_writemask_front != in_mask)
+    {
+        m_state_ptr->stencil_writemask_back  = in_mask;
+        m_state_ptr->stencil_writemask_front = in_mask;
+        m_last_modified_time                 = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_stencil_operations(const OpenGL::StencilOperation& in_fail,
                                                     const OpenGL::StencilOperation& in_zfail,
                                                     const OpenGL::StencilOperation& in_zpass)
 {
-    m_state_ptr->stencil_op_fail_back             = in_fail;
-    m_state_ptr->stencil_op_fail_front            = in_fail;
-    m_state_ptr->stencil_op_pass_depth_fail_back  = in_zfail;
-    m_state_ptr->stencil_op_pass_depth_fail_front = in_zfail;
-    m_state_ptr->stencil_op_pass_depth_pass_back  = in_zpass;
-    m_state_ptr->stencil_op_pass_depth_pass_front = in_zpass;
+    if (m_state_ptr->stencil_op_fail_back             != in_fail  ||
+        m_state_ptr->stencil_op_fail_front            != in_fail  ||
+        m_state_ptr->stencil_op_pass_depth_fail_back  != in_zfail ||
+        m_state_ptr->stencil_op_pass_depth_fail_front != in_zfail ||
+        m_state_ptr->stencil_op_pass_depth_pass_back  != in_zpass ||
+        m_state_ptr->stencil_op_pass_depth_pass_front != in_zpass)
+    {
+        m_state_ptr->stencil_op_fail_back             = in_fail;
+        m_state_ptr->stencil_op_fail_front            = in_fail;
+        m_state_ptr->stencil_op_pass_depth_fail_back  = in_zfail;
+        m_state_ptr->stencil_op_pass_depth_fail_front = in_zfail;
+        m_state_ptr->stencil_op_pass_depth_pass_back  = in_zpass;
+        m_state_ptr->stencil_op_pass_depth_pass_front = in_zpass;
+        m_last_modified_time                          = std::chrono::high_resolution_clock::now();
+    }
 }
 
 void OpenGL::GLStateManager::set_texture_binding(const uint32_t&              in_n_texture_unit,
                                                  const OpenGL::TextureTarget& in_texture_target,
                                                  const GLuint&                in_texture_id)
 {
+    bool modified               = false;
     auto texture_unit_state_ptr = m_texture_unit_to_state_ptr_map.at(in_n_texture_unit).get();
 
     vkgl_assert(texture_unit_state_ptr != nullptr);
@@ -679,22 +1342,123 @@ void OpenGL::GLStateManager::set_texture_binding(const uint32_t&              in
     {
         switch (in_texture_target)
         {
-            case OpenGL::TextureTarget::_1D:                   texture_unit_state_ptr->binding_1d                   = in_texture_id; break;
-            case OpenGL::TextureTarget::_1D_Array:             texture_unit_state_ptr->binding_1d_array             = in_texture_id; break;
-            case OpenGL::TextureTarget::_2D:                   texture_unit_state_ptr->binding_2d                   = in_texture_id; break;
-            case OpenGL::TextureTarget::_2D_Array:             texture_unit_state_ptr->binding_2d_array             = in_texture_id; break;
-            case OpenGL::TextureTarget::_2D_Multisample:       texture_unit_state_ptr->binding_2d_multisample       = in_texture_id; break;
-            case OpenGL::TextureTarget::_2D_Multisample_Array: texture_unit_state_ptr->binding_2d_multisample_array = in_texture_id; break;
-            case OpenGL::TextureTarget::_3D:                   texture_unit_state_ptr->binding_3d                   = in_texture_id; break;
-            case OpenGL::TextureTarget::Cube_Map:              texture_unit_state_ptr->binding_cube_map             = in_texture_id; break;
-            case OpenGL::TextureTarget::Rectangle:             texture_unit_state_ptr->binding_rectangle            = in_texture_id; break;
-            case OpenGL::TextureTarget::Texture_Buffer:        texture_unit_state_ptr->binding_texture_buffer       = in_texture_id; break;
+            case OpenGL::TextureTarget::_1D:
+            {
+                if (texture_unit_state_ptr->binding_1d != in_texture_id)
+                {
+                    texture_unit_state_ptr->binding_1d = in_texture_id;
+                    modified                           = true;
+                }
+
+                break;
+            }
+
+            case OpenGL::TextureTarget::_1D_Array:
+            {
+                if (texture_unit_state_ptr->binding_1d_array != in_texture_id)
+                {
+                    texture_unit_state_ptr->binding_1d_array = in_texture_id;
+                    modified                                 = true;
+                }
+
+                break;
+            }
+
+            case OpenGL::TextureTarget::_2D:
+            {
+                if (texture_unit_state_ptr->binding_2d != in_texture_id)
+                {
+                    texture_unit_state_ptr->binding_2d = in_texture_id;
+                    modified                           = true;
+                }
+
+                break;
+            }
+
+            case OpenGL::TextureTarget::_2D_Array:
+            {
+                if (texture_unit_state_ptr->binding_2d_array != in_texture_id)
+                {
+                    texture_unit_state_ptr->binding_2d_array = in_texture_id;
+                    modified                                 = true;
+                }
+
+                break;
+            }
+
+            case OpenGL::TextureTarget::_2D_Multisample:
+            {
+                if (texture_unit_state_ptr->binding_2d_multisample != in_texture_id)
+                {
+                    texture_unit_state_ptr->binding_2d_multisample = in_texture_id;
+                    modified                                       = true;
+                }
+
+                break;
+            }
+
+            case OpenGL::TextureTarget::_2D_Multisample_Array:
+            {
+                if (texture_unit_state_ptr->binding_2d_multisample_array != in_texture_id)
+                {
+                    texture_unit_state_ptr->binding_2d_multisample_array = in_texture_id;
+                    modified                                             = true;
+                }
+
+                break;
+            }
+
+            case OpenGL::TextureTarget::_3D:
+            {
+                if (texture_unit_state_ptr->binding_3d != in_texture_id)
+                {
+                    texture_unit_state_ptr->binding_3d = in_texture_id;
+                    modified                           = true;
+                }
+
+                break;
+            }
+
+            case OpenGL::TextureTarget::Cube_Map:
+            {
+                texture_unit_state_ptr->binding_cube_map = in_texture_id;
+                modified                                 = true;
+
+                break;
+            }
+
+            case OpenGL::TextureTarget::Rectangle:
+            {
+                if (texture_unit_state_ptr->binding_rectangle != in_texture_id)
+                {
+                    texture_unit_state_ptr->binding_rectangle = in_texture_id;
+                    modified                                  = true;
+                }
+
+                break;
+            }
+
+            case OpenGL::TextureTarget::Texture_Buffer:
+            {
+                if (texture_unit_state_ptr->binding_texture_buffer != in_texture_id)
+                {
+                    texture_unit_state_ptr->binding_texture_buffer = in_texture_id;
+                    modified                                       = true;
+                }
+
+                break;
+            }
 
             default:
             {
                 vkgl_assert_fail();
             }
         }
+    }
+
+    if (modified)
+    {
+        m_last_modified_time = std::chrono::high_resolution_clock::now();
     }
 }
 
@@ -703,10 +1467,17 @@ void OpenGL::GLStateManager::set_viewport(const int32_t& in_x,
                                           const size_t&  in_width,
                                           const size_t&  in_height)
 {
-    m_state_ptr->viewport[0] = in_x;
-    m_state_ptr->viewport[1] = in_y;
-    m_state_ptr->viewport[2] = static_cast<int32_t>(in_width);
-    m_state_ptr->viewport[3] = static_cast<int32_t>(in_height);
+    if (m_state_ptr->viewport[0] != in_x                            ||
+        m_state_ptr->viewport[1] != in_y                            ||
+        m_state_ptr->viewport[2] != static_cast<int32_t>(in_width)  ||
+        m_state_ptr->viewport[3] != static_cast<int32_t>(in_height) )
+    {
+        m_state_ptr->viewport[0] = in_x;
+        m_state_ptr->viewport[1] = in_y;
+        m_state_ptr->viewport[2] = static_cast<int32_t>(in_width);
+        m_state_ptr->viewport[3] = static_cast<int32_t>(in_height);
+        m_last_modified_time     = std::chrono::high_resolution_clock::now();
+    }
 }
 
 bool OpenGL::GLStateManager::is_enabled(const OpenGL::Capability& in_capability) const
