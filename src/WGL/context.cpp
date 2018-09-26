@@ -235,6 +235,10 @@ bool WGL::Context::init_gl_context()
         goto end;
     }
 
+    /* Set up a one-directional backend -> frontend link */
+    m_vk_backend_ptr->set_frontend_callback(dynamic_cast<const OpenGL::IContextObjectManagers*>(m_gl_context_ptr.get() ));
+
+    /* All done */
     result = true;
 end:
     return result;

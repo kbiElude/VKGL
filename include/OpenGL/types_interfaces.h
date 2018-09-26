@@ -265,6 +265,22 @@ namespace OpenGL
         virtual const std::vector<std::string>& get_supported_extensions() const = 0;
     };
 
+    class IContextObjectManagers
+    {
+    public:
+        virtual ~IContextObjectManagers()
+        {
+            /* Stub */
+        }
+
+        /* TODO: Replace with per-manager interfaces allowing to acquire references + retrieve object properties. */
+        virtual OpenGL::GLBufferManager*  get_buffer_manager_ptr () const = 0;
+        virtual OpenGL::GLProgramManager* get_program_manager_ptr() const = 0;
+        virtual OpenGL::GLShaderManager*  get_shader_manager_ptr () const = 0;
+        virtual OpenGL::GLTextureManager* get_texture_manager_ptr() const = 0;
+        virtual OpenGL::GLVAOManager*     get_vao_manager_ptr    () const = 0;
+    };
+
     class IGLConstants
     {
     public:

@@ -9,6 +9,9 @@
 #include "OpenGL/converters.h"
 #include "OpenGL/backend/vk_backend.h"
 #include "OpenGL/backend/vk_scheduler.h"
+#include "OpenGL/frontend/gl_buffer_manager.h"
+#include "OpenGL/frontend/gl_program_manager.h"
+#include "OpenGL/frontend/gl_shader_manager.h"
 
 /* TODO: Touching heap memory is awful, but right now this happens in every command handler because
  *       command processing happens in scheduler's thread to ensure the app never gets blocked by VKGL.
@@ -24,6 +27,7 @@
 #endif
 
 OpenGL::VKBackend::VKBackend()
+    :m_frontend_ptr(nullptr)
 {
     /* Stub */
 }
@@ -38,7 +42,34 @@ void OpenGL::VKBackend::buffer_data(const GLuint&     in_id,
                                     const GLsizeiptr& in_size,
                                     const void*       in_data_ptr)
 {
-    vkgl_not_implemented();
+    OpenGL::DataUniquePtr data_ptr(nullptr,
+                                   [](void* in_ptr){if (in_ptr != nullptr) { delete [] reinterpret_cast<unsigned char*>(in_ptr);} });
+
+    /* 1. Copy user-specified data to a temporary mem block */
+    if (in_data_ptr != nullptr)
+    {
+        data_ptr.reset(reinterpret_cast<void*>(new unsigned char[in_size]) );
+        vkgl_assert(data_ptr != nullptr);
+
+        memcpy(data_ptr.get(),
+               in_data_ptr,
+               in_size);
+    }
+
+    /* 2. Grab the buffer reference. */
+    auto buffer_reference_ptr = m_frontend_ptr->get_buffer_manager_ptr()->acquire_reference(in_id);
+
+    vkgl_assert(buffer_reference_ptr != nullptr);
+
+    /* 3. Spawn the command container .. */
+    OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::BufferDataCommand(std::move(buffer_reference_ptr),
+                                                                       std::move(data_ptr),
+                                                                       in_size),
+                                         std::default_delete<OpenGL::CommandBase>() );
+
+    vkgl_assert(cmd_ptr != nullptr);
+
+    m_scheduler_ptr->submit(std::move(cmd_ptr) );
 }
 
 void OpenGL::VKBackend::buffer_sub_data(const GLuint&     in_id,
@@ -46,7 +77,34 @@ void OpenGL::VKBackend::buffer_sub_data(const GLuint&     in_id,
                                         const GLsizeiptr& in_size,
                                         const void*       in_data_ptr)
 {
-    vkgl_not_implemented();
+    OpenGL::DataUniquePtr data_ptr(nullptr,
+                                   [](void* in_ptr){if (in_ptr != nullptr) { delete [] reinterpret_cast<unsigned char*>(in_ptr);} });
+
+    /* 1. Copy user-specified data to a temporary mem block */
+    vkgl_assert(in_data_ptr != nullptr);
+
+    data_ptr.reset(reinterpret_cast<void*>(new unsigned char[in_size]) );
+    vkgl_assert(data_ptr != nullptr);
+
+    memcpy(data_ptr.get(),
+           in_data_ptr,
+           in_size);
+
+    /* 2. Grab the buffer reference. */
+    auto buffer_reference_ptr = m_frontend_ptr->get_buffer_manager_ptr()->acquire_reference(in_id);
+
+    vkgl_assert(buffer_reference_ptr != nullptr);
+
+    /* 3. Spawn the command container .. */
+    OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::BufferSubDataCommand(std::move(buffer_reference_ptr),
+                                                                          std::move(data_ptr),
+                                                                          in_size,
+                                                                          in_start_offset),
+                                         std::default_delete<OpenGL::CommandBase>() );
+
+    vkgl_assert(cmd_ptr != nullptr);
+
+    m_scheduler_ptr->submit(std::move(cmd_ptr) );
 }
 
 void OpenGL::VKBackend::clear(const OpenGL::ClearBufferBits& in_buffers_to_clear)
@@ -61,7 +119,18 @@ void OpenGL::VKBackend::clear(const OpenGL::ClearBufferBits& in_buffers_to_clear
 
 void OpenGL::VKBackend::compile_shader(const GLuint& in_id)
 {
-    vkgl_not_implemented();
+    /* 1. Grab the shader reference. */
+    auto shader_reference_ptr = m_frontend_ptr->get_shader_manager_ptr()->acquire_reference(in_id);
+
+    vkgl_assert(shader_reference_ptr != nullptr);
+
+    /* 2. Spawn the command container .. */
+    OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::CompileShaderCommand(std::move(shader_reference_ptr) ),
+                                         std::default_delete<OpenGL::CommandBase>() );
+
+    vkgl_assert(cmd_ptr != nullptr);
+
+    m_scheduler_ptr->submit(std::move(cmd_ptr) );
 }
 
 void OpenGL::VKBackend::compressed_tex_image_1d(const GLuint&                 in_id,
@@ -227,7 +296,24 @@ void OpenGL::VKBackend::draw_arrays(const OpenGL::DrawCallMode& in_mode,
                                     const GLint&                in_first,
                                     const GLsizei&              in_count)
 {
+    /* 1. Generate a state snapshot ..
+     *
+     * TODO!
+     */
     vkgl_not_implemented();
+
+#if 0
+    /* 2. Spawn the command container .. */
+    OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::DrawArraysCommand(in_count,
+                                                                       in_first,
+                                                                       in_mode,
+                                                                       std::move(state_snapshot_ptr) ),
+                                         std::default_delete<OpenGL::CommandBase>() );
+
+    vkgl_assert(cmd_ptr != nullptr);
+
+    m_scheduler_ptr->submit(std::move(cmd_ptr) );
+#endif
 }
 
 void OpenGL::VKBackend::draw_elements(const OpenGL::DrawCallMode&      in_mode,
@@ -250,12 +336,30 @@ void OpenGL::VKBackend::draw_range_elements(const OpenGL::DrawCallMode&      in_
 
 void OpenGL::VKBackend::finish()
 {
+    /* Spawn the command container .. */
+    OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::FinishCommand(),
+                                         std::default_delete<OpenGL::CommandBase>() );
+
+    vkgl_assert(cmd_ptr != nullptr);
+
+    m_scheduler_ptr->submit(std::move(cmd_ptr) );
+
+    /* Block until the scheduler finishes GPU-side execution.
+     *
+     * TODO.
+     */
     vkgl_not_implemented();
 }
 
 void OpenGL::VKBackend::flush()
 {
-    vkgl_not_implemented();
+    /* Spawn the command container .. */
+    OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::FlushCommand(),
+                                         std::default_delete<OpenGL::CommandBase>() );
+
+    vkgl_assert(cmd_ptr != nullptr);
+
+    m_scheduler_ptr->submit(std::move(cmd_ptr) );
 }
 
 void OpenGL::VKBackend::flush_mapped_buffer_range(const GLuint&     in_id,
@@ -340,15 +444,10 @@ bool OpenGL::VKBackend::init()
         goto end;
     }
 
-    /* OK, go ahead and proceed with kicking off the scheduler. */
-    m_scheduler_ptr = OpenGL::VKScheduler::create();
-
-    if (m_scheduler_ptr == nullptr)
-    {
-        vkgl_assert(m_scheduler_ptr != nullptr);
-
-        goto end;
-    }
+    /* NOTE: We postpone creation of the scheduler to set_frontend_callback(), since we need to be able to pass
+     *       a ptr to the frontend at scheduler creation time. However, in order to create the frontend, backend
+     *       instance need to be specified.
+     */
 
     /* All done */
     result = true;
@@ -666,7 +765,18 @@ bool OpenGL::VKBackend::init_capabilities()
 
 void OpenGL::VKBackend::link_program(const GLuint& in_program_id)
 {
-    vkgl_not_implemented();
+    /* 1. Grab the program reference. */
+    auto program_reference_ptr = m_frontend_ptr->get_program_manager_ptr()->acquire_reference(in_program_id);
+
+    vkgl_assert(program_reference_ptr != nullptr);
+
+    /* 2. Spawn the command container .. */
+    OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::LinkProgramCommand(std::move(program_reference_ptr) ),
+                                         std::default_delete<OpenGL::CommandBase>() );
+
+    vkgl_assert(cmd_ptr != nullptr);
+
+    m_scheduler_ptr->submit(std::move(cmd_ptr) );
 }
 
 void* OpenGL::VKBackend::map_buffer(const GLuint&               in_id,
@@ -705,6 +815,23 @@ void OpenGL::VKBackend::read_pixels(const int32_t&             in_x,
                                     void*                      out_pixels_ptr)
 {
     vkgl_not_implemented();
+}
+
+void OpenGL::VKBackend::set_frontend_callback(const OpenGL::IContextObjectManagers* in_callback_ptr)
+{
+    vkgl_assert(in_callback_ptr != nullptr);
+    vkgl_assert(m_frontend_ptr  == nullptr);
+    vkgl_assert(m_scheduler_ptr == nullptr);
+
+    m_frontend_ptr = in_callback_ptr;
+
+    /* OK, go ahead and proceed with kicking off the scheduler. */
+    m_scheduler_ptr = OpenGL::VKScheduler::create(in_callback_ptr);
+
+    if (m_scheduler_ptr == nullptr)
+    {
+        vkgl_assert(m_scheduler_ptr != nullptr);
+    }
 }
 
 void OpenGL::VKBackend::tex_image_1d(const GLuint&                 in_id,

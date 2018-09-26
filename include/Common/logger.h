@@ -6,6 +6,7 @@
 #define VKGL_LOGGER_H
 
 #include "vkgl_config.h"
+#include <mutex>
 #include <sstream>
 
 namespace VKGL
@@ -35,6 +36,7 @@ namespace VKGL
 
     private:
         std::stringstream m_log_data_sstream;
+        std::mutex        m_mutex;
     };
 
     extern Logger* g_logger_ptr;

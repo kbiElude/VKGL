@@ -63,20 +63,24 @@ void VKGL::Logger::log(const LogLevel& in_log_level,
     }
     va_end(args);
 
-    m_log_data_sstream << temp
-                       << "\n";
-
-    /* TODO: Writes should be async and triggered every now and then, only if needed!
-     *
-     * This mechanism is only needed for initial VKGL bring-up. Remove as soon as no longer
-     * required.
-     */
     {
-        Anvil::IO::write_text_file(LOG_FILE_NAME,
-                                   g_logger_ptr->m_log_data_sstream.str(),
-                                   true); /* in_should_append */
+        std::lock_guard<std::mutex> lock(m_mutex);
 
-        g_logger_ptr->m_log_data_sstream = std::stringstream();
+        m_log_data_sstream << temp
+                           << "\n";
+
+        /* TODO: Writes should be async and triggered every now and then, only if needed!
+         *
+         * This mechanism is only needed for initial VKGL bring-up. Remove as soon as no longer
+         * required.
+         */
+        {
+            Anvil::IO::write_text_file(LOG_FILE_NAME,
+                                       g_logger_ptr->m_log_data_sstream.str(),
+                                       true); /* in_should_append */
+
+            g_logger_ptr->m_log_data_sstream = std::stringstream();
+        }
     }
 }
 

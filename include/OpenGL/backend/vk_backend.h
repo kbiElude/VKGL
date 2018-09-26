@@ -20,6 +20,8 @@ namespace OpenGL
 
         ~VKBackend();
 
+        void set_frontend_callback(const IContextObjectManagers* in_callback_ptr);
+
     private:
         /* Private type definitions */
         typedef struct CapabilityData
@@ -328,6 +330,7 @@ namespace OpenGL
 
         std::unordered_map<OpenGL::BackendCapability, CapabilityData> m_capabilities;
         Anvil::SGPUDeviceUniquePtr                                    m_device_ptr;
+        const IContextObjectManagers*                                 m_frontend_ptr;
         Anvil::InstanceUniquePtr                                      m_instance_ptr;
         OpenGL::VKSchedulerUniquePtr                                  m_scheduler_ptr;
     };

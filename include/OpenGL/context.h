@@ -20,7 +20,8 @@ namespace OpenGL
 {
     typedef std::unique_ptr<OpenGL::Context> ContextUniquePtr;
 
-    class Context : public IContext
+    class Context : public IContext,
+                    public IContextObjectManagers
     {
     public:
         /* Public functions */
@@ -807,6 +808,43 @@ namespace OpenGL
         void flush ();
 
     private:
+        /* IContextObjectManagers */
+
+        OpenGL::GLBufferManager* get_buffer_manager_ptr() const final
+        {
+            vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
+
+            return m_gl_buffer_manager_ptr.get();
+        }
+
+        OpenGL::GLProgramManager* get_program_manager_ptr() const final
+        {
+            vkgl_assert(m_gl_program_manager_ptr != nullptr);
+
+            return m_gl_program_manager_ptr.get();
+        }
+
+        OpenGL::GLShaderManager* get_shader_manager_ptr() const final
+        {
+            vkgl_assert(m_gl_shader_manager_ptr != nullptr);
+
+            return m_gl_shader_manager_ptr.get();
+        }
+
+        OpenGL::GLTextureManager* get_texture_manager_ptr() const final
+        {
+            vkgl_assert(m_gl_texture_manager_ptr != nullptr);
+
+            return m_gl_texture_manager_ptr.get();
+        }
+
+        OpenGL::GLVAOManager* get_vao_manager_ptr() const final
+        {
+            vkgl_assert(m_gl_vao_manager_ptr != nullptr);
+
+            return m_gl_vao_manager_ptr.get();
+        }
+
         /* Private functions */
 
         Context(const VKGL::IWSIContext*            in_wsi_context_ptr,
