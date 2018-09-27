@@ -369,3 +369,25 @@ OpenGL::VertexAttributeArrayState& OpenGL::VertexAttributeArrayState::operator=(
 
     return *this;
 }
+
+bool OpenGL::VertexAttributeArrayState::operator==(const VertexAttributeArrayState& in_state)
+{
+    bool result = false;
+
+    if (enabled    == in_state.enabled    &&
+        integer    == in_state.integer    &&
+        normalized == in_state.normalized &&
+        pointer    == in_state.pointer    &&
+        size       == in_state.size       &&
+        stride     == in_state.stride     &&
+        type       == in_state.type)
+    {
+        if ((buffer_binding_ptr == nullptr && in_state.buffer_binding_ptr == nullptr)                                                       ||
+            (buffer_binding_ptr != nullptr && in_state.buffer_binding_ptr != nullptr && *buffer_binding_ptr == *in_state.buffer_binding_ptr))
+        {
+            result = true;
+        }
+    }
+
+    return result;
+}

@@ -16,6 +16,8 @@ OpenGL::GLVAOManager::VAO::VAO(const OpenGL::IGLLimits* in_limits_ptr)
     );
 
     vkgl_assert(vao_ptr != nullptr);
+
+    last_modified = std::chrono::high_resolution_clock::now();
 }
 
 OpenGL::GLVAOManager::GLVAOManager(const IGLLimits* in_limits_ptr)
@@ -90,6 +92,27 @@ bool OpenGL::GLVAOManager::get_element_array_buffer_binding(const uint32_t& in_v
     }
 
     result = true;
+end:
+    return result;
+}
+
+bool OpenGL::GLVAOManager::get_vaa_last_modified_time(const GLuint&       in_vao_id,
+                                                      OpenGL::TimeMarker* out_result_ptr) const
+{
+    std::unique_lock<std::mutex>             lock         (m_lock);
+    bool                                     result       (false);
+    const OpenGL::VertexAttributeArrayState* vaa_ptr      (nullptr);
+    auto                                     vao_props_ptr(get_vao_ptr(in_vao_id) );
+
+    if (vao_props_ptr == nullptr)
+    {
+        vkgl_assert(vao_props_ptr != nullptr);
+
+        goto end;
+    }
+
+    *out_result_ptr = vao_props_ptr->last_modified;
+    result          = true;
 end:
     return result;
 }
@@ -223,7 +246,11 @@ bool OpenGL::GLVAOManager::set_element_array_buffer_binding(const GLuint& in_vao
 
         vkgl_assert(reinterpret_cast<const GLVAOManager*>(this)->get_general_object_props_ptr(in_vao_id)->status == Status::Alive);
 
-        vao_props_ptr->vao_ptr->element_array_buffer_binding = in_new_buffer_binding;
+        if (vao_props_ptr->vao_ptr->element_array_buffer_binding != in_new_buffer_binding)
+        {
+            vao_props_ptr->vao_ptr->element_array_buffer_binding = in_new_buffer_binding;
+            vao_props_ptr->last_modified                         = std::chrono::high_resolution_clock::now();
+        }
     }
 
     result = true;
@@ -251,7 +278,11 @@ bool OpenGL::GLVAOManager::set_vaa_state(const GLuint&                    in_vao
         vkgl_assert(reinterpret_cast<const GLVAOManager*>(this)->get_general_object_props_ptr(in_vao_id)->status == Status::Alive);
         vkgl_assert(vao_props_ptr->vao_ptr->vertex_attribute_arrays.size()                                       >  in_n_vao_vaa);
 
-        vao_props_ptr->vao_ptr->vertex_attribute_arrays.at(in_n_vao_vaa) = in_state;
+        if (!(vao_props_ptr->vao_ptr->vertex_attribute_arrays.at(in_n_vao_vaa) == in_state))
+        {
+            vao_props_ptr->vao_ptr->vertex_attribute_arrays.at(in_n_vao_vaa) = in_state;
+            vao_props_ptr->last_modified                                     = std::chrono::high_resolution_clock::now();
+        }
     }
 
     result = true;

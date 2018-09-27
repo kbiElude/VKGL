@@ -640,14 +640,14 @@ void OpenGL::Context::buffer_data(const OpenGL::BufferTarget& in_target,
     const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
     vkgl_assert(buffer_id != 0);
 
-    m_backend_gl_callbacks_ptr->buffer_data(buffer_id,
-                                            in_size,
-                                            in_data_ptr);
-
     m_gl_buffer_manager_ptr->set_buffer_store_size(buffer_id,
                                                    in_size);
     m_gl_buffer_manager_ptr->set_buffer_usage     (buffer_id,
                                                    in_usage);
+
+    m_backend_gl_callbacks_ptr->buffer_data(buffer_id,
+                                            in_size,
+                                            in_data_ptr);
 }
 
 void OpenGL::Context::buffer_sub_data(const OpenGL::BufferTarget& in_target,

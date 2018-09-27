@@ -93,6 +93,21 @@ bool OpenGL::GLShaderManager::get_shader_infolog(const GLuint& in_id,
     return result;
 }
 
+bool OpenGL::GLShaderManager::get_shader_last_modified_time(const GLuint&       in_id,
+                                                            OpenGL::TimeMarker* out_result_ptr) const
+{
+    bool       result      = false;
+    const auto shader_ptr  = get_shader_ptr(in_id);
+
+    if (shader_ptr != nullptr)
+    {
+        *out_result_ptr = shader_ptr->last_modified_time;
+        result          = true;
+    }
+
+    return result;
+}
+
 bool OpenGL::GLShaderManager::get_shader_property(const GLuint&                     in_shader,
                                                   const OpenGL::ShaderProperty&     in_pname,
                                                   const OpenGL::GetSetArgumentType& in_params_type,
@@ -173,7 +188,11 @@ bool OpenGL::GLShaderManager::set_shader_glsl(const GLuint&      in_id,
 
     if (shader_ptr != nullptr)
     {
-        shader_ptr->glsl = in_glsl;
+        if (shader_ptr->glsl != in_glsl)
+        {
+            shader_ptr->glsl               = in_glsl;
+            shader_ptr->last_modified_time = std::chrono::high_resolution_clock::now();
+        }
 
         result = true;
     }
@@ -191,8 +210,13 @@ bool OpenGL::GLShaderManager::set_shader_type(const GLuint&             in_id,
     {
         vkgl_assert(shader_ptr->type == OpenGL::ShaderType::Unknown);
 
-        shader_ptr->type = in_type;
-        result           = true;
+        if (shader_ptr->type != in_type)
+        {
+            shader_ptr->type               = in_type;
+            shader_ptr->last_modified_time = std::chrono::high_resolution_clock::now();
+        }
+
+        result = true;
     }
 
     return result;

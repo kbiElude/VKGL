@@ -612,7 +612,8 @@ namespace OpenGL
 
         VertexAttributeArrayState();
 
-        VertexAttributeArrayState& operator=(const VertexAttributeArrayState&);
+        VertexAttributeArrayState& operator= (const VertexAttributeArrayState&);
+        bool                       operator==(const VertexAttributeArrayState& in_state);
     } VertexAttributeArrayState;
 
 

@@ -73,6 +73,8 @@ namespace OpenGL
                                                GLint*                              out_result_ptr) const;
         bool get_program_info_log             (const GLuint&                       in_program,
                                                const char**                        out_result_ptr) const;
+        bool get_program_last_modified_time   (const GLuint&                       in_program,
+                                               OpenGL::TimeMarker*                 out_result_ptr) const;
         bool get_program_property             (const GLuint&                       in_program,
                                                const OpenGL::ProgramProperty&      in_pname,
                                                const OpenGL::GetSetArgumentType&   in_params_type,
@@ -262,6 +264,8 @@ namespace OpenGL
             bool link_status;
             bool validate_status;
 
+            OpenGL::TimeMarker last_modified_time;
+
             Program()
                 :delete_status              (false),
                  gs_input_type              (OpenGL::GeometryInputType::Triangles),
@@ -272,7 +276,7 @@ namespace OpenGL
                  tf_varying_max_length      (0),
                  validate_status            (false)
             {
-                /* Stub */
+                last_modified_time = std::chrono::high_resolution_clock::now();
             }
         } Program;
 

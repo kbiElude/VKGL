@@ -25,6 +25,9 @@ namespace OpenGL
                                 const uint32_t&            in_n_vao_vaa,
                                 VertexAttributeArrayState* out_result_ptr) const;
 
+        bool get_vaa_last_modified_time(const GLuint&       in_vao_id,
+                                        OpenGL::TimeMarker* out_result_ptr) const;
+
         bool get_vaa_property(const GLuint&                         in_vao_id,
                               const uint32_t&                       in_n_vao_vaa,
                               const OpenGL::VertexAttributeProperty in_pname,
@@ -48,6 +51,7 @@ namespace OpenGL
 
         typedef struct VAO
         {
+            OpenGL::TimeMarker                              last_modified;
             std::unique_ptr<OpenGL::VertexArrayObjectState> vao_ptr;
 
             VAO();

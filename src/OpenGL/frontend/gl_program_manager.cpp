@@ -36,7 +36,8 @@ bool OpenGL::GLProgramManager::attach_shader(const GLuint&        in_program,
 
     program_ptr->attached_shaders.push_back( std::move(in_shader_reference_ptr) );
 
-    result = true;
+    program_ptr->last_modified_time = std::chrono::high_resolution_clock::now();
+    result                          = true;
 end:
     return result;
 }
@@ -55,7 +56,12 @@ bool OpenGL::GLProgramManager::cache_attribute_location_binding(const GLuint&   
         goto end;
     }
 
-    program_ptr->cached_attribute_location_bindings[in_name] = in_index;
+    if (program_ptr->cached_attribute_location_bindings.find(in_name) == program_ptr->cached_attribute_location_bindings.end() ||
+        program_ptr->cached_attribute_location_bindings[in_name]      != in_index)
+    {
+        program_ptr->cached_attribute_location_bindings[in_name] = in_index;
+        program_ptr->last_modified_time                          = std::chrono::high_resolution_clock::now();
+    }
 
     result = true;
 end:
@@ -76,7 +82,12 @@ bool OpenGL::GLProgramManager::cache_frag_data_location(const GLuint&   in_progr
         goto end;
     }
 
-    program_ptr->cached_frag_data_locations[in_name] = in_fragment_color_output;
+    if (program_ptr->cached_frag_data_locations.find(in_name) == program_ptr->cached_frag_data_locations.end() ||
+        program_ptr->cached_frag_data_locations[in_name]      != in_fragment_color_output)
+    {
+        program_ptr->cached_frag_data_locations[in_name] = in_fragment_color_output;
+        program_ptr->last_modified_time                  = std::chrono::high_resolution_clock::now();
+    }
 
     result = true;
 end:
@@ -150,7 +161,8 @@ bool OpenGL::GLProgramManager::detach_shader(const GLuint& in_program,
 
     program_ptr->attached_shaders.erase(shader_iterator);
 
-    result = true;
+    program_ptr->last_modified_time = std::chrono::high_resolution_clock::now();
+    result                          = true;
 end:
     return result;
 }
@@ -677,6 +689,25 @@ end:
     return result;
 }
 
+bool OpenGL::GLProgramManager::get_program_last_modified_time(const GLuint&       in_program,
+                                                              OpenGL::TimeMarker* out_result_ptr) const
+{
+    auto program_ptr       = get_program_ptr(in_program);
+    bool result            = false;
+
+    if (program_ptr == nullptr)
+    {
+        vkgl_assert(program_ptr != nullptr);
+
+        goto end;
+    }
+
+    *out_result_ptr = program_ptr->last_modified_time;
+    result          = true;
+end:
+    return result;
+}
+
 bool OpenGL::GLProgramManager::get_program_property(const GLuint&                     in_program,
                                                     const OpenGL::ProgramProperty&    in_pname,
                                                     const OpenGL::GetSetArgumentType& in_params_type,
@@ -942,7 +973,12 @@ void OpenGL::GLProgramManager::set_uniform_block_binding(const GLuint& in_progra
         goto end;
     }
 
-    program_ptr->ub_index_to_ub_binding[in_uniform_block_index] = in_uniform_block_binding;
+    if (program_ptr->ub_index_to_ub_binding.find(in_uniform_block_index) == program_ptr->ub_index_to_ub_binding.end() ||
+        program_ptr->ub_index_to_ub_binding[in_uniform_block_index]      != in_uniform_block_binding)
+    {
+        program_ptr->ub_index_to_ub_binding[in_uniform_block_index] = in_uniform_block_binding;
+        program_ptr->last_modified_time                             = std::chrono::high_resolution_clock::now();
+    }
 
 end:
     ;

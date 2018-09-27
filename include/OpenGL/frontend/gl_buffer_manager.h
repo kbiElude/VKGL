@@ -24,11 +24,13 @@ namespace OpenGL
         void*  get_buffer_map_pointer(const GLuint& in_id) const;
         size_t get_buffer_size       (const GLuint& in_id) const;
 
-        void get_buffer_property(const GLuint&                     in_id,
-                                 const OpenGL::BufferProperty&     in_pname,
-                                 const OpenGL::GetSetArgumentType& in_arg_type,
-                                 const uint32_t&                   in_n_args,
-                                 void*                             out_result_ptr) const;
+        bool get_buffer_last_modified_time(const GLuint&                     in_id,
+                                           OpenGL::TimeMarker*               out_result_ptr);
+        void get_buffer_property          (const GLuint&                     in_id,
+                                           const OpenGL::BufferProperty&     in_pname,
+                                           const OpenGL::GetSetArgumentType& in_arg_type,
+                                           const uint32_t&                   in_n_args,
+                                           void*                             out_result_ptr) const;
 
         bool set_buffer_store_size(const GLuint&              in_id,
                                    const size_t&              in_size);
@@ -46,6 +48,7 @@ namespace OpenGL
         {
 
             // OpenGL::BufferAccessFlags access_flags; TODO
+            OpenGL::TimeMarker  last_modified_time;
             int64_t             map_offset;
             void*               map_pointer;
             int64_t             map_size;
@@ -61,6 +64,8 @@ namespace OpenGL
                 map_size     = 0;
                 size         = 0;
                 usage        = OpenGL::BufferUsage::Static_Draw;
+
+                last_modified_time = std::chrono::high_resolution_clock::now();
             }
         } Buffer;
 
