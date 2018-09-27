@@ -99,6 +99,13 @@ namespace OpenGL
         /* Protected functions */
         std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object(const GLuint& in_id) final;
 
+        bool get_last_modification_time(const GLuint&       in_id,
+                                        OpenGL::TimeMarker* out_result_ptr) const final
+        {
+            return get_program_last_modified_time(in_id,
+                                                  out_result_ptr);
+        }
+
     private:
         /* Private type definitions */
 

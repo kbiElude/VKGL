@@ -31,6 +31,39 @@ OpenGL::GLObjectManager::~GLObjectManager()
 
 OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_reference(const GLuint& in_id)
 {
+    /* For acquisition requests coming from non-reference objects, which this entrypoint handles,
+     * *always* pick the latest version of the object's state available.
+     *
+     * Note that older snapshots may still be in use by backend. This is fine.
+     *
+     * Note that GLReference constructor calls GLObjectManager::on_reference_created() to bump up the latest
+     * snapshot's ref counter, which is how we guarantee the snapshot does not go out of scope until
+     * all backend users are done using it.
+     *
+     * Note: this entrypoint will never be called outside of application's rendering context thread.
+     */
+    OpenGL::TimeMarker           last_modification_time;
+    OpenGL::GLReferenceUniquePtr result_ptr;
+
+    if (!get_last_modification_time(in_id,
+                                   &last_modification_time) )
+    {
+        vkgl_assert_fail();
+    }
+    else
+    {
+        result_ptr = acquire_reference(in_id,
+                                       last_modification_time);
+
+        vkgl_assert(result_ptr != nullptr);
+    }
+
+    return result_ptr;
+}
+
+OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_reference(const GLuint&              in_id,
+                                                                        const OpenGL::TimeMarker&  in_time_marker)
+{
     OpenGL::GLReferenceUniquePtr result_ptr(nullptr,
                                             std::default_delete<OpenGL::GLReference>() );
 
@@ -48,7 +81,8 @@ OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_reference(const GL
 
         result_ptr.reset(
             new GLReference(in_id,
-                            dynamic_cast<IGLObjectManager*>(this) )
+                            in_time_marker,
+                            dynamic_cast<IObjectManagerReference*>(this) )
         );
 
         if (result_ptr == nullptr)
@@ -57,29 +91,10 @@ OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_reference(const GL
 
             goto end;
         }
-
-        add_reference(in_id,
-                      result_ptr.get() );
     }
 
 end:
     return result_ptr;
-}
-
-bool OpenGL::GLObjectManager::add_reference(const GLuint&      in_id,
-                                            const GLReference* in_reference_ptr)
-{
-    bool result     = false;
-    auto props_ptr = get_general_object_props_ptr(in_id);
-
-    if (props_ptr != nullptr)
-    {
-        props_ptr->references.push_back(in_reference_ptr);
-
-        result = true;
-    }
-
-    return result;
 }
 
 bool OpenGL::GLObjectManager::delete_ids(const uint32_t& in_n_ids,
@@ -135,30 +150,6 @@ bool OpenGL::GLObjectManager::delete_ids(const uint32_t& in_n_ids,
     }
 
     result = true;
-    return result;
-}
-
-bool OpenGL::GLObjectManager::delete_reference(const GLuint&      in_id,
-                                               const GLReference* in_reference_ptr)
-{
-    bool result     = false;
-    auto object_ptr = get_general_object_props_ptr(in_id);
-
-    if (object_ptr != nullptr)
-    {
-        auto reference_iterator = std::find(object_ptr->references.begin(),
-                                            object_ptr->references.end  (),
-                                            in_reference_ptr);
-
-        vkgl_assert(reference_iterator != object_ptr->references.end() );
-        if (reference_iterator != object_ptr->references.end() )
-        {
-            object_ptr->references.erase(reference_iterator);
-
-            result = true;
-        }
-    }
-
     return result;
 }
 
@@ -405,7 +396,24 @@ bool OpenGL::GLObjectManager::mark_id_as_alive(const GLuint& in_id)
     return result;
 }
 
-void OpenGL::GLObjectManager::release_reference(const OpenGL::GLReference* in_reference_ptr)
+void OpenGL::GLObjectManager::on_reference_created(const OpenGL::GLReference* in_reference_ptr)
+{
+    /* Note: m_lock is locked at this point. */
+
+    bool result    = false;
+    auto props_ptr = get_general_object_props_ptr(in_reference_ptr->get_id() );
+
+    if (props_ptr != nullptr)
+    {
+        props_ptr->references.push_back(in_reference_ptr);
+
+        result = true;
+    }
+
+    vkgl_assert(result);
+}
+
+void OpenGL::GLObjectManager::on_reference_destroyed(const OpenGL::GLReference* in_reference_ptr)
 {
     const auto object_id = in_reference_ptr->get_id();
 
@@ -425,10 +433,23 @@ void OpenGL::GLObjectManager::release_reference(const OpenGL::GLReference* in_re
         const auto status = get_object_status           (object_id);
 
         /* Release the reference .. */
-        vkgl_assert(is_id_valid(object_id) );
+        {
+            auto object_ptr = get_general_object_props_ptr(object_id);
 
-        delete_reference(object_id,
-                         in_reference_ptr);
+            vkgl_assert(object_ptr != nullptr);
+            if (object_ptr != nullptr)
+            {
+                auto reference_iterator = std::find(object_ptr->references.begin(),
+                                                    object_ptr->references.end  (),
+                                                    in_reference_ptr);
+
+                vkgl_assert(reference_iterator != object_ptr->references.end() );
+                if (reference_iterator != object_ptr->references.end() )
+                {
+                    object_ptr->references.erase(reference_iterator);
+                }
+            }
+        }
 
         /* If the object has been destroyed AND there are no more dangling refernces, destroy
          * the container. Otherwise, retain it.

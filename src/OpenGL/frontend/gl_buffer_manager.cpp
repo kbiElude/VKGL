@@ -58,7 +58,7 @@ std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLBufferManager::crea
 }
 
 bool OpenGL::GLBufferManager::get_buffer_last_modified_time(const GLuint&       in_id,
-                                                            OpenGL::TimeMarker* out_result_ptr)
+                                                            OpenGL::TimeMarker* out_result_ptr) const
 {
     auto  buffer_ptr = get_buffer_ptr(in_id);
     bool  result     = false;

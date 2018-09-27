@@ -96,27 +96,6 @@ end:
     return result;
 }
 
-bool OpenGL::GLVAOManager::get_vaa_last_modified_time(const GLuint&       in_vao_id,
-                                                      OpenGL::TimeMarker* out_result_ptr) const
-{
-    std::unique_lock<std::mutex>             lock         (m_lock);
-    bool                                     result       (false);
-    const OpenGL::VertexAttributeArrayState* vaa_ptr      (nullptr);
-    auto                                     vao_props_ptr(get_vao_ptr(in_vao_id) );
-
-    if (vao_props_ptr == nullptr)
-    {
-        vkgl_assert(vao_props_ptr != nullptr);
-
-        goto end;
-    }
-
-    *out_result_ptr = vao_props_ptr->last_modified;
-    result          = true;
-end:
-    return result;
-}
-
 bool OpenGL::GLVAOManager::get_vaa_property(const GLuint&                         in_vao_id,
                                             const uint32_t&                       in_n_vao_vaa,
                                             const OpenGL::VertexAttributeProperty in_pname,
@@ -214,6 +193,27 @@ bool OpenGL::GLVAOManager::get_vaa_state_copy(const GLuint&              in_vao_
     }
 
     result = true;
+end:
+    return result;
+}
+
+bool OpenGL::GLVAOManager::get_vao_last_modified_time(const GLuint&       in_vao_id,
+                                                      OpenGL::TimeMarker* out_result_ptr) const
+{
+    std::unique_lock<std::mutex>             lock         (m_lock);
+    bool                                     result       (false);
+    const OpenGL::VertexAttributeArrayState* vaa_ptr      (nullptr);
+    auto                                     vao_props_ptr(get_vao_ptr(in_vao_id) );
+
+    if (vao_props_ptr == nullptr)
+    {
+        vkgl_assert(vao_props_ptr != nullptr);
+
+        goto end;
+    }
+
+    *out_result_ptr = vao_props_ptr->last_modified;
+    result          = true;
 end:
     return result;
 }

@@ -25,14 +25,14 @@ namespace OpenGL
                                 const uint32_t&            in_n_vao_vaa,
                                 VertexAttributeArrayState* out_result_ptr) const;
 
-        bool get_vaa_last_modified_time(const GLuint&       in_vao_id,
-                                        OpenGL::TimeMarker* out_result_ptr) const;
-
         bool get_vaa_property(const GLuint&                         in_vao_id,
                               const uint32_t&                       in_n_vao_vaa,
                               const OpenGL::VertexAttributeProperty in_pname,
                               const OpenGL::GetSetArgumentType&     in_dst_type,
                               void*                                 out_result_ptr) const;
+
+        bool get_vao_last_modified_time(const GLuint&       in_vao_id,
+                                        OpenGL::TimeMarker* out_result_ptr) const;
 
         bool set_element_array_buffer_binding(const GLuint&                    in_vao_id,
                                               const GLuint&                    in_new_buffer_binding);
@@ -45,6 +45,13 @@ namespace OpenGL
     protected:
         /* Protected functions */
         std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object(const GLuint& in_id) final;
+
+        bool get_last_modification_time(const GLuint&       in_id,
+                                        OpenGL::TimeMarker* out_result_ptr) const final
+        {
+            return get_vao_last_modified_time(in_id,
+                                              out_result_ptr);
+        }
 
     private:
         /* Private type definitions */

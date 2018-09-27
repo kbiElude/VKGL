@@ -8,10 +8,14 @@
 
 OpenGL::GLReference::~GLReference()
 {
-    dynamic_cast<IObjectManagerReferenceRelease*>(m_manager_ptr)->release_reference(this);
+    m_manager_ptr->on_reference_destroyed(this);
 }
 
 OpenGL::GLReferenceUniquePtr OpenGL::GLReference::clone() const
 {
-    return m_manager_ptr->acquire_reference(m_id);
+    /* When cloning, make sure to create a reference that points to exactly the same snapshot
+     * of the same object this reference is pointing at!
+     */
+    return m_manager_ptr->acquire_reference(m_id,
+                                            m_time_marker);
 }

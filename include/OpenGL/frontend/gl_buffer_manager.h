@@ -25,7 +25,7 @@ namespace OpenGL
         size_t get_buffer_size       (const GLuint& in_id) const;
 
         bool get_buffer_last_modified_time(const GLuint&                     in_id,
-                                           OpenGL::TimeMarker*               out_result_ptr);
+                                           OpenGL::TimeMarker*               out_result_ptr) const;
         void get_buffer_property          (const GLuint&                     in_id,
                                            const OpenGL::BufferProperty&     in_pname,
                                            const OpenGL::GetSetArgumentType& in_arg_type,
@@ -40,6 +40,13 @@ namespace OpenGL
     protected:
         /* Protected functions */
         std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object(const GLuint& in_id) final;
+
+        bool get_last_modification_time(const GLuint&       in_id,
+                                        OpenGL::TimeMarker* out_result_ptr) const final
+        {
+            return get_buffer_last_modified_time(in_id,
+                                                 out_result_ptr);
+        }
 
     private:
         /* Private type definitions */

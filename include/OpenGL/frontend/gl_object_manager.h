@@ -18,11 +18,12 @@ namespace OpenGL
             /* Stub */
         }
 
-        virtual GLReferenceUniquePtr acquire_reference           (const GLuint& in_id)       = 0;
-        virtual GLReferenceUniquePtr get_default_object_reference()                    const = 0;
+        virtual GLReferenceUniquePtr get_default_object_reference()                                   const = 0;
+        virtual bool                 get_last_modification_time  (const GLuint&       in_id,
+                                                                  OpenGL::TimeMarker* out_result_ptr) const = 0;
     };
 
-    class GLObjectManager : public IObjectManagerReferenceRelease,
+    class GLObjectManager : public IObjectManagerReference,
                             public IGLObjectManager
     {
     public:
@@ -74,8 +75,11 @@ namespace OpenGL
         /* IGLObjectManager interface */
         GLReferenceUniquePtr get_default_object_reference() const final;
 
-        /* IObjectManagerReferenceRelease interface */
-        void release_reference(const OpenGL::GLReference* in_reference_ptr) final;
+        /* IObjectManagerReference interface */
+        GLReferenceUniquePtr acquire_reference     (const GLuint&              in_id,
+                                                    const OpenGL::TimeMarker&  in_time_marker)   final;
+        void                 on_reference_created  (const OpenGL::GLReference* in_reference_ptr) final;
+        void                 on_reference_destroyed(const OpenGL::GLReference* in_reference_ptr) final;
 
         /* Protected functions */
 
@@ -101,11 +105,7 @@ namespace OpenGL
     private:
         /* Private functions */
 
-        bool     add_reference    (const GLuint&      in_id,
-                                   const GLReference* in_reference_ptr);
         bool     delete_object    (const GLuint&      in_id);
-        bool     delete_reference (const GLuint&      in_id,
-                                   const GLReference* in_reference_ptr);
         uint32_t get_n_references (const GLuint&      in_id) const;
         Status   get_object_status(const GLuint&      in_id) const;
         bool     insert_object    (const GLuint&      in_id);

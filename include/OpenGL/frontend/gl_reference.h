@@ -14,12 +14,16 @@ namespace OpenGL
     class GLReference
     {
     public:
-        GLReference(const GLuint&             in_id,
-                    OpenGL::IGLObjectManager* in_manager_ptr)
+        GLReference(const GLuint&                    in_id,
+                    const OpenGL::TimeMarker&        in_time_marker,
+                    OpenGL::IObjectManagerReference* in_manager_ptr)
             :m_id         (in_id),
-             m_manager_ptr(in_manager_ptr)
+             m_manager_ptr(in_manager_ptr),
+             m_time_marker(in_time_marker)
         {
             vkgl_assert(m_manager_ptr != nullptr);
+
+            m_manager_ptr->on_reference_created(this);
         }
 
         ~GLReference();
@@ -31,36 +35,48 @@ namespace OpenGL
             return m_id;
         }
 
+        const OpenGL::TimeMarker& get_time_marker() const
+        {
+            return m_time_marker;
+        }
+
         bool operator==(const GLReference& in_ref) const
         {
-            return (m_id == in_ref.m_id);
+            return (m_id          == in_ref.m_id          &&
+                    m_time_marker == in_ref.m_time_marker);
         }
 
         bool operator!=(const GLReference& in_ref) const
         {
-            return (m_id != in_ref.m_id);
+            return (m_id          != in_ref.m_id          ||
+                    m_time_marker != in_ref.m_time_marker);
         }
     private:
+#if 0
         std::unique_ptr<GLReference, std::function<void(GLReference*)> > create(const GLuint&             in_id,
+                                                                                const OpenGL::TimeMarker& in_time_marker,
                                                                                 OpenGL::IGLObjectManager* in_manager_ptr)
         {
             std::unique_ptr<GLReference, std::function<void(GLReference*)> > result_ptr;
 
             result_ptr.reset(
                 new OpenGL::GLReference(in_id,
+                                        in_time_marker,
                                         in_manager_ptr)
             );
 
             vkgl_assert(result_ptr != nullptr);
             return result_ptr;
         }
+#endif
 
         GLReference           (const GLReference&);
         GLReference& operator=(const GLReference&);
 
         /* Private variables */
-        const GLuint                    m_id;
-        OpenGL::IGLObjectManager* const m_manager_ptr;
+        const GLuint                           m_id;
+        OpenGL::IObjectManagerReference* const m_manager_ptr;
+        OpenGL::TimeMarker                     m_time_marker;
     };
 }
 
