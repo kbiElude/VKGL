@@ -6,6 +6,9 @@
 #include "OpenGL/frontend/gl_object_manager.h"
 #include "OpenGL/frontend/gl_reference.h"
 
+const OpenGL::TimeMarker OpenGL::LATEST_SNAPSHOT_AVAILABLE = OpenGL::TimeMarker(std::chrono::nanoseconds(0) );
+
+
 OpenGL::GLReference::~GLReference()
 {
     m_manager_ptr->on_reference_destroyed(this);

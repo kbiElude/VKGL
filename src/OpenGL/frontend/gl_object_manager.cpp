@@ -32,7 +32,9 @@ OpenGL::GLObjectManager::~GLObjectManager()
 OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_reference(const GLuint& in_id)
 {
     /* For acquisition requests coming from non-reference objects, which this entrypoint handles,
-     * *always* pick the latest version of the object's state available.
+     * make sure frontend *always* uses the latest version of the object's state available.
+     * When frontend decides to pass a call over to backend, it will create a new reference and
+     * replace the snapshot version setting with the version of the snapshot available at the time of the call.
      *
      * Note that older snapshots may still be in use by backend. This is fine.
      *
@@ -42,21 +44,12 @@ OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_reference(const GL
      *
      * Note: this entrypoint will never be called outside of application's rendering context thread.
      */
-    OpenGL::TimeMarker           last_modification_time;
     OpenGL::GLReferenceUniquePtr result_ptr;
 
-    if (!get_last_modification_time(in_id,
-                                   &last_modification_time) )
-    {
-        vkgl_assert_fail();
-    }
-    else
-    {
-        result_ptr = acquire_reference(in_id,
-                                       last_modification_time);
+    result_ptr = acquire_reference(in_id,
+                                   OpenGL::LATEST_SNAPSHOT_AVAILABLE);
 
-        vkgl_assert(result_ptr != nullptr);
-    }
+    vkgl_assert(result_ptr != nullptr);
 
     return result_ptr;
 }

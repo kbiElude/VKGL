@@ -11,9 +11,16 @@
 
 namespace OpenGL
 {
+    /* TODO: This is ugly since in a dire split of events a zero time marker may actually be reported for HP clock.
+     *       The TimeMarker type should be extended to provide space for an additional flag telling "just use whatever's the latest"
+     */
+    extern const OpenGL::TimeMarker LATEST_SNAPSHOT_AVAILABLE;
+
     class GLReference
     {
     public:
+        /* Public functions */
+        /* NOTE: References created using this constructor can be passed to backend. */
         GLReference(const GLuint&                    in_id,
                     const OpenGL::TimeMarker&        in_time_marker,
                     OpenGL::IObjectManagerReference* in_manager_ptr)
