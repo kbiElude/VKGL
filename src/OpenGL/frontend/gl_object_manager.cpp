@@ -471,3 +471,14 @@ bool OpenGL::GLObjectManager::set_object_status(const GLuint& in_id,
 
     return result;
 }
+
+void OpenGL::GLObjectManager::update_last_modified_time(const GLuint& in_id)
+{
+    auto object_ptr = get_general_object_props_ptr(in_id);
+
+    vkgl_assert(object_ptr != nullptr);
+    if (object_ptr != nullptr)
+    {
+        object_ptr->last_modified_time = std::chrono::high_resolution_clock::now();
+    }
+}

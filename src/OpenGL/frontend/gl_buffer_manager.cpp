@@ -57,22 +57,6 @@ std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLBufferManager::crea
     return result_ptr;
 }
 
-bool OpenGL::GLBufferManager::get_buffer_last_modified_time(const GLuint&       in_id,
-                                                            OpenGL::TimeMarker* out_result_ptr) const
-{
-    auto  buffer_ptr = get_buffer_ptr(in_id);
-    bool  result     = false;
-
-    vkgl_assert(buffer_ptr != nullptr);
-    if (buffer_ptr != nullptr)
-    {
-        *out_result_ptr = buffer_ptr->last_modified_time;
-        result          = true;
-    }
-
-    return result;
-}
-
 void* OpenGL::GLBufferManager::get_buffer_map_pointer(const GLuint& in_id) const
 {
     auto  buffer_ptr = get_buffer_ptr(in_id);
@@ -131,8 +115,9 @@ bool OpenGL::GLBufferManager::set_buffer_store_size(const GLuint& in_id,
     {
         if (buffer_ptr->size != in_size)
         {
-            buffer_ptr->size               = in_size;
-            buffer_ptr->last_modified_time = std::chrono::high_resolution_clock::now();
+            buffer_ptr->size = in_size;
+
+            update_last_modified_time(in_id);
         }
 
         result = true;
@@ -152,8 +137,9 @@ bool OpenGL::GLBufferManager::set_buffer_usage(const GLuint&              in_id,
     {
         if (buffer_ptr->usage != in_usage)
         {
-            buffer_ptr->usage              = in_usage;
-            buffer_ptr->last_modified_time = std::chrono::high_resolution_clock::now();
+            buffer_ptr->usage = in_usage;
+
+            update_last_modified_time(in_id);
         }
 
         result = true;

@@ -31,9 +31,6 @@ namespace OpenGL
                               const OpenGL::GetSetArgumentType&     in_dst_type,
                               void*                                 out_result_ptr) const;
 
-        bool get_vao_last_modified_time(const GLuint&       in_vao_id,
-                                        OpenGL::TimeMarker* out_result_ptr) const;
-
         bool set_element_array_buffer_binding(const GLuint&                    in_vao_id,
                                               const GLuint&                    in_new_buffer_binding);
         bool set_vaa_state                   (const GLuint&                    in_vao_id,
@@ -46,19 +43,11 @@ namespace OpenGL
         /* Protected functions */
         std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object(const GLuint& in_id) final;
 
-        bool get_last_modification_time(const GLuint&       in_id,
-                                        OpenGL::TimeMarker* out_result_ptr) const final
-        {
-            return get_vao_last_modified_time(in_id,
-                                              out_result_ptr);
-        }
-
     private:
         /* Private type definitions */
 
         typedef struct VAO
         {
-            OpenGL::TimeMarker                              last_modified;
             std::unique_ptr<OpenGL::VertexArrayObjectState> vao_ptr;
 
             VAO();

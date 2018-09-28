@@ -16,8 +16,6 @@ OpenGL::GLVAOManager::VAO::VAO(const OpenGL::IGLLimits* in_limits_ptr)
     );
 
     vkgl_assert(vao_ptr != nullptr);
-
-    last_modified = std::chrono::high_resolution_clock::now();
 }
 
 OpenGL::GLVAOManager::GLVAOManager(const IGLLimits* in_limits_ptr)
@@ -197,27 +195,6 @@ end:
     return result;
 }
 
-bool OpenGL::GLVAOManager::get_vao_last_modified_time(const GLuint&       in_vao_id,
-                                                      OpenGL::TimeMarker* out_result_ptr) const
-{
-    std::unique_lock<std::mutex>             lock         (m_lock);
-    bool                                     result       (false);
-    const OpenGL::VertexAttributeArrayState* vaa_ptr      (nullptr);
-    auto                                     vao_props_ptr(get_vao_ptr(in_vao_id) );
-
-    if (vao_props_ptr == nullptr)
-    {
-        vkgl_assert(vao_props_ptr != nullptr);
-
-        goto end;
-    }
-
-    *out_result_ptr = vao_props_ptr->last_modified;
-    result          = true;
-end:
-    return result;
-}
-
 const OpenGL::GLVAOManager::VAO* OpenGL::GLVAOManager::get_vao_ptr(const GLuint& in_id) const
 {
     return reinterpret_cast<const OpenGL::GLVAOManager::VAO*>(get_internal_object_props_ptr(in_id) );
@@ -249,7 +226,8 @@ bool OpenGL::GLVAOManager::set_element_array_buffer_binding(const GLuint& in_vao
         if (vao_props_ptr->vao_ptr->element_array_buffer_binding != in_new_buffer_binding)
         {
             vao_props_ptr->vao_ptr->element_array_buffer_binding = in_new_buffer_binding;
-            vao_props_ptr->last_modified                         = std::chrono::high_resolution_clock::now();
+
+            update_last_modified_time(in_vao_id);
         }
     }
 
@@ -281,7 +259,8 @@ bool OpenGL::GLVAOManager::set_vaa_state(const GLuint&                    in_vao
         if (!(vao_props_ptr->vao_ptr->vertex_attribute_arrays.at(in_n_vao_vaa) == in_state))
         {
             vao_props_ptr->vao_ptr->vertex_attribute_arrays.at(in_n_vao_vaa) = in_state;
-            vao_props_ptr->last_modified                                     = std::chrono::high_resolution_clock::now();
+
+            update_last_modified_time(in_vao_id);
         }
     }
 

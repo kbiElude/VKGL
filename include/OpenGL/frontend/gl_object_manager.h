@@ -18,9 +18,7 @@ namespace OpenGL
             /* Stub */
         }
 
-        virtual GLReferenceUniquePtr get_default_object_reference()                                   const = 0;
-        virtual bool                 get_last_modification_time  (const GLuint&       in_id,
-                                                                  OpenGL::TimeMarker* out_result_ptr) const = 0;
+        virtual GLReferenceUniquePtr get_default_object_reference() const = 0;
     };
 
     class GLObjectManager : public IObjectManagerReference,
@@ -56,19 +54,22 @@ namespace OpenGL
         {
             GLuint                                             id;
             std::unique_ptr<void, std::function<void(void*)> > internal_data_ptr;
+            OpenGL::TimeMarker                                 last_modified_time;
             std::vector<const GLReference*>                    references;
             Status                                             status;
 
             GeneralObjectProps()
             {
-                id     = UINT32_MAX;
-                status = Status::Unknown;
+                id                 = UINT32_MAX;
+                last_modified_time = std::chrono::high_resolution_clock::now();
+                status             = Status::Unknown;
             }
 
             GeneralObjectProps(const GLuint& in_id)
             {
-                id     = in_id;
-                status = Status::Created_Not_Bound;
+                id                 = in_id;
+                last_modified_time = std::chrono::high_resolution_clock::now();
+                status             = Status::Created_Not_Bound;
             }
         } GeneralObjectProps;
 
@@ -90,6 +91,7 @@ namespace OpenGL
         const void*               get_internal_object_props_ptr(const GLuint& in_id) const;
         void*                     get_internal_object_props_ptr(const GLuint& in_id);
         bool                      init                         ();
+        void                      update_last_modified_time    (const GLuint& in_id);
 
         virtual std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object(const GLuint& in_id) = 0;
 
