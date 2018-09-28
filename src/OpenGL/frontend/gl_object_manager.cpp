@@ -230,26 +230,38 @@ OpenGL::GLObjectManager::GeneralObjectProps* OpenGL::GLObjectManager::get_genera
     return result_ptr;
 }
 
-const void* OpenGL::GLObjectManager::get_internal_object_props_ptr(const GLuint& in_id) const
+const void* OpenGL::GLObjectManager::get_internal_object_props_ptr(const GLuint&             in_id,
+                                                                   const OpenGL::TimeMarker* in_opt_time_marker_ptr) const
 {
     const auto  props_ptr  = get_general_object_props_ptr(in_id);
     const void* result_ptr = nullptr;
 
     if (props_ptr != nullptr)
     {
+        /* TODO: Use time_marker !! */
+        const OpenGL::TimeMarker time_marker = (in_opt_time_marker_ptr == nullptr)                                                                 ? props_ptr->last_modified_time
+                                             : (in_opt_time_marker_ptr != nullptr && *in_opt_time_marker_ptr == OpenGL::LATEST_SNAPSHOT_AVAILABLE) ? props_ptr->last_modified_time
+                                             : *in_opt_time_marker_ptr;
+
         result_ptr = props_ptr->internal_data_ptr.get();
     }
 
     return result_ptr;
 }
 
-void* OpenGL::GLObjectManager::get_internal_object_props_ptr(const GLuint& in_id)
+void* OpenGL::GLObjectManager::get_internal_object_props_ptr(const GLuint&             in_id,
+                                                             const OpenGL::TimeMarker* in_opt_time_marker_ptr)
 {
     const auto props_ptr  = get_general_object_props_ptr(in_id);
     void*      result_ptr = nullptr;
 
     if (props_ptr != nullptr)
     {
+        /* TODO: Use time_marker !! */
+        const OpenGL::TimeMarker time_marker = (in_opt_time_marker_ptr == nullptr)                                                                 ? props_ptr->last_modified_time
+                                             : (in_opt_time_marker_ptr != nullptr && *in_opt_time_marker_ptr == OpenGL::LATEST_SNAPSHOT_AVAILABLE) ? props_ptr->last_modified_time
+                                             : *in_opt_time_marker_ptr;
+
         result_ptr = props_ptr->internal_data_ptr.get();
     }
 

@@ -88,11 +88,13 @@ namespace OpenGL
         GLObjectManager(const GLuint& in_first_valid_nondefault_id,
                         const bool&   in_expose_default_object);
 
-        const GeneralObjectProps* get_general_object_props_ptr (const GLuint& in_id) const;
-        const void*               get_internal_object_props_ptr(const GLuint& in_id) const;
-        void*                     get_internal_object_props_ptr(const GLuint& in_id);
+        const GeneralObjectProps* get_general_object_props_ptr (const GLuint&             in_id) const;
+        const void*               get_internal_object_props_ptr(const GLuint&             in_id,
+                                                                const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
+        void*                     get_internal_object_props_ptr(const GLuint&             in_id,
+                                                                const OpenGL::TimeMarker* in_opt_time_marker_ptr);
         bool                      init                         ();
-        void                      update_last_modified_time    (const GLuint& in_id);
+        void                      update_last_modified_time    (const GLuint&             in_id);
 
         virtual std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object(const GLuint& in_id) = 0;
 

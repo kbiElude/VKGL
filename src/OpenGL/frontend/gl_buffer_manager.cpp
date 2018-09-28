@@ -57,9 +57,11 @@ std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLBufferManager::crea
     return result_ptr;
 }
 
-void* OpenGL::GLBufferManager::get_buffer_map_pointer(const GLuint& in_id) const
+void* OpenGL::GLBufferManager::get_buffer_map_pointer(const GLuint&             in_id,
+                                                      const OpenGL::TimeMarker* in_opt_time_marker_ptr) const
 {
-    auto  buffer_ptr = get_buffer_ptr(in_id);
+    auto  buffer_ptr = get_buffer_ptr(in_id,
+                                      in_opt_time_marker_ptr);
     void* result_ptr = nullptr;
 
     vkgl_assert(buffer_ptr != nullptr);
@@ -71,19 +73,25 @@ void* OpenGL::GLBufferManager::get_buffer_map_pointer(const GLuint& in_id) const
     return result_ptr;
 }
 
-const OpenGL::GLBufferManager::Buffer* OpenGL::GLBufferManager::get_buffer_ptr(const GLuint& in_id) const
+const OpenGL::GLBufferManager::Buffer* OpenGL::GLBufferManager::get_buffer_ptr(const GLuint&             in_id,
+                                                                               const OpenGL::TimeMarker* in_opt_time_marker_ptr) const
 {
-    return reinterpret_cast<const OpenGL::GLBufferManager::Buffer*>(get_internal_object_props_ptr(in_id) );
+    return reinterpret_cast<const OpenGL::GLBufferManager::Buffer*>(get_internal_object_props_ptr(in_id,
+                                                                                                  in_opt_time_marker_ptr) );
 }
 
-OpenGL::GLBufferManager::Buffer* OpenGL::GLBufferManager::get_buffer_ptr(const GLuint& in_id)
+OpenGL::GLBufferManager::Buffer* OpenGL::GLBufferManager::get_buffer_ptr(const GLuint&             in_id,
+                                                                         const OpenGL::TimeMarker* in_opt_time_marker_ptr)
 {
-    return reinterpret_cast<OpenGL::GLBufferManager::Buffer*>(get_internal_object_props_ptr(in_id) );
+    return reinterpret_cast<OpenGL::GLBufferManager::Buffer*>(get_internal_object_props_ptr(in_id,
+                                                                                            in_opt_time_marker_ptr) );
 }
 
-size_t OpenGL::GLBufferManager::get_buffer_size(const GLuint& in_id) const
+size_t OpenGL::GLBufferManager::get_buffer_size(const GLuint&             in_id,
+                                                const OpenGL::TimeMarker* in_opt_time_marker_ptr) const
 {
-    auto   buffer_ptr = get_buffer_ptr(in_id);
+    auto   buffer_ptr = get_buffer_ptr(in_id,
+                                       in_opt_time_marker_ptr);
     size_t result     = 0;
 
     vkgl_assert(buffer_ptr != nullptr);
@@ -96,6 +104,7 @@ size_t OpenGL::GLBufferManager::get_buffer_size(const GLuint& in_id) const
 }
 
 void OpenGL::GLBufferManager::get_buffer_property(const GLuint&                     in_id,
+                                                  const OpenGL::TimeMarker*         in_opt_time_marker_ptr,
                                                   const OpenGL::BufferProperty&     in_pname,
                                                   const OpenGL::GetSetArgumentType& in_arg_type,
                                                   const uint32_t&                   in_n_args,
@@ -107,7 +116,8 @@ void OpenGL::GLBufferManager::get_buffer_property(const GLuint&                 
 bool OpenGL::GLBufferManager::set_buffer_store_size(const GLuint& in_id,
                                                     const size_t& in_size)
 {
-    auto buffer_ptr = get_buffer_ptr(in_id);
+    auto buffer_ptr = get_buffer_ptr(in_id,
+                                     nullptr); /* in_opt_time_marker_ptr */
     bool result     = false;
 
     vkgl_assert(buffer_ptr != nullptr);
@@ -129,7 +139,8 @@ bool OpenGL::GLBufferManager::set_buffer_store_size(const GLuint& in_id,
 bool OpenGL::GLBufferManager::set_buffer_usage(const GLuint&              in_id,
                                                const OpenGL::BufferUsage& in_usage)
 {
-    auto buffer_ptr = get_buffer_ptr(in_id);
+    auto buffer_ptr = get_buffer_ptr(in_id,
+                                     nullptr); /* in_opt_time_marker_ptr */
     bool result     = false;
 
     vkgl_assert(buffer_ptr != nullptr);

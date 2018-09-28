@@ -18,14 +18,17 @@ namespace OpenGL
 
         static GLVAOManagerUniquePtr create(const IGLLimits* in_limits_ptr);
 
-        bool get_element_array_buffer_binding(const uint32_t& in_vao_id,
-                                              GLuint*         out_result_ptr) const;
+        bool get_element_array_buffer_binding(const uint32_t&           in_vao_id,
+                                              const OpenGL::TimeMarker* in_opt_time_marker_ptr,
+                                              GLuint*                   out_result_ptr) const;
 
         bool get_vaa_state_copy(const GLuint&              in_vao_id,
+                                const OpenGL::TimeMarker*  in_opt_time_marker_ptr,
                                 const uint32_t&            in_n_vao_vaa,
                                 VertexAttributeArrayState* out_result_ptr) const;
 
         bool get_vaa_property(const GLuint&                         in_vao_id,
+                              const OpenGL::TimeMarker*             in_opt_time_marker_ptr,
                               const uint32_t&                       in_n_vao_vaa,
                               const OpenGL::VertexAttributeProperty in_pname,
                               const OpenGL::GetSetArgumentType&     in_dst_type,
@@ -59,8 +62,10 @@ namespace OpenGL
 
         GLVAOManager(const IGLLimits* in_limits_ptr);
 
-        const VAO* get_vao_ptr(const GLuint& in_id) const;
-        VAO*       get_vao_ptr(const GLuint& in_id);
+        const VAO* get_vao_ptr(const GLuint&             in_id,
+                               const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
+        VAO*       get_vao_ptr(const GLuint&             in_id,
+                               const OpenGL::TimeMarker* in_opt_time_marker_ptr);
 
         /* Private variables */
         const IGLLimits* const m_limits_ptr;

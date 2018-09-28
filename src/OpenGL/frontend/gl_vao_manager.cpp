@@ -68,14 +68,16 @@ std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLVAOManager::create_
     return result_ptr;
 }
 
-bool OpenGL::GLVAOManager::get_element_array_buffer_binding(const uint32_t& in_vao_id,
-                                                            GLuint*         out_result_ptr) const
+bool OpenGL::GLVAOManager::get_element_array_buffer_binding(const uint32_t&           in_vao_id,
+                                                            const OpenGL::TimeMarker* in_opt_time_marker_ptr,
+                                                            GLuint*                   out_result_ptr) const
 {
     bool result = false;
 
     {
         std::unique_lock<std::mutex> lock         (m_lock);
-        auto                         vao_props_ptr(get_vao_ptr(in_vao_id) );
+        auto                         vao_props_ptr(get_vao_ptr(in_vao_id,
+                                                               in_opt_time_marker_ptr) );
 
         if (vao_props_ptr == nullptr)
         {
@@ -95,6 +97,7 @@ end:
 }
 
 bool OpenGL::GLVAOManager::get_vaa_property(const GLuint&                         in_vao_id,
+                                            const OpenGL::TimeMarker*             in_opt_time_marker_ptr,
                                             const uint32_t&                       in_n_vao_vaa,
                                             const OpenGL::VertexAttributeProperty in_pname,
                                             const OpenGL::GetSetArgumentType&     in_dst_type,
@@ -107,7 +110,8 @@ bool OpenGL::GLVAOManager::get_vaa_property(const GLuint&                       
     {
         std::unique_lock<std::mutex>             lock         (m_lock);
         const OpenGL::VertexAttributeArrayState* vaa_ptr      (nullptr);
-        auto                                     vao_props_ptr(get_vao_ptr(in_vao_id) );
+        auto                                     vao_props_ptr(get_vao_ptr(in_vao_id,
+                                                                           in_opt_time_marker_ptr) );
 
         if (vao_props_ptr == nullptr)
         {
@@ -168,6 +172,7 @@ end:
 }
 
 bool OpenGL::GLVAOManager::get_vaa_state_copy(const GLuint&              in_vao_id,
+                                              const OpenGL::TimeMarker*  in_opt_time_marker_ptr,
                                               const uint32_t&            in_n_vao_vaa,
                                               VertexAttributeArrayState* out_result_ptr) const
 {
@@ -175,7 +180,8 @@ bool OpenGL::GLVAOManager::get_vaa_state_copy(const GLuint&              in_vao_
 
     {
         std::unique_lock<std::mutex> lock         (m_lock);
-        auto                         vao_props_ptr(get_vao_ptr(in_vao_id) );
+        auto                         vao_props_ptr(get_vao_ptr(in_vao_id,
+                                                               in_opt_time_marker_ptr) );
 
         if (vao_props_ptr == nullptr)
         {
@@ -195,14 +201,18 @@ end:
     return result;
 }
 
-const OpenGL::GLVAOManager::VAO* OpenGL::GLVAOManager::get_vao_ptr(const GLuint& in_id) const
+const OpenGL::GLVAOManager::VAO* OpenGL::GLVAOManager::get_vao_ptr(const GLuint&             in_id,
+                                                                   const OpenGL::TimeMarker* in_opt_time_marker_ptr) const
 {
-    return reinterpret_cast<const OpenGL::GLVAOManager::VAO*>(get_internal_object_props_ptr(in_id) );
+    return reinterpret_cast<const OpenGL::GLVAOManager::VAO*>(get_internal_object_props_ptr(in_id,
+                                                                                            in_opt_time_marker_ptr) );
 }
 
-OpenGL::GLVAOManager::VAO* OpenGL::GLVAOManager::get_vao_ptr(const GLuint& in_id)
+OpenGL::GLVAOManager::VAO* OpenGL::GLVAOManager::get_vao_ptr(const GLuint&             in_id,
+                                                             const OpenGL::TimeMarker* in_opt_time_marker_ptr)
 {
-    return reinterpret_cast<OpenGL::GLVAOManager::VAO*>(get_internal_object_props_ptr(in_id) );
+    return reinterpret_cast<OpenGL::GLVAOManager::VAO*>(get_internal_object_props_ptr(in_id,
+                                                                                      in_opt_time_marker_ptr) );
 }
 
 bool OpenGL::GLVAOManager::set_element_array_buffer_binding(const GLuint& in_vao_id,
@@ -212,7 +222,8 @@ bool OpenGL::GLVAOManager::set_element_array_buffer_binding(const GLuint& in_vao
 
     {
         std::unique_lock<std::mutex> lock         (m_lock);
-        auto                         vao_props_ptr(get_vao_ptr(in_vao_id) );
+        auto                         vao_props_ptr(get_vao_ptr(in_vao_id,
+                                                               nullptr /* in_opt_time_marker_ptr */) );
 
         if (vao_props_ptr == nullptr)
         {
@@ -244,7 +255,8 @@ bool OpenGL::GLVAOManager::set_vaa_state(const GLuint&                    in_vao
 
     {
         std::unique_lock<std::mutex> lock         (m_lock);
-        auto                         vao_props_ptr(get_vao_ptr(in_vao_id) );
+        auto                         vao_props_ptr(get_vao_ptr(in_vao_id,
+                                                               nullptr /* in_opt_time_marker_ptr */) );
 
         if (vao_props_ptr == nullptr)
         {

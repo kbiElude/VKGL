@@ -22,8 +22,10 @@ namespace OpenGL
         ~GLShaderManager();
 
         bool get_shader_glsl   (const GLuint&             in_id,
+                                const OpenGL::TimeMarker* in_opt_time_marker_ptr,
                                 const char**              out_result_ptr_ptr) const;
         bool get_shader_infolog(const GLuint&             in_id,
+                                const OpenGL::TimeMarker* in_opt_time_marker_ptr,
                                 const char**              out_result_ptr_ptr) const;
         bool set_shader_glsl   (const GLuint&             in_id,
                                 const std::string&        in_glsl);
@@ -33,6 +35,7 @@ namespace OpenGL
                                 const OpenGL::ShaderType& in_type);
 
         bool get_shader_property(const GLuint&                     in_shader,
+                                 const OpenGL::TimeMarker*         in_opt_time_marker_ptr,
                                  const OpenGL::ShaderProperty&     in_pname,
                                  const OpenGL::GetSetArgumentType& in_params_type,
                                  const uint32_t&                   in_n_params_components,
@@ -63,8 +66,10 @@ namespace OpenGL
 
         GLShaderManager();
 
-        const Shader* get_shader_ptr(const GLuint& in_id) const;
-        Shader*       get_shader_ptr(const GLuint& in_id);
+        const Shader* get_shader_ptr(const GLuint&             in_id,
+                                     const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
+        Shader*       get_shader_ptr(const GLuint&             in_id,
+                                     const OpenGL::TimeMarker* in_opt_time_marker_ptr);
 
         /* Private variables */
     };

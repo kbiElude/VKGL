@@ -546,7 +546,8 @@ void OpenGL::Context::bind_buffer_base(const OpenGL::BufferTarget& in_target,
                              in_index,
                              in_buffer,
                              0, /* in_offset */
-                             m_gl_buffer_manager_ptr->get_buffer_size(in_buffer) );
+                             m_gl_buffer_manager_ptr->get_buffer_size(in_buffer,
+                                                                      nullptr /* in_opt_time_marker_ptr */) );
 }
 
 void OpenGL::Context::bind_buffer_range(const OpenGL::BufferTarget& in_target,
@@ -1586,6 +1587,7 @@ void OpenGL::Context::get_active_attrib(const GLuint&         in_program,
     vkgl_assert(m_gl_program_manager_ptr != nullptr);
 
     if (!m_gl_program_manager_ptr->get_active_attribute(in_program,
+                                                        nullptr, /* in_opt_time_marker_ptr */
                                                         in_index,
                                                        &attribute_name_ptr,
                                                        &attribute_size,
@@ -1635,6 +1637,7 @@ void OpenGL::Context::get_active_uniform(const GLuint&         in_program,
     vkgl_assert(m_gl_program_manager_ptr != nullptr);
 
     if (!m_gl_program_manager_ptr->get_active_uniform(in_program,
+                                                       nullptr, /* in_opt_time_marker_ptr */
                                                       in_index,
                                                       OpenGL::GLProgramManager::DEFAULT_UNIFORM_BLOCK_INDEX,
                                                      &uniform_name_ptr,
@@ -1681,6 +1684,7 @@ void OpenGL::Context::get_active_uniform_block_name(const GLuint&  in_program,
     vkgl_assert(m_gl_program_manager_ptr != nullptr);
 
     if (!m_gl_program_manager_ptr->get_active_uniform_block_name(in_program,
+                                                                 nullptr, /* in_opt_time_marker_ptr */
                                                                  in_uniform_block_index,
                                                                 &uniform_block_name_ptr) )
     {
@@ -1718,6 +1722,7 @@ void OpenGL::Context::get_active_uniform_block_property(const GLuint&           
     vkgl_assert(m_gl_program_manager_ptr != nullptr);
 
     if (!m_gl_program_manager_ptr->get_active_uniform_block_property(in_program,
+                                                                     nullptr, /* in_opt_time_marker_ptr */
                                                                      in_uniform_block_index,
                                                                      in_pname,
                                                                      in_params_type,
@@ -1744,6 +1749,7 @@ void OpenGL::Context::get_active_uniform_name(const GLuint&  in_program,
 
     /* 1. Convert the input "flattened" index to a <uniform block index , uniform index> pair. */
     if (!m_gl_program_manager_ptr->map_global_uniform_index_to_uniform_and_ub_indices(in_program,
+                                                                                      nullptr, /* in_opt_time_marker_ptr */
                                                                                       in_uniform_index,
                                                                                      &uniform_block_index,
                                                                                      &uniform_index) )
@@ -1755,6 +1761,7 @@ void OpenGL::Context::get_active_uniform_name(const GLuint&  in_program,
 
     /* 2. Retrieve the name. */
     if (!m_gl_program_manager_ptr->get_active_uniform(in_program,
+                                                      nullptr, /* in_opt_time_marker_ptr */
                                                       uniform_index,
                                                       uniform_block_index,
                                                      &uniform_name_ptr,
@@ -1795,6 +1802,7 @@ void OpenGL::Context::get_active_uniforms(const GLuint&                  in_prog
     vkgl_assert(m_gl_program_manager_ptr != nullptr);
 
     if (!m_gl_program_manager_ptr->get_active_uniforms_property(in_program,
+                                                                nullptr, /* in_opt_time_marker_ptr */
                                                                 in_uniform_count,
                                                                 in_uniform_indices_ptr,
                                                                 in_pname,
@@ -1811,9 +1819,10 @@ void OpenGL::Context::get_attached_shaders(const GLuint&  in_program,
 {
     vkgl_assert(m_gl_program_manager_ptr != nullptr);
 
-    const auto attached_shader_refs_ptr = m_gl_program_manager_ptr->get_attached_shaders(in_program);
+    const auto attached_shader_refs_ptr = m_gl_program_manager_ptr->get_attached_shaders(in_program,
+                                                                                         nullptr /* in_opt_time_marker_ptr */);
     uint32_t   n_attached_shader_refs   = 0;
-    uint32_t   n_shader_ids_to_store   = 0;
+    uint32_t   n_shader_ids_to_store    = 0;
 
     if (attached_shader_refs_ptr == nullptr)
     {
@@ -1850,6 +1859,7 @@ GLint OpenGL::Context::get_attrib_location(const GLuint& in_program,
     vkgl_assert(m_gl_program_manager_ptr != nullptr);
 
     if (!m_gl_program_manager_ptr->get_active_attribute_location(in_program,
+                                                                 nullptr, /* in_opt_time_marker_ptr */
                                                                  in_name,
                                                                 &result) )
     {
@@ -1870,7 +1880,8 @@ void OpenGL::Context::get_buffer_pointerv(const OpenGL::BufferTarget&          i
 
     const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
 
-    *out_params_ptr = m_gl_buffer_manager_ptr->get_buffer_map_pointer(buffer_id);
+    *out_params_ptr = m_gl_buffer_manager_ptr->get_buffer_map_pointer(buffer_id,
+                                                                      nullptr /* in_opt_time_marker_ptr */);
 }
 
 void OpenGL::Context::get_buffer_property(const OpenGL::BufferTarget&       in_target,
@@ -1885,6 +1896,7 @@ void OpenGL::Context::get_buffer_property(const OpenGL::BufferTarget&       in_t
     const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
 
     m_gl_buffer_manager_ptr->get_buffer_property(buffer_id,
+                                                 nullptr, /* in_opt_time_marker_ptr */
                                                  in_pname,
                                                  in_arg_type,
                                                  in_n_args,
@@ -1944,6 +1956,7 @@ GLint OpenGL::Context::get_frag_data_location(const GLuint& in_program,
     vkgl_assert(m_gl_program_manager_ptr != nullptr);
 
     if (!m_gl_program_manager_ptr->get_frag_data_location(in_program,
+                                                          nullptr, /* in_opt_time_marker_ptr */
                                                           in_name_ptr,
                                                          &result) )
     {
@@ -2055,6 +2068,7 @@ void OpenGL::Context::get_program_info_log(const GLuint&  in_program,
     vkgl_assert(m_gl_program_manager_ptr != nullptr);
 
     if (!m_gl_program_manager_ptr->get_program_info_log(in_program,
+                                                        nullptr, /* in_opt_time_marker_ptr */
                                                        &info_log_ptr) )
     {
         vkgl_assert_fail();
@@ -2089,6 +2103,7 @@ void OpenGL::Context::get_program_property(const GLuint&                     in_
     vkgl_assert(m_gl_program_manager_ptr != nullptr);
 
     if (!m_gl_program_manager_ptr->get_program_property(in_program,
+                                                        nullptr, /* in_opt_time_marker_ptr */
                                                         in_pname,
                                                         in_params_type,
                                                         in_n_params_components,
@@ -2156,6 +2171,7 @@ void OpenGL::Context::get_shader_info_log(const GLuint&  in_shader,
     uint32_t    n_bytes_to_write = 0;
 
     if (!m_gl_shader_manager_ptr->get_shader_infolog(in_shader,
+                                                     nullptr, /* in_opt_time_marker_ptr */
                                                     &infolog_ptr) )
     {
         vkgl_assert_fail();
@@ -2192,6 +2208,7 @@ void OpenGL::Context::get_shader_property(const GLuint&                     in_s
     vkgl_assert(m_gl_shader_manager_ptr != nullptr);
 
     if (!m_gl_shader_manager_ptr->get_shader_property(in_shader,
+                                                      nullptr, /* in_opt_time_marker_ptr */
                                                       in_pname,
                                                       in_params_type,
                                                       in_n_params_components,
@@ -2211,6 +2228,7 @@ void OpenGL::Context::get_shader_source(const GLuint&  in_shader,
     uint32_t    n_bytes_to_write = 0;
 
     if (!m_gl_shader_manager_ptr->get_shader_glsl(in_shader,
+                                                  nullptr, /* in_opt_time_marker_ptr */
                                                  &glsl_ptr) )
     {
         vkgl_assert_fail();
@@ -2350,6 +2368,7 @@ GLuint OpenGL::Context::get_uniform_block_index(const GLuint& in_program,
     vkgl_assert(m_gl_program_manager_ptr != nullptr);
 
     if (!m_gl_program_manager_ptr->get_uniform_block_index(in_program,
+                                                            nullptr, /* in_opt_time_marker_ptr */
                                                            in_uniform_block_name,
                                                           &result) )
     {
@@ -2367,6 +2386,7 @@ void OpenGL::Context::get_uniform_indices(const GLuint&        in_program,
     vkgl_assert(m_gl_program_manager_ptr != nullptr);
 
     if (!m_gl_program_manager_ptr->get_active_uniform_indices(in_program,
+                                                              nullptr, /* in_opt_time_marker_ptr */
                                                               in_uniform_count,
                                                               in_uniform_names_ptr_ptr,
                                                               out_uniform_indices_ptr) )
@@ -2383,6 +2403,7 @@ GLint OpenGL::Context::get_uniform_location(const GLuint& in_program,
     vkgl_assert(m_gl_program_manager_ptr != nullptr);
 
     if (!m_gl_program_manager_ptr->get_active_uniform_by_name(in_program,
+                                                              nullptr, /* in_opt_time_marker_ptr */
                                                               in_name,
                                                              &result) )
     {
@@ -2405,10 +2426,15 @@ void OpenGL::Context::get_vertex_attrib_pointer_property(const GLuint&          
                                                          void**                                        out_pointer_ptr) const
 {
     vkgl_assert(m_gl_vao_manager_ptr != nullptr);
+    vkgl_assert(in_pname             == OpenGL::VertexAttributePointerProperty::Vertex_Attribute_Array_Pointer);
 
-    vkgl_assert(in_pname == OpenGL::VertexAttributePointerProperty::Vertex_Attribute_Array_Pointer);
+    const auto& bound_vao_reference_ptr = m_gl_state_manager_ptr->get_bound_vertex_array_object();
+    vkgl_assert(bound_vao_reference_ptr != nullptr);
 
-    m_gl_vao_manager_ptr->get_vaa_property(m_gl_state_manager_ptr->get_bound_vertex_array_object()->get_id(),
+    const auto bound_vao_time_marker = bound_vao_reference_ptr->get_time_marker();
+
+    m_gl_vao_manager_ptr->get_vaa_property(bound_vao_reference_ptr->get_id     (),
+                                          &bound_vao_time_marker,
                                            in_index,
                                            OpenGL::VertexAttributeProperty::Pointer,
                                            OpenGL::GetSetArgumentType::Pointer,
@@ -2433,7 +2459,13 @@ void OpenGL::Context::get_vertex_attribute_property(const GLuint&               
         /* NOTE: in_src_type is irrelevant for this path. */
         vkgl_assert(m_gl_vao_manager_ptr != nullptr);
 
-        m_gl_vao_manager_ptr->get_vaa_property(m_gl_state_manager_ptr->get_bound_vertex_array_object()->get_id(),
+        const auto& bound_vao_reference_ptr = m_gl_state_manager_ptr->get_bound_vertex_array_object();
+        vkgl_assert(bound_vao_reference_ptr != nullptr);
+
+        const auto bound_vao_time_marker = bound_vao_reference_ptr->get_time_marker();
+
+        m_gl_vao_manager_ptr->get_vaa_property(bound_vao_reference_ptr->get_id(),
+                                              &bound_vao_time_marker,
                                                in_index,
                                                in_pname,
                                                in_dst_type,
@@ -3057,12 +3089,14 @@ void* OpenGL::Context::map_buffer(const OpenGL::BufferTarget& in_target,
     vkgl_assert(m_gl_buffer_manager_ptr    != nullptr);
     vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
-    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
-    vkgl_assert(buffer_id != 0);
+    const auto& buffer_reference_ptr = m_gl_state_manager_ptr->get_bound_buffer_object(in_target);
+    vkgl_assert(buffer_reference_ptr != nullptr);
 
-    const auto buffer_size = m_gl_buffer_manager_ptr->get_buffer_size(buffer_id);
+    const auto buffer_reference_time_marker = buffer_reference_ptr->get_time_marker   ();
+    const auto buffer_size                  = m_gl_buffer_manager_ptr->get_buffer_size( buffer_reference_ptr->get_id(),
+                                                                                       &buffer_reference_time_marker);
 
-    return m_backend_gl_callbacks_ptr->map_buffer(buffer_id,
+    return m_backend_gl_callbacks_ptr->map_buffer(buffer_reference_ptr->get_id(),
                                                   in_access,
                                                   0, /* in_start_offset */
                                                   buffer_size);
@@ -3608,7 +3642,8 @@ bool OpenGL::Context::set_vaa_enabled_state(const GLuint& in_index,
                                             const bool&   in_new_state)
 {
     GLuint                            bound_vao_id;
-    bool                              result        = false;
+    OpenGL::TimeMarker                bound_vao_time_marker;
+    bool                              result                = false;
     OpenGL::VertexAttributeArrayState vaa_state;
 
     vkgl_assert(m_gl_state_manager_ptr != nullptr);
@@ -3619,9 +3654,13 @@ bool OpenGL::Context::set_vaa_enabled_state(const GLuint& in_index,
      * This is needed since there's only one setter for VAAs and all states unrelated to "enabled" state of the
      * VAA are set using a separate entrypoint.
      **/
-    bound_vao_id = m_gl_state_manager_ptr->get_bound_vertex_array_object()->get_id();
+    auto bound_vao_ptr = m_gl_state_manager_ptr->get_bound_vertex_array_object();
+
+    bound_vao_id          = bound_vao_ptr->get_id         ();
+    bound_vao_time_marker = bound_vao_ptr->get_time_marker();
 
     if (!m_gl_vao_manager_ptr->get_vaa_state_copy(bound_vao_id,
+                                                 &bound_vao_time_marker,
                                                   in_index,
                                                  &vaa_state) )
     {
@@ -3667,6 +3706,7 @@ void OpenGL::Context::set_vertex_attrib_pointer(const GLuint&                   
                                                 const void*                             in_pointer_ptr)
 {
     GLuint                            bound_vao_id;
+    OpenGL::TimeMarker                bound_vao_time_marker;
     OpenGL::VertexAttributeArrayState vaa_state;
 
     vkgl_assert(in_data_type           == OpenGL::GetSetArgumentType::Float ||
@@ -3679,9 +3719,13 @@ void OpenGL::Context::set_vertex_attrib_pointer(const GLuint&                   
      * This is needed since there's only one setter for VAAs and disabled/enabled state for these is set
      * using separate entrypoints.
      **/
-    bound_vao_id = m_gl_state_manager_ptr->get_bound_vertex_array_object()->get_id();
+    auto bound_vao_ptr = m_gl_state_manager_ptr->get_bound_vertex_array_object();
+
+    bound_vao_id          = bound_vao_ptr->get_id         ();
+    bound_vao_time_marker = bound_vao_ptr->get_time_marker();
 
     if (!m_gl_vao_manager_ptr->get_vaa_state_copy(bound_vao_id,
+                                                 &bound_vao_time_marker,
                                                   in_index,
                                                  &vaa_state) )
     {

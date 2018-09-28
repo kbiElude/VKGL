@@ -21,10 +21,13 @@ namespace OpenGL
 
         ~GLBufferManager();
 
-        void*  get_buffer_map_pointer(const GLuint& in_id) const;
-        size_t get_buffer_size       (const GLuint& in_id) const;
+        void*  get_buffer_map_pointer(const GLuint&             in_id,
+                                      const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
+        size_t get_buffer_size       (const GLuint&             in_id,
+                                      const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
 
         void get_buffer_property(const GLuint&                     in_id,
+                                 const OpenGL::TimeMarker*         in_opt_time_marker_ptr,
                                  const OpenGL::BufferProperty&     in_pname,
                                  const OpenGL::GetSetArgumentType& in_arg_type,
                                  const uint32_t&                   in_n_args,
@@ -68,8 +71,10 @@ namespace OpenGL
 
         GLBufferManager();
 
-        const Buffer* get_buffer_ptr(const GLuint& in_id) const;
-        Buffer*       get_buffer_ptr(const GLuint& in_id);
+        const Buffer* get_buffer_ptr(const GLuint&             in_id,
+                                     const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
+        Buffer*       get_buffer_ptr(const GLuint&             in_id,
+                                     const OpenGL::TimeMarker* in_opt_time_marker_ptr);
 
         /* Private variables */
     };

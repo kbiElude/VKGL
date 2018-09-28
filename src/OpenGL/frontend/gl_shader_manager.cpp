@@ -57,12 +57,14 @@ std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLShaderManager::crea
     return result_ptr;
 }
 
-bool OpenGL::GLShaderManager::get_shader_glsl(const GLuint&  in_id,
-                                              const char**   out_result_ptr_ptr) const
+bool OpenGL::GLShaderManager::get_shader_glsl(const GLuint&             in_id,
+                                              const OpenGL::TimeMarker* in_opt_time_marker_ptr,
+                                              const char**              out_result_ptr_ptr) const
 {
     static const char* null_string = "";
     bool               result      = false;
-    const auto         shader_ptr  = get_shader_ptr(in_id);
+    const auto         shader_ptr  = get_shader_ptr(in_id,
+                                                    in_opt_time_marker_ptr);
 
     if (shader_ptr != nullptr)
     {
@@ -75,12 +77,14 @@ bool OpenGL::GLShaderManager::get_shader_glsl(const GLuint&  in_id,
     return result;
 }
 
-bool OpenGL::GLShaderManager::get_shader_infolog(const GLuint& in_id,
-                                                 const char**  out_result_ptr_ptr) const
+bool OpenGL::GLShaderManager::get_shader_infolog(const GLuint&             in_id,
+                                                 const OpenGL::TimeMarker* in_opt_time_marker_ptr,
+                                                 const char**              out_result_ptr_ptr) const
 {
     static const char* null_string = "";
     bool               result      = false;
-    const auto         shader_ptr  = get_shader_ptr(in_id);
+    const auto         shader_ptr  = get_shader_ptr(in_id,
+                                                    in_opt_time_marker_ptr);
 
     if (shader_ptr != nullptr)
     {
@@ -94,13 +98,15 @@ bool OpenGL::GLShaderManager::get_shader_infolog(const GLuint& in_id,
 }
 
 bool OpenGL::GLShaderManager::get_shader_property(const GLuint&                     in_shader,
+                                                  const OpenGL::TimeMarker*         in_opt_time_marker_ptr,
                                                   const OpenGL::ShaderProperty&     in_pname,
                                                   const OpenGL::GetSetArgumentType& in_params_type,
                                                   const uint32_t&                   in_n_params_components,
                                                   GLint*                            out_params_ptr) const
 {
     bool                       result                = false;
-    const auto                 shader_ptr            = get_shader_ptr(in_shader);
+    const auto                 shader_ptr            = get_shader_ptr(in_shader,
+                                                                      in_opt_time_marker_ptr);
     const void*                src_data_ptr          = nullptr;
     OpenGL::GetSetArgumentType src_data_type         = OpenGL::GetSetArgumentType::Unknown;
 
@@ -155,21 +161,26 @@ end:
     return result;
 }
 
-const OpenGL::GLShaderManager::Shader* OpenGL::GLShaderManager::get_shader_ptr(const GLuint& in_id) const
+const OpenGL::GLShaderManager::Shader* OpenGL::GLShaderManager::get_shader_ptr(const GLuint&             in_id,
+                                                                               const OpenGL::TimeMarker* in_opt_time_marker_ptr) const
 {
-    return reinterpret_cast<const OpenGL::GLShaderManager::Shader*>(get_internal_object_props_ptr(in_id) );
+    return reinterpret_cast<const OpenGL::GLShaderManager::Shader*>(get_internal_object_props_ptr(in_id,
+                                                                                                  in_opt_time_marker_ptr) );
 }
 
-OpenGL::GLShaderManager::Shader* OpenGL::GLShaderManager::get_shader_ptr(const GLuint& in_id)
+OpenGL::GLShaderManager::Shader* OpenGL::GLShaderManager::get_shader_ptr(const GLuint&             in_id,
+                                                                         const OpenGL::TimeMarker* in_opt_time_marker_ptr)
 {
-    return reinterpret_cast<OpenGL::GLShaderManager::Shader*>(get_internal_object_props_ptr(in_id) );
+    return reinterpret_cast<OpenGL::GLShaderManager::Shader*>(get_internal_object_props_ptr(in_id,
+                                                                                            in_opt_time_marker_ptr) );
 }
 
 bool OpenGL::GLShaderManager::set_shader_glsl(const GLuint&      in_id,
                                               const std::string& in_glsl)
 {
     bool result     = false;
-    auto shader_ptr = get_shader_ptr(in_id);
+    auto shader_ptr = get_shader_ptr(in_id,
+                                     nullptr /* in_opt_time_marker_ptr */);
 
     if (shader_ptr != nullptr)
     {
@@ -190,7 +201,8 @@ bool OpenGL::GLShaderManager::set_shader_type(const GLuint&             in_id,
                                               const OpenGL::ShaderType& in_type)
 {
     bool result     = false;
-    auto shader_ptr = get_shader_ptr(in_id);
+    auto shader_ptr = get_shader_ptr(in_id,
+                                     nullptr /* in_opt_time_marker_ptr */);
 
     if (shader_ptr != nullptr)
     {

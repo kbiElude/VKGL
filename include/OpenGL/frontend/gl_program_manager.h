@@ -35,59 +35,73 @@ namespace OpenGL
         bool detach_shader                    (const GLuint&                       in_program,
                                                const GLuint&                       in_shader_id);
         bool get_active_attribute             (const GLuint&                       in_program,
+                                               const OpenGL::TimeMarker*           in_opt_time_marker_ptr,
                                                const GLuint&                       in_index,
                                                const char**                        out_opt_name_ptr_ptr,
                                                uint32_t*                           out_opt_size_ptr,
                                                VariableType*                       out_opt_variable_ptr) const;
         bool get_active_attribute_location    (const GLuint&                       in_program,
+                                               const OpenGL::TimeMarker*           in_opt_time_marker_ptr,
                                                const char*                         in_name,
                                                GLint*                              out_result_ptr) const;
         bool get_active_uniform               (const GLuint&                       in_program,
+                                               const OpenGL::TimeMarker*           in_opt_time_marker_ptr,
                                                const GLuint&                       in_index,
                                                const uint32_t                      in_uniform_block_index = DEFAULT_UNIFORM_BLOCK_INDEX,
                                                const char**                        out_opt_name_ptr_ptr   = nullptr,
                                                uint32_t*                           out_opt_size_ptr       = nullptr,
                                                VariableType*                       out_opt_variable_ptr   = nullptr) const;
         bool get_active_uniform_block_name    (const GLuint&                       in_program,
+                                               const OpenGL::TimeMarker*           in_opt_time_marker_ptr,
                                                const GLuint&                       in_index,
                                                const char**                        out_opt_name_ptr_ptr) const;
         bool get_active_uniform_block_property(const GLuint&                       in_program,
+                                               const OpenGL::TimeMarker*           in_opt_time_marker_ptr,
                                                const GLuint&                       in_uniform_block_index,
                                                const OpenGL::UniformBlockProperty& in_pname,
                                                const OpenGL::GetSetArgumentType&   in_params_type,
                                                void*                               out_params_ptr) const;
         bool get_active_uniform_by_name       (const GLuint&                       in_program,
+                                               const OpenGL::TimeMarker*           in_opt_time_marker_ptr,
                                                const char*                         in_name_ptr,
                                                GLint*                              out_opt_location_ptr = nullptr) const;
         bool get_active_uniform_indices       (const GLuint&                       in_program,
+                                               const OpenGL::TimeMarker*           in_opt_time_marker_ptr,
                                                const uint32_t&                     in_uniform_count,
                                                const char* const*                  in_uniform_names_ptr_ptr,
                                                GLuint*                             out_uniform_indices_ptr) const; /* NOTE: For unrecognized names, set corresponding result array items to GL_INVALID_INDEX */
         bool get_active_uniforms_property     (const GLuint&                       in_program,
+                                               const OpenGL::TimeMarker*           in_opt_time_marker_ptr,
                                                const GLsizei&                      in_uniform_count,
                                                const GLuint*                       in_uniform_indices_ptr,
                                                const OpenGL::UniformProperty&      in_pname,
                                                GLint*                              out_params_ptr) const;
         bool get_frag_data_location           (const GLuint&                       in_program,
+                                               const OpenGL::TimeMarker*           in_opt_time_marker_ptr,
                                                const char*                         in_name_ptr,
                                                GLint*                              out_result_ptr) const;
         bool get_program_info_log             (const GLuint&                       in_program,
+                                               const OpenGL::TimeMarker*           in_opt_time_marker_ptr,
                                                const char**                        out_result_ptr) const;
         bool get_program_property             (const GLuint&                       in_program,
+                                               const OpenGL::TimeMarker*           in_opt_time_marker_ptr,
                                                const OpenGL::ProgramProperty&      in_pname,
                                                const OpenGL::GetSetArgumentType&   in_params_type,
                                                const uint32_t&                     in_n_params_components,
                                                void*                               out_params_ptr) const;
         bool get_uniform_block_index          (const GLuint&                       in_program,
+                                               const OpenGL::TimeMarker*           in_opt_time_marker_ptr,
                                                const char*                         in_uniform_block_name,
                                                uint32_t*                           out_result_ptr) const;
 
-        const std::vector<GLReferenceUniquePtr>* get_attached_shaders(const GLuint& in_program) const;
+        const std::vector<GLReferenceUniquePtr>* get_attached_shaders(const GLuint&             in_program,
+                                                                      const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
 
-        bool map_global_uniform_index_to_uniform_and_ub_indices(const GLuint& in_program,
-                                                                const GLuint& in_global_uniform_index,
-                                                                GLuint*       out_uniform_block_index_ptr,
-                                                                GLuint*       out_uniform_index_ptr) const;
+        bool map_global_uniform_index_to_uniform_and_ub_indices(const GLuint&             in_program,
+                                                                const OpenGL::TimeMarker* in_opt_time_marker_ptr,
+                                                                const GLuint&             in_global_uniform_index,
+                                                                GLuint*                   out_uniform_block_index_ptr,
+                                                                GLuint*                   out_uniform_index_ptr) const;
 
         void set_uniform_block_binding(const GLuint& in_program,
                                        const GLuint& in_uniform_block_index,
@@ -280,8 +294,10 @@ namespace OpenGL
 
         GLProgramManager();
 
-        const Program* get_program_ptr(const GLuint& in_id) const;
-        Program*       get_program_ptr(const GLuint& in_id);
+        const Program* get_program_ptr(const GLuint&             in_id,
+                                       const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
+        Program*       get_program_ptr(const GLuint&             in_id,
+                                       const OpenGL::TimeMarker* in_opt_time_marker_ptr);
 
         /* Private variables */
     };
