@@ -29,25 +29,25 @@ OpenGL::GLObjectManager::~GLObjectManager()
     }
 }
 
-OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_reference(const GLuint& in_id)
+OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_always_latest_snapshot_reference(const GLuint& in_id)
 {
-    /* For acquisition requests coming from non-reference objects, which this entrypoint handles,
-     * make sure frontend *always* uses the latest version of the object's state available.
-     * When frontend decides to pass a call over to backend, it will create a new reference and
-     * replace the snapshot version setting with the version of the snapshot available at the time of the call.
-     *
-     * Note that older snapshots may still be in use by backend. This is fine.
-     *
-     * Note that GLReference constructor calls GLObjectManager::on_reference_created() to bump up the latest
-     * snapshot's ref counter, which is how we guarantee the snapshot does not go out of scope until
-     * all backend users are done using it.
-     *
-     * Note: this entrypoint will never be called outside of application's rendering context thread.
-     */
     OpenGL::GLReferenceUniquePtr result_ptr;
 
     result_ptr = acquire_reference(in_id,
                                    OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+
+    vkgl_assert(result_ptr != nullptr);
+
+    return result_ptr;
+}
+
+OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_current_latest_snapshot_reference(const GLuint& in_id)
+{
+    /* NOTE: Must only be called from rendering context's thread */
+    OpenGL::GLReferenceUniquePtr result_ptr;
+
+    result_ptr = acquire_reference(in_id,
+                                   get_general_object_props_ptr(in_id)->last_modified_time);
 
     vkgl_assert(result_ptr != nullptr);
 
@@ -304,7 +304,7 @@ bool OpenGL::GLObjectManager::init()
         vkgl_assert(result);
 
         /* ..and bake a reference to the default object. It's going to live until the manager goes out of scope. */
-        m_default_object_reference_ptr = acquire_reference(0 /* in_id */);
+        m_default_object_reference_ptr = acquire_always_latest_snapshot_reference(0 /* in_id */);
 
         if (m_default_object_reference_ptr == nullptr)
         {

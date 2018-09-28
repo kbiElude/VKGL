@@ -34,7 +34,8 @@ namespace OpenGL
         bool is_alive_id     (const GLuint&   in_id)       const;
         bool mark_id_as_alive(const GLuint&   in_id);
 
-        GLReferenceUniquePtr acquire_reference(const GLuint& in_id);
+        GLReferenceUniquePtr acquire_always_latest_snapshot_reference (const GLuint& in_id);
+        GLReferenceUniquePtr acquire_current_latest_snapshot_reference(const GLuint& in_id);
 
         virtual ~GLObjectManager();
 

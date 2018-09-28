@@ -460,7 +460,7 @@ void OpenGL::Context::attach_shader(const GLuint& in_program,
     vkgl_assert(m_gl_program_manager_ptr != nullptr);
     vkgl_assert(m_gl_shader_manager_ptr  != nullptr);
 
-    auto shader_reference_ptr = m_gl_shader_manager_ptr->acquire_reference(in_shader);
+    auto shader_reference_ptr = m_gl_shader_manager_ptr->acquire_always_latest_snapshot_reference(in_shader);
 
     if (shader_reference_ptr == nullptr)
     {
@@ -523,7 +523,7 @@ void OpenGL::Context::bind_buffer(const OpenGL::BufferTarget& in_target,
     vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr  != nullptr);
 
-    auto buffer_reference_ptr = m_gl_buffer_manager_ptr->acquire_reference(in_id);
+    auto buffer_reference_ptr = m_gl_buffer_manager_ptr->acquire_always_latest_snapshot_reference(in_id);
 
     if (buffer_reference_ptr == nullptr)
     {
@@ -560,7 +560,7 @@ void OpenGL::Context::bind_buffer_range(const OpenGL::BufferTarget& in_target,
 
     m_gl_state_manager_ptr->set_bound_buffer_object(in_target,
                                                     in_index,
-                                                    m_gl_buffer_manager_ptr->acquire_reference(in_buffer),
+                                                    m_gl_buffer_manager_ptr->acquire_always_latest_snapshot_reference(in_buffer),
                                                     in_offset,
                                                     in_size);
 }
@@ -609,7 +609,7 @@ void OpenGL::Context::bind_vertex_array(const GLuint& in_array)
 {
     m_gl_vao_manager_ptr->mark_id_as_alive(in_array);
 
-    auto vao_handle_ptr = m_gl_vao_manager_ptr->acquire_reference(in_array);
+    auto vao_handle_ptr = m_gl_vao_manager_ptr->acquire_always_latest_snapshot_reference(in_array);
 
     m_gl_state_manager_ptr->set_bound_vertex_array_object(std::move(vao_handle_ptr) );
 }
@@ -3689,8 +3689,8 @@ void OpenGL::Context::set_vertex_attrib_pointer(const GLuint&                   
     }
 
     {
-        const auto buffer_id            = m_gl_state_manager_ptr->get_bound_buffer_object(OpenGL::BufferTarget::Array_Buffer)->get_id();
-        auto       buffer_reference_ptr = m_gl_buffer_manager_ptr->acquire_reference(buffer_id);
+        const auto buffer_id            = m_gl_state_manager_ptr->get_bound_buffer_object                  (OpenGL::BufferTarget::Array_Buffer)->get_id();
+        auto       buffer_reference_ptr = m_gl_buffer_manager_ptr->acquire_always_latest_snapshot_reference(buffer_id);
 
         vaa_state.buffer_binding_ptr = std::move(buffer_reference_ptr);
     }
@@ -3957,7 +3957,7 @@ void OpenGL::Context::use_program(const GLuint& in_program)
     vkgl_assert(m_gl_program_manager_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr   != nullptr);
 
-    auto program_reference_ptr = m_gl_program_manager_ptr->acquire_reference(in_program);
+    auto program_reference_ptr = m_gl_program_manager_ptr->acquire_always_latest_snapshot_reference(in_program);
 
     if (program_reference_ptr == nullptr)
     {

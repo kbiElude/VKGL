@@ -57,7 +57,7 @@ void OpenGL::VKBackend::buffer_data(const GLuint&     in_id,
     }
 
     /* 2. Grab the buffer reference. */
-    auto buffer_reference_ptr = m_frontend_ptr->get_buffer_manager_ptr()->acquire_reference(in_id);
+    auto buffer_reference_ptr = m_frontend_ptr->get_buffer_manager_ptr()->acquire_current_latest_snapshot_reference(in_id);
 
     vkgl_assert(buffer_reference_ptr != nullptr);
 
@@ -91,7 +91,7 @@ void OpenGL::VKBackend::buffer_sub_data(const GLuint&     in_id,
            in_size);
 
     /* 2. Grab the buffer reference. */
-    auto buffer_reference_ptr = m_frontend_ptr->get_buffer_manager_ptr()->acquire_reference(in_id);
+    auto buffer_reference_ptr = m_frontend_ptr->get_buffer_manager_ptr()->acquire_current_latest_snapshot_reference(in_id);
 
     vkgl_assert(buffer_reference_ptr != nullptr);
 
@@ -120,7 +120,7 @@ void OpenGL::VKBackend::clear(const OpenGL::ClearBufferBits& in_buffers_to_clear
 void OpenGL::VKBackend::compile_shader(const GLuint& in_id)
 {
     /* 1. Grab the shader reference. */
-    auto shader_reference_ptr = m_frontend_ptr->get_shader_manager_ptr()->acquire_reference(in_id);
+    auto shader_reference_ptr = m_frontend_ptr->get_shader_manager_ptr()->acquire_current_latest_snapshot_reference(in_id);
 
     vkgl_assert(shader_reference_ptr != nullptr);
 
@@ -766,7 +766,7 @@ bool OpenGL::VKBackend::init_capabilities()
 void OpenGL::VKBackend::link_program(const GLuint& in_program_id)
 {
     /* 1. Grab the program reference. */
-    auto program_reference_ptr = m_frontend_ptr->get_program_manager_ptr()->acquire_reference(in_program_id);
+    auto program_reference_ptr = m_frontend_ptr->get_program_manager_ptr()->acquire_current_latest_snapshot_reference(in_program_id);
 
     vkgl_assert(program_reference_ptr != nullptr);
 
