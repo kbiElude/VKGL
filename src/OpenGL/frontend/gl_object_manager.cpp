@@ -346,7 +346,7 @@ bool OpenGL::GLObjectManager::insert_object(const GLuint& in_id)
 
         vkgl_assert(m_object_ptrs.at(in_id) != nullptr);
 
-        m_object_ptrs[in_id]->internal_data_ptr = create_internal_data_object(in_id);
+        m_object_ptrs[in_id]->internal_data_ptr = create_internal_data_object();
         result                                  = true;
     }
 

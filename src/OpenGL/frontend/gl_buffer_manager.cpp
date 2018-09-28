@@ -44,7 +44,7 @@ end:
     return result_ptr;
 }
 
-std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLBufferManager::create_internal_data_object(const GLuint& in_id)
+std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLBufferManager::create_internal_data_object()
 {
     std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
                                                                   [](void* in_ptr){delete reinterpret_cast<Buffer*>(in_ptr); });

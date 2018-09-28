@@ -96,7 +96,7 @@ namespace OpenGL
         bool                      init                         ();
         void                      update_last_modified_time    (const GLuint&             in_id);
 
-        virtual std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object(const GLuint& in_id) = 0;
+        virtual std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object() = 0;
 
         /* Protected variables */
         OpenGL::NamespaceUniquePtr m_id_manager_ptr;
