@@ -109,7 +109,8 @@ namespace OpenGL
 
     protected:
         /* Protected functions */
-        std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object() final;
+        std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr) final;
+        std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object()                   final;
 
     private:
         /* Private type definitions */
@@ -288,6 +289,8 @@ namespace OpenGL
             {
                 /* Stub */
             }
+
+            Program(const Program& in_program);
         } Program;
 
         /* Private functions */

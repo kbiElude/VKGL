@@ -20,6 +20,19 @@ OpenGL::GLBufferManager::~GLBufferManager()
     /* Stub - everything is handled by the base class. */
 }
 
+std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLBufferManager::clone_internal_data_object(const void* in_ptr)
+{
+    std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
+                                                                  [](void* in_ptr){delete reinterpret_cast<Buffer*>(in_ptr); });
+
+    result_ptr.reset(
+        new Buffer(*reinterpret_cast<const Buffer*>(in_ptr) )
+    );
+    vkgl_assert(result_ptr != nullptr);
+
+    return result_ptr;
+}
+
 OpenGL::GLBufferManagerUniquePtr OpenGL::GLBufferManager::create()
 {
     OpenGL::GLBufferManagerUniquePtr result_ptr;

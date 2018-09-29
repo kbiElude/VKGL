@@ -7,6 +7,14 @@
 #include "OpenGL/frontend/gl_reference.h"
 #include "OpenGL/frontend/gl_vao_manager.h"
 
+OpenGL::GLVAOManager::VAO::VAO(const VAO& in_vao)
+{
+    vao_ptr.reset(
+        new OpenGL::VertexArrayObjectState(*in_vao.vao_ptr)
+    );
+    vkgl_assert(vao_ptr != nullptr);
+}
+
 OpenGL::GLVAOManager::VAO::VAO(const OpenGL::IGLLimits* in_limits_ptr)
 {
     vkgl_assert(in_limits_ptr != nullptr);
@@ -29,6 +37,19 @@ OpenGL::GLVAOManager::GLVAOManager(const IGLLimits* in_limits_ptr)
 OpenGL::GLVAOManager::~GLVAOManager()
 {
     /* Stub - everything is handled by the base class. */
+}
+
+std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLVAOManager::clone_internal_data_object(const void* in_ptr)
+{
+    std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
+                                                                  [](void* in_ptr){delete reinterpret_cast<VAO*>(in_ptr); });
+
+    result_ptr.reset(
+        new VAO(*reinterpret_cast<const VAO*>(in_ptr) )
+    );
+    vkgl_assert(result_ptr != nullptr);
+
+    return result_ptr;
 }
 
 OpenGL::GLVAOManagerUniquePtr OpenGL::GLVAOManager::create(const IGLLimits* in_limits_ptr)

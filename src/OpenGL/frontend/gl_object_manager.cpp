@@ -154,7 +154,8 @@ bool OpenGL::GLObjectManager::delete_object(const GLuint& in_id)
     vkgl_assert(object_iterator != m_object_ptrs.end() );
     if (object_iterator != m_object_ptrs.end() )
     {
-        vkgl_assert(object_iterator->second->snapshots.size() == 0);
+        vkgl_assert((object_iterator->second->snapshots.size() == 0)                                                                               ||
+                    (object_iterator->second->snapshots.size() == 1 && object_iterator->second->snapshots.begin()->second->references.size() == 0) );
 
         m_object_ptrs.erase(object_iterator);
 
@@ -261,17 +262,26 @@ void* OpenGL::GLObjectManager::get_internal_object_props_ptr(const GLuint&      
 
     if (props_ptr != nullptr)
     {
-        /* TODO: Use time_marker !! */
         const OpenGL::TimeMarker time_marker       = (in_opt_time_marker_ptr == nullptr)                                                                 ? props_ptr->last_modified_time
                                                    : (in_opt_time_marker_ptr != nullptr && *in_opt_time_marker_ptr == OpenGL::LATEST_SNAPSHOT_AVAILABLE) ? props_ptr->last_modified_time
                                                    : *in_opt_time_marker_ptr;
         auto                     snapshot_iterator = props_ptr->snapshots.find(time_marker);
 
-        vkgl_assert(snapshot_iterator != props_ptr->snapshots.end() );
-        if (snapshot_iterator != props_ptr->snapshots.end() )
-        {
-            result_ptr = snapshot_iterator->second->internal_data_ptr.get();
-        }
+        /* NOTE: This function must ONLY be called for potential update purposes. State updates can only be performed
+         *       against ToT state snapshots.
+         *
+         *       This is because this function always returns a scratch version of the ToT snapshot. At update_last_modified_time()
+         *       call time, this scratch version will be cached in the snapshot map as the new ToT version of the represented state.
+         *       (there are special case(s) where this process is performed slightly different; see the func in question for more details)
+         *
+         *       If update_last_modified_time() is NOT called after this call, it is assumed inheriting manager class has NOT modified the opaque state
+         *       in any way.
+         *
+         *       If you hit this assertion check, you're using the incorrect version of the function. Make sure to use the const one.
+         */
+        vkgl_assert(time_marker == props_ptr->last_modified_time);
+
+        result_ptr = props_ptr->scratch_snapshot_ptr.get();
     }
 
     return result_ptr;
@@ -288,6 +298,8 @@ uint32_t OpenGL::GLObjectManager::get_n_references(const GLuint& in_id) const
         {
             result += static_cast<uint32_t>(current_snapshot.second->references.size() );
         }
+
+        result += static_cast<uint32_t>(object_ptr->tot_snapshot_references.size() );
     }
 
     return result;
@@ -363,9 +375,18 @@ bool OpenGL::GLObjectManager::insert_object(const GLuint& in_id)
 
             vkgl_assert(new_snapshot_ptr != nullptr);
 
+            /* Create a base snapshot. */
             new_snapshot_ptr->internal_data_ptr = create_internal_data_object();
             vkgl_assert(new_snapshot_ptr->internal_data_ptr != nullptr);
 
+            /* Create a scratch version of the base snapshot. The scratch clone will be used for potential update
+             * operations requested by inheriting buffers. Please see get_internal_object_props_ptr() (non-const version)
+             * and update_last_modified_time() for more details.
+             */
+            new_object_ptr->scratch_snapshot_ptr = clone_internal_data_object(new_snapshot_ptr->internal_data_ptr.get() );
+            vkgl_assert(new_object_ptr->scratch_snapshot_ptr != nullptr);
+
+            /* Stash the base snapshot. */
             new_object_ptr->snapshots[new_object_ptr->last_modified_time] = std::move(new_snapshot_ptr);
         }
 
@@ -427,21 +448,30 @@ bool OpenGL::GLObjectManager::mark_id_as_alive(const GLuint& in_id)
 void OpenGL::GLObjectManager::on_reference_created(const OpenGL::GLReference* in_reference_ptr)
 {
     /* Note: m_lock is locked at this point. */
-
-    bool result    = false;
     auto props_ptr = get_general_object_props_ptr(in_reference_ptr->get_id() );
+    bool result    = false;
 
+    vkgl_assert(props_ptr != nullptr);
     if (props_ptr != nullptr)
     {
-        auto snapshot_iterator = props_ptr->snapshots.find(in_reference_ptr->get_time_marker() );
-
-        vkgl_assert(snapshot_iterator != props_ptr->snapshots.end() )
-        if (snapshot_iterator != props_ptr->snapshots.end() )
+        if (in_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE)
         {
-            snapshot_iterator->second->references.push_back(in_reference_ptr);
-        }
+            auto snapshot_iterator = props_ptr->snapshots.find(in_reference_ptr->get_time_marker() );
 
-        result = true;
+            vkgl_assert(snapshot_iterator != props_ptr->snapshots.end() )
+            if (snapshot_iterator != props_ptr->snapshots.end() )
+            {
+                snapshot_iterator->second->references.push_back(in_reference_ptr);
+            }
+
+            result = true;
+        }
+        else
+        {
+            props_ptr->tot_snapshot_references.push_back(in_reference_ptr);
+
+            result = true;
+        }
     }
 
     vkgl_assert(result);
@@ -474,30 +504,45 @@ void OpenGL::GLObjectManager::on_reference_destroyed(const OpenGL::GLReference* 
             vkgl_assert(object_ptr != nullptr);
             if (object_ptr != nullptr)
             {
-                auto snapshot_iterator = object_ptr->snapshots.find(object_time_marker);
-
-                vkgl_assert(snapshot_iterator != object_ptr->snapshots.end() );
-                if (snapshot_iterator != object_ptr->snapshots.end() )
+                if (in_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE)
                 {
-                    auto reference_iterator = std::find(snapshot_iterator->second->references.begin(),
-                                                        snapshot_iterator->second->references.end  (),
-                                                        in_reference_ptr);
+                    auto snapshot_iterator = object_ptr->snapshots.find(object_time_marker);
 
-                    vkgl_assert(reference_iterator != snapshot_iterator->second->references.end() );
-                    if (reference_iterator != snapshot_iterator->second->references.end() )
+                    vkgl_assert(snapshot_iterator != object_ptr->snapshots.end() );
+                    if (snapshot_iterator != object_ptr->snapshots.end() )
                     {
-                        snapshot_iterator->second->references.erase(reference_iterator);
+                        auto reference_iterator = std::find(snapshot_iterator->second->references.begin(),
+                                                            snapshot_iterator->second->references.end  (),
+                                                            in_reference_ptr);
 
-                        if (snapshot_iterator->second->references.size() == 0)
+                        vkgl_assert(reference_iterator != snapshot_iterator->second->references.end() );
+                        if (reference_iterator != snapshot_iterator->second->references.end() )
                         {
-                            /* The snapshot is no longer being referenced anywhere. If there are newer snapshots
-                             * available, it's safe to release this object.
-                             */
-                            if (snapshot_iterator->first < object_ptr->last_modified_time)
+                            snapshot_iterator->second->references.erase(reference_iterator);
+
+                            if (snapshot_iterator->second->references.size() == 0)
                             {
-                                object_ptr->snapshots.erase(snapshot_iterator);
+                                /* The snapshot is no longer being referenced anywhere. If there are newer snapshots
+                                 * available, it's safe to release this object.
+                                 */
+                                if (snapshot_iterator->first < object_ptr->last_modified_time)
+                                {
+                                    object_ptr->snapshots.erase(snapshot_iterator);
+                                }
                             }
                         }
+                    }
+                }
+                else
+                {
+                    auto reference_iterator = std::find(object_ptr->tot_snapshot_references.begin(),
+                                                        object_ptr->tot_snapshot_references.end  (),
+                                                        in_reference_ptr);
+
+                    vkgl_assert(reference_iterator != object_ptr->tot_snapshot_references.end() );
+                    if ((reference_iterator != object_ptr->tot_snapshot_references.end() ))
+                    {
+                        object_ptr->tot_snapshot_references.erase(reference_iterator);
                     }
                 }
             }
@@ -506,8 +551,7 @@ void OpenGL::GLObjectManager::on_reference_destroyed(const OpenGL::GLReference* 
         /* If the object has been destroyed AND there are no more dangling refernces, destroy
          * the container. Otherwise, retain it.
          */
-        if ((status                      == Status::Created_Not_Bound           ||
-             status                      == Status::Deleted_References_Pending) &&
+        if ((status                      == Status::Deleted_References_Pending) &&
             (get_n_references(object_id) == 0) )
         {
             delete_object(object_id);
@@ -538,6 +582,39 @@ void OpenGL::GLObjectManager::update_last_modified_time(const GLuint& in_id)
     vkgl_assert(object_ptr != nullptr);
     if (object_ptr != nullptr)
     {
+        const auto old_last_modified_time   = object_ptr->last_modified_time;
+        void*      old_scratch_snapshot_ptr = nullptr;
+
+        /* Update the "last modified time" timestamp */
         object_ptr->last_modified_time = std::chrono::high_resolution_clock::now();
+
+        /* Insert a new ToT snapshot, set it to the scratch state we passed in the preceding
+         * get_internal_object_props_ptr() call time.
+         */
+        {
+            std::unique_ptr<GeneralObjectStateSnapshot> new_snapshot_ptr;
+
+            vkgl_assert(object_ptr->snapshots.find(object_ptr->last_modified_time) == object_ptr->snapshots.end() );
+
+            new_snapshot_ptr.reset(new GeneralObjectStateSnapshot() );
+            vkgl_assert(new_snapshot_ptr != nullptr);
+
+            old_scratch_snapshot_ptr            = object_ptr->scratch_snapshot_ptr.get();
+            new_snapshot_ptr->internal_data_ptr = std::move(object_ptr->scratch_snapshot_ptr);
+
+            object_ptr->snapshots[object_ptr->last_modified_time] = std::move(new_snapshot_ptr);
+        }
+
+        /* Create a new scratch state. */
+        object_ptr->scratch_snapshot_ptr = clone_internal_data_object(old_scratch_snapshot_ptr);
+        vkgl_assert(object_ptr->scratch_snapshot_ptr != nullptr);
+
+        /* Check if the previous ToT snapshot is being referenced. If not, it's safe to drop it.
+         * If there's at least 1 reference, the snapshot will be removed at some point in on_reference_destroyed()
+         */
+        if (object_ptr->snapshots.at(old_last_modified_time)->references.size() == 0)
+        {
+            object_ptr->snapshots.erase(old_last_modified_time);
+        }
     }
 }

@@ -355,6 +355,19 @@ OpenGL::VertexAttributeArrayState::VertexAttributeArrayState()
     type       = VertexAttributeArrayType::Float;
 }
 
+OpenGL::VertexAttributeArrayState::VertexAttributeArrayState(const VertexAttributeArrayState& in_vaa_state)
+{
+    buffer_binding_ptr = (in_vaa_state.buffer_binding_ptr != nullptr) ? in_vaa_state.buffer_binding_ptr->clone()
+                                                                      : GLReferenceUniquePtr();
+    enabled            = in_vaa_state.enabled;
+    integer            = in_vaa_state.integer;
+    normalized         = in_vaa_state.normalized;
+    pointer            = in_vaa_state.pointer;
+    size               = in_vaa_state.size;
+    stride             = in_vaa_state.stride;
+    type               = in_vaa_state.type;
+}
+
 OpenGL::VertexAttributeArrayState& OpenGL::VertexAttributeArrayState::operator=(const VertexAttributeArrayState& in_state)
 {
     buffer_binding_ptr = (in_state.buffer_binding_ptr != nullptr) ? in_state.buffer_binding_ptr->clone()

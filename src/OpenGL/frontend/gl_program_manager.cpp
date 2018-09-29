@@ -9,6 +9,46 @@
 #include <algorithm>
 
 
+OpenGL::GLProgramManager::Program::Program(const OpenGL::GLProgramManager::Program& in_program)
+{
+    /* The two members need extra handling .. */
+    for (auto& current_attached_shader_reference_ptr : in_program.attached_shaders)
+    {
+        auto new_reference_ptr = current_attached_shader_reference_ptr->clone();
+
+        vkgl_assert(new_reference_ptr != nullptr);
+
+        attached_shaders.push_back(
+            std::move(new_reference_ptr)
+        );
+    }
+
+    if (in_program.post_link_data_ptr != nullptr)
+    {
+        post_link_data_ptr.reset(new PostLinkData(*in_program.post_link_data_ptr) );
+        vkgl_assert(post_link_data_ptr != nullptr);
+    }
+
+    /* Rest of the stuff is trivial. */
+    cached_attribute_location_bindings = in_program.cached_attribute_location_bindings;
+    cached_frag_data_locations         = in_program.cached_frag_data_locations;
+    infolog                            = in_program.infolog;
+
+    gs_input_type               = in_program.gs_input_type;
+    gs_output_type              = in_program.gs_output_type;
+    n_max_gs_vertices_generated = in_program.n_max_gs_vertices_generated;
+
+    tf_buffer_mode        = in_program.tf_buffer_mode;
+    tf_varyings           = in_program.tf_varyings;
+    tf_varying_max_length = in_program.tf_varying_max_length;
+
+    ub_index_to_ub_binding = in_program.ub_index_to_ub_binding;
+
+    delete_status   = in_program.delete_status;
+    link_status     = in_program.link_status;
+    validate_status = in_program.validate_status;
+}
+
 OpenGL::GLProgramManager::GLProgramManager()
     :GLObjectManager(1,    /* in_first_valid_nondefault_id */
                      true) /* in_expose_default_object     */
@@ -97,6 +137,19 @@ bool OpenGL::GLProgramManager::cache_frag_data_location(const GLuint&   in_progr
     result = true;
 end:
     return result;
+}
+
+std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLProgramManager::clone_internal_data_object(const void* in_ptr)
+{
+    std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
+                                                                  [](void* in_ptr){delete reinterpret_cast<Program*>(in_ptr); });
+
+    result_ptr.reset(
+        new Program(*reinterpret_cast<const Program*>(in_ptr) )
+    );
+    vkgl_assert(result_ptr != nullptr);
+
+    return result_ptr;
 }
 
 OpenGL::GLProgramManagerUniquePtr OpenGL::GLProgramManager::create()

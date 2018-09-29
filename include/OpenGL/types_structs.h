@@ -596,7 +596,8 @@ namespace OpenGL
         GLuint                                 element_array_buffer_binding;
         std::vector<VertexAttributeArrayState> vertex_attribute_arrays;
 
-        explicit VertexArrayObjectState(const uint32_t& in_n_vertex_attribute_arrays);
+        VertexArrayObjectState(const uint32_t&               in_n_vertex_attribute_arrays);
+        VertexArrayObjectState(const VertexArrayObjectState& in_vaa) = default;
     } VertexArrayObjectState;
 
     typedef struct VertexAttributeArrayState
@@ -611,6 +612,7 @@ namespace OpenGL
         VertexAttributeArrayType type;
 
         VertexAttributeArrayState();
+        VertexAttributeArrayState(const VertexAttributeArrayState& in_vaa_state);
 
         VertexAttributeArrayState& operator= (const VertexAttributeArrayState&);
         bool                       operator==(const VertexAttributeArrayState& in_state);

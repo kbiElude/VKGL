@@ -4010,6 +4010,7 @@ void OpenGL::Context::use_program(const GLuint& in_program)
         goto end;
     }
 
+    m_gl_program_manager_ptr->mark_id_as_alive      (in_program);
     m_gl_state_manager_ptr->set_bound_program_object(std::move(program_reference_ptr) );
 
 end:

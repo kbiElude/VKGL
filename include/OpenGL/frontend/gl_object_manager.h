@@ -62,10 +62,13 @@ namespace OpenGL
 
         typedef struct GeneralObjectProps
         {
-            GLuint                                                            id;
-            OpenGL::TimeMarker                                                last_modified_time;
+            GLuint             id;
+            OpenGL::TimeMarker last_modified_time;
+            Status             status;
+
+            std::unique_ptr<void, std::function<void(void*)> >                scratch_snapshot_ptr;
             std::map<OpenGL::TimeMarker, GeneralObjectStateSnapshotUniquePtr> snapshots;
-            Status                                                            status;
+            std::vector<const GLReference*>                                   tot_snapshot_references;
 
             GeneralObjectProps()
             {
@@ -104,7 +107,8 @@ namespace OpenGL
         bool                      init                         ();
         void                      update_last_modified_time    (const GLuint&             in_id);
 
-        virtual std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object() = 0;
+        virtual std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr) = 0;
+        virtual std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object()                   = 0;
 
         /* Protected variables */
         OpenGL::NamespaceUniquePtr m_id_manager_ptr;

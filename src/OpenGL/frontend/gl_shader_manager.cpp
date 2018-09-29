@@ -20,6 +20,19 @@ OpenGL::GLShaderManager::~GLShaderManager()
     /* Stub - everything is handled by the base class. */
 }
 
+std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLShaderManager::clone_internal_data_object(const void* in_ptr)
+{
+    std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
+                                                                  [](void* in_ptr){delete reinterpret_cast<Shader*>(in_ptr); });
+
+    result_ptr.reset(
+        new Shader(*reinterpret_cast<const Shader*>(in_ptr) )
+    );
+    vkgl_assert(result_ptr != nullptr);
+
+    return result_ptr;
+}
+
 OpenGL::GLShaderManagerUniquePtr OpenGL::GLShaderManager::create()
 {
     OpenGL::GLShaderManagerUniquePtr result_ptr;
