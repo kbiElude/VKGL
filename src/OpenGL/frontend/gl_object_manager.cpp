@@ -154,7 +154,7 @@ bool OpenGL::GLObjectManager::delete_object(const GLuint& in_id)
     vkgl_assert(object_iterator != m_object_ptrs.end() );
     if (object_iterator != m_object_ptrs.end() )
     {
-        vkgl_assert(object_iterator->second->references.size() == 0);
+        vkgl_assert(object_iterator->second->snapshots.size() == 0);
 
         m_object_ptrs.erase(object_iterator);
 
@@ -238,12 +238,16 @@ const void* OpenGL::GLObjectManager::get_internal_object_props_ptr(const GLuint&
 
     if (props_ptr != nullptr)
     {
-        /* TODO: Use time_marker !! */
-        const OpenGL::TimeMarker time_marker = (in_opt_time_marker_ptr == nullptr)                                                                 ? props_ptr->last_modified_time
-                                             : (in_opt_time_marker_ptr != nullptr && *in_opt_time_marker_ptr == OpenGL::LATEST_SNAPSHOT_AVAILABLE) ? props_ptr->last_modified_time
-                                             : *in_opt_time_marker_ptr;
+        const OpenGL::TimeMarker time_marker       = (in_opt_time_marker_ptr == nullptr)                                                                 ? props_ptr->last_modified_time
+                                                   : (in_opt_time_marker_ptr != nullptr && *in_opt_time_marker_ptr == OpenGL::LATEST_SNAPSHOT_AVAILABLE) ? props_ptr->last_modified_time
+                                                   : *in_opt_time_marker_ptr;
+        auto                     snapshot_iterator = props_ptr->snapshots.find(time_marker);
 
-        result_ptr = props_ptr->internal_data_ptr.get();
+        vkgl_assert(snapshot_iterator != props_ptr->snapshots.end() );
+        if (snapshot_iterator != props_ptr->snapshots.end() )
+        {
+            result_ptr = snapshot_iterator->second->internal_data_ptr.get();
+        }
     }
 
     return result_ptr;
@@ -258,11 +262,16 @@ void* OpenGL::GLObjectManager::get_internal_object_props_ptr(const GLuint&      
     if (props_ptr != nullptr)
     {
         /* TODO: Use time_marker !! */
-        const OpenGL::TimeMarker time_marker = (in_opt_time_marker_ptr == nullptr)                                                                 ? props_ptr->last_modified_time
-                                             : (in_opt_time_marker_ptr != nullptr && *in_opt_time_marker_ptr == OpenGL::LATEST_SNAPSHOT_AVAILABLE) ? props_ptr->last_modified_time
-                                             : *in_opt_time_marker_ptr;
+        const OpenGL::TimeMarker time_marker       = (in_opt_time_marker_ptr == nullptr)                                                                 ? props_ptr->last_modified_time
+                                                   : (in_opt_time_marker_ptr != nullptr && *in_opt_time_marker_ptr == OpenGL::LATEST_SNAPSHOT_AVAILABLE) ? props_ptr->last_modified_time
+                                                   : *in_opt_time_marker_ptr;
+        auto                     snapshot_iterator = props_ptr->snapshots.find(time_marker);
 
-        result_ptr = props_ptr->internal_data_ptr.get();
+        vkgl_assert(snapshot_iterator != props_ptr->snapshots.end() );
+        if (snapshot_iterator != props_ptr->snapshots.end() )
+        {
+            result_ptr = snapshot_iterator->second->internal_data_ptr.get();
+        }
     }
 
     return result_ptr;
@@ -275,7 +284,10 @@ uint32_t OpenGL::GLObjectManager::get_n_references(const GLuint& in_id) const
 
     if (object_ptr != nullptr)
     {
-        result = static_cast<uint32_t>(object_ptr->references.size() );
+        for (const auto& current_snapshot : object_ptr->snapshots)
+        {
+            result += static_cast<uint32_t>(current_snapshot.second->references.size() );
+        }
     }
 
     return result;
@@ -340,14 +352,25 @@ bool OpenGL::GLObjectManager::insert_object(const GLuint& in_id)
     vkgl_assert(object_iterator == m_object_ptrs.end() );
     if (object_iterator == m_object_ptrs.end() )
     {
-        m_object_ptrs[in_id].reset(
-            new GeneralObjectProps(in_id)
-        );
+        std::unique_ptr<GeneralObjectProps> new_object_ptr;
 
-        vkgl_assert(m_object_ptrs.at(in_id) != nullptr);
+        new_object_ptr.reset(new GeneralObjectProps(in_id) );
+        vkgl_assert(new_object_ptr != nullptr);
 
-        m_object_ptrs[in_id]->internal_data_ptr = create_internal_data_object();
-        result                                  = true;
+        {
+            GeneralObjectStateSnapshotUniquePtr new_snapshot_ptr(new GeneralObjectStateSnapshot(),
+                                                                 std::default_delete<GeneralObjectStateSnapshot>() );
+
+            vkgl_assert(new_snapshot_ptr != nullptr);
+
+            new_snapshot_ptr->internal_data_ptr = create_internal_data_object();
+            vkgl_assert(new_snapshot_ptr->internal_data_ptr != nullptr);
+
+            new_object_ptr->snapshots[new_object_ptr->last_modified_time] = std::move(new_snapshot_ptr);
+        }
+
+        m_object_ptrs[in_id] = std::move(new_object_ptr);
+        result               = true;
     }
 
     return result;
@@ -410,7 +433,13 @@ void OpenGL::GLObjectManager::on_reference_created(const OpenGL::GLReference* in
 
     if (props_ptr != nullptr)
     {
-        props_ptr->references.push_back(in_reference_ptr);
+        auto snapshot_iterator = props_ptr->snapshots.find(in_reference_ptr->get_time_marker() );
+
+        vkgl_assert(snapshot_iterator != props_ptr->snapshots.end() )
+        if (snapshot_iterator != props_ptr->snapshots.end() )
+        {
+            snapshot_iterator->second->references.push_back(in_reference_ptr);
+        }
 
         result = true;
     }
@@ -420,7 +449,8 @@ void OpenGL::GLObjectManager::on_reference_created(const OpenGL::GLReference* in
 
 void OpenGL::GLObjectManager::on_reference_destroyed(const OpenGL::GLReference* in_reference_ptr)
 {
-    const auto object_id = in_reference_ptr->get_id();
+    const auto object_id          = in_reference_ptr->get_id         ();
+    const auto object_time_marker = in_reference_ptr->get_time_marker();
 
     if (m_releasing)
     {
@@ -444,14 +474,31 @@ void OpenGL::GLObjectManager::on_reference_destroyed(const OpenGL::GLReference* 
             vkgl_assert(object_ptr != nullptr);
             if (object_ptr != nullptr)
             {
-                auto reference_iterator = std::find(object_ptr->references.begin(),
-                                                    object_ptr->references.end  (),
-                                                    in_reference_ptr);
+                auto snapshot_iterator = object_ptr->snapshots.find(object_time_marker);
 
-                vkgl_assert(reference_iterator != object_ptr->references.end() );
-                if (reference_iterator != object_ptr->references.end() )
+                vkgl_assert(snapshot_iterator != object_ptr->snapshots.end() );
+                if (snapshot_iterator != object_ptr->snapshots.end() )
                 {
-                    object_ptr->references.erase(reference_iterator);
+                    auto reference_iterator = std::find(snapshot_iterator->second->references.begin(),
+                                                        snapshot_iterator->second->references.end  (),
+                                                        in_reference_ptr);
+
+                    vkgl_assert(reference_iterator != snapshot_iterator->second->references.end() );
+                    if (reference_iterator != snapshot_iterator->second->references.end() )
+                    {
+                        snapshot_iterator->second->references.erase(reference_iterator);
+
+                        if (snapshot_iterator->second->references.size() == 0)
+                        {
+                            /* The snapshot is no longer being referenced anywhere. If there are newer snapshots
+                             * available, it's safe to release this object.
+                             */
+                            if (snapshot_iterator->first < object_ptr->last_modified_time)
+                            {
+                                object_ptr->snapshots.erase(snapshot_iterator);
+                            }
+                        }
+                    }
                 }
             }
         }

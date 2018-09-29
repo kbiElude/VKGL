@@ -7,6 +7,8 @@
 
 #include "OpenGL/frontend/gl_reference.h"
 #include "OpenGL/namespace.h"
+#include <map>
+
 
 namespace OpenGL
 {
@@ -51,13 +53,19 @@ namespace OpenGL
             Unknown
         };
 
+        typedef struct
+        {
+            std::unique_ptr<void, std::function<void(void*)> > internal_data_ptr;
+            std::vector<const GLReference*>                    references;
+        } GeneralObjectStateSnapshot;
+        typedef std::unique_ptr<GeneralObjectStateSnapshot> GeneralObjectStateSnapshotUniquePtr;
+
         typedef struct GeneralObjectProps
         {
-            GLuint                                             id;
-            std::unique_ptr<void, std::function<void(void*)> > internal_data_ptr;
-            OpenGL::TimeMarker                                 last_modified_time;
-            std::vector<const GLReference*>                    references;
-            Status                                             status;
+            GLuint                                                            id;
+            OpenGL::TimeMarker                                                last_modified_time;
+            std::map<OpenGL::TimeMarker, GeneralObjectStateSnapshotUniquePtr> snapshots;
+            Status                                                            status;
 
             GeneralObjectProps()
             {
