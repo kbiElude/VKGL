@@ -351,6 +351,7 @@ namespace OpenGL
     typedef void      (*PFNVKGLTEXIMAGE3DMULTISAMPLEPROC)          (OpenGL::Context* in_context_ptr, const GLenum& in_target, const GLsizei& in_samples, const GLenum& in_internalformat, const GLsizei& in_width, const GLsizei& in_height, const GLsizei& in_depth, const GLboolean& in_fixedsamplelocations);
     typedef void      (*PFNVKGLWAITSYNCPROC)                       (OpenGL::Context* in_context_ptr, const GLsync& in_sync, const GLbitfield& in_flags, const GLuint64& in_timeout);
 
+    typedef uint32_t TextureUnit;
 }
 
 #endif /* VKGL_TYPES_TYPEDEFS_H */

@@ -659,6 +659,7 @@ namespace OpenGL
         Float,
         GeometryInputTypeVKGL,
         GeometryOutputTypeVKGL,
+        GLRereferenceObjectIDPtrVKGL, /* Pointer to OpenGL::GLReferenceUniquePtr instance; return ID of the bound object; *value may be nullptr in which case return 0. */
         HintModeVKGL,
         Int,
         Int64,

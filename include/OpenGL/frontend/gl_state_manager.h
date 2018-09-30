@@ -126,41 +126,6 @@ namespace OpenGL
     private:
         /* Private type definitions */
 
-        typedef std::pair<OpenGL::BufferTarget, uint32_t> IndexedBufferTarget;
-
-        struct IndexedBufferTargetHashFunction
-        {
-            size_t operator() (const IndexedBufferTarget& in_key) const noexcept
-            {
-                return std::hash<OpenGL::BufferTarget>{}(in_key.first) ^
-                       std::hash<uint32_t>            {}(in_key.second);
-            }
-        };
-
-        typedef struct IndexedBufferBinding
-        {
-            OpenGL::GLReferenceUniquePtr reference_ptr;
-            size_t                       size;
-            size_t                       start_offset;
-
-            IndexedBufferBinding()
-            {
-                size         = SIZE_MAX;
-                start_offset = SIZE_MAX;
-            }
-
-            IndexedBufferBinding(OpenGL::GLReferenceUniquePtr in_reference_ptr,
-                                 const size_t&                in_start_offset,
-                                 const size_t&                in_size)
-                :reference_ptr(std::move(in_reference_ptr) ),
-                 size         (in_size),
-                 start_offset (in_start_offset)
-            {
-                /* Stub */
-            }
-
-        } IndexedBufferBinding;
-
         typedef struct PropertyData
         {
             OpenGL::GetSetArgumentType getter_value_type;
@@ -169,7 +134,6 @@ namespace OpenGL
         }
         PropertyData;
 
-        typedef uint32_t TextureUnit;
 
         /* Private functions */
 
@@ -178,15 +142,9 @@ namespace OpenGL
 
         /* Private variables */
 
-        std::unordered_map<IndexedBufferTarget,  IndexedBufferBinding, IndexedBufferTargetHashFunction> m_indexed_buffer_binding_ptrs;
-        std::unordered_map<OpenGL::BufferTarget, OpenGL::GLReferenceUniquePtr>                          m_nonindexed_buffer_binding_ptrs;
-
-        OpenGL::ErrorCode                                                      m_current_error_code;
-        const IGLLimits* const                                                 m_limits_ptr;
-        OpenGL::GLReferenceUniquePtr                                           m_program_binding_ptr;
-        ContextStateUniquePtr                                                  m_state_ptr;
-        std::unordered_map<TextureUnit, OpenGL::TextureUnitStateUniquePtr>     m_texture_unit_to_state_ptr_map;
-        OpenGL::GLReferenceUniquePtr                                           m_vao_binding_ptr;
+        OpenGL::ErrorCode      m_current_error_code;
+        const IGLLimits* const m_limits_ptr;
+        ContextStateUniquePtr  m_state_ptr;
 
         std::unordered_map<OpenGL::ContextProperty,    PropertyData> m_context_prop_map;
         std::unordered_map<OpenGL::PixelStoreProperty, PropertyData> m_pixel_store_prop_map;

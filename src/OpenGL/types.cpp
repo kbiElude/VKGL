@@ -165,8 +165,6 @@ OpenGL::ContextState::ContextState(const IGLLimits* in_limits_ptr,
     unpack_skip_rows    = 0;
     unpack_swap_bytes   = false;
 
-    current_program_id = 0;
-
     hint_fragment_shader_derivative = OpenGL::HintMode::Dont_Care;
     hint_line_smooth                = OpenGL::HintMode::Dont_Care;
     hint_polygon_smooth             = OpenGL::HintMode::Dont_Care;
@@ -183,8 +181,6 @@ OpenGL::ContextState::ContextState(const IGLLimits* in_limits_ptr,
 
     is_program_point_size_enabled = false;
     polygon_mode                  = PolygonMode::Fill;
-
-    version = "WIP";
 }
 
 OpenGL::DispatchTable::DispatchTable()

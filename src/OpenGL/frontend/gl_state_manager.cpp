@@ -56,19 +56,19 @@ OpenGL::GLStateManager::GLStateManager(const IGLLimits*        in_limits_ptr,
                       n_binding < n_max_bindings;
                     ++n_binding)
         {
-            m_indexed_buffer_binding_ptrs[IndexedBufferTarget(current_indexed_target, n_binding)] = IndexedBufferBinding(in_buffer_manager_ptr->get_default_object_reference(),
-                                                                                                                         0,  /* in_start_offset */
-                                                                                                                         0); /* in_size         */
+            m_state_ptr->indexed_buffer_binding_ptrs[IndexedBufferTarget(current_indexed_target, n_binding)] = IndexedBufferBinding(in_buffer_manager_ptr->get_default_object_reference(),
+                                                                                                                                    0,  /* in_start_offset */
+                                                                                                                                    0); /* in_size         */
         }
     }
 
     for (const auto& current_nonindexed_target : g_nonindexed_buffer_targets)
     {
-        m_nonindexed_buffer_binding_ptrs[current_nonindexed_target] = in_buffer_manager_ptr->get_default_object_reference();
+        m_state_ptr->nonindexed_buffer_binding_ptrs[current_nonindexed_target] = in_buffer_manager_ptr->get_default_object_reference();
     }
 
     /* Set up default VAO binding */
-    m_vao_binding_ptr = in_vao_manager_ptr->get_default_object_reference();
+    m_state_ptr->vao_reference_ptr = in_vao_manager_ptr->get_default_object_reference();
 
     init_prop_maps    ();
     init_texture_units();
@@ -579,25 +579,25 @@ void OpenGL::GLStateManager::enable(const OpenGL::Capability& in_capability)
 
 const OpenGL::GLReference* OpenGL::GLStateManager::get_bound_buffer_object(const OpenGL::BufferTarget& in_target) const
 {
-    vkgl_assert(m_nonindexed_buffer_binding_ptrs.find(in_target) != m_nonindexed_buffer_binding_ptrs.end() );
+    vkgl_assert(m_state_ptr->nonindexed_buffer_binding_ptrs.find(in_target) != m_state_ptr->nonindexed_buffer_binding_ptrs.end() );
 
-    return m_nonindexed_buffer_binding_ptrs.at(in_target).get();
+    return m_state_ptr->nonindexed_buffer_binding_ptrs.at(in_target).get();
 }
 
 const OpenGL::GLReference* OpenGL::GLStateManager::get_bound_buffer_object(const OpenGL::BufferTarget& in_target,
                                                                            const uint32_t&             in_index) const
 {
-    vkgl_assert(m_indexed_buffer_binding_ptrs.find(IndexedBufferTarget(in_target, in_index) ) != m_indexed_buffer_binding_ptrs.end() );
+    vkgl_assert(m_state_ptr->indexed_buffer_binding_ptrs.find(IndexedBufferTarget(in_target, in_index) ) != m_state_ptr->indexed_buffer_binding_ptrs.end() );
 
-    return m_indexed_buffer_binding_ptrs.at(IndexedBufferTarget(in_target, in_index) ).reference_ptr.get();
+    return m_state_ptr->indexed_buffer_binding_ptrs.at(IndexedBufferTarget(in_target, in_index) ).reference_ptr.get();
 }
 
 const OpenGL::GLReference* OpenGL::GLStateManager::get_bound_vertex_array_object() const
 {
     /* NOTE: There is ALWAYS a VAO binding set up for a GL context. */
-    vkgl_assert(m_vao_binding_ptr != nullptr);
+    vkgl_assert(m_state_ptr->vao_reference_ptr != nullptr);
 
-    return m_vao_binding_ptr.get();
+    return m_state_ptr->vao_reference_ptr.get();
 }
 
 OpenGL::ErrorCode OpenGL::GLStateManager::get_error(const bool& in_reset_error_code)
@@ -685,7 +685,7 @@ void OpenGL::GLStateManager::get_texture_binding_parameter(const OpenGL::Texture
                                                            void*                                 out_arg_value_ptr) const
 {
     GLuint      result                = 0;
-    const auto& texture_unit_data_ptr = m_texture_unit_to_state_ptr_map.at(m_state_ptr->active_texture_unit).get();;
+    const auto& texture_unit_data_ptr = m_state_ptr->texture_unit_to_state_ptr_map.at(m_state_ptr->active_texture_unit).get();;
 
     switch (in_pname)
     {
@@ -730,7 +730,7 @@ void OpenGL::GLStateManager::init_prop_maps()
         {OpenGL::ContextProperty::Color_Logic_Op,                             {OpenGL::GetSetArgumentType::Boolean,                       1, &m_state_ptr->is_color_logic_op_enabled} },
         {OpenGL::ContextProperty::Color_Writemask,                            {OpenGL::GetSetArgumentType::BooleanFromInt32_Bit0,         1, &m_state_ptr->color_writemask_for_draw_buffers} },
         {OpenGL::ContextProperty::Cull_Face,                                  {OpenGL::GetSetArgumentType::CullFaceVKGL,                  1, &m_state_ptr->cull_face_mode} },
-        {OpenGL::ContextProperty::Current_Program,                            {OpenGL::GetSetArgumentType::Int,                           1, &m_state_ptr->current_program_id} },
+        {OpenGL::ContextProperty::Current_Program,                            {OpenGL::GetSetArgumentType::GLRereferenceObjectIDPtrVKGL,  1, &m_state_ptr->program_reference_ptr} },
         {OpenGL::ContextProperty::Depth_Clear_Value,                          {OpenGL::GetSetArgumentType::Double,                        1, &m_state_ptr->depth_clear_value} },
         {OpenGL::ContextProperty::Depth_Func,                                 {OpenGL::GetSetArgumentType::DepthFunctionVKGL,             1, &m_state_ptr->depth_function} },
         {OpenGL::ContextProperty::Depth_Range,                                {OpenGL::GetSetArgumentType::Double,                        2,  m_state_ptr->depth_range} },
@@ -778,8 +778,7 @@ void OpenGL::GLStateManager::init_prop_maps()
         {OpenGL::ContextProperty::Stencil_Value_Mask,                         {OpenGL::GetSetArgumentType::Int,                           1, &m_state_ptr->stencil_value_mask_front} },
         {OpenGL::ContextProperty::Stencil_Writemask,                          {OpenGL::GetSetArgumentType::Int,                           1, &m_state_ptr->stencil_writemask_front} },
         {OpenGL::ContextProperty::Texture_Compression_Hint,                   {OpenGL::GetSetArgumentType::HintModeVKGL,                  1, &m_state_ptr->hint_texture_compression} },
-        {OpenGL::ContextProperty::Version,                                    {OpenGL::GetSetArgumentType::String,                        1, &m_state_ptr->version} },
-        {OpenGL::ContextProperty::Viewport,                                   {OpenGL::GetSetArgumentType::Float,                         1, &m_state_ptr->viewport} },
+        {OpenGL::ContextProperty::Viewport,                                   {OpenGL::GetSetArgumentType::Float,                         1, &m_state_ptr->viewport} }
     };
 
     m_pixel_store_prop_map =
@@ -816,13 +815,13 @@ void OpenGL::GLStateManager::init_texture_units()
                   n_texture_unit < n_texture_units;
                 ++n_texture_unit)
     {
-        m_texture_unit_to_state_ptr_map[n_texture_unit].reset(
+        m_state_ptr->texture_unit_to_state_ptr_map[n_texture_unit].reset(
             new TextureUnitState()
         );
 
-        if (m_texture_unit_to_state_ptr_map[n_texture_unit] == nullptr)
+        if (m_state_ptr->texture_unit_to_state_ptr_map[n_texture_unit] == nullptr)
         {
-            vkgl_assert(m_texture_unit_to_state_ptr_map[n_texture_unit] != nullptr);
+            vkgl_assert(m_state_ptr->texture_unit_to_state_ptr_map[n_texture_unit] != nullptr);
         }
     }
 }
@@ -903,16 +902,16 @@ void OpenGL::GLStateManager::set_blend_functions_separate(const OpenGL::BlendFun
 void OpenGL::GLStateManager::set_bound_buffer_object(const OpenGL::BufferTarget&  in_target,
                                                      OpenGL::GLReferenceUniquePtr in_buffer_reference_ptr)
 {
-    auto map_iterator = m_nonindexed_buffer_binding_ptrs.find(in_target);
+    auto map_iterator = m_state_ptr->nonindexed_buffer_binding_ptrs.find(in_target);
 
-    vkgl_assert(map_iterator != m_nonindexed_buffer_binding_ptrs.end() );
+    vkgl_assert(map_iterator != m_state_ptr->nonindexed_buffer_binding_ptrs.end() );
 
     if ((in_buffer_reference_ptr == nullptr && map_iterator->second != nullptr)                                                      ||
         (in_buffer_reference_ptr != nullptr && map_iterator->second == nullptr)                                                      ||
         (in_buffer_reference_ptr != nullptr && map_iterator->second != nullptr && *in_buffer_reference_ptr != *map_iterator->second) )
     {
-        m_nonindexed_buffer_binding_ptrs[in_target] = std::move(in_buffer_reference_ptr);
-        m_last_modified_time                        = std::chrono::high_resolution_clock::now();
+        m_state_ptr->nonindexed_buffer_binding_ptrs[in_target] = std::move(in_buffer_reference_ptr);
+        m_last_modified_time                                   = std::chrono::high_resolution_clock::now();
     }
 }
 
@@ -922,17 +921,17 @@ void OpenGL::GLStateManager::set_bound_buffer_object(const OpenGL::BufferTarget&
                                                      const size_t&                in_start_offset,
                                                      const size_t&                in_size)
 {
-    auto map_iterator = m_indexed_buffer_binding_ptrs.find(IndexedBufferTarget(in_target, in_index) );
+    auto map_iterator = m_state_ptr->indexed_buffer_binding_ptrs.find(IndexedBufferTarget(in_target, in_index) );
 
-    vkgl_assert(map_iterator != m_indexed_buffer_binding_ptrs.end() );
+    vkgl_assert(map_iterator != m_state_ptr->indexed_buffer_binding_ptrs.end() );
 
     if ((in_buffer_reference_ptr == nullptr && map_iterator->second.reference_ptr != nullptr)                                                                    ||
         (in_buffer_reference_ptr != nullptr && map_iterator->second.reference_ptr == nullptr)                                                                    ||
         (in_buffer_reference_ptr != nullptr && map_iterator->second.reference_ptr != nullptr && *in_buffer_reference_ptr != *map_iterator->second.reference_ptr) )
     {
-        m_indexed_buffer_binding_ptrs[IndexedBufferTarget(in_target, in_index)] = IndexedBufferBinding(std::move(in_buffer_reference_ptr),
-                                                                                                       in_start_offset,
-                                                                                                       in_size);
+        m_state_ptr->indexed_buffer_binding_ptrs[IndexedBufferTarget(in_target, in_index)] = IndexedBufferBinding(std::move(in_buffer_reference_ptr),
+                                                                                                                  in_start_offset,
+                                                                                                                  in_size);
 
         m_last_modified_time = std::chrono::high_resolution_clock::now();
     }
@@ -940,24 +939,24 @@ void OpenGL::GLStateManager::set_bound_buffer_object(const OpenGL::BufferTarget&
 
 void OpenGL::GLStateManager::set_bound_program_object(OpenGL::GLReferenceUniquePtr in_program_binding_ptr)
 {
-    if ((in_program_binding_ptr == nullptr && m_program_binding_ptr != nullptr)                                                      ||
-        (in_program_binding_ptr != nullptr && m_program_binding_ptr == nullptr)                                                      ||
-        (in_program_binding_ptr != nullptr && m_program_binding_ptr != nullptr && *in_program_binding_ptr != *m_program_binding_ptr) )
+    if ((in_program_binding_ptr == nullptr && m_state_ptr->program_reference_ptr != nullptr)                                                                   ||
+        (in_program_binding_ptr != nullptr && m_state_ptr->program_reference_ptr == nullptr)                                                                   ||
+        (in_program_binding_ptr != nullptr && m_state_ptr->program_reference_ptr != nullptr && *in_program_binding_ptr != *m_state_ptr->program_reference_ptr) )
     {
-        m_program_binding_ptr = std::move(in_program_binding_ptr);
-        m_last_modified_time  = std::chrono::high_resolution_clock::now();
+        m_state_ptr->program_reference_ptr = std::move(in_program_binding_ptr);
+        m_last_modified_time               = std::chrono::high_resolution_clock::now();
     }
 }
 
 
 void OpenGL::GLStateManager::set_bound_vertex_array_object(OpenGL::GLReferenceUniquePtr in_vao_binding_ptr)
 {
-    if ((in_vao_binding_ptr == nullptr && m_vao_binding_ptr != nullptr)                                              ||
-        (in_vao_binding_ptr != nullptr && m_vao_binding_ptr == nullptr)                                              ||
-        (in_vao_binding_ptr != nullptr && m_vao_binding_ptr != nullptr && *in_vao_binding_ptr != *m_vao_binding_ptr) )
+    if ((in_vao_binding_ptr == nullptr && m_state_ptr->vao_reference_ptr != nullptr)                                                           ||
+        (in_vao_binding_ptr != nullptr && m_state_ptr->vao_reference_ptr == nullptr)                                                           ||
+        (in_vao_binding_ptr != nullptr && m_state_ptr->vao_reference_ptr != nullptr && *in_vao_binding_ptr != *m_state_ptr->vao_reference_ptr) )
     {
-        m_vao_binding_ptr    = std::move(in_vao_binding_ptr);
-        m_last_modified_time = std::chrono::high_resolution_clock::now();
+        m_state_ptr->vao_reference_ptr = std::move(in_vao_binding_ptr);
+        m_last_modified_time           = std::chrono::high_resolution_clock::now();
     }
 }
 
@@ -1335,7 +1334,7 @@ void OpenGL::GLStateManager::set_texture_binding(const uint32_t&              in
                                                  const GLuint&                in_texture_id)
 {
     bool modified               = false;
-    auto texture_unit_state_ptr = m_texture_unit_to_state_ptr_map.at(in_n_texture_unit).get();
+    auto texture_unit_state_ptr = m_state_ptr->texture_unit_to_state_ptr_map.at(in_n_texture_unit).get();
 
     vkgl_assert(texture_unit_state_ptr != nullptr);
     if (texture_unit_state_ptr != nullptr)
