@@ -108,7 +108,7 @@ namespace OpenGL
         GLReferenceUniquePtr m_default_object_reference_ptr;
         const bool           m_expose_default_object;
         const GLuint         m_first_valid_nondefault_id;
-        mutable std::mutex   m_lock;
+        mutable std::mutex   m_mutex;
         bool                 m_releasing;
 
     private:

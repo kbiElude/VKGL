@@ -62,7 +62,7 @@ OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_reference(const GL
                                             std::default_delete<OpenGL::GLReference>() );
 
     {
-        std::unique_lock<std::mutex> lock      (m_lock);
+        std::unique_lock<std::mutex> lock      (m_mutex);
         auto                         object_ptr(m_object_ptrs.at(in_id).get() );
 
         vkgl_assert(object_ptr != nullptr);
@@ -113,7 +113,7 @@ bool OpenGL::GLObjectManager::delete_ids(const uint32_t& in_n_ids,
                               in_ids_ptr);
 
     {
-        auto lock = std::unique_lock<std::mutex>(m_lock);
+        auto lock = std::unique_lock<std::mutex>(m_mutex);
 
         for (uint32_t n_id = 0;
                       n_id < in_n_ids;
@@ -372,7 +372,7 @@ bool OpenGL::GLObjectManager::is_alive_id(const GLuint& in_id) const
     bool result = false;
 
     {
-        std::unique_lock<std::mutex> lock    (m_lock);
+        std::unique_lock<std::mutex> lock    (m_mutex);
         const bool                   is_valid(is_id_valid(in_id) );
 
         if (is_valid                                  &&
@@ -402,7 +402,7 @@ bool OpenGL::GLObjectManager::mark_id_as_alive(const GLuint& in_id)
     bool result = false;
 
     {
-        std::unique_lock<std::mutex> lock(m_lock);
+        std::unique_lock<std::mutex> lock(m_mutex);
         const auto                   object_status(get_object_status(in_id) );
 
         if (object_status == Status::Created_Not_Bound)

@@ -111,7 +111,7 @@ bool OpenGL::GLVAOManager::get_element_array_buffer_binding(const uint32_t&     
     bool result = false;
 
     {
-        std::unique_lock<std::mutex> lock         (m_lock);
+        std::unique_lock<std::mutex> lock         (m_mutex);
         auto                         vao_props_ptr(get_vao_ptr(in_vao_id,
                                                                in_opt_time_marker_ptr) );
 
@@ -144,7 +144,7 @@ bool OpenGL::GLVAOManager::get_vaa_property(const GLuint&                       
     OpenGL::GetSetArgumentType src_data_type = OpenGL::GetSetArgumentType::Unknown;
 
     {
-        std::unique_lock<std::mutex>             lock         (m_lock);
+        std::unique_lock<std::mutex>             lock         (m_mutex);
         const OpenGL::VertexAttributeArrayState* vaa_ptr      (nullptr);
         auto                                     vao_props_ptr(get_vao_ptr(in_vao_id,
                                                                            in_opt_time_marker_ptr) );
@@ -215,7 +215,7 @@ bool OpenGL::GLVAOManager::get_vaa_state_copy(const GLuint&              in_vao_
     bool result = false;
 
     {
-        std::unique_lock<std::mutex> lock         (m_lock);
+        std::unique_lock<std::mutex> lock         (m_mutex);
         auto                         vao_props_ptr(get_vao_ptr(in_vao_id,
                                                                in_opt_time_marker_ptr) );
 
@@ -257,7 +257,7 @@ bool OpenGL::GLVAOManager::set_element_array_buffer_binding(const GLuint& in_vao
     bool result = false;
 
     {
-        std::unique_lock<std::mutex> lock         (m_lock);
+        std::unique_lock<std::mutex> lock         (m_mutex);
         auto                         vao_props_ptr(get_vao_ptr(in_vao_id,
                                                                nullptr /* in_opt_time_marker_ptr */) );
 
@@ -290,7 +290,7 @@ bool OpenGL::GLVAOManager::set_vaa_state(const GLuint&                    in_vao
     bool result = false;
 
     {
-        std::unique_lock<std::mutex> lock         (m_lock);
+        std::unique_lock<std::mutex> lock         (m_mutex);
         auto                         vao_props_ptr(get_vao_ptr(in_vao_id,
                                                                nullptr /* in_opt_time_marker_ptr */) );
 

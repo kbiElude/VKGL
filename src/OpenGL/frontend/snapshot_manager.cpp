@@ -35,7 +35,7 @@ OpenGL::SnapshotManager::SnapshotManager(IStateSnapshotAccessors*  in_state_snap
 
 uint32_t OpenGL::SnapshotManager::get_n_references(const bool& in_include_tot_snapshot_references) const
 {
-    auto     lock   = std::unique_lock<std::mutex>(m_lock);
+    auto     lock   = std::unique_lock<std::mutex>(m_mutex);
     uint32_t result = 0;
 
     for (const auto& current_snapshot : m_snapshots)
