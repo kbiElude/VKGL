@@ -583,38 +583,65 @@ void OpenGL::GLObjectManager::update_last_modified_time(const GLuint& in_id)
     if (object_ptr != nullptr)
     {
         const auto old_last_modified_time   = object_ptr->last_modified_time;
-        void*      old_scratch_snapshot_ptr = nullptr;
 
         /* Update the "last modified time" timestamp */
         object_ptr->last_modified_time = std::chrono::high_resolution_clock::now();
 
-        /* Insert a new ToT snapshot, set it to the scratch state we passed in the preceding
-         * get_internal_object_props_ptr() call time.
+        /* SLOW PATH: Insert a new ToT snapshot, set it to the scratch state we passed in the preceding
+         *            get_internal_object_props_ptr() call time.
+         * FAST PATH: Make the current scratch snapshot the new ToT snapshot. Copy its contents over
+         *            to the former ToT snapshot and make it the new scratch snapshot. This saves us at least one mem alloc op.
+         *
+         * NOTE: Fast path can only be exercised if about-to-become-obsolete ToT snapshot has zero non-ToT references
+         *       (meaning there are outstanding backend ops which depend on the snapshot's existence).
          */
         {
-            std::unique_ptr<GeneralObjectStateSnapshot> new_snapshot_ptr;
+            auto old_snapshot_iterator = object_ptr->snapshots.find(old_last_modified_time);
 
-            vkgl_assert(object_ptr->snapshots.find(object_ptr->last_modified_time) == object_ptr->snapshots.end() );
+            if (old_snapshot_iterator->second->references.size() == 0)
+            {
+                /* FAST PATH */
+                {
+                    /* Copy scratch state to the snapshot.. */
+                    copy_internal_data_object(object_ptr->scratch_snapshot_ptr.get                (),
+                                              old_snapshot_iterator->second->internal_data_ptr.get() );
 
-            new_snapshot_ptr.reset(new GeneralObjectStateSnapshot() );
-            vkgl_assert(new_snapshot_ptr != nullptr);
+                    /* Move snapshot descriptor under the new timestamp */
+                    object_ptr->snapshots[object_ptr->last_modified_time] = std::move(old_snapshot_iterator->second);
+                }
 
-            old_scratch_snapshot_ptr            = object_ptr->scratch_snapshot_ptr.get();
-            new_snapshot_ptr->internal_data_ptr = std::move(object_ptr->scratch_snapshot_ptr);
+                /* Drop the old snapshot map entry */
+                object_ptr->snapshots.erase(old_last_modified_time);
+            }
+            else
+            {
+                /* SLOW PATH */
+                std::unique_ptr<GeneralObjectStateSnapshot> new_snapshot_ptr;
+                void*                                       old_scratch_snapshot_ptr = nullptr;
 
-            object_ptr->snapshots[object_ptr->last_modified_time] = std::move(new_snapshot_ptr);
-        }
+                vkgl_assert(object_ptr->snapshots.find(object_ptr->last_modified_time) == object_ptr->snapshots.end() );
 
-        /* Create a new scratch state. */
-        object_ptr->scratch_snapshot_ptr = clone_internal_data_object(old_scratch_snapshot_ptr);
-        vkgl_assert(object_ptr->scratch_snapshot_ptr != nullptr);
+                new_snapshot_ptr.reset(new GeneralObjectStateSnapshot() );
+                vkgl_assert(new_snapshot_ptr != nullptr);
 
-        /* Check if the previous ToT snapshot is being referenced. If not, it's safe to drop it.
-         * If there's at least 1 reference, the snapshot will be removed at some point in on_reference_destroyed()
-         */
-        if (object_ptr->snapshots.at(old_last_modified_time)->references.size() == 0)
-        {
-            object_ptr->snapshots.erase(old_last_modified_time);
+                old_scratch_snapshot_ptr            = object_ptr->scratch_snapshot_ptr.get();
+                new_snapshot_ptr->internal_data_ptr = std::move(object_ptr->scratch_snapshot_ptr);
+
+                object_ptr->snapshots[object_ptr->last_modified_time] = std::move(new_snapshot_ptr);
+
+                /* Create a new scratch state. */
+                object_ptr->scratch_snapshot_ptr = clone_internal_data_object(old_scratch_snapshot_ptr);
+                vkgl_assert(object_ptr->scratch_snapshot_ptr != nullptr);
+
+                /* Check if the previous ToT snapshot is being referenced. If not, it's safe to drop it.
+                 * If there's at least 1 reference, the snapshot will be removed at some point in on_reference_destroyed()
+                 */
+                if (object_ptr->snapshots.at(old_last_modified_time)->references.size() == 0)
+                {
+                    object_ptr->snapshots.erase(old_last_modified_time);
+                }
+
+            }
         }
     }
 }

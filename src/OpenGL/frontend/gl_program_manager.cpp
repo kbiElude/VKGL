@@ -8,6 +8,86 @@
 #include "OpenGL/frontend/gl_reference.h"
 #include <algorithm>
 
+#if 0
+std::unordered_map<std::string, uint32_t>                       active_attribute_name_to_location_map;
+std::vector<ActiveAttributeProperties>                          active_attributes;
+std::unordered_map<std::string, const ActiveUniformBlock*>      active_uniform_block_by_name_map;
+std::vector<ActiveUniformBlock>                                 active_uniform_blocks;
+std::unordered_map<std::string, const ActiveUniformProperties*> active_uniform_by_name_map;
+std::vector<ActiveUniformProperties>                            active_uniforms;
+FragDataLocationMap                                             frag_data_locations;
+std::unordered_map<uint32_t, UniformBlockAndUniformIndexPair>   index_to_ub_and_uniform_index_pair;
+std::string                                                     link_info_log;
+
+uint32_t active_attribute_max_length;
+uint32_t active_uniform_block_max_name_length;
+uint32_t active_uniform_max_length;
+#endif
+
+
+OpenGL::GLProgramManager::PostLinkData::PostLinkData()
+    :active_attribute_max_length         (0),
+     active_uniform_block_max_name_length(0),
+     active_uniform_max_length           (0)
+{
+    /* Stub */
+}
+
+OpenGL::GLProgramManager::PostLinkData::PostLinkData(const OpenGL::GLProgramManager::PostLinkData& in_data)
+{
+    active_attribute_name_to_location_map = in_data.active_attribute_name_to_location_map;
+    active_attributes                     = in_data.active_attributes;
+    active_uniform_blocks                 = in_data.active_uniform_blocks;
+    active_uniforms                       = in_data.active_uniforms;
+    frag_data_locations                   = in_data.frag_data_locations;
+    index_to_ub_and_uniform_index_pair    = in_data.index_to_ub_and_uniform_index_pair;
+    link_info_log                         = in_data.link_info_log;
+
+    active_attribute_max_length          = in_data.active_attribute_max_length;
+    active_uniform_block_max_name_length = in_data.active_uniform_block_max_name_length;
+    active_uniform_max_length            = in_data.active_uniform_max_length;
+
+    init_ptr_valued_maps();
+}
+
+OpenGL::GLProgramManager::PostLinkData& OpenGL::GLProgramManager::PostLinkData::operator=(const OpenGL::GLProgramManager::PostLinkData& in_data)
+{
+    active_attribute_name_to_location_map = in_data.active_attribute_name_to_location_map;
+    active_attributes                     = in_data.active_attributes;
+    active_uniform_blocks                 = in_data.active_uniform_blocks;
+    active_uniforms                       = in_data.active_uniforms;
+    frag_data_locations                   = in_data.frag_data_locations;
+    index_to_ub_and_uniform_index_pair    = in_data.index_to_ub_and_uniform_index_pair;
+    link_info_log                         = in_data.link_info_log;
+
+    active_attribute_max_length          = in_data.active_attribute_max_length;
+    active_uniform_block_max_name_length = in_data.active_uniform_block_max_name_length;
+    active_uniform_max_length            = in_data.active_uniform_max_length;
+
+    init_ptr_valued_maps();
+
+    return *this;
+}
+
+void OpenGL::GLProgramManager::PostLinkData::init_ptr_valued_maps()
+{
+    active_uniform_block_by_name_map.clear();
+    active_uniform_by_name_map.clear      ();
+
+    for (const auto& current_ub : active_uniform_blocks)
+    {
+        vkgl_assert(active_uniform_block_by_name_map.find(current_ub.name) == active_uniform_block_by_name_map.end() );
+
+        active_uniform_block_by_name_map[current_ub.name] = &current_ub;
+    }
+
+    for (const auto& current_uniform : active_uniforms)
+    {
+        vkgl_assert(active_uniform_by_name_map.find(current_uniform.name) == active_uniform_by_name_map.end() );
+
+        active_uniform_by_name_map[current_uniform.name] = &current_uniform;
+    }
+}
 
 OpenGL::GLProgramManager::Program::Program(const OpenGL::GLProgramManager::Program& in_program)
 {
@@ -47,6 +127,61 @@ OpenGL::GLProgramManager::Program::Program(const OpenGL::GLProgramManager::Progr
     delete_status   = in_program.delete_status;
     link_status     = in_program.link_status;
     validate_status = in_program.validate_status;
+}
+
+OpenGL::GLProgramManager::Program& OpenGL::GLProgramManager::Program::operator=(const OpenGL::GLProgramManager::Program& in_program)
+{
+    /* The two members need extra handling .. */
+    attached_shaders.clear();
+
+    for (auto& current_attached_shader_reference_ptr : in_program.attached_shaders)
+    {
+        auto new_reference_ptr = current_attached_shader_reference_ptr->clone();
+
+        vkgl_assert(new_reference_ptr != nullptr);
+
+        attached_shaders.push_back(
+            std::move(new_reference_ptr)
+        );
+    }
+
+    if (in_program.post_link_data_ptr != nullptr)
+    {
+        if (post_link_data_ptr == nullptr)
+        {
+            post_link_data_ptr.reset(new PostLinkData(*in_program.post_link_data_ptr) );
+            vkgl_assert(post_link_data_ptr != nullptr);
+        }
+        else
+        {
+            *post_link_data_ptr = *in_program.post_link_data_ptr;
+        }
+    }
+    else
+    {
+        post_link_data_ptr.reset();
+    }
+
+    /* Rest of the stuff is trivial. */
+    cached_attribute_location_bindings = in_program.cached_attribute_location_bindings;
+    cached_frag_data_locations         = in_program.cached_frag_data_locations;
+    infolog                            = in_program.infolog;
+
+    gs_input_type               = in_program.gs_input_type;
+    gs_output_type              = in_program.gs_output_type;
+    n_max_gs_vertices_generated = in_program.n_max_gs_vertices_generated;
+
+    tf_buffer_mode        = in_program.tf_buffer_mode;
+    tf_varyings           = in_program.tf_varyings;
+    tf_varying_max_length = in_program.tf_varying_max_length;
+
+    ub_index_to_ub_binding = in_program.ub_index_to_ub_binding;
+
+    delete_status   = in_program.delete_status;
+    link_status     = in_program.link_status;
+    validate_status = in_program.validate_status;
+
+    return *this;
 }
 
 OpenGL::GLProgramManager::GLProgramManager()
@@ -150,6 +285,12 @@ std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLProgramManager::clo
     vkgl_assert(result_ptr != nullptr);
 
     return result_ptr;
+}
+
+void OpenGL::GLProgramManager::copy_internal_data_object(const void* in_src_ptr,
+                                                         void*       in_dst_ptr)
+{
+    *reinterpret_cast<Program*>(in_dst_ptr) = *reinterpret_cast<const Program*>(in_src_ptr);
 }
 
 OpenGL::GLProgramManagerUniquePtr OpenGL::GLProgramManager::create()

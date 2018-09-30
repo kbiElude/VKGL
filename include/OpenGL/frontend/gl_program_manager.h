@@ -109,8 +109,10 @@ namespace OpenGL
 
     protected:
         /* Protected functions */
-        std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr) final;
-        std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object()                   final;
+        std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr)     final;
+        void                                               copy_internal_data_object  (const void* in_src_ptr,
+                                                                                       void*       in_dst_ptr) final;
+        std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object()                       final;
 
     private:
         /* Private type definitions */
@@ -253,6 +255,12 @@ namespace OpenGL
             uint32_t active_uniform_max_length;
 
             PostLinkData();
+            PostLinkData(const PostLinkData& in_data);
+
+            PostLinkData& operator=(const PostLinkData& in_data);
+
+        private:
+            void init_ptr_valued_maps();
         } PostLinkData;
 
         typedef struct Program
@@ -291,6 +299,8 @@ namespace OpenGL
             }
 
             Program(const Program& in_program);
+
+            Program& operator=(const Program& in_program);
         } Program;
 
         /* Private functions */

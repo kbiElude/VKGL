@@ -26,6 +26,15 @@ OpenGL::GLVAOManager::VAO::VAO(const OpenGL::IGLLimits* in_limits_ptr)
     vkgl_assert(vao_ptr != nullptr);
 }
 
+OpenGL::GLVAOManager::VAO& OpenGL::GLVAOManager::VAO::operator=(const OpenGL::GLVAOManager::VAO& in_vao)
+{
+    vkgl_assert(vao_ptr != nullptr);
+
+    *vao_ptr = *in_vao.vao_ptr;
+
+    return *this;
+}
+
 OpenGL::GLVAOManager::GLVAOManager(const IGLLimits* in_limits_ptr)
     :GLObjectManager(1,   /* in_first_valid_nondefault_id */
                      true /* in_expose_default_object     */),
@@ -50,6 +59,12 @@ std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLVAOManager::clone_i
     vkgl_assert(result_ptr != nullptr);
 
     return result_ptr;
+}
+
+void OpenGL::GLVAOManager::copy_internal_data_object(const void* in_src_ptr,
+                                                     void*       in_dst_ptr)
+{
+    *reinterpret_cast<VAO*>(in_dst_ptr) = *reinterpret_cast<const VAO*>(in_src_ptr);
 }
 
 OpenGL::GLVAOManagerUniquePtr OpenGL::GLVAOManager::create(const IGLLimits* in_limits_ptr)

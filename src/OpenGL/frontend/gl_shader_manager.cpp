@@ -33,6 +33,12 @@ std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLShaderManager::clon
     return result_ptr;
 }
 
+void OpenGL::GLShaderManager::copy_internal_data_object(const void* in_src_ptr,
+                                                         void*       in_dst_ptr)
+{
+    *reinterpret_cast<Shader*>(in_dst_ptr) = *reinterpret_cast<const Shader*>(in_src_ptr);
+}
+
 OpenGL::GLShaderManagerUniquePtr OpenGL::GLShaderManager::create()
 {
     OpenGL::GLShaderManagerUniquePtr result_ptr;

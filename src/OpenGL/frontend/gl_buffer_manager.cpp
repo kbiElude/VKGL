@@ -33,6 +33,12 @@ std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLBufferManager::clon
     return result_ptr;
 }
 
+void OpenGL::GLBufferManager::copy_internal_data_object(const void* in_src_ptr,
+                                                        void*       in_dst_ptr)
+{
+    *reinterpret_cast<Buffer*>(in_dst_ptr) = *reinterpret_cast<const Buffer*>(in_src_ptr);
+}
+
 OpenGL::GLBufferManagerUniquePtr OpenGL::GLBufferManager::create()
 {
     OpenGL::GLBufferManagerUniquePtr result_ptr;
