@@ -11,7 +11,7 @@ const OpenGL::TimeMarker OpenGL::LATEST_SNAPSHOT_AVAILABLE = OpenGL::TimeMarker(
 
 OpenGL::GLReference::~GLReference()
 {
-    m_manager_ptr->on_reference_destroyed(this);
+    m_on_reference_destroyed_func(this);
 }
 
 OpenGL::GLReferenceUniquePtr OpenGL::GLReference::clone() const
@@ -19,6 +19,6 @@ OpenGL::GLReferenceUniquePtr OpenGL::GLReference::clone() const
     /* When cloning, make sure to create a reference that points to exactly the same snapshot
      * of the same object this reference is pointing at!
      */
-    return m_manager_ptr->acquire_reference(m_id,
-                                            m_time_marker);
+    return m_acquire_reference_func(m_id,
+                                    m_time_marker);
 }

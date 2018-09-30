@@ -6,6 +6,7 @@
 #define VKGL_GL_OBJECT_MANAGER_H
 
 #include "OpenGL/frontend/gl_reference.h"
+#include "OpenGL/frontend/snapshot_manager.h"
 #include "OpenGL/namespace.h"
 #include <map>
 
@@ -20,11 +21,12 @@ namespace OpenGL
             /* Stub */
         }
 
-        virtual GLReferenceUniquePtr get_default_object_reference() const = 0;
+        virtual GLReferenceUniquePtr get_default_object_reference()                    const = 0;
+        virtual bool                 is_object_deleted           (const GLuint& in_id) const = 0;
     };
 
-    class GLObjectManager : public IObjectManagerReference,
-                            public IGLObjectManager
+    class GLObjectManager : public IGLObjectManager,
+                            public IStateSnapshotAccessors
     {
     public:
         /* Public functions */
@@ -53,64 +55,52 @@ namespace OpenGL
             Unknown
         };
 
-        typedef struct
-        {
-            std::unique_ptr<void, std::function<void(void*)> > internal_data_ptr;
-            std::vector<const GLReference*>                    references;
-        } GeneralObjectStateSnapshot;
-        typedef std::unique_ptr<GeneralObjectStateSnapshot> GeneralObjectStateSnapshotUniquePtr;
-
         typedef struct GeneralObjectProps
         {
-            GLuint             id;
-            OpenGL::TimeMarker last_modified_time;
-            Status             status;
+            GLuint                  id;
+            OpenGL::SnapshotManager snapshot_manager;
+            Status                  status;
 
-            std::unique_ptr<void, std::function<void(void*)> >                scratch_snapshot_ptr;
-            std::map<OpenGL::TimeMarker, GeneralObjectStateSnapshotUniquePtr> snapshots;
-            std::vector<const GLReference*>                                   tot_snapshot_references;
-
-            GeneralObjectProps()
+            GeneralObjectProps(IStateSnapshotAccessors* in_state_snapshot_accessors_ptr,
+                               std::function<void()>    in_on_all_references_deleted_func)
+                :snapshot_manager(in_state_snapshot_accessors_ptr,
+                                  std::chrono::high_resolution_clock::now(),
+                                  in_on_all_references_deleted_func)
             {
-                id                 = UINT32_MAX;
-                last_modified_time = std::chrono::high_resolution_clock::now();
-                status             = Status::Unknown;
+                id     = UINT32_MAX;
+                status = Status::Unknown;
             }
 
-            GeneralObjectProps(const GLuint& in_id)
+            GeneralObjectProps(IStateSnapshotAccessors* in_state_snapshot_accessors_ptr,
+                               const GLuint&            in_id,
+                               std::function<void()>    in_on_all_references_deleted_func)
+                :snapshot_manager(in_state_snapshot_accessors_ptr,
+                                  std::chrono::high_resolution_clock::now(),
+                                  in_on_all_references_deleted_func)
             {
-                id                 = in_id;
-                last_modified_time = std::chrono::high_resolution_clock::now();
-                status             = Status::Created_Not_Bound;
+                id     = in_id;
+                status = Status::Created_Not_Bound;
             }
         } GeneralObjectProps;
 
         /* IGLObjectManager interface */
-        GLReferenceUniquePtr get_default_object_reference() const final;
-
-        /* IObjectManagerReference interface */
-        GLReferenceUniquePtr acquire_reference     (const GLuint&              in_id,
-                                                    const OpenGL::TimeMarker&  in_time_marker)   final;
-        void                 on_reference_created  (const OpenGL::GLReference* in_reference_ptr) final;
-        void                 on_reference_destroyed(const OpenGL::GLReference* in_reference_ptr) final;
+        GLReferenceUniquePtr get_default_object_reference()                    const final;
+        bool                 is_object_deleted           (const GLuint& in_id) const final;
 
         /* Protected functions */
 
         GLObjectManager(const GLuint& in_first_valid_nondefault_id,
                         const bool&   in_expose_default_object);
 
+        GLReferenceUniquePtr      acquire_reference            (const GLuint&             in_id,
+                                                                const OpenGL::TimeMarker& in_time_marker);
         const GeneralObjectProps* get_general_object_props_ptr (const GLuint&             in_id) const;
         const void*               get_internal_object_props_ptr(const GLuint&             in_id,
                                                                 const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
         void*                     get_internal_object_props_ptr(const GLuint&             in_id,
                                                                 const OpenGL::TimeMarker* in_opt_time_marker_ptr);
         bool                      init                         ();
-        void                      update_last_modified_time    (const GLuint&             in_id);
-
-        virtual std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr)     = 0;
-        virtual void                                               copy_internal_data_object  (const void* in_src_ptr,
-                                                                                               void*       in_dst_ptr) = 0;
-        virtual std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object()                       = 0;
+        bool                      update_last_modified_time    (const GLuint&             in_id);
 
         /* Protected variables */
         OpenGL::NamespaceUniquePtr m_id_manager_ptr;
@@ -122,15 +112,16 @@ namespace OpenGL
         bool                 m_releasing;
 
     private:
+
         /* Private functions */
 
-        bool     delete_object    (const GLuint&      in_id);
-        uint32_t get_n_references (const GLuint&      in_id) const;
-        Status   get_object_status(const GLuint&      in_id) const;
-        bool     insert_object    (const GLuint&      in_id);
-        bool     is_id_valid      (const GLuint&      in_id) const;
-        bool     set_object_status(const GLuint&      in_id,
-                                   const Status&      in_new_status);
+        bool     delete_object                     (const GLuint&      in_id);
+        Status   get_object_status                 (const GLuint&      in_id) const;
+        bool     insert_object                     (const GLuint&      in_id);
+        bool     is_id_valid                       (const GLuint&      in_id) const;
+        void     on_all_snapshot_references_deleted(GLuint             in_id);
+        bool     set_object_status                 (const GLuint&      in_id,
+                                                    const Status&      in_new_status);
 
         GeneralObjectProps* get_general_object_props_ptr(const GLuint& in_id);
 

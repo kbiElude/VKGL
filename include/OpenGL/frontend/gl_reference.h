@@ -20,17 +20,19 @@ namespace OpenGL
     {
     public:
         /* Public functions */
-        /* NOTE: References created using this constructor can be passed to backend. */
-        GLReference(const GLuint&                    in_id,
-                    const OpenGL::TimeMarker&        in_time_marker,
-                    OpenGL::IObjectManagerReference* in_manager_ptr)
-            :m_id         (in_id),
-             m_manager_ptr(in_manager_ptr),
-             m_time_marker(in_time_marker)
-        {
-            vkgl_assert(m_manager_ptr != nullptr);
 
-            m_manager_ptr->on_reference_created(this);
+        GLReference(const GLuint&                                                           in_id,
+                    const OpenGL::TimeMarker&                                               in_time_marker,
+                    std::function<void(GLReference*) >                                      in_on_reference_created_func,
+                    std::function<void(GLReference*) >                                      in_on_reference_destroyed_func,
+                    std::function<OpenGL::GLReferenceUniquePtr(GLuint, OpenGL::TimeMarker)> in_acquire_reference_func)
+            :m_acquire_reference_func     (in_acquire_reference_func),
+             m_id                         (in_id),
+             m_on_reference_created_func  (in_on_reference_created_func),
+             m_on_reference_destroyed_func(in_on_reference_destroyed_func),
+             m_time_marker                (in_time_marker)
+        {
+            m_on_reference_created_func(this);
         }
 
         ~GLReference();
@@ -59,31 +61,17 @@ namespace OpenGL
                     m_time_marker != in_ref.m_time_marker);
         }
     private:
-#if 0
-        std::unique_ptr<GLReference, std::function<void(GLReference*)> > create(const GLuint&             in_id,
-                                                                                const OpenGL::TimeMarker& in_time_marker,
-                                                                                OpenGL::IGLObjectManager* in_manager_ptr)
-        {
-            std::unique_ptr<GLReference, std::function<void(GLReference*)> > result_ptr;
-
-            result_ptr.reset(
-                new OpenGL::GLReference(in_id,
-                                        in_time_marker,
-                                        in_manager_ptr)
-            );
-
-            vkgl_assert(result_ptr != nullptr);
-            return result_ptr;
-        }
-#endif
 
         GLReference           (const GLReference&);
         GLReference& operator=(const GLReference&);
 
         /* Private variables */
-        const GLuint                           m_id;
-        OpenGL::IObjectManagerReference* const m_manager_ptr;
-        OpenGL::TimeMarker                     m_time_marker;
+        const GLuint       m_id;
+        OpenGL::TimeMarker m_time_marker;
+
+        std::function<OpenGL::GLReferenceUniquePtr(GLuint, OpenGL::TimeMarker)> m_acquire_reference_func;
+        std::function<void(GLReference*) >                                      m_on_reference_created_func;
+        std::function<void(GLReference*) >                                      m_on_reference_destroyed_func;
     };
 }
 

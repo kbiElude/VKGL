@@ -366,18 +366,18 @@ namespace OpenGL
         virtual uint32_t                                   get_uniform_buffer_offset_alignment              () const = 0;
     };
 
-    class IObjectManagerReference
+    class IStateSnapshotAccessors
     {
     public:
-        virtual ~IObjectManagerReference()
+        virtual ~IStateSnapshotAccessors()
         {
             /* Stub */
         }
 
-        virtual GLReferenceUniquePtr acquire_reference     (const GLuint&             in_id,
-                                                            const OpenGL::TimeMarker& in_time_marker)   = 0;
-        virtual void                 on_reference_created  (const GLReference*        in_reference_ptr) = 0;
-        virtual void                 on_reference_destroyed(const GLReference*        in_reference_ptr) = 0;
+        virtual std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr)     = 0;
+        virtual void                                               copy_internal_data_object  (const void* in_src_ptr,
+                                                                                               void*       in_dst_ptr) = 0;
+        virtual std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object()                       = 0;
     };
 };
 
