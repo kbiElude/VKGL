@@ -28,10 +28,11 @@ namespace OpenGL
        void                get_pixel_store_parameter    (const OpenGL::PixelStoreProperty&     in_pname,
                                                          const OpenGL::GetSetArgumentType&     in_arg_type,
                                                          void*                                 out_arg_value_ptr) const;
-       const ContextState* get_state                    ()                                                        const;
        void                get_texture_binding_parameter(const OpenGL::TextureBindingProperty& in_pname,
                                                          const OpenGL::GetSetArgumentType&     in_arg_type,
                                                          void*                                 out_arg_value_ptr) const;
+
+       const ContextState* get_state(const OpenGL::TimeMarker& in_time_marker = OpenGL::LATEST_SNAPSHOT_AVAILABLE) const;
 
        const OpenGL::GLReference* get_bound_buffer_object      (const OpenGL::BufferTarget& in_target) const;
        const OpenGL::GLReference* get_bound_buffer_object      (const OpenGL::BufferTarget& in_target,

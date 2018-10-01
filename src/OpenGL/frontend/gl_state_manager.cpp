@@ -693,10 +693,17 @@ void OpenGL::GLStateManager::get_pixel_store_parameter(const OpenGL::PixelStoreP
     }
 }
 
-const OpenGL::ContextState* OpenGL::GLStateManager::get_state() const
+const OpenGL::ContextState* OpenGL::GLStateManager::get_state(const OpenGL::TimeMarker& in_time_marker) const
 {
-    auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
+    /* NOTE: If in_time_marker is OpenGL::LATEST_SNAPSHOT_AVAILABLE, the function should only be called from rendering context's thread!
+     *       Otherwise, the returned pointer may go out of scope at any time.
+     *
+     *       For all other cases, the returned pointer remains valid as long as there's at least one GLReference instance pointing to the
+     *       specified snapshot.
+     */
+    auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(in_time_marker) );
 
+    vkgl_assert(state_ptr != nullptr);
     return state_ptr;
 }
 
