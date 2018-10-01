@@ -451,6 +451,14 @@ OpenGL::Context::Context(const VKGL::IWSIContext*     in_wsi_context_ptr,
 
 OpenGL::Context::~Context()
 {
+    m_gl_state_manager_ptr.reset();
+
+    m_gl_buffer_manager_ptr.reset ();
+    m_gl_program_manager_ptr.reset();
+    m_gl_shader_manager_ptr.reset ();
+    m_gl_texture_manager_ptr.reset();
+    m_gl_vao_manager_ptr.reset    ();
+
     /* Stub */
 }
 

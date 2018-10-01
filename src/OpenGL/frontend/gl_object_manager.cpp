@@ -48,7 +48,7 @@ OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_current_latest_sna
     OpenGL::GLReferenceUniquePtr result_ptr;
 
     result_ptr = acquire_reference(in_id,
-                                   get_general_object_props_ptr(in_id)->snapshot_manager.get_last_modified_time() );
+                                   get_general_object_props_ptr(in_id)->snapshot_manager_ptr->get_last_modified_time() );
 
     vkgl_assert(result_ptr != nullptr);
 
@@ -79,16 +79,16 @@ OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_reference(const GL
         result_ptr.reset(
             new GLReference(in_id,
                             in_time_marker,
-                            std::bind(&OpenGL::ISnapshotManagerReference::on_reference_created,
-                                      dynamic_cast<ISnapshotManagerReference*>(&object_ptr->snapshot_manager),
+                            std::bind(&OpenGL::SnapshotManager::on_reference_created,
+                                      object_ptr->snapshot_manager_ptr.get(),
                                       std::placeholders::_1),
-                            std::bind(&OpenGL::ISnapshotManagerReference::on_reference_destroyed,
-                                      dynamic_cast<ISnapshotManagerReference*>(&object_ptr->snapshot_manager),
+                            std::bind(&OpenGL::SnapshotManager::on_reference_destroyed,
+                                      object_ptr->snapshot_manager_ptr.get(),
                                       std::placeholders::_1),
-                             std::bind(&OpenGL::GLObjectManager::acquire_reference,
-                                       this,
-                                       std::placeholders::_1,
-                                       std::placeholders::_2)
+                            std::bind(&OpenGL::GLObjectManager::acquire_reference,
+                                      this,
+                                      std::placeholders::_1,
+                                      std::placeholders::_2)
             )
         );
 
@@ -135,7 +135,7 @@ bool OpenGL::GLObjectManager::delete_ids(const uint32_t& in_n_ids,
             /* Only destroy the object *IF* there are no remaining active references. Otherwise, assign
              * a corresponding status to the object and leave it alone.
              */
-            if (m_object_ptrs.at(current_id)->snapshot_manager.get_n_references(true /* include_tot_snapshot_references */) == 0)
+            if (m_object_ptrs.at(current_id)->snapshot_manager_ptr->get_n_references(true /* include_tot_snapshot_references */) == 0)
             {
                 delete_object(current_id);
             }
@@ -168,8 +168,8 @@ bool OpenGL::GLObjectManager::delete_object(const GLuint& in_id)
     vkgl_assert(object_iterator != m_object_ptrs.end() );
     if (object_iterator != m_object_ptrs.end() )
     {
-        const auto n_nontot_references = object_iterator->second->snapshot_manager.get_n_references(false /* in_include_tot_snapshots_references */);
-        const auto n_snapshots         = object_iterator->second->snapshot_manager.get_n_snapshots ();
+        const auto n_nontot_references = object_iterator->second->snapshot_manager_ptr->get_n_references(false /* in_include_tot_snapshots_references */);
+        const auto n_snapshots         = object_iterator->second->snapshot_manager_ptr->get_n_snapshots ();
 
         vkgl_assert((n_snapshots == 0)                             ||
                     (n_snapshots == 1 && n_nontot_references == 0) );
@@ -256,11 +256,11 @@ const void* OpenGL::GLObjectManager::get_internal_object_props_ptr(const GLuint&
 
     if (props_ptr != nullptr)
     {
-        const OpenGL::TimeMarker time_marker = (in_opt_time_marker_ptr == nullptr)                                                                 ? props_ptr->snapshot_manager.get_last_modified_time()
-                                             : (in_opt_time_marker_ptr != nullptr && *in_opt_time_marker_ptr == OpenGL::LATEST_SNAPSHOT_AVAILABLE) ? props_ptr->snapshot_manager.get_last_modified_time()
+        const OpenGL::TimeMarker time_marker = (in_opt_time_marker_ptr == nullptr)                                                                 ? props_ptr->snapshot_manager_ptr->get_last_modified_time()
+                                             : (in_opt_time_marker_ptr != nullptr && *in_opt_time_marker_ptr == OpenGL::LATEST_SNAPSHOT_AVAILABLE) ? props_ptr->snapshot_manager_ptr->get_last_modified_time()
                                              : *in_opt_time_marker_ptr;
 
-        result_ptr = props_ptr->snapshot_manager.get_readonly_snapshot(time_marker);
+        result_ptr = props_ptr->snapshot_manager_ptr->get_readonly_snapshot(time_marker);
     }
 
     return result_ptr;
@@ -274,16 +274,16 @@ void* OpenGL::GLObjectManager::get_internal_object_props_ptr(const GLuint&      
 
     if (props_ptr != nullptr)
     {
-        const OpenGL::TimeMarker time_marker = (in_opt_time_marker_ptr == nullptr)                                                                 ? props_ptr->snapshot_manager.get_last_modified_time()
-                                             : (in_opt_time_marker_ptr != nullptr && *in_opt_time_marker_ptr == OpenGL::LATEST_SNAPSHOT_AVAILABLE) ? props_ptr->snapshot_manager.get_last_modified_time()
+        const OpenGL::TimeMarker time_marker = (in_opt_time_marker_ptr == nullptr)                                                                 ? props_ptr->snapshot_manager_ptr->get_last_modified_time()
+                                             : (in_opt_time_marker_ptr != nullptr && *in_opt_time_marker_ptr == OpenGL::LATEST_SNAPSHOT_AVAILABLE) ? props_ptr->snapshot_manager_ptr->get_last_modified_time()
                                              : *in_opt_time_marker_ptr;
 
         /* NOTE: This function must ONLY be called for potential update purposes. State updates can only be performed
          *       against ToT state snapshots.
          */
-        vkgl_assert(time_marker == props_ptr->snapshot_manager.get_last_modified_time() );
+        vkgl_assert(time_marker == props_ptr->snapshot_manager_ptr->get_last_modified_time() );
 
-        result_ptr = props_ptr->snapshot_manager.get_rw_tot_snapshot();
+        result_ptr = props_ptr->snapshot_manager_ptr->get_rw_tot_snapshot();
     }
 
     return result_ptr;
@@ -456,7 +456,7 @@ bool OpenGL::GLObjectManager::update_last_modified_time(const GLuint& in_id)
 
     if (object_ptr != nullptr)
     {
-        object_ptr->snapshot_manager.update_last_modified_time();
+        object_ptr->snapshot_manager_ptr->update_last_modified_time();
 
         result = true;
     }

@@ -57,29 +57,36 @@ namespace OpenGL
 
         typedef struct GeneralObjectProps
         {
-            GLuint                  id;
-            OpenGL::SnapshotManager snapshot_manager;
-            Status                  status;
+            GLuint                                   id;
+            std::unique_ptr<OpenGL::SnapshotManager> snapshot_manager_ptr;
+            Status                                   status;
 
             GeneralObjectProps(IStateSnapshotAccessors* in_state_snapshot_accessors_ptr,
                                std::function<void()>    in_on_all_references_deleted_func)
-                :snapshot_manager(in_state_snapshot_accessors_ptr,
-                                  std::chrono::high_resolution_clock::now(),
-                                  in_on_all_references_deleted_func)
             {
                 id     = UINT32_MAX;
                 status = Status::Unknown;
+
+                snapshot_manager_ptr.reset(
+                    new SnapshotManager(in_state_snapshot_accessors_ptr,
+                                        std::chrono::high_resolution_clock::now(),
+                                        in_on_all_references_deleted_func)
+                );
+                vkgl_assert(snapshot_manager_ptr != nullptr);
             }
 
             GeneralObjectProps(IStateSnapshotAccessors* in_state_snapshot_accessors_ptr,
                                const GLuint&            in_id,
                                std::function<void()>    in_on_all_references_deleted_func)
-                :snapshot_manager(in_state_snapshot_accessors_ptr,
-                                  std::chrono::high_resolution_clock::now(),
-                                  in_on_all_references_deleted_func)
             {
                 id     = in_id;
                 status = Status::Created_Not_Bound;
+
+                snapshot_manager_ptr.reset(
+                    new SnapshotManager(in_state_snapshot_accessors_ptr,
+                                        std::chrono::high_resolution_clock::now(),
+                                        in_on_all_references_deleted_func)
+                );
             }
         } GeneralObjectProps;
 

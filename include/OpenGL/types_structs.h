@@ -101,6 +101,8 @@ namespace OpenGL
             /* Stub */
         }
 
+        IndexedBufferBinding           (const IndexedBufferBinding& in_binding);
+        IndexedBufferBinding& operator=(const IndexedBufferBinding& in_binding);
     } IndexedBufferBinding;
 
     typedef struct RangedBufferBinding
@@ -779,10 +781,16 @@ namespace OpenGL
         bool        is_program_point_size_enabled;
         PolygonMode polygon_mode;
 
-        explicit ContextState(const IGLLimits* in_limits_ptr,
-                              const int32_t*   in_viewport_ivec4_ptr,
-                              const int32_t*   in_scissor_box_ivec4_ptr);
+        explicit ContextState(const IGLObjectManager* in_buffer_manager_ptr,
+                              const IGLObjectManager* in_vao_manager_ptr,
+                              const IGLLimits*        in_limits_ptr,
+                              const int32_t*          in_viewport_ivec4_ptr,
+                              const int32_t*          in_scissor_box_ivec4_ptr);
 
+        ContextState           (const ContextState& in_context_state);
+        ContextState& operator=(const ContextState& in_context_state);
+
+        ~ContextState();
     } ContextState;
 
     typedef std::unique_ptr<ContextState> ContextStateUniquePtr;

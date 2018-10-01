@@ -55,7 +55,9 @@ const void* OpenGL::SnapshotManager::get_readonly_snapshot(const OpenGL::TimeMar
 {
     auto        lock              = std::unique_lock<std::mutex>(m_mutex);
     const void* result_ptr        = nullptr;
-    auto        snapshot_iterator = m_snapshots.find(in_time_marker);
+    const auto  time_marker       = (in_time_marker == OpenGL::LATEST_SNAPSHOT_AVAILABLE) ? m_last_modified_time
+                                                                                          : in_time_marker;
+    auto        snapshot_iterator = m_snapshots.find(time_marker);
 
     vkgl_assert(snapshot_iterator != m_snapshots.end() );
     if (snapshot_iterator != m_snapshots.end() )
@@ -163,6 +165,9 @@ void OpenGL::SnapshotManager::update_last_modified_time()
      *            get_internal_object_props_ptr() call time.
      * FAST PATH: Make the current scratch snapshot the new ToT snapshot. Copy its contents over
      *            to the former ToT snapshot and make it the new scratch snapshot. This saves us at least one mem alloc op.
+     *
+     * TODO: For immutable objects, we should always use a SUPER-FAST PATH which assumes only one snapshot will ever be needed,
+     *       meaning we don't actually need the scratch/ToT distinction.
      *
      * NOTE: Fast path can only be exercised if about-to-become-obsolete ToT snapshot has zero non-ToT references
      *       (meaning there are outstanding backend ops which depend on the snapshot's existence).

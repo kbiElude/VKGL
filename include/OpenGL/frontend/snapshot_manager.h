@@ -69,6 +69,7 @@ namespace OpenGL
         std::function<void()>    m_on_all_references_deleted_func;
         IStateSnapshotAccessors* m_state_snapshot_accesors_ptr;
 
+        friend class OpenGL::GLObjectManager;
     };
 };
 

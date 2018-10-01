@@ -23,6 +23,7 @@ namespace OpenGL
     class Context;
     class GLBufferManager;
     class GLLimits;
+    class GLObjectManager;
     class GLProgramManager;
     class GLReference;
     class GLShaderManager;

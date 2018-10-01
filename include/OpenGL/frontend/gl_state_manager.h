@@ -7,21 +7,17 @@
 
 #include "OpenGL/types.h"
 #include "OpenGL/frontend/gl_reference.h"
+#include "OpenGL/frontend/snapshot_manager.h"
 
 namespace OpenGL
 {
-    class GLStateManager
+    class GLStateManager : public IStateSnapshotAccessors
     {
     public:
         GLStateManager(const IGLLimits*        in_limits_ptr,
                        const IGLObjectManager* in_buffer_manager_ptr,
                        const IGLObjectManager* in_vao_manager_ptr);
        ~GLStateManager();
-
-       const OpenGL::TimeMarker& get_last_modified_time() const
-       {
-           return m_last_modified_time;
-       }
 
        OpenGL::ErrorCode   get_error                    (const bool&                           in_reset_error_code = true);
        void                get_parameter                (const OpenGL::ContextProperty&        in_pname,
@@ -130,10 +126,15 @@ namespace OpenGL
         {
             OpenGL::GetSetArgumentType getter_value_type;
             uint32_t                   n_value_components;
-            void*                      value_ptr;
+            size_t                     value_offset;
         }
         PropertyData;
 
+        /* IStateSnapshotAccessors */
+        std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr)     final;
+        void                                               copy_internal_data_object  (const void* in_src_ptr,
+                                                                                       void*       in_dst_ptr) final;
+        std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object()                       final;
 
         /* Private functions */
 
@@ -142,15 +143,15 @@ namespace OpenGL
 
         /* Private variables */
 
-        OpenGL::ErrorCode      m_current_error_code;
-        const IGLLimits* const m_limits_ptr;
-        ContextStateUniquePtr  m_state_ptr;
+        const IGLObjectManager*                  m_buffer_manager_ptr;
+        OpenGL::ErrorCode                        m_current_error_code;
+        const IGLLimits* const                   m_limits_ptr;
+        std::unique_ptr<OpenGL::SnapshotManager> m_snapshot_manager_ptr;
+        const IGLObjectManager*                  m_vao_manager_ptr;
 
         std::unordered_map<OpenGL::ContextProperty,    PropertyData> m_context_prop_map;
         std::unordered_map<OpenGL::PixelStoreProperty, PropertyData> m_pixel_store_prop_map;
         std::unordered_map<OpenGL::PointProperty,      PropertyData> m_point_prop_map;
-
-        OpenGL::TimeMarker m_last_modified_time;
     };
 
     typedef std::unique_ptr<GLStateManager> GLStateManagerUniquePtr;

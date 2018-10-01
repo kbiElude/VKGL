@@ -11,7 +11,10 @@ const OpenGL::TimeMarker OpenGL::LATEST_SNAPSHOT_AVAILABLE = OpenGL::TimeMarker(
 
 OpenGL::GLReference::~GLReference()
 {
-    m_on_reference_destroyed_func(this);
+    if (m_on_reference_destroyed_func != nullptr)
+    {
+        m_on_reference_destroyed_func(this);
+    }
 }
 
 OpenGL::GLReferenceUniquePtr OpenGL::GLReference::clone() const
