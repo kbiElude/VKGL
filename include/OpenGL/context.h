@@ -831,6 +831,13 @@ namespace OpenGL
             return m_gl_shader_manager_ptr.get();
         }
 
+        OpenGL::GLStateManager* get_state_manager_ptr() const final
+        {
+            vkgl_assert(m_gl_state_manager_ptr != nullptr);
+
+            return m_gl_state_manager_ptr.get();
+        }
+
         OpenGL::GLTextureManager* get_texture_manager_ptr() const final
         {
             vkgl_assert(m_gl_texture_manager_ptr != nullptr);

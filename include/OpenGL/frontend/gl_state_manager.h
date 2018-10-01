@@ -19,6 +19,8 @@ namespace OpenGL
                        const IGLObjectManager* in_vao_manager_ptr);
        ~GLStateManager();
 
+       GLReferenceUniquePtr acquire_current_latest_snapshot_reference();
+
        OpenGL::ErrorCode   get_error                    (const bool&                           in_reset_error_code = true);
        void                get_parameter                (const OpenGL::ContextProperty&        in_pname,
                                                          const OpenGL::GetSetArgumentType&     in_arg_type,

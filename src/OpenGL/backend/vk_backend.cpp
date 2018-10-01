@@ -12,6 +12,7 @@
 #include "OpenGL/frontend/gl_buffer_manager.h"
 #include "OpenGL/frontend/gl_program_manager.h"
 #include "OpenGL/frontend/gl_shader_manager.h"
+#include "OpenGL/frontend/gl_state_manager.h"
 
 /* TODO: Touching heap memory is awful, but right now this happens in every command handler because
  *       command processing happens in scheduler's thread to ensure the app never gets blocked by VKGL.
@@ -296,24 +297,22 @@ void OpenGL::VKBackend::draw_arrays(const OpenGL::DrawCallMode& in_mode,
                                     const GLint&                in_first,
                                     const GLsizei&              in_count)
 {
-    /* 1. Generate a state snapshot ..
-     *
-     * TODO!
-     */
-    vkgl_not_implemented();
+    /* 1. Grab a snapshot of current context's state. */
+    auto state_reference_ptr = m_frontend_ptr->get_state_manager_ptr()->acquire_current_latest_snapshot_reference();
 
-#if 0
+    vkgl_assert(state_reference_ptr != nullptr);
+
     /* 2. Spawn the command container .. */
     OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::DrawArraysCommand(in_count,
                                                                        in_first,
                                                                        in_mode,
-                                                                       std::move(state_snapshot_ptr) ),
+                                                                       std::move(state_reference_ptr) ),
                                          std::default_delete<OpenGL::CommandBase>() );
 
     vkgl_assert(cmd_ptr != nullptr);
 
+    /* 2. Submit the command */
     m_scheduler_ptr->submit(std::move(cmd_ptr) );
-#endif
 }
 
 void OpenGL::VKBackend::draw_elements(const OpenGL::DrawCallMode&      in_mode,

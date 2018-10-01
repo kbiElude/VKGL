@@ -277,6 +277,7 @@ namespace OpenGL
         virtual OpenGL::GLBufferManager*  get_buffer_manager_ptr () const = 0;
         virtual OpenGL::GLProgramManager* get_program_manager_ptr() const = 0;
         virtual OpenGL::GLShaderManager*  get_shader_manager_ptr () const = 0;
+        virtual OpenGL::GLStateManager*   get_state_manager_ptr  () const = 0;
         virtual OpenGL::GLTextureManager* get_texture_manager_ptr() const = 0;
         virtual OpenGL::GLVAOManager*     get_vao_manager_ptr    () const = 0;
     };

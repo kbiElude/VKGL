@@ -6,10 +6,12 @@
 #include "OpenGL/frontend/gl_reference.h"
 #include "OpenGL/frontend/snapshot_manager.h"
 
-OpenGL::SnapshotManager::SnapshotManager(IStateSnapshotAccessors*  in_state_snapshot_accesors_ptr,
+OpenGL::SnapshotManager::SnapshotManager(const GLuint&             in_object_id,
+                                         IStateSnapshotAccessors*  in_state_snapshot_accesors_ptr,
                                          const OpenGL::TimeMarker& in_start_time_marker,
                                          std::function<void()>     in_on_all_references_deleted_func)
     :m_last_modified_time            (in_start_time_marker),
+     m_object_id                     (in_object_id),
      m_on_all_references_deleted_func(in_on_all_references_deleted_func),
      m_state_snapshot_accesors_ptr   (in_state_snapshot_accesors_ptr)
 {
@@ -31,6 +33,37 @@ OpenGL::SnapshotManager::SnapshotManager(IStateSnapshotAccessors*  in_state_snap
 
     /* Stash the base snapshot. */
     m_snapshots[m_last_modified_time] = std::move(new_snapshot_ptr);
+}
+
+OpenGL::GLReferenceUniquePtr OpenGL::SnapshotManager::acquire_reference(const OpenGL::TimeMarker& in_time_marker)
+{
+    OpenGL::GLReferenceUniquePtr result_ptr(nullptr,
+                                            std::default_delete<OpenGL::GLReference>() );
+
+    result_ptr.reset(
+        new GLReference(m_object_id,
+                        in_time_marker,
+                        std::bind(&OpenGL::SnapshotManager::on_reference_created,
+                                  this,
+                                  std::placeholders::_1),
+                        std::bind(&OpenGL::SnapshotManager::on_reference_destroyed,
+                                  this,
+                                  std::placeholders::_1),
+                        std::bind(&OpenGL::SnapshotManager::acquire_reference,
+                                  this,
+                                  std::placeholders::_2)
+        )
+    );
+
+    if (result_ptr == nullptr)
+    {
+        vkgl_assert(result_ptr != nullptr);
+
+        goto end;
+    }
+
+end:
+    return result_ptr;
 }
 
 uint32_t OpenGL::SnapshotManager::get_n_references(const bool& in_include_tot_snapshot_references) const

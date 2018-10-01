@@ -76,21 +76,7 @@ OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_reference(const GL
         }
         #endif
 
-        result_ptr.reset(
-            new GLReference(in_id,
-                            in_time_marker,
-                            std::bind(&OpenGL::SnapshotManager::on_reference_created,
-                                      object_ptr->snapshot_manager_ptr.get(),
-                                      std::placeholders::_1),
-                            std::bind(&OpenGL::SnapshotManager::on_reference_destroyed,
-                                      object_ptr->snapshot_manager_ptr.get(),
-                                      std::placeholders::_1),
-                            std::bind(&OpenGL::GLObjectManager::acquire_reference,
-                                      this,
-                                      std::placeholders::_1,
-                                      std::placeholders::_2)
-            )
-        );
+        result_ptr = object_ptr->snapshot_manager_ptr->acquire_reference(in_time_marker);
 
         if (result_ptr == nullptr)
         {

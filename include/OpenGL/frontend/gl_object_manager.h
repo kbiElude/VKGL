@@ -61,6 +61,7 @@ namespace OpenGL
             std::unique_ptr<OpenGL::SnapshotManager> snapshot_manager_ptr;
             Status                                   status;
 
+#if 0
             GeneralObjectProps(IStateSnapshotAccessors* in_state_snapshot_accessors_ptr,
                                std::function<void()>    in_on_all_references_deleted_func)
             {
@@ -68,12 +69,14 @@ namespace OpenGL
                 status = Status::Unknown;
 
                 snapshot_manager_ptr.reset(
-                    new SnapshotManager(in_state_snapshot_accessors_ptr,
+                    new SnapshotManager(id,
+                                        in_state_snapshot_accessors_ptr,
                                         std::chrono::high_resolution_clock::now(),
                                         in_on_all_references_deleted_func)
                 );
                 vkgl_assert(snapshot_manager_ptr != nullptr);
             }
+#endif
 
             GeneralObjectProps(IStateSnapshotAccessors* in_state_snapshot_accessors_ptr,
                                const GLuint&            in_id,
@@ -83,7 +86,8 @@ namespace OpenGL
                 status = Status::Created_Not_Bound;
 
                 snapshot_manager_ptr.reset(
-                    new SnapshotManager(in_state_snapshot_accessors_ptr,
+                    new SnapshotManager(id,
+                                        in_state_snapshot_accessors_ptr,
                                         std::chrono::high_resolution_clock::now(),
                                         in_on_all_references_deleted_func)
                 );

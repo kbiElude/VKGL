@@ -26,9 +26,12 @@ namespace OpenGL
     {
     public:
         /* Public functions */
-        SnapshotManager(IStateSnapshotAccessors*  in_state_snapshot_accesors_ptr,
+        SnapshotManager(const GLuint&             in_object_id,
+                        IStateSnapshotAccessors*  in_state_snapshot_accesors_ptr,
                         const OpenGL::TimeMarker& in_start_time_marker,
                         std::function<void()>     in_on_all_references_deleted_func);
+
+        OpenGL::GLReferenceUniquePtr acquire_reference(const OpenGL::TimeMarker& in_time_marker);
 
         const OpenGL::TimeMarker& get_last_modified_time() const
         {
@@ -62,6 +65,7 @@ namespace OpenGL
         /* Private variables */
         OpenGL::TimeMarker                                   m_last_modified_time;
         mutable std::mutex                                   m_mutex;
+        const GLuint                                         m_object_id;
         std::unique_ptr<void, std::function<void(void*)> >   m_scratch_snapshot_ptr;
         std::map<OpenGL::TimeMarker, StateSnapshotUniquePtr> m_snapshots;
         std::vector<const GLReference*>                      m_tot_snapshot_references;

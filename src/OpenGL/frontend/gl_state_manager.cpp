@@ -19,7 +19,8 @@ OpenGL::GLStateManager::GLStateManager(const IGLLimits*        in_limits_ptr,
 {
     /* Initialize snapshot manager.. */
     m_snapshot_manager_ptr.reset(
-        new OpenGL::SnapshotManager(dynamic_cast<OpenGL::IStateSnapshotAccessors*>(this),
+        new OpenGL::SnapshotManager(0, /* in_object_id - don't care */
+                                    dynamic_cast<OpenGL::IStateSnapshotAccessors*>(this),
                                     std::chrono::high_resolution_clock::now(),
                                     nullptr)
     );
@@ -37,6 +38,14 @@ OpenGL::GLStateManager::GLStateManager(const IGLLimits*        in_limits_ptr,
 OpenGL::GLStateManager::~GLStateManager()
 {
     m_snapshot_manager_ptr.reset();
+}
+
+OpenGL::GLReferenceUniquePtr OpenGL::GLStateManager::acquire_current_latest_snapshot_reference()
+{
+    /* NOTE: Must only be called from rendering context's thread */
+    vkgl_assert(m_snapshot_manager_ptr != nullptr);
+
+    return m_snapshot_manager_ptr->acquire_reference(m_snapshot_manager_ptr->get_last_modified_time() );
 }
 
 std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLStateManager::clone_internal_data_object(const void* in_ptr)
