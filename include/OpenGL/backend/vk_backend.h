@@ -329,7 +329,7 @@ namespace OpenGL
         /* Private variables */
 
         std::unordered_map<OpenGL::BackendCapability, CapabilityData> m_capabilities;
-        Anvil::SGPUDeviceUniquePtr                                    m_device_ptr;
+        Anvil::BaseDeviceUniquePtr                                    m_device_ptr;
         const IContextObjectManagers*                                 m_frontend_ptr;
         Anvil::InstanceUniquePtr                                      m_instance_ptr;
         OpenGL::VKSchedulerUniquePtr                                  m_scheduler_ptr;
