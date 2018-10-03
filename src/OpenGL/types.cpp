@@ -584,7 +584,7 @@ OpenGL::VertexAttributeArrayState::VertexAttributeArrayState()
 OpenGL::VertexAttributeArrayState::VertexAttributeArrayState(const VertexAttributeArrayState& in_vaa_state)
 {
     buffer_binding_ptr = (in_vaa_state.buffer_binding_ptr != nullptr) ? in_vaa_state.buffer_binding_ptr->clone()
-                                                                      : GLReferenceUniquePtr();
+                                                                      : ReferenceUniquePtr();
     enabled            = in_vaa_state.enabled;
     integer            = in_vaa_state.integer;
     normalized         = in_vaa_state.normalized;
@@ -597,7 +597,7 @@ OpenGL::VertexAttributeArrayState::VertexAttributeArrayState(const VertexAttribu
 OpenGL::VertexAttributeArrayState& OpenGL::VertexAttributeArrayState::operator=(const VertexAttributeArrayState& in_state)
 {
     buffer_binding_ptr = (in_state.buffer_binding_ptr != nullptr) ? in_state.buffer_binding_ptr->clone()
-                                                                  : GLReferenceUniquePtr();
+                                                                  : ReferenceUniquePtr();
     enabled            = in_state.enabled;
     integer            = in_state.integer;
     normalized         = in_state.normalized;

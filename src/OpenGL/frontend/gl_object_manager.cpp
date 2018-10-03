@@ -30,9 +30,9 @@ OpenGL::GLObjectManager::~GLObjectManager()
     }
 }
 
-OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_always_latest_snapshot_reference(const GLuint& in_id)
+OpenGL::ReferenceUniquePtr OpenGL::GLObjectManager::acquire_always_latest_snapshot_reference(const GLuint& in_id)
 {
-    OpenGL::GLReferenceUniquePtr result_ptr;
+    OpenGL::ReferenceUniquePtr result_ptr;
 
     result_ptr = acquire_reference(in_id,
                                    OpenGL::LATEST_SNAPSHOT_AVAILABLE);
@@ -42,10 +42,10 @@ OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_always_latest_snap
     return result_ptr;
 }
 
-OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_current_latest_snapshot_reference(const GLuint& in_id)
+OpenGL::ReferenceUniquePtr OpenGL::GLObjectManager::acquire_current_latest_snapshot_reference(const GLuint& in_id)
 {
     /* NOTE: Must only be called from rendering context's thread */
-    OpenGL::GLReferenceUniquePtr result_ptr;
+    OpenGL::ReferenceUniquePtr result_ptr;
 
     result_ptr = acquire_reference(in_id,
                                    get_general_object_props_ptr(in_id)->snapshot_manager_ptr->get_last_modified_time() );
@@ -55,11 +55,11 @@ OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_current_latest_sna
     return result_ptr;
 }
 
-OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::acquire_reference(const GLuint&              in_id,
-                                                                        const OpenGL::TimeMarker&  in_time_marker)
+OpenGL::ReferenceUniquePtr OpenGL::GLObjectManager::acquire_reference(const GLuint&              in_id,
+                                                                      const OpenGL::TimeMarker&  in_time_marker)
 {
-    OpenGL::GLReferenceUniquePtr result_ptr(nullptr,
-                                            std::default_delete<OpenGL::GLReference>() );
+    OpenGL::ReferenceUniquePtr result_ptr(nullptr,
+                                          std::default_delete<OpenGL::Reference>() );
 
     {
         std::unique_lock<std::mutex> lock      (m_mutex);
@@ -195,15 +195,15 @@ end:
     return result;
 }
 
-OpenGL::GLReferenceUniquePtr OpenGL::GLObjectManager::get_default_object_reference() const
+OpenGL::ReferenceUniquePtr OpenGL::GLObjectManager::get_default_object_reference() const
 {
     /* Default object NEVER goes out of scope. Hence, we wrap a raw ptr to the pre-baked reference and make
      * sure the destructor never gets called.
      */
     vkgl_assert(m_expose_default_object);
 
-    return OpenGL::GLReferenceUniquePtr(m_default_object_reference_ptr.get(),
-                                        [](OpenGL::GLReference*){ /* Stub */});
+    return OpenGL::ReferenceUniquePtr(m_default_object_reference_ptr.get(),
+                                      [](OpenGL::Reference*){ /* Stub */});
 }
 
 const OpenGL::GLObjectManager::GeneralObjectProps* OpenGL::GLObjectManager::get_general_object_props_ptr(const GLuint& in_id) const
@@ -275,6 +275,19 @@ void* OpenGL::GLObjectManager::get_internal_object_props_ptr(const GLuint&      
     return result_ptr;
 }
 
+OpenGL::TimeMarker OpenGL::GLObjectManager::get_object_creation_time(const GLuint& in_id) const
+{
+    const auto         props_ptr = get_general_object_props_ptr(in_id);
+    OpenGL::TimeMarker result;
+
+    if (props_ptr != nullptr)
+    {
+        result = props_ptr->creation_time;
+    }
+
+    return result;
+}
+
 OpenGL::GLObjectManager::Status OpenGL::GLObjectManager::get_object_status(const GLuint& in_id) const
 {
     const auto                      object_ptr = get_general_object_props_ptr(in_id);
@@ -331,6 +344,14 @@ bool OpenGL::GLObjectManager::insert_object(const GLuint& in_id)
     bool       result          = false;
     const auto object_iterator = m_object_ptrs.find(in_id);
 
+    /* TODO: This assertion check will trigger when:
+     *
+     * 1. Frontend creates an object.
+     * 2. Frontend schedules ops operating on the object for execution in the backend.
+     * 3. Frontend immediately destroys an object.
+     *
+     * Need to move about-to-be-destroyed object descriptors with pending references to a separate map.
+     */
     vkgl_assert(object_iterator == m_object_ptrs.end() );
     if (object_iterator == m_object_ptrs.end() )
     {

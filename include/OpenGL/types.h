@@ -25,19 +25,20 @@ namespace OpenGL
     class GLLimits;
     class GLObjectManager;
     class GLProgramManager;
-    class GLReference;
     class GLShaderManager;
     class GLStateManager;
     class GLTextureManager;
     class GLVAOManager;
     class IGLLimits;
     class IGLObjectManager;
+    class Reference;
     class VKBackend;
+    class VKBufferManager;
     class VKScheduler;
 
-    typedef std::unique_ptr<GLReference, std::function<void(GLReference*)> > GLReferenceUniquePtr;
-    typedef std::unique_ptr<VKBackend>                                       VKBackendUniquePtr;
-    typedef std::unique_ptr<VKScheduler>                                     VKSchedulerUniquePtr;
+    typedef std::unique_ptr<Reference, std::function<void(Reference*)> > ReferenceUniquePtr;
+    typedef std::unique_ptr<VKBackend>                                   VKBackendUniquePtr;
+    typedef std::unique_ptr<VKScheduler>                                 VKSchedulerUniquePtr;
 
     typedef std::chrono::high_resolution_clock::time_point TimeMarker;
 

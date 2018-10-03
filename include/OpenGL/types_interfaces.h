@@ -31,6 +31,13 @@ namespace OpenGL
             /* Stub */
         }
 
+        virtual void on_objects_created  (const OpenGL::ObjectType& in_object_type,
+                                          const uint32_t&           in_n_ids,
+                                          const GLuint*             in_ids_ptr)    = 0;
+        virtual void on_objects_destroyed(const OpenGL::ObjectType& in_object_type,
+                                          const uint32_t&           in_n_ids,
+                                          const GLuint*             in_ids_ptr)    = 0;
+
         virtual void  buffer_data              (const GLuint&               in_id,
                                                 const GLsizeiptr&           in_size,
                                                 const void*                 in_data_ptr) = 0;

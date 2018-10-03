@@ -9,7 +9,7 @@
 const OpenGL::TimeMarker OpenGL::LATEST_SNAPSHOT_AVAILABLE = OpenGL::TimeMarker(std::chrono::nanoseconds(0) );
 
 
-OpenGL::GLReference::~GLReference()
+OpenGL::Reference::~Reference()
 {
     if (m_on_reference_destroyed_func != nullptr)
     {
@@ -17,7 +17,7 @@ OpenGL::GLReference::~GLReference()
     }
 }
 
-OpenGL::GLReferenceUniquePtr OpenGL::GLReference::clone() const
+OpenGL::ReferenceUniquePtr OpenGL::Reference::clone() const
 {
     /* When cloning, make sure to create a reference that points to exactly the same snapshot
      * of the same object this reference is pointing at!

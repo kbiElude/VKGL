@@ -81,9 +81,9 @@ namespace OpenGL
 
     typedef struct IndexedBufferBinding
     {
-        OpenGL::GLReferenceUniquePtr reference_ptr;
-        size_t                       size;
-        size_t                       start_offset;
+        OpenGL::ReferenceUniquePtr reference_ptr;
+        size_t                     size;
+        size_t                     start_offset;
 
         IndexedBufferBinding()
         {
@@ -91,9 +91,9 @@ namespace OpenGL
             start_offset = SIZE_MAX;
         }
 
-        IndexedBufferBinding(OpenGL::GLReferenceUniquePtr in_reference_ptr,
-                             const size_t&                in_start_offset,
-                             const size_t&                in_size)
+        IndexedBufferBinding(OpenGL::ReferenceUniquePtr in_reference_ptr,
+                             const size_t&              in_start_offset,
+                             const size_t&              in_size)
             :reference_ptr(std::move(in_reference_ptr) ),
              size         (in_size),
              start_offset (in_start_offset)
@@ -639,7 +639,7 @@ namespace OpenGL
 
     typedef struct VertexAttributeArrayState
     {
-        GLReferenceUniquePtr     buffer_binding_ptr;
+        ReferenceUniquePtr       buffer_binding_ptr;
         bool                     enabled;
         bool                     integer;
         bool                     normalized;
@@ -737,9 +737,9 @@ namespace OpenGL
         uint32_t stencil_writemask_back;
         uint32_t stencil_writemask_front;
 
-        OpenGL::GLReferenceUniquePtr binding_draw_framebuffer;
-        OpenGL::GLReferenceUniquePtr binding_read_framebuffer;
-        OpenGL::GLReferenceUniquePtr binding_renderbuffer;
+        OpenGL::ReferenceUniquePtr binding_draw_framebuffer;
+        OpenGL::ReferenceUniquePtr binding_read_framebuffer;
+        OpenGL::ReferenceUniquePtr binding_renderbuffer;
 
         uint32_t pack_alignment;
         uint32_t pack_image_height;
@@ -759,10 +759,10 @@ namespace OpenGL
         bool     unpack_swap_bytes;
 
         std::unordered_map<IndexedBufferTarget,  IndexedBufferBinding, IndexedBufferTargetHashFunction> indexed_buffer_binding_ptrs;
-        std::unordered_map<OpenGL::BufferTarget, OpenGL::GLReferenceUniquePtr>                          nonindexed_buffer_binding_ptrs;
-        OpenGL::GLReferenceUniquePtr                                                                    program_reference_ptr;
+        std::unordered_map<OpenGL::BufferTarget, OpenGL::ReferenceUniquePtr>                            nonindexed_buffer_binding_ptrs;
+        OpenGL::ReferenceUniquePtr                                                                      program_reference_ptr;
         std::unordered_map<TextureUnit, OpenGL::TextureUnitStateUniquePtr>                              texture_unit_to_state_ptr_map;
-        OpenGL::GLReferenceUniquePtr                                                                    vao_reference_ptr;
+        OpenGL::ReferenceUniquePtr                                                                      vao_reference_ptr;
 
         OpenGL::HintMode hint_fragment_shader_derivative;
         OpenGL::HintMode hint_line_smooth;

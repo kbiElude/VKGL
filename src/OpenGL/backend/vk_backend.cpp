@@ -805,6 +805,104 @@ void OpenGL::VKBackend::multi_draw_elements(const OpenGL::DrawCallMode&      in_
     vkgl_not_implemented();
 }
 
+void OpenGL::VKBackend::on_objects_created(const OpenGL::ObjectType& in_object_type,
+                                           const uint32_t&           in_n_ids,
+                                           const GLuint*             in_ids_ptr)
+{
+    /* NOTE: Called from application's rendering thread. */
+
+    switch (in_object_type)
+    {
+        case OpenGL::ObjectType::Buffer:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case OpenGL::ObjectType::Program:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case OpenGL::ObjectType::Shader:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case OpenGL::ObjectType::Texture:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case OpenGL::ObjectType::Vertex_Array_Object:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+}
+
+void OpenGL::VKBackend::on_objects_destroyed(const OpenGL::ObjectType& in_object_type,
+                                             const uint32_t&           in_n_ids,
+                                             const GLuint*             in_ids_ptr)
+{
+    switch (in_object_type)
+    {
+        case OpenGL::ObjectType::Buffer:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case OpenGL::ObjectType::Program:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case OpenGL::ObjectType::Shader:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case OpenGL::ObjectType::Texture:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case OpenGL::ObjectType::Vertex_Array_Object:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+}
+
 void OpenGL::VKBackend::read_pixels(const int32_t&             in_x,
                                     const int32_t&             in_y,
                                     const size_t&              in_width,
