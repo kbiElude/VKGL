@@ -443,6 +443,16 @@ bool OpenGL::VKBackend::init()
         goto end;
     }
 
+    /* Init various object managers .. */
+    m_buffer_manager_ptr = OpenGL::VKBufferManager::create();
+
+    if (m_buffer_manager_ptr == nullptr)
+    {
+        vkgl_assert(m_buffer_manager_ptr != nullptr);
+
+        goto end;
+    }
+
     /* NOTE: We postpone creation of the scheduler to set_frontend_callback(), since we need to be able to pass
      *       a ptr to the frontend at scheduler creation time. However, in order to create the frontend, backend
      *       instance need to be specified.
