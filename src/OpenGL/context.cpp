@@ -1096,7 +1096,8 @@ GLuint OpenGL::Context::create_program()
 {
     GLuint result_id = 0;
 
-    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_program_manager_ptr   != nullptr);
 
     if (!m_gl_program_manager_ptr->generate_ids(1, /* in_n_ids */
                                                &result_id) )
@@ -1106,6 +1107,9 @@ GLuint OpenGL::Context::create_program()
         goto end;
     }
 
+    m_backend_gl_callbacks_ptr->on_objects_created(OpenGL::ObjectType::Program,
+                                                   1, /* in_n_ids */
+                                                  &result_id);
 end:
     return result_id;
 }
@@ -1114,7 +1118,8 @@ GLuint OpenGL::Context::create_shader(const OpenGL::ShaderType& in_type)
 {
     GLuint result_id = 0;
 
-    vkgl_assert(m_gl_shader_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_shader_manager_ptr    != nullptr);
 
     if (!m_gl_shader_manager_ptr->generate_ids(1, /* in_n_ids */
                                               &result_id) )
@@ -1132,6 +1137,9 @@ GLuint OpenGL::Context::create_shader(const OpenGL::ShaderType& in_type)
         goto end;
     }
 
+    m_backend_gl_callbacks_ptr->on_objects_created(OpenGL::ObjectType::Shader,
+                                                   1, /* in_n_ids */
+                                                  &result_id);
 end:
     return result_id;
 }
@@ -1141,7 +1149,8 @@ void OpenGL::Context::delete_buffers(const GLsizei&  in_n,
 {
     bool result;
 
-    vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_buffer_manager_ptr    != nullptr);
 
     result = m_gl_buffer_manager_ptr->delete_ids(in_n,
                                                  in_ids_ptr);
@@ -1150,6 +1159,10 @@ void OpenGL::Context::delete_buffers(const GLsizei&  in_n,
     {
         vkgl_assert_fail();
     }
+
+    m_backend_gl_callbacks_ptr->on_objects_destroyed(OpenGL::ObjectType::Buffer,
+                                                     in_n,
+                                                     in_ids_ptr);
 }
 
 void OpenGL::Context::delete_framebuffers(const GLsizei&  in_n,
@@ -1160,10 +1173,15 @@ void OpenGL::Context::delete_framebuffers(const GLsizei&  in_n,
 
 void OpenGL::Context::delete_program(const GLuint& in_id)
 {
-    vkgl_assert(m_gl_program_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_program_manager_ptr   != nullptr);
 
     m_gl_program_manager_ptr->delete_ids(1, /* in_n_ids */
                                         &in_id);
+
+    m_backend_gl_callbacks_ptr->on_objects_destroyed(OpenGL::ObjectType::Program,
+                                                     1,
+                                                    &in_id);
 }
 
 void OpenGL::Context::delete_queries(const GLsizei&  in_n,
@@ -1194,10 +1212,15 @@ void OpenGL::Context::delete_renderbuffers(const GLsizei& in_n,
 
 void OpenGL::Context::delete_shader(const GLuint& in_id)
 {
-    vkgl_assert(m_gl_shader_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_shader_manager_ptr    != nullptr);
 
     m_gl_shader_manager_ptr->delete_ids(1, /* in_n_ids */
                                        &in_id);
+
+    m_backend_gl_callbacks_ptr->on_objects_destroyed(OpenGL::ObjectType::Buffer,
+                                                     1, /* in_n_ids */
+                                                    &in_id);
 }
 
 void OpenGL::Context::delete_sync(const GLsync& in_sync)
@@ -1228,10 +1251,15 @@ void OpenGL::Context::delete_textures(const GLsizei& in_n,
 void OpenGL::Context::delete_vertex_arrays(const GLsizei& in_n,
                                            const GLuint*  in_arrays_ptr)
 {
-    vkgl_assert(m_gl_vao_manager_ptr != nullptr);
+    vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
+    vkgl_assert(m_gl_vao_manager_ptr       != nullptr);
 
     m_gl_vao_manager_ptr->delete_ids(in_n,
                                      in_arrays_ptr);
+
+    m_backend_gl_callbacks_ptr->on_objects_destroyed(OpenGL::ObjectType::Vertex_Array_Object,
+                                                     in_n,
+                                                     in_arrays_ptr);
 }
 
 void OpenGL::Context::detach_shader(const GLuint& in_program,

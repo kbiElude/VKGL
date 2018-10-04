@@ -659,7 +659,6 @@ namespace OpenGL
         Float,
         GeometryInputTypeVKGL,
         GeometryOutputTypeVKGL,
-        GLRereferenceObjectIDPtrVKGL, /* Pointer to OpenGL::GLReferenceUniquePtr instance; return ID of the bound object; *value may be nullptr in which case return 0. */
         HintModeVKGL,
         Int,
         Int64,
@@ -667,6 +666,7 @@ namespace OpenGL
         Pointer,
         PointSpriteCoordOriginVKGL,
         ProvokingVertexConventionVKGL,
+        RereferenceObjectIDPtrVKGL, /* Pointer to OpenGL::ReferenceUniquePtr instance; return ID of the bound object; *value may be nullptr in which case return 0. */
         ShaderTypeVKGL,
         Short,
         StencilFunctionVKGL,
@@ -825,6 +825,17 @@ namespace OpenGL
         Texture_Cube_Map,
 
         Unknown,
+    };
+
+    enum class ObjectType
+    {
+        Buffer,
+        Program,
+        Shader,
+        Texture,
+        Vertex_Array_Object,
+
+        Unknown
     };
 
     enum class PixelFormat

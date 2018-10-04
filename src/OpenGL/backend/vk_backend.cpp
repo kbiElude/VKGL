@@ -443,6 +443,16 @@ bool OpenGL::VKBackend::init()
         goto end;
     }
 
+    /* Init various object managers .. */
+    m_buffer_manager_ptr = OpenGL::VKBufferManager::create();
+
+    if (m_buffer_manager_ptr == nullptr)
+    {
+        vkgl_assert(m_buffer_manager_ptr != nullptr);
+
+        goto end;
+    }
+
     /* NOTE: We postpone creation of the scheduler to set_frontend_callback(), since we need to be able to pass
      *       a ptr to the frontend at scheduler creation time. However, in order to create the frontend, backend
      *       instance need to be specified.
@@ -803,6 +813,104 @@ void OpenGL::VKBackend::multi_draw_elements(const OpenGL::DrawCallMode&      in_
                                             const GLsizei&                   in_drawcount)
 {
     vkgl_not_implemented();
+}
+
+void OpenGL::VKBackend::on_objects_created(const OpenGL::ObjectType& in_object_type,
+                                           const uint32_t&           in_n_ids,
+                                           const GLuint*             in_ids_ptr)
+{
+    /* NOTE: Called from application's rendering thread. */
+
+    switch (in_object_type)
+    {
+        case OpenGL::ObjectType::Buffer:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case OpenGL::ObjectType::Program:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case OpenGL::ObjectType::Shader:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case OpenGL::ObjectType::Texture:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case OpenGL::ObjectType::Vertex_Array_Object:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+}
+
+void OpenGL::VKBackend::on_objects_destroyed(const OpenGL::ObjectType& in_object_type,
+                                             const uint32_t&           in_n_ids,
+                                             const GLuint*             in_ids_ptr)
+{
+    switch (in_object_type)
+    {
+        case OpenGL::ObjectType::Buffer:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case OpenGL::ObjectType::Program:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case OpenGL::ObjectType::Shader:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case OpenGL::ObjectType::Texture:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case OpenGL::ObjectType::Vertex_Array_Object:
+        {
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
 }
 
 void OpenGL::VKBackend::read_pixels(const int32_t&             in_x,

@@ -6,6 +6,7 @@
 #define VKGL_VK_BACKEND_H
 
 #include "Anvil/include/misc/types.h"
+#include "OpenGL/backend/vk_buffer_manager.h"
 #include "OpenGL/types.h"
 
 namespace OpenGL
@@ -96,6 +97,13 @@ namespace OpenGL
                             void*                             out_result_ptr) const final;
 
         /* IBackendGLCallbacks functions */
+
+        void on_objects_created  (const OpenGL::ObjectType& in_object_type,
+                                  const uint32_t&           in_n_ids,
+                                  const GLuint*             in_ids_ptr) final;
+        void on_objects_destroyed(const OpenGL::ObjectType& in_object_type,
+                                  const uint32_t&           in_n_ids,
+                                  const GLuint*             in_ids_ptr) final;
 
         void  buffer_data              (const GLuint&               in_id,
                                         const GLsizeiptr&           in_size,
@@ -328,6 +336,7 @@ namespace OpenGL
 
         /* Private variables */
 
+        VKBufferManagerUniquePtr                                      m_buffer_manager_ptr;
         std::unordered_map<OpenGL::BackendCapability, CapabilityData> m_capabilities;
         Anvil::BaseDeviceUniquePtr                                    m_device_ptr;
         const IContextObjectManagers*                                 m_frontend_ptr;

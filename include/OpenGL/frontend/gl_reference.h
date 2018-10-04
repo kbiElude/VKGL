@@ -16,16 +16,16 @@ namespace OpenGL
      */
     extern const OpenGL::TimeMarker LATEST_SNAPSHOT_AVAILABLE;
 
-    class GLReference
+    class Reference
     {
     public:
         /* Public functions */
 
-        GLReference(const GLuint&                                                           in_id,
-                    const OpenGL::TimeMarker&                                               in_time_marker,
-                    std::function<void(GLReference*) >                                      in_on_reference_created_func,
-                    std::function<void(GLReference*) >                                      in_on_reference_destroyed_func,
-                    std::function<OpenGL::GLReferenceUniquePtr(GLuint, OpenGL::TimeMarker)> in_acquire_reference_func)
+        Reference(const GLuint&                                                         in_id,
+                  const OpenGL::TimeMarker&                                             in_time_marker,
+                  std::function<void(Reference*) >                                      in_on_reference_created_func,
+                  std::function<void(Reference*) >                                      in_on_reference_destroyed_func,
+                  std::function<OpenGL::ReferenceUniquePtr(GLuint, OpenGL::TimeMarker)> in_acquire_reference_func)
             :m_acquire_reference_func     (in_acquire_reference_func),
              m_id                         (in_id),
              m_on_reference_created_func  (in_on_reference_created_func),
@@ -35,9 +35,9 @@ namespace OpenGL
             m_on_reference_created_func(this);
         }
 
-        ~GLReference();
+        ~Reference();
 
-        GLReferenceUniquePtr clone() const;
+        ReferenceUniquePtr clone() const;
 
         const GLuint& get_id() const
         {
@@ -49,29 +49,29 @@ namespace OpenGL
             return m_time_marker;
         }
 
-        bool operator==(const GLReference& in_ref) const
+        bool operator==(const Reference& in_ref) const
         {
             return (m_id          == in_ref.m_id          &&
                     m_time_marker == in_ref.m_time_marker);
         }
 
-        bool operator!=(const GLReference& in_ref) const
+        bool operator!=(const Reference& in_ref) const
         {
             return (m_id          != in_ref.m_id          ||
                     m_time_marker != in_ref.m_time_marker);
         }
     private:
 
-        GLReference           (const GLReference&);
-        GLReference& operator=(const GLReference&);
+        Reference           (const Reference&);
+        Reference& operator=(const Reference&);
 
         /* Private variables */
         const GLuint       m_id;
         OpenGL::TimeMarker m_time_marker;
 
-        std::function<OpenGL::GLReferenceUniquePtr(GLuint, OpenGL::TimeMarker)> m_acquire_reference_func;
-        std::function<void(GLReference*) >                                      m_on_reference_created_func;
-        std::function<void(GLReference*) >                                      m_on_reference_destroyed_func;
+        std::function<OpenGL::ReferenceUniquePtr(GLuint, OpenGL::TimeMarker)> m_acquire_reference_func;
+        std::function<void(Reference*) >                                      m_on_reference_created_func;
+        std::function<void(Reference*) >                                      m_on_reference_destroyed_func;
     };
 }
 

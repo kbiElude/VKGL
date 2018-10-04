@@ -35,23 +35,23 @@ OpenGL::SnapshotManager::SnapshotManager(const GLuint&             in_object_id,
     m_snapshots[m_last_modified_time] = std::move(new_snapshot_ptr);
 }
 
-OpenGL::GLReferenceUniquePtr OpenGL::SnapshotManager::acquire_reference(const OpenGL::TimeMarker& in_time_marker)
+OpenGL::ReferenceUniquePtr OpenGL::SnapshotManager::acquire_reference(const OpenGL::TimeMarker& in_time_marker)
 {
-    OpenGL::GLReferenceUniquePtr result_ptr(nullptr,
-                                            std::default_delete<OpenGL::GLReference>() );
+    OpenGL::ReferenceUniquePtr result_ptr(nullptr,
+                                          std::default_delete<OpenGL::Reference>() );
 
     result_ptr.reset(
-        new GLReference(m_object_id,
-                        in_time_marker,
-                        std::bind(&OpenGL::SnapshotManager::on_reference_created,
-                                  this,
-                                  std::placeholders::_1),
-                        std::bind(&OpenGL::SnapshotManager::on_reference_destroyed,
-                                  this,
-                                  std::placeholders::_1),
-                        std::bind(&OpenGL::SnapshotManager::acquire_reference,
-                                  this,
-                                  std::placeholders::_2)
+        new Reference(m_object_id,
+                      in_time_marker,
+                      std::bind(&OpenGL::SnapshotManager::on_reference_created,
+                                this,
+                                std::placeholders::_1),
+                      std::bind(&OpenGL::SnapshotManager::on_reference_destroyed,
+                                this,
+                                std::placeholders::_1),
+                      std::bind(&OpenGL::SnapshotManager::acquire_reference,
+                                this,
+                                std::placeholders::_2)
         )
     );
 
@@ -106,7 +106,7 @@ void* OpenGL::SnapshotManager::get_rw_tot_snapshot()
     return m_scratch_snapshot_ptr.get();
 }
 
-void OpenGL::SnapshotManager::on_reference_created(const OpenGL::GLReference* in_reference_ptr)
+void OpenGL::SnapshotManager::on_reference_created(const OpenGL::Reference* in_reference_ptr)
 {
     auto lock = std::unique_lock<std::mutex>(m_mutex);
 
@@ -126,7 +126,7 @@ void OpenGL::SnapshotManager::on_reference_created(const OpenGL::GLReference* in
     }
 }
 
-void OpenGL::SnapshotManager::on_reference_destroyed(const OpenGL::GLReference* in_reference_ptr)
+void OpenGL::SnapshotManager::on_reference_destroyed(const OpenGL::Reference* in_reference_ptr)
 {
     const auto object_id          = in_reference_ptr->get_id         ();
     const auto object_time_marker = in_reference_ptr->get_time_marker();

@@ -18,8 +18,8 @@ namespace OpenGL
             /* Stub */
         }
 
-        virtual void on_reference_created  (const OpenGL::GLReference* in_reference_ptr) = 0;
-        virtual void on_reference_destroyed(const OpenGL::GLReference* in_reference_ptr) = 0;
+        virtual void on_reference_created  (const OpenGL::Reference* in_reference_ptr) = 0;
+        virtual void on_reference_destroyed(const OpenGL::Reference* in_reference_ptr) = 0;
     };
 
     class SnapshotManager : public ISnapshotManagerReference
@@ -31,7 +31,7 @@ namespace OpenGL
                         const OpenGL::TimeMarker& in_start_time_marker,
                         std::function<void()>     in_on_all_references_deleted_func);
 
-        OpenGL::GLReferenceUniquePtr acquire_reference(const OpenGL::TimeMarker& in_time_marker);
+        OpenGL::ReferenceUniquePtr acquire_reference(const OpenGL::TimeMarker& in_time_marker);
 
         const OpenGL::TimeMarker& get_last_modified_time() const
         {
@@ -53,14 +53,14 @@ namespace OpenGL
         typedef struct
         {
             std::unique_ptr<void, std::function<void(void*)> > internal_data_ptr;
-            std::vector<const GLReference*>                    references;
+            std::vector<const Reference*>                      references;
         } StateSnapshot;
         typedef std::unique_ptr<StateSnapshot> StateSnapshotUniquePtr;
 
         /* ISnapshotManagerReference */
 
-        void on_reference_created  (const OpenGL::GLReference* in_reference_ptr) final;
-        void on_reference_destroyed(const OpenGL::GLReference* in_reference_ptr) final;
+        void on_reference_created  (const OpenGL::Reference* in_reference_ptr) final;
+        void on_reference_destroyed(const OpenGL::Reference* in_reference_ptr) final;
 
         /* Private variables */
         OpenGL::TimeMarker                                   m_last_modified_time;
@@ -68,7 +68,7 @@ namespace OpenGL
         const GLuint                                         m_object_id;
         std::unique_ptr<void, std::function<void(void*)> >   m_scratch_snapshot_ptr;
         std::map<OpenGL::TimeMarker, StateSnapshotUniquePtr> m_snapshots;
-        std::vector<const GLReference*>                      m_tot_snapshot_references;
+        std::vector<const Reference*>                        m_tot_snapshot_references;
 
         std::function<void()>    m_on_all_references_deleted_func;
         IStateSnapshotAccessors* m_state_snapshot_accesors_ptr;
