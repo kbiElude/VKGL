@@ -34,11 +34,13 @@ namespace OpenGL
     class Reference;
     class VKBackend;
     class VKBufferManager;
+    class VKFrameGraph;
     class VKScheduler;
 
-    typedef std::unique_ptr<Reference, std::function<void(Reference*)> > ReferenceUniquePtr;
-    typedef std::unique_ptr<VKBackend>                                   VKBackendUniquePtr;
-    typedef std::unique_ptr<VKScheduler>                                 VKSchedulerUniquePtr;
+    typedef std::unique_ptr<Reference, std::function<void(Reference*)> >       ReferenceUniquePtr;
+    typedef std::unique_ptr<VKBackend>                                         VKBackendUniquePtr;
+    typedef std::unique_ptr<VKFrameGraph, std::function<void(VKFrameGraph*)> > VKFrameGraphUniquePtr;
+    typedef std::unique_ptr<VKScheduler>                                       VKSchedulerUniquePtr;
 
     typedef std::chrono::high_resolution_clock::time_point TimeMarker;
 

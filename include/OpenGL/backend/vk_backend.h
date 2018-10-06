@@ -7,6 +7,7 @@
 
 #include "Anvil/include/misc/types.h"
 #include "OpenGL/backend/vk_buffer_manager.h"
+#include "OpenGL/backend/vk_frame_graph.h"
 #include "OpenGL/types.h"
 
 namespace OpenGL
@@ -339,6 +340,7 @@ namespace OpenGL
         VKBufferManagerUniquePtr                                      m_buffer_manager_ptr;
         std::unordered_map<OpenGL::BackendCapability, CapabilityData> m_capabilities;
         Anvil::BaseDeviceUniquePtr                                    m_device_ptr;
+        OpenGL::VKFrameGraphUniquePtr                                 m_frame_graph_ptr;
         const IContextObjectManagers*                                 m_frontend_ptr;
         Anvil::InstanceUniquePtr                                      m_instance_ptr;
         OpenGL::VKSchedulerUniquePtr                                  m_scheduler_ptr;
