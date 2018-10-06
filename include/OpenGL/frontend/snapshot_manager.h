@@ -33,6 +33,11 @@ namespace OpenGL
 
         OpenGL::ReferenceUniquePtr acquire_reference(const OpenGL::TimeMarker& in_time_marker);
 
+        OpenGL::ReferenceUniquePtr acquire_reference_from_payload(OpenGL::GLPayload in_payload)
+        {
+            return acquire_reference(in_payload.time_marker);
+        }
+
         const OpenGL::TimeMarker& get_last_modified_time() const
         {
             return m_last_modified_time;

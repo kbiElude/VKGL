@@ -30,6 +30,16 @@ namespace OpenGL
         bool                       destroy_object(const GLuint&             in_id,
                                                   const OpenGL::TimeMarker& in_frontend_object_creation_time);
 
+        OpenGL::ReferenceUniquePtr acquire_object_from_payload(OpenGL::GLPayload    in_payload,
+                                                               Anvil::Buffer**      out_opt_buffer_ptr,
+                                                               Anvil::MemoryBlock** out_opt_memory_block_ptr)
+        {
+            return acquire_object(in_payload.id,
+                                  in_payload.time_marker,
+                                  out_opt_buffer_ptr,
+                                  out_opt_memory_block_ptr);
+        }
+
         OpenGL::TimeMarker get_tot_buffer_time_marker      (const GLuint&             in_id,
                                                             const OpenGL::TimeMarker& in_frontend_object_creation_time) const;
         OpenGL::TimeMarker get_tot_memory_block_time_marker(const GLuint&             in_id,

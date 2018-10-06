@@ -61,10 +61,9 @@ OpenGL::ReferenceUniquePtr OpenGL::VKBufferManager::acquire_object(const GLuint&
                                         std::placeholders::_1,
                                         buffer_data_ptr->tot_buffer_time_marker,
                                         buffer_data_ptr->tot_memory_block_time_marker),
-                              std::bind(&OpenGL::VKBufferManager::acquire_object,
+                              std::bind(&OpenGL::VKBufferManager::acquire_object_from_payload,
                                         this,
                                         std::placeholders::_1,
-                                        std::placeholders::_2,
                                         nullptr,
                                         nullptr) )
     );

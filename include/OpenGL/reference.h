@@ -25,10 +25,10 @@ namespace OpenGL
 
         typedef std::unique_ptr<ReferenceBase<Payload>, std::function<void(ReferenceBase<Payload>*)> > ReferenceUniquePtr;
 
-        ReferenceBase(const Payload&                                                in_payload,
-                      std::function<void(ReferenceBase<Payload>*) >                 in_on_reference_created_func,
-                      std::function<void(ReferenceBase<Payload>*) >                 in_on_reference_destroyed_func,
-                      std::function<ReferenceUniquePtr(GLuint, OpenGL::TimeMarker)> in_acquire_reference_func)
+        ReferenceBase(const Payload&                                in_payload,
+                      std::function<void(ReferenceBase<Payload>*) > in_on_reference_created_func,
+                      std::function<void(ReferenceBase<Payload>*) > in_on_reference_destroyed_func,
+                      std::function<ReferenceUniquePtr(Payload)>    in_acquire_reference_func)
             :m_acquire_reference_func     (in_acquire_reference_func),
              m_on_reference_created_func  (in_on_reference_created_func),
              m_on_reference_destroyed_func(in_on_reference_destroyed_func),
@@ -50,8 +50,7 @@ namespace OpenGL
             /* When cloning, make sure to create a reference that points to exactly the same snapshot
              * of the same object this reference is pointing at!
              */
-            return m_acquire_reference_func(m_payload.id,
-                                            m_payload.time_marker);
+            return m_acquire_reference_func(m_payload);
         }
 
         const Payload& get_payload() const
@@ -74,9 +73,9 @@ namespace OpenGL
         ReferenceBase<Payload>& operator=(const ReferenceBase<Payload>&);
 
         /* Private variables */
-        std::function<ReferenceUniquePtr(GLuint, OpenGL::TimeMarker)> m_acquire_reference_func;
-        std::function<void(ReferenceBase<Payload>*) >                 m_on_reference_created_func;
-        std::function<void(ReferenceBase<Payload>*) >                 m_on_reference_destroyed_func;
+        std::function<ReferenceUniquePtr(Payload)>    m_acquire_reference_func;
+        std::function<void(ReferenceBase<Payload>*) > m_on_reference_created_func;
+        std::function<void(ReferenceBase<Payload>*) > m_on_reference_destroyed_func;
 
         const Payload m_payload;
     };

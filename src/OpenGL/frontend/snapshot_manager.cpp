@@ -37,6 +37,8 @@ OpenGL::SnapshotManager::SnapshotManager(const GLuint&             in_object_id,
 
 OpenGL::ReferenceUniquePtr OpenGL::SnapshotManager::acquire_reference(const OpenGL::TimeMarker& in_time_marker)
 {
+    OpenGL::GLPayload          payload   (m_object_id,
+                                          in_time_marker);
     OpenGL::ReferenceUniquePtr result_ptr(nullptr,
                                           std::default_delete<OpenGL::Reference>() );
 
@@ -49,9 +51,9 @@ OpenGL::ReferenceUniquePtr OpenGL::SnapshotManager::acquire_reference(const Open
                       std::bind(&OpenGL::SnapshotManager::on_reference_destroyed,
                                 this,
                                 std::placeholders::_1),
-                      std::bind(&OpenGL::SnapshotManager::acquire_reference,
+                      std::bind(&OpenGL::SnapshotManager::acquire_reference_from_payload,
                                 this,
-                                std::placeholders::_2)
+                                payload)
         )
     );
 
