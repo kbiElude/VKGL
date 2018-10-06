@@ -41,8 +41,8 @@ OpenGL::ReferenceUniquePtr OpenGL::SnapshotManager::acquire_reference(const Open
                                           std::default_delete<OpenGL::Reference>() );
 
     result_ptr.reset(
-        new Reference(m_object_id,
-                      in_time_marker,
+        new Reference(OpenGL::GLPayload(m_object_id,
+                                        in_time_marker),
                       std::bind(&OpenGL::SnapshotManager::on_reference_created,
                                 this,
                                 std::placeholders::_1),
@@ -110,9 +110,9 @@ void OpenGL::SnapshotManager::on_reference_created(const OpenGL::Reference* in_r
 {
     auto lock = std::unique_lock<std::mutex>(m_mutex);
 
-    if (in_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE)
+    if (in_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE)
     {
-        auto snapshot_iterator = m_snapshots.find(in_reference_ptr->get_time_marker() );
+        auto snapshot_iterator = m_snapshots.find(in_reference_ptr->get_payload().time_marker);
 
         vkgl_assert(snapshot_iterator != m_snapshots.end() )
         if (snapshot_iterator != m_snapshots.end() )
@@ -128,15 +128,15 @@ void OpenGL::SnapshotManager::on_reference_created(const OpenGL::Reference* in_r
 
 void OpenGL::SnapshotManager::on_reference_destroyed(const OpenGL::Reference* in_reference_ptr)
 {
-    const auto object_id          = in_reference_ptr->get_id         ();
-    const auto object_time_marker = in_reference_ptr->get_time_marker();
+    const auto object_id          = in_reference_ptr->get_payload().id;
+    const auto object_time_marker = in_reference_ptr->get_payload().time_marker;
 
     {
         auto lock = std::unique_lock<std::mutex>(m_mutex);
 
         /* Release the reference .. */
         {
-            if (in_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE)
+            if (in_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE)
             {
                 auto snapshot_iterator = m_snapshots.find(object_time_marker);
 

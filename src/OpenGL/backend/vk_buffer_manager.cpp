@@ -47,8 +47,8 @@ OpenGL::ReferenceUniquePtr OpenGL::VKBufferManager::acquire_object(const GLuint&
     buffer_data_ptr = buffer_props_iterator->second.get();
 
     new_reference_ptr.reset(
-        new OpenGL::Reference(in_id,
-                              in_frontend_object_creation_time,
+        new OpenGL::Reference(OpenGL::GLPayload(in_id,
+                                                in_frontend_object_creation_time),
                               std::bind(&OpenGL::VKBufferManager::on_reference_created,
                                         this,
                                         buffer_data_ptr,
@@ -266,8 +266,8 @@ void OpenGL::VKBufferManager::on_reference_destroyed(BufferData*        in_buffe
     if (get_n_references(in_buffer_data_ptr) == 0)
     {
         /* This buffer can be safely released. */
-        const auto key             = BufferMapKey  (in_reference_ptr->get_id         (),
-                                                    in_reference_ptr->get_time_marker() );
+        const auto key             = BufferMapKey  (in_reference_ptr->get_payload().id,
+                                                    in_reference_ptr->get_payload().time_marker);
         auto       object_iterator = m_buffers.find(key);
 
         vkgl_assert(object_iterator != m_buffers.end() );

@@ -5,6 +5,7 @@
 #ifndef VKGL_VK_COMMANDS_H
 #define VKGL_VK_COMMANDS_H
 
+#include "Common/macros.h"
 #include "OpenGL/types.h"
 #include "OpenGL/frontend/gl_reference.h"
 
@@ -97,7 +98,7 @@ namespace OpenGL
              size                (in_size)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(buffer_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(buffer_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -119,7 +120,7 @@ namespace OpenGL
              start_offset        (in_start_offset)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(buffer_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(buffer_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -144,7 +145,7 @@ namespace OpenGL
              shader_reference_ptr(std::move(in_shader_reference_ptr) )
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(shader_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(shader_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -175,7 +176,7 @@ namespace OpenGL
              width                (in_width)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -209,7 +210,7 @@ namespace OpenGL
              width                (in_width)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -247,7 +248,7 @@ namespace OpenGL
 
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -278,7 +279,7 @@ namespace OpenGL
              xoffset              (in_xoffset)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -315,7 +316,7 @@ namespace OpenGL
              yoffset              (in_yoffset)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -355,7 +356,7 @@ namespace OpenGL
              zoffset              (in_zoffset)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -380,8 +381,8 @@ namespace OpenGL
              write_offset    (in_write_offset)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(read_buffer_ptr->get_time_marker () != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
-            vkgl_assert(write_buffer_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(read_buffer_ptr->get_payload().time_marker  != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(write_buffer_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -415,7 +416,7 @@ namespace OpenGL
              y                             (in_y)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -452,7 +453,7 @@ namespace OpenGL
              y                             (in_y)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -483,7 +484,7 @@ namespace OpenGL
              y                             (in_y)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -520,7 +521,7 @@ namespace OpenGL
              y                             (in_y)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -560,7 +561,7 @@ namespace OpenGL
              y                             (in_y)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -672,7 +673,7 @@ namespace OpenGL
              length              (in_length)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(buffer_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(buffer_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -694,7 +695,7 @@ namespace OpenGL
              start_offset        (in_start_offset)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(buffer_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(buffer_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -713,7 +714,7 @@ namespace OpenGL
              texture_reference_ptr(std::move(in_texture_reference_ptr) )
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -738,7 +739,7 @@ namespace OpenGL
              type                 (in_type)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -751,7 +752,7 @@ namespace OpenGL
              program_reference_ptr(std::move(in_program_reference_ptr) )
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(program_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(program_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -776,7 +777,7 @@ namespace OpenGL
              start_offset        (in_start_offset)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(buffer_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(buffer_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -894,7 +895,7 @@ namespace OpenGL
              width                (in_width)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -931,7 +932,7 @@ namespace OpenGL
              width                (in_width)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -971,7 +972,7 @@ namespace OpenGL
              width                (in_width)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -1002,7 +1003,7 @@ namespace OpenGL
              xoffset              (in_xoffset)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -1039,7 +1040,7 @@ namespace OpenGL
              yoffset              (in_yoffset)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -1082,7 +1083,7 @@ namespace OpenGL
              zoffset              (in_zoffset)
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(texture_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -1095,7 +1096,7 @@ namespace OpenGL
              buffer_reference_ptr(std::move(in_buffer_reference_ptr) )
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(buffer_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(buffer_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 
@@ -1108,7 +1109,7 @@ namespace OpenGL
              program_reference_ptr(std::move(in_program_reference_ptr) )
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(program_reference_ptr->get_time_marker() != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
+            vkgl_assert(program_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 

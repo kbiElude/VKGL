@@ -349,7 +349,7 @@ bool OpenGL::GLProgramManager::detach_shader(const GLuint& in_program,
                                    program_ptr->attached_shaders.end  (),
                                    [=](const OpenGL::ReferenceUniquePtr& in_reference_ptr)
                                    {
-                                       return (in_shader_id == in_reference_ptr->get_id() );
+                                       return (in_shader_id == in_reference_ptr->get_payload().id);
                                    });
 
     if (shader_iterator == program_ptr->attached_shaders.end() )

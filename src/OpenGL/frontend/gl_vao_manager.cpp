@@ -173,7 +173,7 @@ bool OpenGL::GLVAOManager::get_vaa_property(const GLuint&                       
 
             case OpenGL::VertexAttributeProperty::Buffer_Binding:
             {
-                src_data_ptr  = &vaa_ptr->buffer_binding_ptr->get_id();
+                src_data_ptr  = &vaa_ptr->buffer_binding_ptr->get_payload().id;
                 src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;
 
                 break;

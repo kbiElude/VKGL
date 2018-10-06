@@ -126,7 +126,7 @@ namespace OpenGL
         /* Private variables */
         std::unordered_map<GLuint, std::unique_ptr<GeneralObjectProps> > m_object_ptrs;
 
-        friend class Reference;
+        friend Reference;
     };
 }
 #endif /* VKGL_GL_OBJECT_MANAGER_H */
