@@ -5,6 +5,8 @@
 #ifndef VKGL_TYPES_STRUCTS_H
 #define VKGL_TYPES_STRUCTS_H
 
+#include "OpenGL/types_interfaces.h"
+
 namespace OpenGL
 {
     /* Forward declarations */
@@ -81,9 +83,9 @@ namespace OpenGL
 
     typedef struct IndexedBufferBinding
     {
-        OpenGL::ReferenceUniquePtr reference_ptr;
-        size_t                     size;
-        size_t                     start_offset;
+        OpenGL::GLBufferReferenceUniquePtr reference_ptr;
+        size_t                             size;
+        size_t                             start_offset;
 
         IndexedBufferBinding()
         {
@@ -91,9 +93,9 @@ namespace OpenGL
             start_offset = SIZE_MAX;
         }
 
-        IndexedBufferBinding(OpenGL::ReferenceUniquePtr in_reference_ptr,
-                             const size_t&              in_start_offset,
-                             const size_t&              in_size)
+        IndexedBufferBinding(OpenGL::GLBufferReferenceUniquePtr in_reference_ptr,
+                             const size_t&                      in_start_offset,
+                             const size_t&                      in_size)
             :reference_ptr(std::move(in_reference_ptr) ),
              size         (in_size),
              start_offset (in_start_offset)
@@ -639,14 +641,14 @@ namespace OpenGL
 
     typedef struct VertexAttributeArrayState
     {
-        ReferenceUniquePtr       buffer_binding_ptr;
-        bool                     enabled;
-        bool                     integer;
-        bool                     normalized;
-        const void*              pointer;
-        uint64_t                 size;
-        uint64_t                 stride;
-        VertexAttributeArrayType type;
+        GLBufferReferenceUniquePtr buffer_binding_ptr;
+        bool                       enabled;
+        bool                       integer;
+        bool                       normalized;
+        const void*                pointer;
+        uint64_t                   size;
+        uint64_t                   stride;
+        VertexAttributeArrayType   type;
 
         VertexAttributeArrayState();
         VertexAttributeArrayState(const VertexAttributeArrayState& in_vaa_state);
@@ -737,9 +739,9 @@ namespace OpenGL
         uint32_t stencil_writemask_back;
         uint32_t stencil_writemask_front;
 
-        OpenGL::ReferenceUniquePtr binding_draw_framebuffer;
-        OpenGL::ReferenceUniquePtr binding_read_framebuffer;
-        OpenGL::ReferenceUniquePtr binding_renderbuffer;
+        OpenGL::GLFramebufferReferenceUniquePtr binding_draw_framebuffer;
+        OpenGL::GLFramebufferReferenceUniquePtr binding_read_framebuffer;
+        OpenGL::GLRenderbufferReferenceUniquePtr binding_renderbuffer;
 
         uint32_t pack_alignment;
         uint32_t pack_image_height;
@@ -759,10 +761,10 @@ namespace OpenGL
         bool     unpack_swap_bytes;
 
         std::unordered_map<IndexedBufferTarget,  IndexedBufferBinding, IndexedBufferTargetHashFunction> indexed_buffer_binding_ptrs;
-        std::unordered_map<OpenGL::BufferTarget, OpenGL::ReferenceUniquePtr>                            nonindexed_buffer_binding_ptrs;
-        OpenGL::ReferenceUniquePtr                                                                      program_reference_ptr;
+        std::unordered_map<OpenGL::BufferTarget, OpenGL::GLBufferReferenceUniquePtr>                    nonindexed_buffer_binding_ptrs;
+        OpenGL::GLProgramReferenceUniquePtr                                                             program_reference_ptr;
         std::unordered_map<TextureUnit, OpenGL::TextureUnitStateUniquePtr>                              texture_unit_to_state_ptr_map;
-        OpenGL::ReferenceUniquePtr                                                                      vao_reference_ptr;
+        OpenGL::GLVAOReferenceUniquePtr                                                                 vao_reference_ptr;
 
         OpenGL::HintMode hint_fragment_shader_derivative;
         OpenGL::HintMode hint_line_smooth;
@@ -781,11 +783,11 @@ namespace OpenGL
         bool        is_program_point_size_enabled;
         PolygonMode polygon_mode;
 
-        explicit ContextState(const IGLObjectManager* in_buffer_manager_ptr,
-                              const IGLObjectManager* in_vao_manager_ptr,
-                              const IGLLimits*        in_limits_ptr,
-                              const int32_t*          in_viewport_ivec4_ptr,
-                              const int32_t*          in_scissor_box_ivec4_ptr);
+        explicit ContextState(const IGLObjectManager<GLBufferReferenceUniquePtr>* in_buffer_manager_ptr,
+                              const IGLObjectManager<GLVAOReferenceUniquePtr>*    in_vao_manager_ptr,
+                              const IGLLimits*                                    in_limits_ptr,
+                              const int32_t*                                      in_viewport_ivec4_ptr,
+                              const int32_t*                                      in_scissor_box_ivec4_ptr);
 
         ContextState           (const ContextState& in_context_state);
         ContextState& operator=(const ContextState& in_context_state);

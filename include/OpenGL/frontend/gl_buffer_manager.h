@@ -6,13 +6,13 @@
 #define VKGL_GL_BUFFER_MANAGER_H
 
 #include "OpenGL/frontend/gl_object_manager.h"
-#include "OpenGL/types.h"
+#include "OpenGL/frontend/snapshot_manager.h"
 
 namespace OpenGL
 {
     typedef std::unique_ptr<GLBufferManager> GLBufferManagerUniquePtr;
 
-    class GLBufferManager : public GLObjectManager
+    class GLBufferManager : public GLObjectManager<OpenGL::GLBufferReference, OpenGL::GLBufferReferenceUniquePtr>
     {
     public:
         /* Public functions */

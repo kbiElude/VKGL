@@ -12,7 +12,7 @@ namespace OpenGL
 {
     typedef std::unique_ptr<GLProgramManager> GLProgramManagerUniquePtr;
 
-    class GLProgramManager : public GLObjectManager
+    class GLProgramManager : public GLObjectManager<GLProgramReference, GLProgramReferenceUniquePtr>
     {
     public:
         /* Public constants */
@@ -25,7 +25,7 @@ namespace OpenGL
         ~GLProgramManager();
 
         bool attach_shader                    (const GLuint&                       in_program,
-                                               ReferenceUniquePtr                  in_shader_reference_ptr);
+                                               GLShaderReferenceUniquePtr          in_shader_reference_ptr);
         bool cache_attribute_location_binding (const GLuint&                       in_program,
                                                const char*                         in_name,
                                                const uint32_t&                     in_index);
@@ -94,8 +94,8 @@ namespace OpenGL
                                                const char*                         in_uniform_block_name,
                                                uint32_t*                           out_result_ptr) const;
 
-        const std::vector<ReferenceUniquePtr>* get_attached_shaders(const GLuint&             in_program,
-                                                                    const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
+        const std::vector<GLShaderReferenceUniquePtr>* get_attached_shaders(const GLuint&             in_program,
+                                                                            const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
 
         bool map_global_uniform_index_to_uniform_and_ub_indices(const GLuint&             in_program,
                                                                 const OpenGL::TimeMarker* in_opt_time_marker_ptr,
@@ -265,11 +265,11 @@ namespace OpenGL
 
         typedef struct Program
         {
-            std::vector<ReferenceUniquePtr>       attached_shaders;
-            AttributeLocationBindingMap           cached_attribute_location_bindings; //< Locations to force for specific generic vertex attributes.
-            FragDataLocationMap                   cached_frag_data_locations;         //< Bindings to force for specific fragment color outputs.
-            std::string                           infolog;
-            std::unique_ptr<PostLinkData>         post_link_data_ptr;
+            std::vector<GLShaderReferenceUniquePtr> attached_shaders;
+            AttributeLocationBindingMap             cached_attribute_location_bindings; //< Locations to force for specific generic vertex attributes.
+            FragDataLocationMap                     cached_frag_data_locations;         //< Bindings to force for specific fragment color outputs.
+            std::string                             infolog;
+            std::unique_ptr<PostLinkData>           post_link_data_ptr;
 
             OpenGL::GeometryInputType             gs_input_type;               //< GL_GEOMETRY_INPUT_TYPE
             OpenGL::GeometryOutputType            gs_output_type;              //< GL_GEOMETRY_OUTPUT_TYPE

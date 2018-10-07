@@ -11,7 +11,7 @@ namespace OpenGL
 {
     typedef std::unique_ptr<GLVAOManager> GLVAOManagerUniquePtr;
 
-    class GLVAOManager : public GLObjectManager
+    class GLVAOManager : public GLObjectManager<GLVAOReference, GLVAOReferenceUniquePtr>
     {
     public:
         /* Public functions */

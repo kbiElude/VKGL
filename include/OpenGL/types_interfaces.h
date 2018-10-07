@@ -5,8 +5,6 @@
 #ifndef VKGL_TYPES_INTERFACES_H
 #define VKGL_TYPES_INTERFACES_H
 
-#include "OpenGL/types.h"
-
 namespace OpenGL
 {
     class IBackendCapabilities
@@ -372,6 +370,19 @@ namespace OpenGL
         virtual const float*                               get_smooth_line_width_range_vec2                 () const = 0;
         virtual uint32_t                                   get_subpixel_bits                                () const = 0;
         virtual uint32_t                                   get_uniform_buffer_offset_alignment              () const = 0;
+    };
+
+    template<typename ObjectReferenceUniquePtr>
+    class IGLObjectManager
+    {
+    public:
+        virtual ~IGLObjectManager()
+        {
+            /* Stub */
+        }
+
+        virtual ObjectReferenceUniquePtr get_default_object_reference()                    const = 0;
+        virtual bool                     is_object_deleted           (const GLuint& in_id) const = 0;
     };
 
     class IStateSnapshotAccessors

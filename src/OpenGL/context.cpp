@@ -646,7 +646,7 @@ void OpenGL::Context::buffer_data(const OpenGL::BufferTarget& in_target,
     vkgl_assert(m_gl_buffer_manager_ptr    != nullptr);
     vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
-    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
+    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_payload().id;
     vkgl_assert(buffer_id != 0);
 
     m_gl_buffer_manager_ptr->set_buffer_store_size(buffer_id,
@@ -668,7 +668,7 @@ void OpenGL::Context::buffer_sub_data(const OpenGL::BufferTarget& in_target,
     vkgl_assert(m_gl_buffer_manager_ptr    != nullptr);
     vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
-    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
+    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_payload().id;
     vkgl_assert(buffer_id != 0);
 
     m_backend_gl_callbacks_ptr->buffer_sub_data(buffer_id,
@@ -913,8 +913,8 @@ void OpenGL::Context::copy_buffer_sub_data(const OpenGL::BufferTarget& in_read_t
     vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
-    const auto dst_buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_write_target)->get_id();
-    const auto src_buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_read_target)->get_id ();
+    const auto dst_buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_write_target)->get_payload().id;
+    const auto src_buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_read_target)->get_payload().id;
 
     m_backend_gl_callbacks_ptr->copy_buffer_sub_data(src_buffer_id,
                                                      dst_buffer_id,
@@ -1477,7 +1477,7 @@ void OpenGL::Context::flush_mapped_buffer_range(const OpenGL::BufferTarget& in_t
     vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
-    const auto dst_buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
+    const auto dst_buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_payload().id;
 
     m_backend_gl_callbacks_ptr->flush_mapped_buffer_range(dst_buffer_id,
                                                           in_offset,
@@ -1880,7 +1880,7 @@ void OpenGL::Context::get_attached_shaders(const GLuint&  in_program,
                   n_shader_id < n_shader_ids_to_store;
                 ++n_shader_id)
     {
-        out_shaders_ptr[n_shader_id] = (*attached_shader_refs_ptr)[n_shader_id]->get_id();
+        out_shaders_ptr[n_shader_id] = (*attached_shader_refs_ptr)[n_shader_id]->get_payload().id;
     }
 
 end:
@@ -1914,7 +1914,7 @@ void OpenGL::Context::get_buffer_pointerv(const OpenGL::BufferTarget&          i
     vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr  != nullptr);
 
-    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
+    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_payload().id;
 
     *out_params_ptr = m_gl_buffer_manager_ptr->get_buffer_map_pointer(buffer_id,
                                                                       nullptr /* in_opt_time_marker_ptr */);
@@ -1929,7 +1929,7 @@ void OpenGL::Context::get_buffer_property(const OpenGL::BufferTarget&       in_t
     vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr  != nullptr);
 
-    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
+    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_payload().id;
 
     m_gl_buffer_manager_ptr->get_buffer_property(buffer_id,
                                                  nullptr, /* in_opt_time_marker_ptr */
@@ -1947,7 +1947,7 @@ void OpenGL::Context::get_buffer_sub_data(const OpenGL::BufferTarget& in_target,
     vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
-    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
+    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_payload().id;
     vkgl_assert(buffer_id != 0);
 
     m_backend_gl_callbacks_ptr->get_buffer_sub_data(buffer_id,
@@ -2467,9 +2467,9 @@ void OpenGL::Context::get_vertex_attrib_pointer_property(const GLuint&          
     const auto& bound_vao_reference_ptr = m_gl_state_manager_ptr->get_bound_vertex_array_object();
     vkgl_assert(bound_vao_reference_ptr != nullptr);
 
-    const auto bound_vao_time_marker = bound_vao_reference_ptr->get_time_marker();
+    const auto bound_vao_time_marker = bound_vao_reference_ptr->get_payload().time_marker;
 
-    m_gl_vao_manager_ptr->get_vaa_property(bound_vao_reference_ptr->get_id     (),
+    m_gl_vao_manager_ptr->get_vaa_property(bound_vao_reference_ptr->get_payload().id,
                                           &bound_vao_time_marker,
                                            in_index,
                                            OpenGL::VertexAttributeProperty::Pointer,
@@ -2498,9 +2498,9 @@ void OpenGL::Context::get_vertex_attribute_property(const GLuint&               
         const auto& bound_vao_reference_ptr = m_gl_state_manager_ptr->get_bound_vertex_array_object();
         vkgl_assert(bound_vao_reference_ptr != nullptr);
 
-        const auto bound_vao_time_marker = bound_vao_reference_ptr->get_time_marker();
+        const auto bound_vao_time_marker = bound_vao_reference_ptr->get_payload().time_marker;
 
-        m_gl_vao_manager_ptr->get_vaa_property(bound_vao_reference_ptr->get_id(),
+        m_gl_vao_manager_ptr->get_vaa_property(bound_vao_reference_ptr->get_payload().id,
                                               &bound_vao_time_marker,
                                                in_index,
                                                in_pname,
@@ -2599,9 +2599,9 @@ bool OpenGL::Context::init()
 
     /* Set up GL state manager */
     m_gl_state_manager_ptr.reset(
-        new OpenGL::GLStateManager(dynamic_cast<IGLLimits*>       (m_gl_limits_ptr.get        () ),
-                                   dynamic_cast<IGLObjectManager*>(m_gl_buffer_manager_ptr.get() ),
-                                   dynamic_cast<IGLObjectManager*>(m_gl_vao_manager_ptr.get   () ) )
+        new OpenGL::GLStateManager(dynamic_cast<IGLLimits*>                                           (m_gl_limits_ptr.get        () ),
+                                   dynamic_cast<IGLObjectManager<OpenGL::GLBufferReferenceUniquePtr>*>(m_gl_buffer_manager_ptr.get() ),
+                                   dynamic_cast<IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*>   (m_gl_vao_manager_ptr.get   () ) )
     );
 
     if (m_gl_state_manager_ptr == nullptr)
@@ -3128,11 +3128,11 @@ void* OpenGL::Context::map_buffer(const OpenGL::BufferTarget& in_target,
     const auto& buffer_reference_ptr = m_gl_state_manager_ptr->get_bound_buffer_object(in_target);
     vkgl_assert(buffer_reference_ptr != nullptr);
 
-    const auto buffer_reference_time_marker = buffer_reference_ptr->get_time_marker   ();
-    const auto buffer_size                  = m_gl_buffer_manager_ptr->get_buffer_size( buffer_reference_ptr->get_id(),
+    const auto buffer_reference_time_marker = buffer_reference_ptr->get_payload().time_marker;
+    const auto buffer_size                  = m_gl_buffer_manager_ptr->get_buffer_size( buffer_reference_ptr->get_payload().id,
                                                                                        &buffer_reference_time_marker);
 
-    return m_backend_gl_callbacks_ptr->map_buffer(buffer_reference_ptr->get_id(),
+    return m_backend_gl_callbacks_ptr->map_buffer(buffer_reference_ptr->get_payload().id,
                                                   in_access,
                                                   0, /* in_start_offset */
                                                   buffer_size);
@@ -3146,7 +3146,7 @@ void* OpenGL::Context::map_buffer_range(const OpenGL::BufferTarget& in_target,
     vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
-    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
+    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_payload().id;
     vkgl_assert(buffer_id != 0);
 
     return m_backend_gl_callbacks_ptr->map_buffer(buffer_id,
@@ -3692,8 +3692,8 @@ bool OpenGL::Context::set_vaa_enabled_state(const GLuint& in_index,
      **/
     auto bound_vao_ptr = m_gl_state_manager_ptr->get_bound_vertex_array_object();
 
-    bound_vao_id          = bound_vao_ptr->get_id         ();
-    bound_vao_time_marker = bound_vao_ptr->get_time_marker();
+    bound_vao_id          = bound_vao_ptr->get_payload().id;
+    bound_vao_time_marker = bound_vao_ptr->get_payload().time_marker;
 
     if (!m_gl_vao_manager_ptr->get_vaa_state_copy(bound_vao_id,
                                                  &bound_vao_time_marker,
@@ -3757,8 +3757,8 @@ void OpenGL::Context::set_vertex_attrib_pointer(const GLuint&                   
      **/
     auto bound_vao_ptr = m_gl_state_manager_ptr->get_bound_vertex_array_object();
 
-    bound_vao_id          = bound_vao_ptr->get_id         ();
-    bound_vao_time_marker = bound_vao_ptr->get_time_marker();
+    bound_vao_id          = bound_vao_ptr->get_payload().id;
+    bound_vao_time_marker = bound_vao_ptr->get_payload().time_marker;
 
     if (!m_gl_vao_manager_ptr->get_vaa_state_copy(bound_vao_id,
                                                  &bound_vao_time_marker,
@@ -3769,7 +3769,7 @@ void OpenGL::Context::set_vertex_attrib_pointer(const GLuint&                   
     }
 
     {
-        const auto buffer_id            = m_gl_state_manager_ptr->get_bound_buffer_object                  (OpenGL::BufferTarget::Array_Buffer)->get_id();
+        const auto buffer_id            = m_gl_state_manager_ptr->get_bound_buffer_object                  (OpenGL::BufferTarget::Array_Buffer)->get_payload().id;
         auto       buffer_reference_ptr = m_gl_buffer_manager_ptr->acquire_always_latest_snapshot_reference(buffer_id);
 
         vaa_state.buffer_binding_ptr = std::move(buffer_reference_ptr);
@@ -4026,7 +4026,7 @@ bool OpenGL::Context::unmap_buffer(const OpenGL::BufferTarget& in_target)
     vkgl_assert(m_gl_buffer_manager_ptr    != nullptr);
     vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
-    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_id();
+    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_payload().id;
     vkgl_assert(buffer_id != 0);
 
     return m_backend_gl_callbacks_ptr->unmap_buffer(buffer_id);

@@ -16,31 +16,39 @@
 #define VKGL_APIENTRY KHRONOS_APIENTRY
 
 #include "OpenGL/types_enums.h"
+#include "OpenGL/backend/vk_reference.h"
+#include "OpenGL/frontend/gl_reference.h"
 
 namespace OpenGL
 {
     /* Forward declarations */
-    class Context;
-    class GLBufferManager;
-    class GLLimits;
-    class GLObjectManager;
-    class GLProgramManager;
-    class GLShaderManager;
-    class GLStateManager;
-    class GLTextureManager;
-    class GLVAOManager;
-    class IGLLimits;
-    class IGLObjectManager;
-    class Reference;
-    class VKBackend;
-    class VKBufferManager;
-    class VKScheduler;
+    class  Context;
+    struct DispatchTable;
+    class  GLBufferManager;
+    class  GLLimits;
+    class  GLProgramManager;
+    class  GLShaderManager;
+    class  GLStateManager;
+    class  GLTextureManager;
+    class  GLVAOManager;
+    class  IGLLimits;
+    class  VKBackend;
+    class  VKBufferManager;
+    class  VKFrameGraph;
+    class  VKScheduler;
 
-    typedef std::unique_ptr<Reference, std::function<void(Reference*)> > ReferenceUniquePtr;
-    typedef std::unique_ptr<VKBackend>                                   VKBackendUniquePtr;
-    typedef std::unique_ptr<VKScheduler>                                 VKSchedulerUniquePtr;
-
-    typedef std::chrono::high_resolution_clock::time_point TimeMarker;
+    typedef std::unique_ptr<GLBufferReference,       std::function<void(GLBufferReference*)> >       GLBufferReferenceUniquePtr;
+    typedef std::unique_ptr<GLContextStateReference, std::function<void(GLContextStateReference*)> > GLContextStateReferenceUniquePtr;
+    typedef std::unique_ptr<GLFramebufferReference,  std::function<void(GLFramebufferReference*)> >  GLFramebufferReferenceUniquePtr;
+    typedef std::unique_ptr<GLProgramReference,      std::function<void(GLProgramReference*)> >      GLProgramReferenceUniquePtr;
+    typedef std::unique_ptr<GLRenderbufferReference, std::function<void(GLRenderbufferReference*)> > GLRenderbufferReferenceUniquePtr;
+    typedef std::unique_ptr<GLShaderReference,       std::function<void(GLShaderReference*)> >       GLShaderReferenceUniquePtr;
+    typedef std::unique_ptr<GLTextureReference,      std::function<void(GLTextureReference*)> >      GLTextureReferenceUniquePtr;
+    typedef std::unique_ptr<GLVAOReference,          std::function<void(GLVAOReference*)> >          GLVAOReferenceUniquePtr;
+    typedef std::unique_ptr<VKBackend>                                                               VKBackendUniquePtr;
+    typedef std::unique_ptr<VKBufferReference,       std::function<void(VKBufferReference*)> >       VKBufferReferenceUniquePtr;
+    typedef std::unique_ptr<VKFrameGraph,            std::function<void(VKFrameGraph*)> >            VKFrameGraphUniquePtr;
+    typedef std::unique_ptr<VKScheduler>                                                             VKSchedulerUniquePtr;
 
     typedef struct PropertyData
     {

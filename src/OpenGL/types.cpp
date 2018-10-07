@@ -63,13 +63,13 @@ OpenGL::BufferState::BufferState()
     usage            = OpenGL::BufferUsage::Static_Draw;
 }
 
-OpenGL::ContextState::ContextState(const IGLObjectManager* in_buffer_manager_ptr,
-                                   const IGLObjectManager* in_vao_manager_ptr,
-                                   const IGLLimits*        in_limits_ptr,
-                                   const int32_t*          in_viewport_ivec4_ptr,
-                                   const int32_t*          in_scissor_box_ivec4_ptr)
-    :texture_image_units                       (in_limits_ptr->get_max_texture_image_units() ),
-     user_clip_planes_enabled                  (in_limits_ptr->get_max_clip_distances     (), false)
+OpenGL::ContextState::ContextState(const IGLObjectManager<OpenGL::GLBufferReferenceUniquePtr>* in_buffer_manager_ptr,
+                                   const IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*    in_vao_manager_ptr,
+                                   const IGLLimits*                                            in_limits_ptr,
+                                   const int32_t*                                              in_viewport_ivec4_ptr,
+                                   const int32_t*                                              in_scissor_box_ivec4_ptr)
+    :texture_image_units     (in_limits_ptr->get_max_texture_image_units() ),
+     user_clip_planes_enabled(in_limits_ptr->get_max_clip_distances     (), false)
 {
     constexpr uint32_t n_max_stencil_bits = 8; /* todo: extract this info from vk backend */
 
@@ -584,7 +584,7 @@ OpenGL::VertexAttributeArrayState::VertexAttributeArrayState()
 OpenGL::VertexAttributeArrayState::VertexAttributeArrayState(const VertexAttributeArrayState& in_vaa_state)
 {
     buffer_binding_ptr = (in_vaa_state.buffer_binding_ptr != nullptr) ? in_vaa_state.buffer_binding_ptr->clone()
-                                                                      : ReferenceUniquePtr();
+                                                                      : GLBufferReferenceUniquePtr();
     enabled            = in_vaa_state.enabled;
     integer            = in_vaa_state.integer;
     normalized         = in_vaa_state.normalized;
@@ -597,7 +597,7 @@ OpenGL::VertexAttributeArrayState::VertexAttributeArrayState(const VertexAttribu
 OpenGL::VertexAttributeArrayState& OpenGL::VertexAttributeArrayState::operator=(const VertexAttributeArrayState& in_state)
 {
     buffer_binding_ptr = (in_state.buffer_binding_ptr != nullptr) ? in_state.buffer_binding_ptr->clone()
-                                                                  : ReferenceUniquePtr();
+                                                                  : GLBufferReferenceUniquePtr();
     enabled            = in_state.enabled;
     integer            = in_state.integer;
     normalized         = in_state.normalized;

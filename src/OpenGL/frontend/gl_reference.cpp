@@ -7,21 +7,3 @@
 #include "OpenGL/frontend/gl_reference.h"
 
 const OpenGL::TimeMarker OpenGL::LATEST_SNAPSHOT_AVAILABLE = OpenGL::TimeMarker(std::chrono::nanoseconds(0) );
-
-
-OpenGL::Reference::~Reference()
-{
-    if (m_on_reference_destroyed_func != nullptr)
-    {
-        m_on_reference_destroyed_func(this);
-    }
-}
-
-OpenGL::ReferenceUniquePtr OpenGL::Reference::clone() const
-{
-    /* When cloning, make sure to create a reference that points to exactly the same snapshot
-     * of the same object this reference is pointing at!
-     */
-    return m_acquire_reference_func(m_id,
-                                    m_time_marker);
-}
