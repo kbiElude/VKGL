@@ -196,8 +196,8 @@ OpenGL::GLProgramManager::~GLProgramManager()
     /* Stub - everything is handled by the base class. */
 }
 
-bool OpenGL::GLProgramManager::attach_shader(const GLuint&      in_program,
-                                             ReferenceUniquePtr in_shader_reference_ptr)
+bool OpenGL::GLProgramManager::attach_shader(const GLuint&              in_program,
+                                             GLShaderReferenceUniquePtr in_shader_reference_ptr)
 {
     auto program_ptr = get_program_ptr(in_program,
                                        nullptr); /* in_opt_time_marker_ptr */
@@ -347,7 +347,7 @@ bool OpenGL::GLProgramManager::detach_shader(const GLuint& in_program,
 
     shader_iterator = std::find_if(program_ptr->attached_shaders.begin(),
                                    program_ptr->attached_shaders.end  (),
-                                   [=](const OpenGL::ReferenceUniquePtr& in_reference_ptr)
+                                   [=](const OpenGL::GLShaderReferenceUniquePtr& in_reference_ptr)
                                    {
                                        return (in_shader_id == in_reference_ptr->get_payload().id);
                                    });
@@ -1111,12 +1111,12 @@ end:
 }
 
 
-const std::vector<OpenGL::ReferenceUniquePtr>* OpenGL::GLProgramManager::get_attached_shaders(const GLuint&             in_program,
-                                                                                              const OpenGL::TimeMarker* in_opt_time_marker_ptr) const
+const std::vector<OpenGL::GLShaderReferenceUniquePtr>* OpenGL::GLProgramManager::get_attached_shaders(const GLuint&             in_program,
+                                                                                                      const OpenGL::TimeMarker* in_opt_time_marker_ptr) const
 {
-    auto                                             program_ptr = get_program_ptr(in_program,
-                                                                                 in_opt_time_marker_ptr);
-    const std::vector<OpenGL::ReferenceUniquePtr>* result_ptr  = nullptr;
+    auto                                                   program_ptr = get_program_ptr(in_program,
+                                                                                       in_opt_time_marker_ptr);
+    const std::vector<OpenGL::GLShaderReferenceUniquePtr>* result_ptr  = nullptr;
 
     if (program_ptr == nullptr)
     {

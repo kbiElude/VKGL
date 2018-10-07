@@ -2599,9 +2599,9 @@ bool OpenGL::Context::init()
 
     /* Set up GL state manager */
     m_gl_state_manager_ptr.reset(
-        new OpenGL::GLStateManager(dynamic_cast<IGLLimits*>       (m_gl_limits_ptr.get        () ),
-                                   dynamic_cast<IGLObjectManager*>(m_gl_buffer_manager_ptr.get() ),
-                                   dynamic_cast<IGLObjectManager*>(m_gl_vao_manager_ptr.get   () ) )
+        new OpenGL::GLStateManager(dynamic_cast<IGLLimits*>                                           (m_gl_limits_ptr.get        () ),
+                                   dynamic_cast<IGLObjectManager<OpenGL::GLBufferReferenceUniquePtr>*>(m_gl_buffer_manager_ptr.get() ),
+                                   dynamic_cast<IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*>   (m_gl_vao_manager_ptr.get   () ) )
     );
 
     if (m_gl_state_manager_ptr == nullptr)

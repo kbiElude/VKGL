@@ -15,11 +15,11 @@ namespace OpenGL
     {
     public:
         GLStateManager(const IGLLimits*        in_limits_ptr,
-                       const IGLObjectManager* in_buffer_manager_ptr,
-                       const IGLObjectManager* in_vao_manager_ptr);
+                       const IGLObjectManager<GLBufferReferenceUniquePtr>* in_buffer_manager_ptr,
+                       const IGLObjectManager<GLVAOReferenceUniquePtr>*    in_vao_manager_ptr);
        ~GLStateManager();
 
-       ReferenceUniquePtr acquire_current_latest_snapshot_reference();
+       GLContextStateReferenceUniquePtr acquire_current_latest_snapshot_reference();
 
        OpenGL::ErrorCode   get_error                    (const bool&                           in_reset_error_code = true);
        void                get_parameter                (const OpenGL::ContextProperty&        in_pname,
@@ -34,20 +34,20 @@ namespace OpenGL
 
        const ContextState* get_state(const OpenGL::TimeMarker& in_time_marker = OpenGL::LATEST_SNAPSHOT_AVAILABLE) const;
 
-       const OpenGL::Reference* get_bound_buffer_object      (const OpenGL::BufferTarget& in_target) const;
-       const OpenGL::Reference* get_bound_buffer_object      (const OpenGL::BufferTarget& in_target,
-                                                              const uint32_t&             in_index) const;
-       const OpenGL::Reference* get_bound_vertex_array_object() const;
+       const OpenGL::GLBufferReference* get_bound_buffer_object      (const OpenGL::BufferTarget& in_target) const;
+       const OpenGL::GLBufferReference* get_bound_buffer_object      (const OpenGL::BufferTarget& in_target,
+                                                                      const uint32_t&             in_index) const;
+       const OpenGL::GLVAOReference*    get_bound_vertex_array_object() const;
 
-       void set_bound_buffer_object      (const OpenGL::BufferTarget&  in_target,
-                                          OpenGL::ReferenceUniquePtr   in_buffer_reference_ptr);
-       void set_bound_buffer_object      (const OpenGL::BufferTarget&  in_target,
-                                          const uint32_t&              in_index,
-                                          OpenGL::ReferenceUniquePtr   in_buffer_reference_ptr,
-                                          const size_t&                in_start_offset,
-                                          const size_t&                in_size);
-       void set_bound_program_object     (OpenGL::ReferenceUniquePtr   in_program_reference_ptr);
-       void set_bound_vertex_array_object(OpenGL::ReferenceUniquePtr   in_vao_reference_ptr);
+       void set_bound_buffer_object      (const OpenGL::BufferTarget&          in_target,
+                                          OpenGL::GLBufferReferenceUniquePtr   in_buffer_reference_ptr);
+       void set_bound_buffer_object      (const OpenGL::BufferTarget&          in_target,
+                                          const uint32_t&                      in_index,
+                                          OpenGL::GLBufferReferenceUniquePtr   in_buffer_reference_ptr,
+                                          const size_t&                        in_start_offset,
+                                          const size_t&                        in_size);
+       void set_bound_program_object     (OpenGL::GLProgramReferenceUniquePtr  in_program_reference_ptr);
+       void set_bound_vertex_array_object(OpenGL::GLVAOReferenceUniquePtr      in_vao_reference_ptr);
 
        void set_active_texture          (const uint32_t&                     in_n_texture_unit);
        void set_blend_color             (const float&                        in_red,
@@ -146,11 +146,11 @@ namespace OpenGL
 
         /* Private variables */
 
-        const IGLObjectManager*                  m_buffer_manager_ptr;
-        OpenGL::ErrorCode                        m_current_error_code;
-        const IGLLimits* const                   m_limits_ptr;
-        std::unique_ptr<OpenGL::SnapshotManager> m_snapshot_manager_ptr;
-        const IGLObjectManager*                  m_vao_manager_ptr;
+        const IGLObjectManager<GLBufferReferenceUniquePtr>*                                                  m_buffer_manager_ptr;
+        OpenGL::ErrorCode                                                                                    m_current_error_code;
+        const IGLLimits* const                                                                               m_limits_ptr;
+        std::unique_ptr<OpenGL::SnapshotManager<GLContextStateReference, GLContextStateReferenceUniquePtr> > m_snapshot_manager_ptr;
+        const IGLObjectManager<GLVAOReferenceUniquePtr>*                                                     m_vao_manager_ptr;
 
         std::unordered_map<OpenGL::ContextProperty,    PropertyData> m_context_prop_map;
         std::unordered_map<OpenGL::PixelStoreProperty, PropertyData> m_pixel_store_prop_map;

@@ -12,7 +12,7 @@ namespace OpenGL
 {
     typedef std::unique_ptr<GLShaderManager> GLShaderManagerUniquePtr;
 
-    class GLShaderManager : public GLObjectManager
+    class GLShaderManager : public GLObjectManager<GLShaderReference, GLShaderReferenceUniquePtr>
     {
     public:
         /* Public functions */

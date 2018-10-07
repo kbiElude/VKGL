@@ -85,13 +85,13 @@ namespace OpenGL
 
     struct BufferDataCommand : public CommandBase
     {
-        OpenGL::ReferenceUniquePtr buffer_reference_ptr;
-        OpenGL::DataUniquePtr      data_ptr;
-        GLsizeiptr                 size;
+        OpenGL::GLBufferReferenceUniquePtr buffer_reference_ptr;
+        OpenGL::DataUniquePtr              data_ptr;
+        GLsizeiptr                         size;
 
-        BufferDataCommand(OpenGL::ReferenceUniquePtr in_buffer_reference_ptr,
-                          OpenGL::DataUniquePtr      in_data_ptr,
-                          const GLsizeiptr&          in_size)
+        BufferDataCommand(OpenGL::GLBufferReferenceUniquePtr in_buffer_reference_ptr,
+                          OpenGL::DataUniquePtr              in_data_ptr,
+                          const GLsizeiptr&                  in_size)
             :CommandBase         (CommandType::BUFFER_DATA),
              buffer_reference_ptr(std::move(in_buffer_reference_ptr) ),
              data_ptr            (std::move(in_data_ptr) ),
@@ -104,15 +104,15 @@ namespace OpenGL
 
     struct BufferSubDataCommand : public CommandBase
     {
-        OpenGL::ReferenceUniquePtr buffer_reference_ptr;
-        OpenGL::DataUniquePtr      data_ptr;
-        GLsizeiptr                 size;
-        GLsizeiptr                 start_offset;
+        OpenGL::GLBufferReferenceUniquePtr buffer_reference_ptr;
+        OpenGL::DataUniquePtr              data_ptr;
+        GLsizeiptr                         size;
+        GLsizeiptr                         start_offset;
 
-        BufferSubDataCommand(OpenGL::ReferenceUniquePtr in_buffer_reference_ptr,
-                             OpenGL::DataUniquePtr      in_data_ptr,
-                             const GLsizeiptr&          in_size,
-                             const GLsizeiptr&          in_start_offset)
+        BufferSubDataCommand(OpenGL::GLBufferReferenceUniquePtr in_buffer_reference_ptr,
+                             OpenGL::DataUniquePtr              in_data_ptr,
+                             const GLsizeiptr&                  in_size,
+                             const GLsizeiptr&                  in_start_offset)
             :CommandBase         (CommandType::BUFFER_SUB_DATA),
              buffer_reference_ptr(std::move(in_buffer_reference_ptr) ),
              data_ptr            (std::move(in_data_ptr) ),
@@ -138,9 +138,9 @@ namespace OpenGL
 
     struct CompileShaderCommand : public CommandBase
     {
-        OpenGL::ReferenceUniquePtr shader_reference_ptr;
+        OpenGL::GLShaderReferenceUniquePtr shader_reference_ptr;
 
-        CompileShaderCommand(OpenGL::ReferenceUniquePtr in_shader_reference_ptr)
+        CompileShaderCommand(OpenGL::GLShaderReferenceUniquePtr in_shader_reference_ptr)
             :CommandBase         (CommandType::COMPILE_SHADER),
              shader_reference_ptr(std::move(in_shader_reference_ptr) )
         {
@@ -151,21 +151,21 @@ namespace OpenGL
 
     struct CompressedTexImage1DCommand : public CommandBase
     {
-        GLint                      border;
-        OpenGL::DataUniquePtr      data_ptr;
-        GLsizei                    image_size;
-        OpenGL::InternalFormat     internalformat;
-        GLint                      level;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        GLsizei                    width;
+        GLint                               border;
+        OpenGL::DataUniquePtr               data_ptr;
+        GLsizei                             image_size;
+        OpenGL::InternalFormat              internalformat;
+        GLint                               level;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        GLsizei                             width;
 
-        CompressedTexImage1DCommand(const GLint&               in_border,
-                                    OpenGL::DataUniquePtr      in_data_ptr,
-                                    const GLsizei&             in_image_size,
-                                    OpenGL::InternalFormat     in_internalformat,
-                                    const GLint&               in_level,
-                                    OpenGL::ReferenceUniquePtr in_texture_reference_ptr,
-                                    const GLsizei&             in_width)
+        CompressedTexImage1DCommand(const GLint&                        in_border,
+                                    OpenGL::DataUniquePtr               in_data_ptr,
+                                    const GLsizei&                      in_image_size,
+                                    OpenGL::InternalFormat              in_internalformat,
+                                    const GLint&                        in_level,
+                                    OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                                    const GLsizei&                      in_width)
             :CommandBase          (CommandType::COMPRESSED_TEX_IMAGE_1D),
              border               (in_border),
              data_ptr             (std::move(in_data_ptr) ),
@@ -182,23 +182,23 @@ namespace OpenGL
 
     struct CompressedTexImage2DCommand : public CommandBase
     {
-        GLint                      border;
-        OpenGL::DataUniquePtr      data_ptr;
-        GLsizei                    height;
-        GLsizei                    image_size;
-        OpenGL::InternalFormat     internalformat;
-        GLint                      level;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        GLsizei                    width;
+        GLint                               border;
+        OpenGL::DataUniquePtr               data_ptr;
+        GLsizei                             height;
+        GLsizei                             image_size;
+        OpenGL::InternalFormat              internalformat;
+        GLint                               level;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        GLsizei                             width;
 
-        CompressedTexImage2DCommand(const GLint&               in_border,
-                                    OpenGL::DataUniquePtr      in_data_ptr,
-                                    const GLsizei&             in_height,
-                                    const GLsizei&             in_image_size,
-                                    OpenGL::InternalFormat     in_internalformat,
-                                    const GLint&               in_level,
-                                    OpenGL::ReferenceUniquePtr in_texture_reference_ptr,
-                                    const GLsizei&             in_width)
+        CompressedTexImage2DCommand(const GLint&                        in_border,
+                                    OpenGL::DataUniquePtr               in_data_ptr,
+                                    const GLsizei&                      in_height,
+                                    const GLsizei&                      in_image_size,
+                                    OpenGL::InternalFormat              in_internalformat,
+                                    const GLint&                        in_level,
+                                    OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                                    const GLsizei&                      in_width)
             :CommandBase          (CommandType::COMPRESSED_TEX_IMAGE_2D),
              border               (in_border),
              data_ptr             (std::move(in_data_ptr) ),
@@ -216,25 +216,25 @@ namespace OpenGL
 
     struct CompressedTexImage3DCommand : public CommandBase
     {
-        GLint                      border;
-        OpenGL::DataUniquePtr      data_ptr;
-        GLsizei                    depth;
-        GLsizei                    height;
-        GLsizei                    image_size;
-        OpenGL::InternalFormat     internalformat;
-        GLint                      level;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        GLsizei                    width;
+        GLint                               border;
+        OpenGL::DataUniquePtr               data_ptr;
+        GLsizei                             depth;
+        GLsizei                             height;
+        GLsizei                             image_size;
+        OpenGL::InternalFormat              internalformat;
+        GLint                               level;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        GLsizei                             width;
 
-        CompressedTexImage3DCommand(const GLint&&              in_border,
-                                    OpenGL::DataUniquePtr      in_data_ptr,
-                                    const GLsizei&             in_depth,
-                                    const GLsizei&             in_height,
-                                    const GLsizei&             in_image_size,
-                                    OpenGL::InternalFormat     in_internalformat,
-                                    const GLint&               in_level,
-                                    OpenGL::ReferenceUniquePtr in_texture_reference_ptr,
-                                    const GLsizei&             in_width)
+        CompressedTexImage3DCommand(const GLint&&                       in_border,
+                                    OpenGL::DataUniquePtr               in_data_ptr,
+                                    const GLsizei&                      in_depth,
+                                    const GLsizei&                      in_height,
+                                    const GLsizei&                      in_image_size,
+                                    OpenGL::InternalFormat              in_internalformat,
+                                    const GLint&                        in_level,
+                                    OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                                    const GLsizei&                      in_width)
             :CommandBase          (CommandType::COMPRESSED_TEX_IMAGE_3D),
              border               (in_border),
              data_ptr             (std::move(in_data_ptr) ),
@@ -254,21 +254,21 @@ namespace OpenGL
 
     struct CompressedTexSubImage1DCommand : public CommandBase
     {
-        OpenGL::DataUniquePtr      data_ptr;
-        OpenGL::PixelFormat        format;
-        GLsizei                    image_size;
-        GLint                      level;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        GLsizei                    width;
-        GLint                      xoffset;
+        OpenGL::DataUniquePtr               data_ptr;
+        OpenGL::PixelFormat                 format;
+        GLsizei                             image_size;
+        GLint                               level;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        GLsizei                             width;
+        GLint                               xoffset;
 
-        CompressedTexSubImage1DCommand(OpenGL::DataUniquePtr      in_data_ptr,
-                                       const OpenGL::PixelFormat& in_format,
-                                       const GLsizei&             in_image_size,
-                                       const GLint&               in_level,
-                                       OpenGL::ReferenceUniquePtr in_texture_reference_ptr,
-                                       const GLsizei&             in_width,
-                                       const GLint&               in_xoffset)
+        CompressedTexSubImage1DCommand(OpenGL::DataUniquePtr               in_data_ptr,
+                                       const OpenGL::PixelFormat&          in_format,
+                                       const GLsizei&                      in_image_size,
+                                       const GLint&                        in_level,
+                                       OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                                       const GLsizei&                      in_width,
+                                       const GLint&                        in_xoffset)
             :CommandBase          (CommandType::COMPRESSED_TEX_SUB_IMAGE_1D),
              data_ptr             (std::move(in_data_ptr) ),
              format               (in_format),
@@ -285,25 +285,25 @@ namespace OpenGL
 
     struct CompressedTexSubImage2DCommand : public CommandBase
     {
-        OpenGL::DataUniquePtr      data_ptr;
-        OpenGL::PixelFormat        format;
-        GLsizei                    height;
-        GLsizei                    image_size;
-        GLint                      level;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        GLsizei                    width;
-        GLint                      xoffset;
-        GLint                      yoffset;
+        OpenGL::DataUniquePtr               data_ptr;
+        OpenGL::PixelFormat                 format;
+        GLsizei                             height;
+        GLsizei                             image_size;
+        GLint                               level;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        GLsizei                             width;
+        GLint                               xoffset;
+        GLint                               yoffset;
 
-        CompressedTexSubImage2DCommand(OpenGL::DataUniquePtr      in_data_ptr,
-                                       const OpenGL::PixelFormat& in_format,
-                                       const GLsizei&             in_height,
-                                       const GLsizei&             in_image_size,
-                                       const GLint&               in_level,
-                                       OpenGL::ReferenceUniquePtr in_texture_reference_ptr,
-                                       const GLsizei&             in_width,
-                                       const GLint&               in_xoffset,
-                                       const GLint&               in_yoffset)
+        CompressedTexSubImage2DCommand(OpenGL::DataUniquePtr               in_data_ptr,
+                                       const OpenGL::PixelFormat&          in_format,
+                                       const GLsizei&                      in_height,
+                                       const GLsizei&                      in_image_size,
+                                       const GLint&                        in_level,
+                                       OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                                       const GLsizei&                      in_width,
+                                       const GLint&                        in_xoffset,
+                                       const GLint&                        in_yoffset)
             :CommandBase          (CommandType::COMPRESSED_TEX_SUB_IMAGE_2D),
              data_ptr             (std::move(in_data_ptr) ),
              format               (in_format),
@@ -322,27 +322,27 @@ namespace OpenGL
 
     struct CompressedTexSubImage3DCommand : public CommandBase
     {
-        OpenGL::DataUniquePtr      data_ptr;
-        OpenGL::PixelFormat        format;
-        GLsizei                    height;
-        GLsizei                    image_size;
-        GLint                      level;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        GLsizei                    width;
-        GLint                      xoffset;
-        GLint                      yoffset;
-        GLint                      zoffset;
+        OpenGL::DataUniquePtr               data_ptr;
+        OpenGL::PixelFormat                 format;
+        GLsizei                             height;
+        GLsizei                             image_size;
+        GLint                               level;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        GLsizei                             width;
+        GLint                               xoffset;
+        GLint                               yoffset;
+        GLint                               zoffset;
 
-        CompressedTexSubImage3DCommand(OpenGL::DataUniquePtr      in_data_ptr,
-                                       const OpenGL::PixelFormat& in_format,
-                                       const GLsizei&             in_height,
-                                       const GLsizei&             in_image_size,
-                                       const GLint&               in_level,
-                                       OpenGL::ReferenceUniquePtr in_texture_reference_ptr,
-                                       const GLsizei&             in_width,
-                                       const GLint&               in_xoffset,
-                                       const GLint&               in_yoffset,
-                                       const GLint&               in_zoffset)
+        CompressedTexSubImage3DCommand(OpenGL::DataUniquePtr               in_data_ptr,
+                                       const OpenGL::PixelFormat&          in_format,
+                                       const GLsizei&                      in_height,
+                                       const GLsizei&                      in_image_size,
+                                       const GLint&                        in_level,
+                                       OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                                       const GLsizei&                      in_width,
+                                       const GLint&                        in_xoffset,
+                                       const GLint&                        in_yoffset,
+                                       const GLint&                        in_zoffset)
             :CommandBase          (CommandType::COMPRESSED_TEX_SUB_IMAGE_3D),
              data_ptr             (std::move(in_data_ptr) ),
              format               (in_format),
@@ -362,17 +362,17 @@ namespace OpenGL
 
     struct CopyBufferSubDataCommand : public CommandBase
     {
-        OpenGL::ReferenceUniquePtr read_buffer_ptr;
-        GLintptr                   read_offset;
-        GLsizeiptr                 size;
-        OpenGL::ReferenceUniquePtr write_buffer_ptr;
-        GLintptr                   write_offset;
+        OpenGL::GLBufferReferenceUniquePtr read_buffer_ptr;
+        GLintptr                           read_offset;
+        GLsizeiptr                         size;
+        OpenGL::GLBufferReferenceUniquePtr write_buffer_ptr;
+        GLintptr                           write_offset;
 
-        CopyBufferSubDataCommand(OpenGL::ReferenceUniquePtr in_read_buffer_ptr,
-                                 const GLintptr&            in_read_offset,
-                                 const GLsizeiptr&          in_size,
-                                 OpenGL::ReferenceUniquePtr in_write_buffer_ptr,
-                                 const GLintptr&            in_write_offset)
+        CopyBufferSubDataCommand(OpenGL::GLBufferReferenceUniquePtr in_read_buffer_ptr,
+                                 const GLintptr&                    in_read_offset,
+                                 const GLsizeiptr&                  in_size,
+                                 OpenGL::GLBufferReferenceUniquePtr in_write_buffer_ptr,
+                                 const GLintptr&                    in_write_offset)
             :CommandBase     (CommandType::COPY_BUFFER_SUB_DATA),
              read_buffer_ptr (std::move(in_read_buffer_ptr) ),
              read_offset     (in_read_offset),
@@ -388,23 +388,23 @@ namespace OpenGL
 
     struct CopyTexImage1DCommand : public CommandBase
     {
-        GLint                      border;
-        OpenGL::InternalFormat     internalformat;
-        GLint                      level;
-        OpenGL::ReadBuffer         read_buffer_state_at_call_time;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        GLsizei                    width;
-        GLint                      x;
-        GLint                      y;
+        GLint                               border;
+        OpenGL::InternalFormat              internalformat;
+        GLint                               level;
+        OpenGL::ReadBuffer                  read_buffer_state_at_call_time;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        GLsizei                             width;
+        GLint                               x;
+        GLint                               y;
 
-        CopyTexImage1DCommand(const GLint&                  in_border,
-                              const OpenGL::InternalFormat& in_internalformat,
-                              const GLint&                  in_level,
-                              const OpenGL::ReadBuffer&     in_read_buffer_state_at_call_time,
-                              OpenGL::ReferenceUniquePtr    in_texture_reference_ptr,
-                              const GLsizei&                in_width,
-                              const GLint&                  in_x,
-                              const GLint&                  in_y)
+        CopyTexImage1DCommand(const GLint&                        in_border,
+                              const OpenGL::InternalFormat&       in_internalformat,
+                              const GLint&                        in_level,
+                              const OpenGL::ReadBuffer&           in_read_buffer_state_at_call_time,
+                              OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                              const GLsizei&                      in_width,
+                              const GLint&                        in_x,
+                              const GLint&                        in_y)
             :CommandBase                   (CommandType::COPY_TEX_IMAGE_1D),
              border                        (in_border),
              internalformat                (in_internalformat),
@@ -422,25 +422,25 @@ namespace OpenGL
 
     struct CopyTexImage2DCommand : public CommandBase
     {
-        GLint                      border;
-        GLsizei                    height;
-        OpenGL::InternalFormat     internalformat;
-        GLint                      level;
-        OpenGL::ReadBuffer         read_buffer_state_at_call_time;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        GLsizei                    width;
-        GLint                      x;
-        GLint                      y;
+        GLint                               border;
+        GLsizei                             height;
+        OpenGL::InternalFormat              internalformat;
+        GLint                               level;
+        OpenGL::ReadBuffer                  read_buffer_state_at_call_time;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        GLsizei                             width;
+        GLint                               x;
+        GLint                               y;
 
-        CopyTexImage2DCommand(const GLint&                  in_border,
-                              const GLsizei&                in_height,
-                              const OpenGL::InternalFormat& in_internalformat,
-                              const GLint&                  in_level,
-                              const OpenGL::ReadBuffer&     in_read_buffer_state_at_call_time,
-                              OpenGL::ReferenceUniquePtr    in_texture_reference_ptr,
-                              const GLsizei&                in_width,
-                              const GLint&                  in_x,
-                              const GLint&                  in_y)
+        CopyTexImage2DCommand(const GLint&                        in_border,
+                              const GLsizei&                      in_height,
+                              const OpenGL::InternalFormat&       in_internalformat,
+                              const GLint&                        in_level,
+                              const OpenGL::ReadBuffer&           in_read_buffer_state_at_call_time,
+                              OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                              const GLsizei&                      in_width,
+                              const GLint&                        in_x,
+                              const GLint&                        in_y)
             :CommandBase                   (CommandType::COPY_TEX_IMAGE_2D),
              border                        (in_border),
              height                        (in_height),
@@ -459,21 +459,21 @@ namespace OpenGL
 
     struct CopyTexSubImage1DCommand : public CommandBase
     {
-        GLint                      level;
-        OpenGL::ReadBuffer         read_buffer_state_at_call_time;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        GLsizei                    width;
-        GLint                      xoffset;
-        GLint                      x;
-        GLint                      y;
+        GLint                               level;
+        OpenGL::ReadBuffer                  read_buffer_state_at_call_time;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        GLsizei                             width;
+        GLint                               xoffset;
+        GLint                               x;
+        GLint                               y;
 
-        CopyTexSubImage1DCommand(const GLint&               in_level,
-                                 const OpenGL::ReadBuffer&  in_read_buffer_state_at_call_time,
-                                 OpenGL::ReferenceUniquePtr in_texture_reference_ptr,
-                                 const GLsizei&             in_width,
-                                 const GLint&               in_xoffset,
-                                 const GLint&               in_x,
-                                 const GLint&               in_y)
+        CopyTexSubImage1DCommand(const GLint&                        in_level,
+                                 const OpenGL::ReadBuffer&           in_read_buffer_state_at_call_time,
+                                 OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                                 const GLsizei&                      in_width,
+                                 const GLint&                        in_xoffset,
+                                 const GLint&                        in_x,
+                                 const GLint&                        in_y)
             :CommandBase                   (CommandType::COPY_TEX_SUB_IMAGE_1D),
              level                         (in_level),
              read_buffer_state_at_call_time(in_read_buffer_state_at_call_time),
@@ -490,25 +490,25 @@ namespace OpenGL
 
     struct CopyTexSubImage2DCommand : public CommandBase
     {
-        GLsizei                    height;
-        GLint                      level;
-        OpenGL::ReadBuffer         read_buffer_state_at_call_time;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        GLsizei                    width;
-        GLint                      xoffset;
-        GLint                      yoffset;
-        GLint                      x;
-        GLint                      y;
+        GLsizei                             height;
+        GLint                               level;
+        OpenGL::ReadBuffer                  read_buffer_state_at_call_time;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        GLsizei                             width;
+        GLint                               xoffset;
+        GLint                               yoffset;
+        GLint                               x;
+        GLint                               y;
 
-        CopyTexSubImage2DCommand(const GLsizei&             in_height,
-                                 const GLint&               in_level,
-                                 const OpenGL::ReadBuffer&  in_read_buffer_state_at_call_time,
-                                 OpenGL::ReferenceUniquePtr in_texture_reference_ptr,
-                                 const GLsizei&             in_width,
-                                 const GLint&               in_xoffset,
-                                 const GLint&               in_yoffset,
-                                 const GLint&               in_x,
-                                 const GLint&               in_y)
+        CopyTexSubImage2DCommand(const GLsizei&                      in_height,
+                                 const GLint&                        in_level,
+                                 const OpenGL::ReadBuffer&           in_read_buffer_state_at_call_time,
+                                 OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                                 const GLsizei&                       in_width,
+                                 const GLint&                         in_xoffset,
+                                 const GLint&                         in_yoffset,
+                                 const GLint&                         in_x,
+                                 const GLint&                         in_y)
             :CommandBase                   (CommandType::COPY_TEX_SUB_IMAGE_2D),
              height                        (in_height),
              level                         (in_level),
@@ -527,27 +527,27 @@ namespace OpenGL
 
     struct CopyTexSubImage3DCommand : public CommandBase
     {
-        GLsizei                    height;
-        GLint                      level;
-        OpenGL::ReadBuffer         read_buffer_state_at_call_time;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        GLsizei                    width;
-        GLint                      xoffset;
-        GLint                      yoffset;
-        GLint                      zoffset;
-        GLint                      x;
-        GLint                      y;
+        GLsizei                             height;
+        GLint                               level;
+        OpenGL::ReadBuffer                  read_buffer_state_at_call_time;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        GLsizei                             width;
+        GLint                               xoffset;
+        GLint                               yoffset;
+        GLint                               zoffset;
+        GLint                               x;
+        GLint                               y;
 
-        CopyTexSubImage3DCommand(const GLsizei&             in_height,
-                                 const GLint&               in_level,
-                                 const OpenGL::ReadBuffer&  in_read_buffer_state_at_call_time,
-                                 OpenGL::ReferenceUniquePtr in_texture_reference_ptr,
-                                 const GLsizei&             in_width,
-                                 const GLint&               in_xoffset,
-                                 const GLint&               in_yoffset,
-                                 const GLint&               in_zoffset,
-                                 const GLint&               in_x,
-                                 const GLint&               in_y)
+        CopyTexSubImage3DCommand(const GLsizei&                      in_height,
+                                 const GLint&                        in_level,
+                                 const OpenGL::ReadBuffer&           in_read_buffer_state_at_call_time,
+                                 OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                                 const GLsizei&                      in_width,
+                                 const GLint&                        in_xoffset,
+                                 const GLint&                        in_yoffset,
+                                 const GLint&                        in_zoffset,
+                                 const GLint&                        in_x,
+                                 const GLint&                        in_y)
             :CommandBase                   (CommandType::COPY_TEX_SUB_IMAGE_3D),
              height                        (in_height),
              level                         (in_level),
@@ -567,15 +567,15 @@ namespace OpenGL
 
     struct DrawArraysCommand : public CommandBase
     {
-        GLsizei                    count;
-        GLint                      first;
-        OpenGL::DrawCallMode       mode;
-        OpenGL::ReferenceUniquePtr state_reference_ptr;
+        GLsizei                                  count;
+        GLint                                    first;
+        OpenGL::DrawCallMode                     mode;
+        OpenGL::GLContextStateReferenceUniquePtr state_reference_ptr;
 
-        DrawArraysCommand(const GLsizei&              in_count,
-                          const GLint&                in_first,
-                          const OpenGL::DrawCallMode& in_mode,
-                          OpenGL::ReferenceUniquePtr  in_state_reference_ptr)
+        DrawArraysCommand(const GLsizei&                           in_count,
+                          const GLint&                             in_first,
+                          const OpenGL::DrawCallMode&              in_mode,
+                          OpenGL::GLContextStateReferenceUniquePtr in_state_reference_ptr)
             :CommandBase        (CommandType::DRAW_ARRAYS),
              count              (in_count),
              first              (in_first),
@@ -588,17 +588,17 @@ namespace OpenGL
 
     struct DrawElementsCommand : public CommandBase
     {
-        GLsizei                    count;
-        OpenGL::DataUniquePtr      index_data_ptr;
-        OpenGL::DrawCallMode       mode;
-        OpenGL::ReferenceUniquePtr state_reference_ptr;
-        OpenGL::DrawCallIndexType  type;
+        GLsizei                                  count;
+        OpenGL::DataUniquePtr                    index_data_ptr;
+        OpenGL::DrawCallMode                     mode;
+        OpenGL::GLContextStateReferenceUniquePtr state_reference_ptr;
+        OpenGL::DrawCallIndexType                type;
 
-        DrawElementsCommand(const GLsizei&                   in_count,
-                            OpenGL::DataUniquePtr            in_index_data_ptr,
-                            const OpenGL::DrawCallMode&      in_mode,
-                            OpenGL::ReferenceUniquePtr       in_state_reference_ptr,
-                            const OpenGL::DrawCallIndexType& in_type)
+        DrawElementsCommand(const GLsizei&                           in_count,
+                            OpenGL::DataUniquePtr                    in_index_data_ptr,
+                            const OpenGL::DrawCallMode&              in_mode,
+                            OpenGL::GLContextStateReferenceUniquePtr in_state_reference_ptr,
+                            const OpenGL::DrawCallIndexType&         in_type)
             :CommandBase        (CommandType::DRAW_ELEMENTS),
              count              (in_count),
              index_data_ptr     (std::move(in_index_data_ptr) ),
@@ -612,21 +612,21 @@ namespace OpenGL
 
     struct DrawRangeElementsCommand : public CommandBase
     {
-        GLsizei                    count;
-        GLuint                     end_index;
-        OpenGL::DataUniquePtr      index_data_ptr;
-        OpenGL::DrawCallMode       mode;
-        GLuint                     start_index;
-        OpenGL::ReferenceUniquePtr state_reference_ptr;
-        OpenGL::DrawCallIndexType  type;
+        GLsizei                                  count;
+        GLuint                                   end_index;
+        OpenGL::DataUniquePtr                    index_data_ptr;
+        OpenGL::DrawCallMode                     mode;
+        GLuint                                   start_index;
+        OpenGL::GLContextStateReferenceUniquePtr state_reference_ptr;
+        OpenGL::DrawCallIndexType                type;
 
-        DrawRangeElementsCommand(const GLsizei&                   in_count,
-                                 const GLuint&                    in_end_index,
-                                 OpenGL::DataUniquePtr            in_index_data_ptr,
-                                 const OpenGL::DrawCallMode&      in_mode,
-                                 const GLuint&                    in_start_index,
-                                 OpenGL::ReferenceUniquePtr       in_state_reference_ptr,
-                                 const OpenGL::DrawCallIndexType& in_type)
+        DrawRangeElementsCommand(const GLsizei&                           in_count,
+                                 const GLuint&                            in_end_index,
+                                 OpenGL::DataUniquePtr                    in_index_data_ptr,
+                                 const OpenGL::DrawCallMode&              in_mode,
+                                 const GLuint&                            in_start_index,
+                                 OpenGL::GLContextStateReferenceUniquePtr in_state_reference_ptr,
+                                 const OpenGL::DrawCallIndexType&         in_type)
             :CommandBase        (CommandType::DRAW_RANGE_ELEMENTS),
              count              (in_count),
              end_index          (in_end_index),
@@ -660,13 +660,13 @@ namespace OpenGL
 
     struct FlushMappedBufferRangeCommand : public CommandBase
     {
-        OpenGL::ReferenceUniquePtr buffer_reference_ptr;
-        GLintptr                   offset;
-        GLsizeiptr                 length;
+        OpenGL::GLBufferReferenceUniquePtr buffer_reference_ptr;
+        GLintptr                           offset;
+        GLsizeiptr                         length;
 
-        FlushMappedBufferRangeCommand(OpenGL::ReferenceUniquePtr in_buffer_reference_ptr,
-                                      const GLintptr&            in_offset,
-                                      const GLsizeiptr&          in_length)
+        FlushMappedBufferRangeCommand(OpenGL::GLBufferReferenceUniquePtr in_buffer_reference_ptr,
+                                      const GLintptr&                    in_offset,
+                                      const GLsizeiptr&                  in_length)
             :CommandBase         (CommandType::FLUSH_MAPPED_BUFFER_RANGE),
              buffer_reference_ptr(std::move(in_buffer_reference_ptr) ),
              offset              (in_offset),
@@ -679,15 +679,15 @@ namespace OpenGL
 
     struct GetBufferSubDataCommand : public CommandBase
     {
-        OpenGL::ReferenceUniquePtr buffer_reference_ptr;
-        void*                      result_data_ptr;
-        GLsizeiptr                 size;
-        GLintptr                   start_offset;
+        OpenGL::GLBufferReferenceUniquePtr buffer_reference_ptr;
+        void*                              result_data_ptr;
+        GLsizeiptr                         size;
+        GLintptr                           start_offset;
 
-        GetBufferSubDataCommand(OpenGL::ReferenceUniquePtr in_buffer_reference_ptr,
-                                void*                      in_result_data_ptr,
-                                const GLsizeiptr&          in_size,
-                                const GLintptr&            in_start_offset)
+        GetBufferSubDataCommand(OpenGL::GLBufferReferenceUniquePtr in_buffer_reference_ptr,
+                                void*                              in_result_data_ptr,
+                                const GLsizeiptr&                  in_size,
+                                const GLintptr&                    in_start_offset)
             :CommandBase         (CommandType::GET_BUFFER_SUB_DATA),
              buffer_reference_ptr(std::move(in_buffer_reference_ptr) ),
              result_data_ptr     (in_result_data_ptr),
@@ -701,13 +701,13 @@ namespace OpenGL
 
     struct GetCompressedTexImageCommand : public CommandBase
     {
-        GLint                      level;
-        void*                      result_data_ptr;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
+        GLint                               level;
+        void*                               result_data_ptr;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
 
-        GetCompressedTexImageCommand(const GLint&               in_level,
-                                     void*                      in_result_data_ptr,
-                                     OpenGL::ReferenceUniquePtr in_texture_reference_ptr)
+        GetCompressedTexImageCommand(const GLint&                        in_level,
+                                     void*                               in_result_data_ptr,
+                                     OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr)
             :CommandBase          (CommandType::GET_COMPRESSED_TEX_IMAGE),
              level                (in_level),
              result_data_ptr      (in_result_data_ptr),
@@ -720,17 +720,17 @@ namespace OpenGL
 
     struct GetTextureImageCommand : public CommandBase
     {
-        OpenGL::PixelFormat        format;
-        uint32_t                   level;
-        void*                      result_data_ptr;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        OpenGL::PixelType          type;
+        OpenGL::PixelFormat                 format;
+        uint32_t                            level;
+        void*                               result_data_ptr;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        OpenGL::PixelType                   type;
 
-        GetTextureImageCommand(const OpenGL::PixelFormat& in_format,
-                               const uint32_t&            in_level,
-                               void*                      in_result_data_ptr,
-                               OpenGL::ReferenceUniquePtr in_texture_reference_ptr,
-                               const OpenGL::PixelType&   in_type)
+        GetTextureImageCommand(const OpenGL::PixelFormat&          in_format,
+                               const uint32_t&                     in_level,
+                               void*                               in_result_data_ptr,
+                               OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                               const OpenGL::PixelType&            in_type)
             :CommandBase          (CommandType::GET_TEXTURE_IMAGE),
              format               (in_format),
              level                (in_level),
@@ -745,9 +745,9 @@ namespace OpenGL
 
     struct LinkProgramCommand : public CommandBase
     {
-        OpenGL::ReferenceUniquePtr program_reference_ptr;
+        OpenGL::GLProgramReferenceUniquePtr program_reference_ptr;
 
-        LinkProgramCommand(OpenGL::ReferenceUniquePtr in_program_reference_ptr)
+        LinkProgramCommand(OpenGL::GLProgramReferenceUniquePtr in_program_reference_ptr)
             :CommandBase          (CommandType::LINK_PROGRAM),
              program_reference_ptr(std::move(in_program_reference_ptr) )
         {
@@ -758,17 +758,17 @@ namespace OpenGL
 
     struct MapBufferCommand : public CommandBase
     {
-        OpenGL::BufferAccess       access;
-        OpenGL::ReferenceUniquePtr buffer_reference_ptr;
-        GLsizeiptr                 length;
-        void**                     result_ptr_ptr;
-        GLintptr                   start_offset;
+        OpenGL::BufferAccess               access;
+        OpenGL::GLBufferReferenceUniquePtr buffer_reference_ptr;
+        GLsizeiptr                         length;
+        void**                             result_ptr_ptr;
+        GLintptr                           start_offset;
 
-        MapBufferCommand(const OpenGL::BufferAccess& in_access,
-                         OpenGL::ReferenceUniquePtr  in_buffer_reference_ptr,
-                         const GLsizeiptr&           in_length,
-                         void**                      in_result_ptr_ptr,
-                         const GLintptr&             in_start_offset)
+        MapBufferCommand(const OpenGL::BufferAccess&        in_access,
+                         OpenGL::GLBufferReferenceUniquePtr in_buffer_reference_ptr,
+                         const GLsizeiptr&                  in_length,
+                         void**                             in_result_ptr_ptr,
+                         const GLintptr&                    in_start_offset)
             :CommandBase         (CommandType::MAP_BUFFER),
              access              (in_access),
              buffer_reference_ptr(std::move(in_buffer_reference_ptr) ),
@@ -783,17 +783,17 @@ namespace OpenGL
 
     struct MultiDrawArraysCommand : public CommandBase
     {
-        OpenGL::GLSizeiArrayUniquePtr count_ptr;
-        GLsizei                       drawcount;
-        OpenGL::GLIntArrayUniquePtr   first_ptr;
-        OpenGL::DrawCallMode          mode;
-        OpenGL::ReferenceUniquePtr    state_reference_ptr;
+        OpenGL::GLSizeiArrayUniquePtr            count_ptr;
+        GLsizei                                  drawcount;
+        OpenGL::GLIntArrayUniquePtr              first_ptr;
+        OpenGL::DrawCallMode                     mode;
+        OpenGL::GLContextStateReferenceUniquePtr state_reference_ptr;
 
-        MultiDrawArraysCommand(OpenGL::GLSizeiArrayUniquePtr in_count_ptr,
-                               const GLsizei&                in_drawcount,
-                               OpenGL::GLIntArrayUniquePtr   in_first_ptr,
-                               const OpenGL::DrawCallMode&   in_mode,
-                               OpenGL::ReferenceUniquePtr    in_state_reference_ptr)
+        MultiDrawArraysCommand(OpenGL::GLSizeiArrayUniquePtr            in_count_ptr,
+                               const GLsizei&                           in_drawcount,
+                               OpenGL::GLIntArrayUniquePtr              in_first_ptr,
+                               const OpenGL::DrawCallMode&              in_mode,
+                               OpenGL::GLContextStateReferenceUniquePtr in_state_reference_ptr)
             :CommandBase        (CommandType::MULTI_DRAW_ARRAYS),
              count_ptr          (std::move(count_ptr) ),
              drawcount          (drawcount),
@@ -807,19 +807,19 @@ namespace OpenGL
 
     struct MultiDrawElementsCommand : public CommandBase
     {
-        OpenGL::GLSizeiArrayUniquePtr count_ptr;
-        GLsizei                       drawcount;
-        OpenGL::DataUniquePtr         indices_ptr;
-        OpenGL::DrawCallMode          mode;
-        OpenGL::ReferenceUniquePtr    state_reference_ptr;
-        OpenGL::DrawCallIndexType     type;
+        OpenGL::GLSizeiArrayUniquePtr            count_ptr;
+        GLsizei                                  drawcount;
+        OpenGL::DataUniquePtr                    indices_ptr;
+        OpenGL::DrawCallMode                     mode;
+        OpenGL::GLContextStateReferenceUniquePtr state_reference_ptr;
+        OpenGL::DrawCallIndexType                type;
 
-        MultiDrawElementsCommand(OpenGL::GLSizeiArrayUniquePtr    in_count_ptr,
-                                 const GLsizei&                   in_drawcount,
-                                 OpenGL::DataUniquePtr            in_indices_ptr,
-                                 const OpenGL::DrawCallMode&      in_mode,
-                                 OpenGL::ReferenceUniquePtr       in_state_reference_ptr,
-                                 const OpenGL::DrawCallIndexType& in_type)
+        MultiDrawElementsCommand(OpenGL::GLSizeiArrayUniquePtr            in_count_ptr,
+                                 const GLsizei&                           in_drawcount,
+                                 OpenGL::DataUniquePtr                    in_indices_ptr,
+                                 const OpenGL::DrawCallMode&              in_mode,
+                                 OpenGL::GLContextStateReferenceUniquePtr in_state_reference_ptr,
+                                 const OpenGL::DrawCallIndexType&         in_type)
             :CommandBase        (CommandType::MULTI_DRAW_ELEMENTS),
              count_ptr          (std::move(in_count_ptr) ),
              drawcount          (in_drawcount),
@@ -867,23 +867,23 @@ namespace OpenGL
 
     struct TexImage1DCommand : public CommandBase
     {
-        int32_t                    border;
-        OpenGL::PixelFormat        format;
-        OpenGL::InternalFormat     internalformat;
-        int32_t                    level;
-        OpenGL::DataUniquePtr      pixels_ptr;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        OpenGL::PixelType          type;
-        int32_t                    width;
+        int32_t                             border;
+        OpenGL::PixelFormat                 format;
+        OpenGL::InternalFormat              internalformat;
+        int32_t                             level;
+        OpenGL::DataUniquePtr               pixels_ptr;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        OpenGL::PixelType                   type;
+        int32_t                             width;
 
-        TexImage1DCommand(const int32_t&                in_border,
-                          const OpenGL::PixelFormat&    in_format,
-                          const OpenGL::InternalFormat& in_internalformat,
-                          const int32_t&                in_level,
-                          OpenGL::DataUniquePtr         in_pixels_ptr,
-                          OpenGL::ReferenceUniquePtr    in_texture_reference_ptr,
-                          const OpenGL::PixelType&      in_type,
-                          const int32_t&                in_width)
+        TexImage1DCommand(const int32_t&                      in_border,
+                          const OpenGL::PixelFormat&          in_format,
+                          const OpenGL::InternalFormat&       in_internalformat,
+                          const int32_t&                      in_level,
+                          OpenGL::DataUniquePtr               in_pixels_ptr,
+                          OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                          const OpenGL::PixelType&            in_type,
+                          const int32_t&                      in_width)
             :CommandBase          (CommandType::TEX_IMAGE_1D),
              border               (in_border),
              format               (in_format),
@@ -901,25 +901,25 @@ namespace OpenGL
 
     struct TexImage2DCommand : public CommandBase
     {
-        int32_t                    border;
-        OpenGL::PixelFormat        format;
-        int32_t                    height;
-        OpenGL::InternalFormat     internalformat;
-        int32_t                    level;
-        OpenGL::DataUniquePtr      pixels_ptr;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        OpenGL::PixelType          type;
-        int32_t                    width;
+        int32_t                             border;
+        OpenGL::PixelFormat                 format;
+        int32_t                             height;
+        OpenGL::InternalFormat              internalformat;
+        int32_t                             level;
+        OpenGL::DataUniquePtr               pixels_ptr;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        OpenGL::PixelType                   type;
+        int32_t                             width;
 
-        TexImage2DCommand(const int32_t&                in_border,
-                          const OpenGL::PixelFormat&    in_format,
-                          const int32_t&                in_height,
-                          const OpenGL::InternalFormat& in_internalformat,
-                          const int32_t&                in_level,
-                          OpenGL::DataUniquePtr         in_pixels_ptr,
-                          OpenGL::ReferenceUniquePtr    in_texture_reference_ptr,
-                          const OpenGL::PixelType&      in_type,
-                          const int32_t&                in_width)
+        TexImage2DCommand(const int32_t&                      in_border,
+                          const OpenGL::PixelFormat&          in_format,
+                          const int32_t&                      in_height,
+                          const OpenGL::InternalFormat&       in_internalformat,
+                          const int32_t&                      in_level,
+                          OpenGL::DataUniquePtr               in_pixels_ptr,
+                          OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                          const OpenGL::PixelType&            in_type,
+                          const int32_t&                      in_width)
             :CommandBase          (CommandType::TEX_IMAGE_2D),
              border               (in_border),
              format               (in_format),
@@ -938,27 +938,27 @@ namespace OpenGL
 
     struct TexImage3DCommand : public CommandBase
     {
-        int32_t                    border;
-        int32_t                    depth;
-        OpenGL::PixelFormat        format;
-        int32_t                    height;
-        OpenGL::InternalFormat     internalformat;
-        int32_t                    level;
-        OpenGL::DataUniquePtr      pixels_ptr;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        OpenGL::PixelType          type;
-        int32_t                    width;
+        int32_t                             border;
+        int32_t                             depth;
+        OpenGL::PixelFormat                 format;
+        int32_t                             height;
+        OpenGL::InternalFormat              internalformat;
+        int32_t                             level;
+        OpenGL::DataUniquePtr               pixels_ptr;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        OpenGL::PixelType                   type;
+        int32_t                             width;
 
-        TexImage3DCommand(const int32_t&                in_border,
-                          const int32_t&                in_depth,
-                          const OpenGL::PixelFormat&    in_format,
-                          const int32_t&                in_height,
-                          const OpenGL::InternalFormat& in_internalformat,
-                          const int32_t&                in_level,
-                          OpenGL::DataUniquePtr         in_pixels_ptr,
-                          OpenGL::ReferenceUniquePtr    in_texture_reference_ptr,
-                          const OpenGL::PixelType&      in_type,
-                          const int32_t&                in_width)
+        TexImage3DCommand(const int32_t&                      in_border,
+                          const int32_t&                      in_depth,
+                          const OpenGL::PixelFormat&          in_format,
+                          const int32_t&                      in_height,
+                          const OpenGL::InternalFormat&       in_internalformat,
+                          const int32_t&                      in_level,
+                          OpenGL::DataUniquePtr               in_pixels_ptr,
+                          OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                          const OpenGL::PixelType&            in_type,
+                          const int32_t&                      in_width)
             :CommandBase          (CommandType::TEX_IMAGE_3D),
              border               (in_border),
              depth                (in_depth),
@@ -978,21 +978,21 @@ namespace OpenGL
 
     struct TexSubImage1DCommand : public CommandBase
     {
-        OpenGL::PixelFormat        format;
-        GLint                      level;
-        OpenGL::DataUniquePtr      pixels_ptr;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        OpenGL::PixelType          type;
-        GLsizei                    width;
-        GLint                      xoffset;
+        OpenGL::PixelFormat                 format;
+        GLint                               level;
+        OpenGL::DataUniquePtr               pixels_ptr;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        OpenGL::PixelType                   type;
+        GLsizei                             width;
+        GLint                               xoffset;
 
-        TexSubImage1DCommand(const OpenGL::PixelFormat& in_format,
-                             const GLint&               in_level,
-                             OpenGL::DataUniquePtr      in_pixels_ptr,
-                             OpenGL::ReferenceUniquePtr in_texture_reference_ptr,
-                             const OpenGL::PixelType&   in_type,
-                             const GLsizei&             in_width,
-                             const GLint&               in_xoffset)
+        TexSubImage1DCommand(const OpenGL::PixelFormat&          in_format,
+                             const GLint&                        in_level,
+                             OpenGL::DataUniquePtr               in_pixels_ptr,
+                             OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                             const OpenGL::PixelType&            in_type,
+                             const GLsizei&                      in_width,
+                             const GLint&                        in_xoffset)
             :CommandBase          (CommandType::TEX_SUB_IMAGE_1D),
              format               (in_format),
              level                (in_level),
@@ -1009,25 +1009,25 @@ namespace OpenGL
 
     struct TexSubImage2DCommand : public CommandBase
     {
-        OpenGL::PixelFormat        format;
-        GLsizei                    height;
-        GLint                      level;
-        OpenGL::DataUniquePtr      pixels_ptr;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        OpenGL::PixelType          type;
-        GLsizei                    width;
-        GLint                      xoffset;
-        GLint                      yoffset;
+        OpenGL::PixelFormat                 format;
+        GLsizei                             height;
+        GLint                               level;
+        OpenGL::DataUniquePtr               pixels_ptr;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        OpenGL::PixelType                   type;
+        GLsizei                             width;
+        GLint                               xoffset;
+        GLint                               yoffset;
 
-        TexSubImage2DCommand(const OpenGL::PixelFormat& in_format,
-                             const GLsizei&             in_height,
-                             const GLint&               in_level,
-                             OpenGL::DataUniquePtr      in_pixels_ptr,
-                             OpenGL::ReferenceUniquePtr in_texture_reference_ptr,
-                             const OpenGL::PixelType&   in_type,
-                             const GLsizei&             in_width,
-                             const GLint&               in_xoffset,
-                             const GLint&               in_yoffset)
+        TexSubImage2DCommand(const OpenGL::PixelFormat&          in_format,
+                             const GLsizei&                      in_height,
+                             const GLint&                        in_level,
+                             OpenGL::DataUniquePtr               in_pixels_ptr,
+                             OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                             const OpenGL::PixelType&            in_type,
+                             const GLsizei&                      in_width,
+                             const GLint&                        in_xoffset,
+                             const GLint&                        in_yoffset)
             :CommandBase          (CommandType::TEX_SUB_IMAGE_2D),
              format               (in_format),
              height               (in_height),
@@ -1046,29 +1046,29 @@ namespace OpenGL
 
     struct TexSubImage3DCommand : public CommandBase
     {
-        GLsizei                    depth;
-        OpenGL::PixelFormat        format;
-        GLsizei                    height;
-        GLint                      level;
-        OpenGL::DataUniquePtr      pixels_ptr;
-        OpenGL::ReferenceUniquePtr texture_reference_ptr;
-        OpenGL::PixelType          type;
-        GLsizei                    width;
-        GLint                      xoffset;
-        GLint                      yoffset;
-        GLint                      zoffset;
+        GLsizei                             depth;
+        OpenGL::PixelFormat                 format;
+        GLsizei                             height;
+        GLint                               level;
+        OpenGL::DataUniquePtr               pixels_ptr;
+        OpenGL::GLTextureReferenceUniquePtr texture_reference_ptr;
+        OpenGL::PixelType                   type;
+        GLsizei                             width;
+        GLint                               xoffset;
+        GLint                               yoffset;
+        GLint                               zoffset;
 
-        TexSubImage3DCommand(const GLsizei&             in_depth,
-                             const OpenGL::PixelFormat& in_format,
-                             const GLsizei&             in_height,
-                             const GLint&               in_level,
-                             OpenGL::DataUniquePtr      in_pixels_ptr,
-                             OpenGL::ReferenceUniquePtr in_texture_reference_ptr,
-                             const OpenGL::PixelType&   in_type,
-                             const GLsizei&             in_width,
-                             const GLint&               in_xoffset,
-                             const GLint&               in_yoffset,
-                             const GLint&               in_zoffset)
+        TexSubImage3DCommand(const GLsizei&                      in_depth,
+                             const OpenGL::PixelFormat&          in_format,
+                             const GLsizei&                      in_height,
+                             const GLint&                        in_level,
+                             OpenGL::DataUniquePtr               in_pixels_ptr,
+                             OpenGL::GLTextureReferenceUniquePtr in_texture_reference_ptr,
+                             const OpenGL::PixelType&            in_type,
+                             const GLsizei&                      in_width,
+                             const GLint&                        in_xoffset,
+                             const GLint&                        in_yoffset,
+                             const GLint&                        in_zoffset)
             :CommandBase          (CommandType::TEX_SUB_IMAGE_3D),
              depth                (in_depth),
              format               (in_format),
@@ -1089,9 +1089,9 @@ namespace OpenGL
 
     struct UnmapBufferCommand : public CommandBase
     {
-        OpenGL::ReferenceUniquePtr buffer_reference_ptr;
+        OpenGL::GLBufferReferenceUniquePtr buffer_reference_ptr;
 
-        UnmapBufferCommand(OpenGL::ReferenceUniquePtr in_buffer_reference_ptr)
+        UnmapBufferCommand(OpenGL::GLBufferReferenceUniquePtr in_buffer_reference_ptr)
             :CommandBase         (CommandType::UNMAP_BUFFER),
              buffer_reference_ptr(std::move(in_buffer_reference_ptr) )
         {
@@ -1102,9 +1102,9 @@ namespace OpenGL
 
     struct ValidateProgramCommand : public CommandBase
     {
-        OpenGL::ReferenceUniquePtr program_reference_ptr;
+        OpenGL::GLProgramReferenceUniquePtr program_reference_ptr;
 
-        ValidateProgramCommand(OpenGL::ReferenceUniquePtr in_program_reference_ptr)
+        ValidateProgramCommand(OpenGL::GLProgramReferenceUniquePtr in_program_reference_ptr)
             :CommandBase          (CommandType::VALIDATE_PROGRAM),
              program_reference_ptr(std::move(in_program_reference_ptr) )
         {
