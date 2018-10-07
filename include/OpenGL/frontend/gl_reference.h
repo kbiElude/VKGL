@@ -11,13 +11,6 @@
 
 namespace OpenGL
 {
-    /* TODO: This is ugly since in a dire split of events a zero time marker may actually be reported for HP clock.
-     *       The TimeMarker type should be extended to provide space for an additional flag telling "just use whatever's the latest"
-     */
-    typedef std::chrono::high_resolution_clock::time_point TimeMarker;
-
-    extern const OpenGL::TimeMarker LATEST_SNAPSHOT_AVAILABLE;
-
     typedef struct GLPayload
     {
         GLuint             id;

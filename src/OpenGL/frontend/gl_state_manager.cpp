@@ -19,10 +19,10 @@ OpenGL::GLStateManager::GLStateManager(const IGLLimits*                         
 {
     /* Initialize snapshot manager.. */
     m_snapshot_manager_ptr.reset(
-        new OpenGL::SnapshotManager<GLContextStateReference, GLContextStateReferenceUniquePtr>(0, /* in_object_id - don't care */
-                                                                                               dynamic_cast<OpenGL::IStateSnapshotAccessors*>(this),
-                                                                                               std::chrono::high_resolution_clock::now(),
-                                                                                               nullptr)
+        new OpenGL::SnapshotManager<GLContextStateReference, GLContextStateReferenceUniquePtr, GLContextStatePayload>(0, /* in_object_id - don't care */
+                                                                                                                      dynamic_cast<OpenGL::IStateSnapshotAccessors*>(this),
+                                                                                                                      std::chrono::high_resolution_clock::now(),
+                                                                                                                      nullptr)
     );
 
     /* Set up texture unit bindings */

@@ -16,6 +16,7 @@
 #define VKGL_APIENTRY KHRONOS_APIENTRY
 
 #include "OpenGL/types_enums.h"
+#include "OpenGL/backend/vk_reference.h"
 #include "OpenGL/frontend/gl_reference.h"
 
 namespace OpenGL
@@ -45,6 +46,7 @@ namespace OpenGL
     typedef std::unique_ptr<GLTextureReference,      std::function<void(GLTextureReference*)> >      GLTextureReferenceUniquePtr;
     typedef std::unique_ptr<GLVAOReference,          std::function<void(GLVAOReference*)> >          GLVAOReferenceUniquePtr;
     typedef std::unique_ptr<VKBackend>                                                               VKBackendUniquePtr;
+    typedef std::unique_ptr<VKBufferReference,       std::function<void(VKBufferReference*)> >       VKBufferReferenceUniquePtr;
     typedef std::unique_ptr<VKFrameGraph,            std::function<void(VKFrameGraph*)> >            VKFrameGraphUniquePtr;
     typedef std::unique_ptr<VKScheduler>                                                             VKSchedulerUniquePtr;
 

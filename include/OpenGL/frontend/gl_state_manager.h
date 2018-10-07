@@ -146,11 +146,11 @@ namespace OpenGL
 
         /* Private variables */
 
-        const IGLObjectManager<GLBufferReferenceUniquePtr>*                                                  m_buffer_manager_ptr;
-        OpenGL::ErrorCode                                                                                    m_current_error_code;
-        const IGLLimits* const                                                                               m_limits_ptr;
-        std::unique_ptr<OpenGL::SnapshotManager<GLContextStateReference, GLContextStateReferenceUniquePtr> > m_snapshot_manager_ptr;
-        const IGLObjectManager<GLVAOReferenceUniquePtr>*                                                     m_vao_manager_ptr;
+        const IGLObjectManager<GLBufferReferenceUniquePtr>*                                                                                 m_buffer_manager_ptr;
+        OpenGL::ErrorCode                                                                                                                   m_current_error_code;
+        const IGLLimits* const                                                                                                              m_limits_ptr;
+        std::unique_ptr<OpenGL::SnapshotManager<GLContextStateReference, GLContextStateReferenceUniquePtr, OpenGL::GLContextStatePayload> > m_snapshot_manager_ptr;
+        const IGLObjectManager<GLVAOReferenceUniquePtr>*                                                                                    m_vao_manager_ptr;
 
         std::unordered_map<OpenGL::ContextProperty,    PropertyData> m_context_prop_map;
         std::unordered_map<OpenGL::PixelStoreProperty, PropertyData> m_pixel_store_prop_map;

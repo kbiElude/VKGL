@@ -6,6 +6,7 @@
 #define VKGL_VK_BUFFER_MANAGER_H
 
 #include "Anvil/include/misc/types.h"
+#include "OpenGL/backend/vk_reference.h"
 #include "OpenGL/types.h"
 
 namespace OpenGL
@@ -21,24 +22,14 @@ namespace OpenGL
 
         ~VKBufferManager();
 
-        OpenGL::ReferenceUniquePtr acquire_object(const GLuint&             in_id,
-                                                  const OpenGL::TimeMarker& in_frontend_object_creation_time,
-                                                  Anvil::Buffer**           out_opt_buffer_ptr,
-                                                  Anvil::MemoryBlock**      out_opt_memory_block_ptr);
-        bool                       create_object (const GLuint&             in_id,
-                                                  const OpenGL::TimeMarker& in_frontend_object_creation_time);
-        bool                       destroy_object(const GLuint&             in_id,
-                                                  const OpenGL::TimeMarker& in_frontend_object_creation_time);
-
-        OpenGL::ReferenceUniquePtr acquire_object_from_payload(OpenGL::GLPayload    in_payload,
-                                                               Anvil::Buffer**      out_opt_buffer_ptr,
-                                                               Anvil::MemoryBlock** out_opt_memory_block_ptr)
-        {
-            return acquire_object(in_payload.id,
-                                  in_payload.time_marker,
-                                  out_opt_buffer_ptr,
-                                  out_opt_memory_block_ptr);
-        }
+        OpenGL::VKBufferReferenceUniquePtr acquire_object(const GLuint&             in_id,
+                                                          OpenGL::TimeMarker        in_frontend_object_creation_time,
+                                                          OpenGL::TimeMarker        in_buffer_time_marker,
+                                                          OpenGL::TimeMarker        in_mem_block_time_marker);
+        bool                               create_object (const GLuint&             in_id,
+                                                          const OpenGL::TimeMarker& in_frontend_object_creation_time);
+        bool                               destroy_object(const GLuint&             in_id,
+                                                          const OpenGL::TimeMarker& in_frontend_object_creation_time);
 
         OpenGL::TimeMarker get_tot_buffer_time_marker      (const GLuint&             in_id,
                                                             const OpenGL::TimeMarker& in_frontend_object_creation_time) const;
@@ -56,8 +47,8 @@ namespace OpenGL
         /* Private type definitions */
         typedef struct BufferProps
         {
-            Anvil::BufferUniquePtr          buffer_ptr;
-            std::vector<OpenGL::Reference*> reference_ptrs;
+            Anvil::BufferUniquePtr                  buffer_ptr;
+            std::vector<OpenGL::VKBufferReference*> reference_ptrs;
 
             BufferProps(Anvil::BufferUniquePtr in_buffer_ptr)
                 :buffer_ptr(std::move(in_buffer_ptr) )
@@ -69,8 +60,8 @@ namespace OpenGL
 
         typedef struct MemoryBlockProps
         {
-            Anvil::MemoryBlockUniquePtr     memory_block_ptr;
-            std::vector<OpenGL::Reference*> reference_ptrs;
+            Anvil::MemoryBlockUniquePtr             memory_block_ptr;
+            std::vector<OpenGL::VKBufferReference*> reference_ptrs;
 
             MemoryBlockProps(Anvil::MemoryBlockUniquePtr in_mem_block_ptr)
                 :memory_block_ptr(std::move(in_mem_block_ptr) )
@@ -105,15 +96,11 @@ namespace OpenGL
         typedef std::pair<GLuint, OpenGL::TimeMarker> BufferMapKey;
 
         /* Private functions */
-        uint32_t get_n_references      (const BufferData*  in_buffer_data_ptr) const;
-        void     on_reference_created  (BufferData*        in_buffer_data_ptr,
-                                        OpenGL::Reference* in_reference_ptr,
-                                        OpenGL::TimeMarker in_buffer_time_marker,
-                                        OpenGL::TimeMarker in_memory_block_time_marker);
-        void     on_reference_destroyed(BufferData*        in_buffer_data_ptr,
-                                        OpenGL::Reference* in_reference_ptr,
-                                        OpenGL::TimeMarker in_buffer_time_marker,
-                                        OpenGL::TimeMarker in_memory_block_time_marker);
+        uint32_t get_n_references      (const BufferData*          in_buffer_data_ptr) const;
+        void     on_reference_created  (BufferData*                in_buffer_data_ptr,
+                                        OpenGL::VKBufferReference* in_reference_ptr);
+        void     on_reference_destroyed(BufferData*                in_buffer_data_ptr,
+                                        OpenGL::VKBufferReference* in_reference_ptr);
 
         /* Private variables */
         std::map<BufferMapKey, BufferDataUniquePtr> m_buffers;

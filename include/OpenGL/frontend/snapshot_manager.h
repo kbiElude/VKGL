@@ -24,7 +24,8 @@ namespace OpenGL
     };
 
     template<typename ObjectReferenceType,
-             typename ObjectReferenceUniquePtrType>
+             typename ObjectReferenceUniquePtrType,
+             typename PayloadType>
     class SnapshotManager : public ISnapshotManagerReference<ObjectReferenceType>
     {
     public:
@@ -58,24 +59,22 @@ namespace OpenGL
             m_snapshots[m_last_modified_time] = std::move(new_snapshot_ptr);
         }
 
-        ObjectReferenceUniquePtrType acquire_reference(const OpenGL::TimeMarker& in_time_marker)
+        ObjectReferenceUniquePtrType acquire_reference(const PayloadType& in_payload)
         {
-            OpenGL::GLPayload            payload   (m_object_id,
-                                                    in_time_marker);
             ObjectReferenceUniquePtrType result_ptr(nullptr,
                                                     std::default_delete<ObjectReferenceType>() );
 
             result_ptr.reset(
-                new ObjectReferenceType(payload,
-                                        std::bind(&OpenGL::SnapshotManager<ObjectReferenceType, ObjectReferenceUniquePtrType>::on_reference_created,
+                new ObjectReferenceType(in_payload,
+                                        std::bind(&OpenGL::SnapshotManager<ObjectReferenceType, ObjectReferenceUniquePtrType, PayloadType>::on_reference_created,
                                                   this,
                                                   std::placeholders::_1),
-                                        std::bind(&OpenGL::SnapshotManager<ObjectReferenceType, ObjectReferenceUniquePtrType>::on_reference_destroyed,
+                                        std::bind(&OpenGL::SnapshotManager<ObjectReferenceType, ObjectReferenceUniquePtrType, PayloadType>::on_reference_destroyed,
                                                   this,
                                                   std::placeholders::_1),
-                                        std::bind(&OpenGL::SnapshotManager<ObjectReferenceType, ObjectReferenceUniquePtrType>::acquire_reference_from_payload,
+                                        std::bind(&OpenGL::SnapshotManager<ObjectReferenceType, ObjectReferenceUniquePtrType, PayloadType>::acquire_reference,
                                                   this,
-                                                  payload)
+                                                  in_payload)
                 )
             );
 
@@ -88,10 +87,6 @@ namespace OpenGL
 
         end:
             return result_ptr;
-        }
-        ObjectReferenceUniquePtrType acquire_reference_from_payload(OpenGL::GLPayload in_payload)
-        {
-            return acquire_reference(in_payload.time_marker);
         }
 
         const OpenGL::TimeMarker& get_last_modified_time() const

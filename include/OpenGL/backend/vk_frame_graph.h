@@ -20,8 +20,9 @@ namespace OpenGL
 
     typedef struct NodeIO
     {
-        ReferenceUniquePtr reference_ptr;
-        const NodeIOType   type;
+        VKBufferReferenceUniquePtr buffer_reference_ptr;
+        // VKImageReferenceUniquePtr image_reference_ptr; - todo
+        const NodeIOType           type;
 
         union
         {
@@ -60,25 +61,30 @@ namespace OpenGL
             } image_props;
         };
 
-        explicit NodeIO(ReferenceUniquePtr  in_vk_buffer_reference_ptr,
-                        const VkDeviceSize& in_start_offset,
-                        const VkDeviceSize& in_size)
-            :buffer_props (in_start_offset,
-                           in_size),
-             reference_ptr(std::move(in_vk_buffer_reference_ptr) ),
-             type         (NodeIOType::Buffer)
+        explicit NodeIO(VKBufferReferenceUniquePtr in_vk_buffer_reference_ptr,
+                        const VkDeviceSize&        in_start_offset,
+                        const VkDeviceSize&        in_size)
+            :buffer_props        (in_start_offset,
+                                  in_size),
+             buffer_reference_ptr(std::move(in_vk_buffer_reference_ptr) ),
+             type                (NodeIOType::Buffer)
         {
             /* Stub */
         }
 
-        explicit NodeIO(ReferenceUniquePtr                  in_vk_image_reference_ptr,
+#if 0
+        TODO
+
+        explicit NodeIO(VKImageReferenceUniquePtr           in_vk_image_reference_ptr,
                         const Anvil::ImageSubresourceRange& in_subresource_range)
-            :image_props  (in_subresource_range),
-             reference_ptr(std::move(in_vk_image_reference_ptr) ),
-             type         (NodeIOType::Image)
+            :image_props        (in_subresource_range),
+             image_reference_ptr(std::move(in_vk_image_reference_ptr) ),
+             type               (NodeIOType::Image)
         {
             /* Stub */
         }
+#endif
+
     } NodeIO;
 
     struct VKFrameGraphNode

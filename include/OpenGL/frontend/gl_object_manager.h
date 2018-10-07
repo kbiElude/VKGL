@@ -212,10 +212,10 @@ namespace OpenGL
 
         typedef struct GeneralObjectProps
         {
-            OpenGL::TimeMarker                                                                           creation_time;
-            GLuint                                                                                       id;
-            std::unique_ptr<OpenGL::SnapshotManager<ObjectReferenceType, ObjectReferenceUniquePtrType> > snapshot_manager_ptr;
-            Status                                                                                       status;
+            OpenGL::TimeMarker                                                                                              creation_time;
+            GLuint                                                                                                          id;
+            std::unique_ptr<OpenGL::SnapshotManager<ObjectReferenceType, ObjectReferenceUniquePtrType, OpenGL::GLPayload> > snapshot_manager_ptr;
+            Status                                                                                                          status;
 
             GeneralObjectProps(IStateSnapshotAccessors* in_state_snapshot_accessors_ptr,
                                const GLuint&            in_id,
@@ -226,10 +226,10 @@ namespace OpenGL
                 status        = Status::Created_Not_Bound;
 
                 snapshot_manager_ptr.reset(
-                    new SnapshotManager<ObjectReferenceType, ObjectReferenceUniquePtrType>(id,
-                                                                                           in_state_snapshot_accessors_ptr,
-                                                                                           std::chrono::high_resolution_clock::now(),
-                                                                                           in_on_all_references_deleted_func)
+                    new SnapshotManager<ObjectReferenceType, ObjectReferenceUniquePtrType, GLPayload>(id,
+                                                                                                      in_state_snapshot_accessors_ptr,
+                                                                                                      std::chrono::high_resolution_clock::now(),
+                                                                                                      in_on_all_references_deleted_func)
                 );
             }
         } GeneralObjectProps;
@@ -283,7 +283,9 @@ namespace OpenGL
                 }
                 #endif
 
-                result_ptr = object_ptr->snapshot_manager_ptr->acquire_reference(in_time_marker);
+                result_ptr = object_ptr->snapshot_manager_ptr->acquire_reference(
+                    OpenGL::GLPayload(in_id,
+                                      in_time_marker) );
 
                 if (result_ptr == nullptr)
                 {
