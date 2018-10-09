@@ -285,7 +285,8 @@ namespace OpenGL
 
                 result_ptr = object_ptr->snapshot_manager_ptr->acquire_reference(
                     OpenGL::GLPayload(in_id,
-                                      in_time_marker) );
+                                      in_time_marker,
+                                      object_ptr->creation_time) );
 
                 if (result_ptr == nullptr)
                 {

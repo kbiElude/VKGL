@@ -17,7 +17,9 @@ namespace OpenGL
     {
     public:
         /* Public functions */
-        static VKSchedulerUniquePtr create(const IContextObjectManagers* in_frontend_ptr);
+        static VKSchedulerUniquePtr create(const IContextObjectManagers* in_frontend_ptr,
+                                           IVKBufferManager*             in_backend_buffer_manager_ptr,
+                                           OpenGL::VKFrameGraph*         in_backend_frame_graph_manager_ptr);
 
         ~VKScheduler();
 
@@ -25,14 +27,16 @@ namespace OpenGL
 
     private:
         /* Private functions */
-        VKScheduler(const IContextObjectManagers* in_frontend_ptr);
+        VKScheduler(const IContextObjectManagers* in_frontend_ptr,
+                    IVKBufferManager*             in_backend_buffer_manager_ptr,
+                    OpenGL::VKFrameGraph*         in_backend_frame_graph_manager_ptr);
 
         bool init                  ();
         void main_thread_entrypoint();
         void process_command       (OpenGL::CommandBaseUniquePtr in_command_ptr);
 
-        void process_buffer_data_command                (OpenGL::BufferDataCommand*              in_command_ptr);
-        void process_buffer_sub_data_command            (OpenGL::BufferSubDataCommand*           in_command_ptr);
+        void process_buffer_data_command                (OpenGL::CommandBaseUniquePtr            in_command_ptr);
+        void process_buffer_sub_data_command            (OpenGL::CommandBaseUniquePtr            in_command_ptr);
         void process_clear_command                      (OpenGL::ClearCommand*                   in_command_ptr);
         void process_compile_shader_command             (OpenGL::CompileShaderCommand*           in_command_ptr);
         void process_compressed_tex_image_1D_command    (OpenGL::CompressedTexImage1DCommand*    in_command_ptr);
@@ -71,6 +75,8 @@ namespace OpenGL
         void process_validate_program_command           (OpenGL::ValidateProgramCommand*         in_command_ptr);
 
         /* Private variables */
+        IVKBufferManager*                                        m_backend_buffer_manager_ptr;
+        OpenGL::VKFrameGraph*                                    m_backend_frame_graph_manager_ptr;
         std::unique_ptr<VKGL::RingBuffer<CommandBaseUniquePtr> > m_command_ring_buffer_ptr;
         const IContextObjectManagers*                            m_frontend_ptr;
         std::unique_ptr<std::thread>                             m_scheduler_thread_ptr;

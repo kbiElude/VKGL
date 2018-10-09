@@ -541,6 +541,12 @@ void OpenGL::Context::bind_buffer(const OpenGL::BufferTarget& in_target,
     {
         m_gl_state_manager_ptr->set_bound_buffer_object(in_target,
                                                         std::move(buffer_reference_ptr) );
+
+        if (in_id != 0)
+        {
+            m_gl_buffer_manager_ptr->on_buffer_bound_to_buffer_target(in_id,
+                                                                      in_target);
+        }
     }
 }
 
@@ -572,6 +578,12 @@ void OpenGL::Context::bind_buffer_range(const OpenGL::BufferTarget& in_target,
                                                     m_gl_buffer_manager_ptr->acquire_always_latest_snapshot_reference(in_buffer),
                                                     in_offset,
                                                     in_size);
+
+    if (in_buffer != 0)
+    {
+        m_gl_buffer_manager_ptr->on_buffer_bound_to_buffer_target(in_buffer,
+                                                                  in_target);
+    }
 }
 
 void OpenGL::Context::bind_frag_data_location(const GLuint& in_program,
@@ -1552,6 +1564,12 @@ void OpenGL::Context::gen_buffers(const uint32_t& in_n,
     {
         vkgl_assert_fail();
     }
+    else
+    {
+        m_backend_gl_callbacks_ptr->on_objects_created(OpenGL::ObjectType::Buffer,
+                                                       in_n,
+                                                       out_ids_ptr);
+    }
 }
 
 void OpenGL::Context::gen_framebuffers(const GLsizei& in_n,
@@ -1603,8 +1621,17 @@ void OpenGL::Context::gen_vertex_arrays(const GLsizei& in_n,
 {
     vkgl_assert(m_gl_vao_manager_ptr != nullptr);
 
-    m_gl_vao_manager_ptr->generate_ids(in_n,
-                                       out_arrays_ptr);
+    if (!m_gl_vao_manager_ptr->generate_ids(in_n,
+                                            out_arrays_ptr) )
+    {
+        vkgl_assert_fail();
+    }
+    else
+    {
+        m_backend_gl_callbacks_ptr->on_objects_created(OpenGL::ObjectType::Vertex_Array_Object,
+                                                       in_n,
+                                                       out_arrays_ptr);
+    }
 }
 
 void OpenGL::Context::get_active_attrib(const GLuint&         in_program,

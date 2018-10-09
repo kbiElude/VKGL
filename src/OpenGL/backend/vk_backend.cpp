@@ -834,7 +834,21 @@ void OpenGL::VKBackend::on_objects_created(const OpenGL::ObjectType& in_object_t
     {
         case OpenGL::ObjectType::Buffer:
         {
-            vkgl_not_implemented();
+            auto gl_buffer_manager_ptr = m_frontend_ptr->get_buffer_manager_ptr();
+
+            for (uint32_t n_id = 0;
+                          n_id < in_n_ids;
+                        ++n_id)
+            {
+                const auto object_id            = in_ids_ptr[n_id];
+                const auto object_creation_time = gl_buffer_manager_ptr->get_object_creation_time(object_id);
+                bool       result;
+
+                result = m_buffer_manager_ptr->create_object(object_id,
+                                                             object_creation_time);
+
+                vkgl_assert(result);
+            }
 
             break;
         }
@@ -942,7 +956,9 @@ void OpenGL::VKBackend::set_frontend_callback(const OpenGL::IContextObjectManage
     m_frontend_ptr = in_callback_ptr;
 
     /* OK, go ahead and proceed with kicking off the scheduler. */
-    m_scheduler_ptr = OpenGL::VKScheduler::create(in_callback_ptr);
+    m_scheduler_ptr = OpenGL::VKScheduler::create(in_callback_ptr,
+                                                  m_buffer_manager_ptr.get(),
+                                                  m_frame_graph_ptr.get   () );
 
     if (m_scheduler_ptr == nullptr)
     {

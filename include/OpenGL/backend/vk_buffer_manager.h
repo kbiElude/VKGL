@@ -13,7 +13,7 @@ namespace OpenGL
 {
     typedef std::unique_ptr<VKBufferManager> VKBufferManagerUniquePtr;
 
-    class VKBufferManager
+    class VKBufferManager : public IVKBufferManager
     {
     public:
         /* Public functions */

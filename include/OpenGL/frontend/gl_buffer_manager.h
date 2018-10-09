@@ -21,10 +21,16 @@ namespace OpenGL
 
         ~GLBufferManager();
 
-        void*  get_buffer_map_pointer(const GLuint&             in_id,
-                                      const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
-        size_t get_buffer_size       (const GLuint&             in_id,
-                                      const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
+        void*               get_buffer_map_pointer        (const GLuint&                in_id,
+                                                           const OpenGL::TimeMarker*    in_opt_time_marker_ptr) const;
+        size_t              get_buffer_size               (const GLuint&                in_id,
+                                                           const OpenGL::TimeMarker*    in_opt_time_marker_ptr) const;
+        OpenGL::BufferUsage get_buffer_usage              (const GLuint&                in_id,
+                                                           const OpenGL::TimeMarker*    in_opt_time_marker_ptr) const;
+        bool                get_buffer_used_buffer_targets(const GLuint&                in_id,
+                                                           const OpenGL::TimeMarker*    in_opt_time_marker_ptr,
+                                                           uint32_t*                    out_n_result_targets_ptr,
+                                                           const OpenGL::BufferTarget** out_result_targets_ptr_ptr) const;
 
         void get_buffer_property(const GLuint&                     in_id,
                                  const OpenGL::TimeMarker*         in_opt_time_marker_ptr,
@@ -32,6 +38,9 @@ namespace OpenGL
                                  const OpenGL::GetSetArgumentType& in_arg_type,
                                  const uint32_t&                   in_n_args,
                                  void*                             out_result_ptr) const;
+
+        void on_buffer_bound_to_buffer_target(const GLuint&               in_id,
+                                              const OpenGL::BufferTarget& in_target);
 
         bool set_buffer_store_size(const GLuint&              in_id,
                                    const size_t&              in_size);
@@ -52,11 +61,12 @@ namespace OpenGL
         {
 
             // OpenGL::BufferAccessFlags access_flags; TODO
-            int64_t             map_offset;
-            void*               map_pointer;
-            int64_t             map_size;
-            int64_t             size;
-            OpenGL::BufferUsage usage;
+            std::vector<OpenGL::BufferTarget> buffer_targets_used;
+            int64_t                           map_offset;
+            void*                             map_pointer;
+            int64_t                           map_size;
+            int64_t                           size;
+            OpenGL::BufferUsage               usage;
 
             Buffer()
             {

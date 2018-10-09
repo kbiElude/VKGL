@@ -2,17 +2,25 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+#include "OpenGL/backend/vk_frame_graph.h"
 #include "OpenGL/backend/vk_scheduler.h"
+#include "OpenGL/backend/nodes/vk_buffer_data_node.h"
+#include "OpenGL/frontend/gl_buffer_manager.h"
 #include "Common/logger.h"
 
 #define N_MAX_SCHEDULED_COMMANDS_LOG_2 (16)
 #define WAIT_PERIOD_MS                 (1000)
 
-OpenGL::VKScheduler::VKScheduler(const IContextObjectManagers* in_frontend_ptr)
-    :m_frontend_ptr(in_frontend_ptr),
-     m_terminating (false)
+OpenGL::VKScheduler::VKScheduler(const IContextObjectManagers* in_frontend_ptr,
+                                 IVKBufferManager*             in_backend_buffer_manager_ptr,
+                                 OpenGL::VKFrameGraph*         in_backend_frame_graph_manager_ptr)
+    :m_backend_buffer_manager_ptr     (in_backend_buffer_manager_ptr),
+     m_backend_frame_graph_manager_ptr(in_backend_frame_graph_manager_ptr),
+     m_frontend_ptr                   (in_frontend_ptr),
+     m_terminating                    (false)
 {
-    vkgl_assert(in_frontend_ptr != nullptr);
+    vkgl_assert(in_backend_buffer_manager_ptr != nullptr);
+    vkgl_assert(in_frontend_ptr               != nullptr);
 }
 
 OpenGL::VKScheduler::~VKScheduler()
@@ -29,12 +37,16 @@ OpenGL::VKScheduler::~VKScheduler()
     m_command_ring_buffer_ptr.reset();
 }
 
-OpenGL::VKSchedulerUniquePtr OpenGL::VKScheduler::create(const IContextObjectManagers* in_frontend_ptr)
+OpenGL::VKSchedulerUniquePtr OpenGL::VKScheduler::create(const IContextObjectManagers* in_frontend_ptr,
+                                                         IVKBufferManager*             in_backend_buffer_manager_ptr,
+                                                         OpenGL::VKFrameGraph*         in_backend_frame_graph_manager_ptr)
 {
     OpenGL::VKSchedulerUniquePtr result_ptr;
 
     result_ptr.reset(
-        new OpenGL::VKScheduler(in_frontend_ptr)
+        new OpenGL::VKScheduler(in_frontend_ptr,
+                                in_backend_buffer_manager_ptr,
+                                in_backend_frame_graph_manager_ptr)
     );
 
     if (result_ptr != nullptr)
@@ -119,12 +131,67 @@ void OpenGL::VKScheduler::main_thread_entrypoint()
                             "VK scheduler thread quitting now.");
 }
 
-void OpenGL::VKScheduler::process_buffer_data_command(OpenGL::BufferDataCommand* in_command_ptr)
+void OpenGL::VKScheduler::process_buffer_data_command(OpenGL::CommandBaseUniquePtr in_command_ptr)
 {
-    vkgl_not_implemented();
+    const OpenGL::VKBufferPayload*     backend_buffer_props_ptr     = nullptr;
+    OpenGL::VKBufferReferenceUniquePtr backend_buffer_reference_ptr;
+    OpenGL::BufferDataCommand*         command_ptr                  = dynamic_cast<OpenGL::BufferDataCommand*>(in_command_ptr.get() );
+    OpenGL::VKFrameGraphNodeUniquePtr  node_ptr;
+
+    vkgl_assert(command_ptr                       != nullptr);
+    vkgl_assert(command_ptr->buffer_reference_ptr != nullptr);
+
+    const auto& frontend_buffer_creation_time = command_ptr->buffer_reference_ptr->get_payload().object_creation_time;
+    const auto& frontend_buffer_id            = command_ptr->buffer_reference_ptr->get_payload().id;
+    const auto& frontend_buffer_snapshot_time = command_ptr->buffer_reference_ptr->get_payload().time_marker;
+
+    /* 1. Retrieve backend buffer reference */
+    {
+        backend_buffer_reference_ptr = m_backend_buffer_manager_ptr->acquire_object(frontend_buffer_id,
+                                                                                    frontend_buffer_creation_time,
+                                                                                    m_backend_buffer_manager_ptr->get_tot_buffer_time_marker      (frontend_buffer_id,
+                                                                                                                                                   frontend_buffer_creation_time),
+                                                                                    m_backend_buffer_manager_ptr->get_tot_memory_block_time_marker(frontend_buffer_id,
+                                                                                                                                                   frontend_buffer_creation_time) );
+
+        vkgl_assert(backend_buffer_reference_ptr != nullptr);
+
+        backend_buffer_props_ptr = &backend_buffer_reference_ptr->get_payload();
+    }
+
+    /* 2. Spawn the node */
+    {
+        OpenGL::VKFrameGraphNodeCreateInfoUniquePtr create_info_ptr(nullptr,
+                                                                    std::default_delete<OpenGL::VKFrameGraphNodeCreateInfo>() );
+
+        create_info_ptr.reset(new OpenGL::VKFrameGraphNodeCreateInfo() );
+        vkgl_assert(create_info_ptr != nullptr);
+
+        create_info_ptr->inputs.push_back(
+            OpenGL::NodeIO(backend_buffer_reference_ptr->clone(),
+                           0, /* in_start_offset */
+                           command_ptr->size)
+
+        );
+        create_info_ptr->outputs.push_back(
+            OpenGL::NodeIO(backend_buffer_reference_ptr->clone(),
+                           0, /* in_start_offset */
+                           command_ptr->size)
+
+        );
+
+        create_info_ptr->command_ptr = std::move(in_command_ptr);
+
+        node_ptr = OpenGL::VKNodes::BufferData::create(std::move(create_info_ptr),
+                                                       m_frontend_ptr,
+                                                       m_backend_buffer_manager_ptr);
+    }
+
+    /* 3. Submit the node to frame graph manager. */
+    m_backend_frame_graph_manager_ptr->add_node(std::move(node_ptr) );
 }
 
-void OpenGL::VKScheduler::process_buffer_sub_data_command(OpenGL::BufferSubDataCommand* in_command_ptr)
+void OpenGL::VKScheduler::process_buffer_sub_data_command(OpenGL::CommandBaseUniquePtr in_command_ptr)
 {
     vkgl_not_implemented();
 }
@@ -143,8 +210,8 @@ void OpenGL::VKScheduler::process_command(OpenGL::CommandBaseUniquePtr in_comman
 {
     switch (in_command_ptr->type)
     {
-        case OpenGL::CommandType::BUFFER_DATA:                 process_buffer_data_command                (dynamic_cast<OpenGL::BufferDataCommand*>             (in_command_ptr.get() )); break;
-        case OpenGL::CommandType::BUFFER_SUB_DATA:             process_buffer_sub_data_command            (dynamic_cast<OpenGL::BufferSubDataCommand*>          (in_command_ptr.get() )); break;
+        case OpenGL::CommandType::BUFFER_DATA:                 process_buffer_data_command                (std::move(in_command_ptr) );                                                   break;
+        case OpenGL::CommandType::BUFFER_SUB_DATA:             process_buffer_sub_data_command            (std::move(in_command_ptr) );                                                   break;
         case OpenGL::CommandType::CLEAR:                       process_clear_command                      (dynamic_cast<OpenGL::ClearCommand*>                  (in_command_ptr.get() )); break;
         case OpenGL::CommandType::COMPILE_SHADER:              process_compile_shader_command             (dynamic_cast<OpenGL::CompileShaderCommand*>          (in_command_ptr.get() )); break;
         case OpenGL::CommandType::COMPRESSED_TEX_IMAGE_1D:     process_compressed_tex_image_1D_command    (dynamic_cast<OpenGL::CompressedTexImage1DCommand*>   (in_command_ptr.get() )); break;

@@ -6,12 +6,6 @@
 #include "OpenGL/backend/vk_buffer_manager.h"
 #include "OpenGL/backend/vk_reference.h"
 
-/* TODO: This is an experimental version. OpenGL::Reference needs to be reworked to hold arbitrary info.
- *       In this case, we need to be able to hold time markers separately for the buffer and the memory block
- *       instances. With existing Reference, this is not possible.
- */
-
-
 OpenGL::VKBufferManagerUniquePtr OpenGL::VKBufferManager::create()
 {
     OpenGL::VKBufferManagerUniquePtr result_ptr;
@@ -34,7 +28,6 @@ OpenGL::VKBufferReferenceUniquePtr OpenGL::VKBufferManager::acquire_object(const
                                                                            OpenGL::TimeMarker in_buffer_time_marker,
                                                                            OpenGL::TimeMarker in_mem_block_time_marker)
 {
-    /* TODO: Rework the interface so that returned objects are instead stored inside the reference object..*/
     std::lock_guard<std::mutex>        lock                 (m_mutex);
     BufferData*                        buffer_data_ptr      (nullptr);
     const auto                         buffer_map_key       (BufferMapKey(in_id, in_frontend_object_creation_time) );
@@ -45,6 +38,8 @@ OpenGL::VKBufferReferenceUniquePtr OpenGL::VKBufferManager::acquire_object(const
     Anvil::MemoryBlock*                ref_mem_block_ptr    (nullptr);
 
     vkgl_assert(buffer_props_iterator != m_buffers.end() );
+
+    buffer_data_ptr = buffer_props_iterator->second.get();
 
     {
         auto buffer_iterator    = buffer_data_ptr->buffer_map.find      (in_buffer_time_marker);
@@ -60,8 +55,6 @@ OpenGL::VKBufferReferenceUniquePtr OpenGL::VKBufferManager::acquire_object(const
             ref_mem_block_ptr = mem_block_iterator->second->memory_block_ptr.get();
         }
     }
-
-    buffer_data_ptr = buffer_props_iterator->second.get();
 
     new_reference_ptr.reset(
         new OpenGL::VKBufferReference(OpenGL::VKBufferPayload(in_id,
@@ -246,7 +239,8 @@ void OpenGL::VKBufferManager::on_reference_destroyed(BufferData*                
         }
     }
 
-    if (get_n_references(in_buffer_data_ptr) == 0)
+    if (get_n_references(in_buffer_data_ptr)   == 0 &&
+        in_buffer_data_ptr->has_been_destroyed)
     {
         /* This buffer can be safely released. */
         const auto key             = BufferMapKey  (in_reference_ptr->get_payload().id,

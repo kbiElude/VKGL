@@ -398,6 +398,27 @@ namespace OpenGL
                                                                                                void*       in_dst_ptr) = 0;
         virtual std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object()                       = 0;
     };
+
+    class IVKBufferManager
+    {
+    public:
+        virtual ~IVKBufferManager()
+        {
+            /* Stub */
+        }
+
+        virtual OpenGL::VKBufferReferenceUniquePtr acquire_object                  (const GLuint&             in_id,
+                                                                                    OpenGL::TimeMarker        in_frontend_object_creation_time,
+                                                                                    OpenGL::TimeMarker        in_buffer_time_marker,
+                                                                                    OpenGL::TimeMarker        in_mem_block_time_marker)               = 0;
+        virtual bool                               create_object                   (const GLuint&             in_id,
+                                                                                    const OpenGL::TimeMarker& in_frontend_object_creation_time)       = 0;
+
+        virtual OpenGL::TimeMarker                 get_tot_buffer_time_marker      (const GLuint&             in_id,
+                                                                                    const OpenGL::TimeMarker& in_frontend_object_creation_time) const = 0;
+        virtual OpenGL::TimeMarker                 get_tot_memory_block_time_marker(const GLuint&             in_id,
+                                                                                    const OpenGL::TimeMarker& in_frontend_object_creation_time) const = 0;
+    };
 };
 
 #endif /* VKGL_TYPES_INTERFACES_H */
