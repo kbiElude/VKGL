@@ -2,6 +2,7 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+#include "Anvil/include/misc/memory_allocator.h"
 #include "Anvil/include/wrappers/device.h"
 #include "Anvil/include/wrappers/instance.h"
 #include "Common/macros.h"
@@ -458,6 +459,15 @@ bool OpenGL::VKBackend::init()
     if (m_frame_graph_ptr == nullptr)
     {
         vkgl_assert(m_frame_graph_ptr != nullptr);
+
+        goto end;
+    }
+
+    m_mem_allocator_ptr = Anvil::MemoryAllocator::create_vma(m_device_ptr.get() );
+
+    if (m_mem_allocator_ptr == nullptr)
+    {
+        vkgl_assert(m_mem_allocator_ptr != nullptr);
 
         goto end;
     }
@@ -957,8 +967,7 @@ void OpenGL::VKBackend::set_frontend_callback(const OpenGL::IContextObjectManage
 
     /* OK, go ahead and proceed with kicking off the scheduler. */
     m_scheduler_ptr = OpenGL::VKScheduler::create(in_callback_ptr,
-                                                  m_buffer_manager_ptr.get(),
-                                                  m_frame_graph_ptr.get   () );
+                                                  this);
 
     if (m_scheduler_ptr == nullptr)
     {

@@ -12,7 +12,22 @@
 
 namespace OpenGL
 {
-    class VKBackend : public IBackendCapabilities,
+    class IBackend
+    {
+    public:
+        virtual ~IBackend()
+        {
+            /* Stub */
+        }
+
+        virtual VKBufferManager*        get_buffer_manager_ptr  () const = 0;
+        virtual VKFrameGraph*           get_frame_graph_ptr     () const = 0;
+        virtual Anvil::BaseDevice*      get_device_ptr          () const = 0;
+        virtual Anvil::MemoryAllocator* get_memory_allocator_ptr() const = 0;
+    };
+
+    class VKBackend : public IBackend,
+                      public IBackendCapabilities,
                       public IBackendGLCallbacks
     {
     public:
@@ -89,6 +104,35 @@ namespace OpenGL
                 n_vals      = in_data_n_vals;
             }
         } CapabilityData;
+
+        /* IBackend functions */
+        VKBufferManager* get_buffer_manager_ptr() const final
+        {
+            vkgl_assert(m_buffer_manager_ptr != nullptr);
+
+            return m_buffer_manager_ptr.get();
+        }
+
+        Anvil::BaseDevice* get_device_ptr() const final
+        {
+            vkgl_assert(m_device_ptr != nullptr);
+
+            return m_device_ptr.get();
+        }
+
+        VKFrameGraph* get_frame_graph_ptr() const final
+        {
+            vkgl_assert(m_frame_graph_ptr != nullptr);
+
+            return m_frame_graph_ptr.get();
+        }
+
+        Anvil::MemoryAllocator* get_memory_allocator_ptr() const final
+        {
+            vkgl_assert(m_mem_allocator_ptr != nullptr);
+
+            return m_mem_allocator_ptr.get();
+        }
 
         /* IBackendCapabilities functions */
 
@@ -343,6 +387,7 @@ namespace OpenGL
         OpenGL::VKFrameGraphUniquePtr                                 m_frame_graph_ptr;
         const IContextObjectManagers*                                 m_frontend_ptr;
         Anvil::InstanceUniquePtr                                      m_instance_ptr;
+        Anvil::MemoryAllocatorUniquePtr                               m_mem_allocator_ptr;
         OpenGL::VKSchedulerUniquePtr                                  m_scheduler_ptr;
     };
 };

@@ -5,6 +5,7 @@
 #ifndef VKGL_VK_BUFFER_DATA_NODE_H
 #define VKGL_VK_BUFFER_DATA_NODE_H
 
+#include "OpenGL/backend/vk_backend.h"
 #include "OpenGL/backend/vk_frame_graph_node.h"
 
 namespace OpenGL
@@ -17,7 +18,7 @@ namespace OpenGL
             /* Public functions */
             static VKFrameGraphNodeUniquePtr create(VKFrameGraphNodeCreateInfoUniquePtr in_create_info_ptr,
                                                     const IContextObjectManagers*       in_frontend_ptr,
-                                                    IVKBufferManager*                   in_backend_buffer_manager_ptr);
+                                                    IBackend*                           in_backend_ptr);
 
             ~BufferData();
 
@@ -61,10 +62,22 @@ namespace OpenGL
 
             BufferData(VKFrameGraphNodeCreateInfoUniquePtr in_create_info_ptr,
                        const IContextObjectManagers*       in_frontend_ptr,
-                       IVKBufferManager*                   in_backend_buffer_manager_ptr);
+                       OpenGL::IBackend*                   in_backend_ptr);
+
+            bool can_buffer_handle_frontend_reqs      (const Anvil::Buffer*        in_buffer_ptr,
+                                                       const uint32_t&             in_n_buffer_targets,
+                                                       const OpenGL::BufferTarget* in_buffer_targets_ptr,
+                                                       const size_t&               in_size) const;
+            bool can_memory_block_handle_frontend_reqs(const Anvil::MemoryBlock*   in_mem_block_ptr,
+                                                       const size_t&               in_size,
+                                                       const OpenGL::BufferUsage&  in_buffer_usage) const;
+
+            Anvil::BufferCreateInfoUniquePtr get_buffer_create_info_for_gl_buffer (const uint32_t&             in_n_buffer_targets,
+                                                                                   const OpenGL::BufferTarget* in_buffer_targets_ptr,
+                                                                                   const size_t&               in_size) const;
 
             /* Private variables */
-            IVKBufferManager*                   m_backend_buffer_manager_ptr;
+            IBackend*                           m_backend_ptr;
             VKFrameGraphNodeCreateInfoUniquePtr m_create_info_ptr;
             const IContextObjectManagers*       m_frontend_ptr;
             Anvil::BufferUniquePtr              m_staging_buffer_ptr;

@@ -18,8 +18,7 @@ namespace OpenGL
     public:
         /* Public functions */
         static VKSchedulerUniquePtr create(const IContextObjectManagers* in_frontend_ptr,
-                                           IVKBufferManager*             in_backend_buffer_manager_ptr,
-                                           OpenGL::VKFrameGraph*         in_backend_frame_graph_manager_ptr);
+                                           IBackend*                     in_backend_ptr);
 
         ~VKScheduler();
 
@@ -28,8 +27,7 @@ namespace OpenGL
     private:
         /* Private functions */
         VKScheduler(const IContextObjectManagers* in_frontend_ptr,
-                    IVKBufferManager*             in_backend_buffer_manager_ptr,
-                    OpenGL::VKFrameGraph*         in_backend_frame_graph_manager_ptr);
+                    IBackend*                     in_backend_ptr);
 
         bool init                  ();
         void main_thread_entrypoint();
@@ -75,8 +73,7 @@ namespace OpenGL
         void process_validate_program_command           (OpenGL::ValidateProgramCommand*         in_command_ptr);
 
         /* Private variables */
-        IVKBufferManager*                                        m_backend_buffer_manager_ptr;
-        OpenGL::VKFrameGraph*                                    m_backend_frame_graph_manager_ptr;
+        IBackend*                                                m_backend_ptr;
         std::unique_ptr<VKGL::RingBuffer<CommandBaseUniquePtr> > m_command_ring_buffer_ptr;
         const IContextObjectManagers*                            m_frontend_ptr;
         std::unique_ptr<std::thread>                             m_scheduler_thread_ptr;
