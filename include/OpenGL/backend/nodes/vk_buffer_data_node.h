@@ -24,7 +24,13 @@ namespace OpenGL
 
         private:
             /* IVKFrameGraphNode */
-            void do_cpu_prepass              ();
+            void do_cpu_prepass();
+
+            const VKFrameGraphNodeCreateInfo* get_create_info_ptr() const final
+            {
+                return m_create_info_ptr.get();
+            }
+
             bool get_input_access_properties (const uint32_t&                    in_n_input,
                                               Anvil::PipelineStageFlags*         out_pipeline_stages_ptr,
                                               Anvil::AccessFlags*                out_access_flags_ptr) const final;
@@ -33,8 +39,11 @@ namespace OpenGL
                                               Anvil::AccessFlags*                out_access_flags_ptr) const final;
             void get_supported_queue_families(uint32_t*                          out_n_queue_fams_ptr,
                                               const Anvil::QueueFamilyFlagBits** out_queue_fams_ptr_ptr) const final;
-            bool record_commands             (Anvil::CommandBufferBase*          in_cmd_buffer_ptr,
-                                              const bool&                        in_inside_renderpass) const final;
+
+            void on_commands_finished_executing_gpu_side() final;
+
+            void record_commands(Anvil::CommandBufferBase* in_cmd_buffer_ptr,
+                                 const bool&               in_inside_renderpass) const final;
 
             bool requires_cpu_prepass() const final
             {
@@ -42,16 +51,14 @@ namespace OpenGL
                 return true;
             }
 
+            bool requires_gpu_side_execution() const final;
+
             bool supports_primary_command_buffers() const final
             {
                 return true;
             }
 
-            bool supports_renderpasses() const final
-            {
-                /* Buffer->buffer copy ops are NOT supported for renderpass usage. */
-                return false;
-            }
+            bool supports_renderpasses() const final;
 
             bool supports_secondary_command_buffers() const final
             {
@@ -79,6 +86,7 @@ namespace OpenGL
             /* Private variables */
             IBackend*                           m_backend_ptr;
             VKFrameGraphNodeCreateInfoUniquePtr m_create_info_ptr;
+            bool                                m_data_defined;
             const IContextObjectManagers*       m_frontend_ptr;
             Anvil::BufferUniquePtr              m_staging_buffer_ptr;
         };

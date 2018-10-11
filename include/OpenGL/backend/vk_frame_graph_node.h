@@ -104,21 +104,29 @@ namespace OpenGL
             /* Stub */
         }
 
-        virtual void do_cpu_prepass                                   ()                                                                = 0; //< see requires_cpu_prepass(). called from within a random worker thread, make no assumptions.
-        virtual bool get_input_access_properties                      (const uint32_t&                    in_n_input,
-                                                                       Anvil::PipelineStageFlags*         out_pipeline_stages_ptr,
-                                                                       Anvil::AccessFlags*                out_access_flags_ptr)   const = 0;
-        virtual bool get_output_access_properties                     (const uint32_t&                    in_n_output,
-                                                                       Anvil::PipelineStageFlags*         out_pipeline_stages_ptr,
-                                                                       Anvil::AccessFlags*                out_access_flags_ptr)   const = 0;
-        virtual void get_supported_queue_families                     (uint32_t*                          out_n_queue_fams_ptr,
-                                                                       const Anvil::QueueFamilyFlagBits** out_queue_fams_ptr_ptr) const = 0; //< return in preferred order
-        virtual bool record_commands                                  (Anvil::CommandBufferBase*          in_cmd_buffer_ptr,
-                                                                       const bool&                        in_inside_renderpass)   const = 0;
-        virtual bool requires_cpu_prepass                             ()                                                          const = 0; //< true if needs a do_cpu_prepass() invocation prior to cmd buffer recording
-        virtual bool supports_primary_command_buffers                 ()                                                          const = 0;
-        virtual bool supports_renderpasses                            ()                                                          const = 0;
-        virtual bool supports_secondary_command_buffers               ()                                                          const = 0;
+        virtual void do_cpu_prepass() = 0; //< see requires_cpu_prepass(). called from within a random worker thread, make no assumptions.
+
+        virtual const VKFrameGraphNodeCreateInfo* get_create_info_ptr() const = 0;
+
+        virtual bool get_input_access_properties (const uint32_t&                    in_n_input,
+                                                  Anvil::PipelineStageFlags*         out_pipeline_stages_ptr,
+                                                  Anvil::AccessFlags*                out_access_flags_ptr)   const = 0;
+        virtual bool get_output_access_properties(const uint32_t&                    in_n_output,
+                                                  Anvil::PipelineStageFlags*         out_pipeline_stages_ptr,
+                                                  Anvil::AccessFlags*                out_access_flags_ptr)   const = 0;
+        virtual void get_supported_queue_families(uint32_t*                          out_n_queue_fams_ptr,
+                                                  const Anvil::QueueFamilyFlagBits** out_queue_fams_ptr_ptr) const = 0; //< return in preferred order
+
+        virtual void on_commands_finished_executing_gpu_side() = 0;
+
+        virtual void record_commands(Anvil::CommandBufferBase* in_cmd_buffer_ptr,
+                                     const bool&               in_inside_renderpass) const = 0;
+
+        virtual bool requires_cpu_prepass              () const = 0; //< true if needs a do_cpu_prepass() invocation prior to cmd buffer recording
+        virtual bool requires_gpu_side_execution       () const = 0;
+        virtual bool supports_primary_command_buffers  () const = 0;
+        virtual bool supports_renderpasses             () const = 0;
+        virtual bool supports_secondary_command_buffers() const = 0;
     };
 
     typedef std::unique_ptr<IVKFrameGraphNode, std::function<void(IVKFrameGraphNode*)> > VKFrameGraphNodeUniquePtr;

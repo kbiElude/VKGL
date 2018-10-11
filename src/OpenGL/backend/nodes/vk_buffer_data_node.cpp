@@ -6,6 +6,7 @@
 #include "Anvil/include/misc/memory_allocator.h"
 #include "Anvil/include/misc/memory_block_create_info.h"
 #include "Anvil/include/wrappers/buffer.h"
+#include "Anvil/include/wrappers/command_buffer.h"
 #include "Anvil/include/wrappers/memory_block.h"
 #include "Common/macros.h"
 #include "OpenGL/backend/nodes/vk_buffer_data_node.h"
@@ -24,6 +25,10 @@ OpenGL::VKNodes::BufferData::BufferData(VKFrameGraphNodeCreateInfoUniquePtr in_c
     vkgl_assert(m_create_info_ptr->command_ptr       != nullptr);
     vkgl_assert(m_create_info_ptr->command_ptr->type == OpenGL::CommandType::BUFFER_DATA);
     vkgl_assert(m_frontend_ptr                       != nullptr);
+
+    auto command_ptr = dynamic_cast<const OpenGL::BufferDataCommand*>(m_create_info_ptr->command_ptr.get() );
+
+    m_data_defined = (command_ptr->data_ptr != nullptr);
 }
 
 OpenGL::VKNodes::BufferData::~BufferData()
@@ -237,7 +242,7 @@ void OpenGL::VKNodes::BufferData::do_cpu_prepass()
         vkgl_assert_fail();
     }
 
-    if (command_ptr->data_ptr != nullptr)
+    if (m_data_defined)
     {
         auto  staging_buffer_mem_block_ptr = m_staging_buffer_ptr->get_memory_block(0);
         void* staging_buffer_raw_ptr       = nullptr;
@@ -285,8 +290,16 @@ bool OpenGL::VKNodes::BufferData::get_input_access_properties(const uint32_t&   
                                                               Anvil::AccessFlags*        out_access_flags_ptr) const
 {
     /* Protect against {R, W}aWs. */
-    *out_access_flags_ptr    = Anvil::AccessFlagBits::TRANSFER_WRITE_BIT;
-    *out_pipeline_stages_ptr = Anvil::PipelineStageFlagBits::TRANSFER_BIT;
+    if (m_data_defined)
+    {
+        *out_access_flags_ptr    = Anvil::AccessFlagBits::HOST_WRITE_BIT;
+        *out_pipeline_stages_ptr = Anvil::PipelineStageFlagBits::TRANSFER_BIT;
+    }
+    else
+    {
+        *out_access_flags_ptr    = Anvil::AccessFlagBits::NONE;
+        *out_pipeline_stages_ptr = Anvil::PipelineStageFlagBits::NONE;
+    }
 
     vkgl_assert(in_n_input == 0);
     return (in_n_input == 0);
@@ -296,9 +309,17 @@ bool OpenGL::VKNodes::BufferData::get_output_access_properties(const uint32_t&  
                                                                Anvil::PipelineStageFlags* out_pipeline_stages_ptr,
                                                                Anvil::AccessFlags*        out_access_flags_ptr) const
 {
-    /* Protect against {R, W}aWs. */
-    *out_access_flags_ptr    = Anvil::AccessFlagBits::TRANSFER_WRITE_BIT;
-    *out_pipeline_stages_ptr = Anvil::PipelineStageFlagBits::TRANSFER_BIT;
+    if (m_data_defined)
+    {
+        /* Protect against {R, W}aWs. */
+        *out_access_flags_ptr    = Anvil::AccessFlagBits::TRANSFER_WRITE_BIT;
+        *out_pipeline_stages_ptr = Anvil::PipelineStageFlagBits::TRANSFER_BIT;
+    }
+    else
+    {
+        *out_access_flags_ptr    = Anvil::AccessFlagBits::NONE;
+        *out_pipeline_stages_ptr = Anvil::PipelineStageFlagBits::NONE;
+    }
 
     vkgl_assert(in_n_output == 0);
     return (in_n_output == 0);
@@ -318,10 +339,39 @@ void OpenGL::VKNodes::BufferData::get_supported_queue_families(uint32_t*        
     *out_queue_fams_ptr_ptr = compatible_queue_fams;
 }
 
-bool OpenGL::VKNodes::BufferData::record_commands(Anvil::CommandBufferBase* in_cmd_buffer_ptr,
+void OpenGL::VKNodes::BufferData::on_commands_finished_executing_gpu_side()
+{
+    m_staging_buffer_ptr.reset();
+}
+
+void OpenGL::VKNodes::BufferData::record_commands(Anvil::CommandBufferBase* in_cmd_buffer_ptr,
                                                   const bool&               in_inside_renderpass) const
 {
-    vkgl_not_implemented();
+    auto command_ptr = dynamic_cast<const OpenGL::BufferDataCommand*>(in_cmd_buffer_ptr);
 
-    return false;
+    if (m_staging_buffer_ptr != nullptr)
+    {
+        auto              backend_buffer_ptr = m_create_info_ptr->inputs.at(0).buffer_reference_ptr->get_payload().buffer_ptr;
+        Anvil::BufferCopy copy_region;
+
+        copy_region.dst_offset = 0;
+        copy_region.size       = command_ptr->size;
+        copy_region.src_offset = 0;
+
+        in_cmd_buffer_ptr->record_copy_buffer(m_staging_buffer_ptr.get(),
+                                              backend_buffer_ptr,
+                                              1, /* in_region_count */
+                                             &copy_region);
+    }
+}
+
+bool OpenGL::VKNodes::BufferData::requires_gpu_side_execution() const
+{
+    return m_data_defined;
+}
+
+bool OpenGL::VKNodes::BufferData::supports_renderpasses() const
+{
+    /* Buffer->buffer copy ops are NOT supported for renderpass usage. */
+    return !m_data_defined;
 }
