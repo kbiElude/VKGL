@@ -371,6 +371,8 @@ namespace OpenGL
                               const OpenGL::PixelType&   in_type,
                               const void*                in_pixels) final;
 
+        void present() final;
+
         /* Private functions */
 
         VKBackend();

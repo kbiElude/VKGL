@@ -292,11 +292,13 @@ namespace OpenGL
                 }
             }
 
-            if (get_n_references(true /* in_include_tot_snapshot_references */) == 0)
+            if (get_n_references(true /* in_include_tot_snapshot_references */) == 0       &&
+                m_on_all_references_deleted_func                                != nullptr)
             {
                 m_on_all_references_deleted_func();
             }
         }
+
         /* Private variables */
         OpenGL::TimeMarker                                   m_last_modified_time;
         mutable std::mutex                                   m_mutex;

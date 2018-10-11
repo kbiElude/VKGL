@@ -36,6 +36,11 @@ namespace WGL
             return m_gl_context_ptr.get();
         }
 
+        OpenGL::Context* get_gl_context_ptr()
+        {
+            return m_gl_context_ptr.get();
+        }
+
         const PIXELFORMATDESCRIPTOR& get_pixel_format_descriptor() const
         {
             return m_pixel_format_descriptor;
@@ -76,10 +81,7 @@ namespace WGL
             return m_n_layer_plane;
         }
 
-        void set_current_hdc(const HDC& in_hdc)
-        {
-            m_current_hdc = in_hdc;
-        }
+        void set_current_hdc(const HDC& in_hdc);
 
         void set_swap_interval(const int& in_swap_interval)
         {
@@ -109,6 +111,9 @@ namespace WGL
         PIXELFORMATDESCRIPTOR m_pixel_format_descriptor;
         int                   m_swap_interval;
     };
+
+    /* Globally available funcs */
+    extern Context* get_wgl_context_for_hdc(HDC);
 }
 
 #endif /* WGL_CONTEXT_H */

@@ -128,6 +128,11 @@ void OpenGL::VKScheduler::main_thread_entrypoint()
                             "VK scheduler thread quitting now.");
 }
 
+void OpenGL::VKScheduler::present()
+{
+    vkgl_not_implemented();
+}
+
 void OpenGL::VKScheduler::process_buffer_data_command(OpenGL::CommandBaseUniquePtr in_command_ptr)
 {
     auto                               backend_buffer_manager_ptr   = m_backend_ptr->get_buffer_manager_ptr();

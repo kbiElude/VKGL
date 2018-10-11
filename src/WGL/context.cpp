@@ -11,6 +11,27 @@
 #include "WGL/context.h"
 #include "WGL/globals.h"
 
+std::unordered_map<HDC, WGL::Context*> g_context_map;
+std::mutex                             g_context_map_mutex;
+
+WGL::Context* WGL::get_wgl_context_for_hdc(HDC in_hdc)
+{
+    WGL::Context* result_ptr = nullptr;
+
+    {
+        std::lock_guard<std::mutex> lock                (g_context_map_mutex);
+        auto                        context_map_iterator(g_context_map.find(in_hdc) );
+
+        vkgl_assert(context_map_iterator != g_context_map.end() );
+        if (context_map_iterator != g_context_map.end() )
+        {
+            result_ptr = context_map_iterator->second;
+        }
+    }
+
+    return result_ptr;
+}
+
 WGL::Context::Context()
     :m_current_hdc                  (nullptr),
      m_is_debug_context             (false),
@@ -27,7 +48,7 @@ WGL::Context::Context()
 
 WGL::Context::~Context()
 {
-    /* Stub */
+    set_current_hdc(nullptr);
 }
 
 WGL::Context* WGL::Context::create(const HDC&     in_hdc,
@@ -206,6 +227,15 @@ end:
     result = init_gl_context();
     vkgl_assert(result);
 
+    if (result)
+    {
+        /* Also update the global HDC->context map */
+        std::lock_guard<std::mutex> lock(g_context_map_mutex);
+
+        vkgl_assert(g_context_map.find(in_hdc) == g_context_map.end() );
+        g_context_map[in_hdc] = this;
+    }
+
     return result;
 }
 
@@ -242,4 +272,26 @@ bool WGL::Context::init_gl_context()
     result = true;
 end:
     return result;
+}
+
+void WGL::Context::set_current_hdc(const HDC& in_hdc)
+{
+    /* Update the global HDC->context map */
+    {
+        std::lock_guard<std::mutex> lock(g_context_map_mutex);
+
+        if (in_hdc != nullptr)
+        {
+            g_context_map[in_hdc] = this;
+        }
+
+        if (m_current_hdc != nullptr &&
+            m_current_hdc != in_hdc)
+        {
+            g_context_map.erase(m_current_hdc);
+        }
+    }
+
+    /* Update the HDC associated with the WGL context */
+    m_current_hdc = in_hdc;
 }

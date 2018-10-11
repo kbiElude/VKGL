@@ -22,7 +22,8 @@ namespace OpenGL
 
         ~VKScheduler();
 
-        void submit(OpenGL::CommandBaseUniquePtr in_command_ptr);
+        void present();
+        void submit (OpenGL::CommandBaseUniquePtr in_command_ptr);
 
     private:
         /* Private functions */

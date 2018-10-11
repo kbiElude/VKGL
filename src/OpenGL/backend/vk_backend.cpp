@@ -946,6 +946,12 @@ void OpenGL::VKBackend::on_objects_destroyed(const OpenGL::ObjectType& in_object
     }
 }
 
+void OpenGL::VKBackend::present()
+{
+    /* Forward the request to the scheduler. */
+    m_scheduler_ptr->present();
+}
+
 void OpenGL::VKBackend::read_pixels(const int32_t&             in_x,
                                     const int32_t&             in_y,
                                     const size_t&              in_width,

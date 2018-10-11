@@ -3228,6 +3228,11 @@ void OpenGL::Context::multi_draw_elements_base_vertex(const OpenGL::DrawCallMode
     vkgl_not_implemented();
 }
 
+void OpenGL::Context::present()
+{
+    m_backend_gl_callbacks_ptr->present();
+}
+
 void OpenGL::Context::read_pixels(const int32_t&             in_x,
                                   const int32_t&             in_y,
                                   const size_t&              in_width,

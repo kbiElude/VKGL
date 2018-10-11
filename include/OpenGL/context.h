@@ -803,6 +803,9 @@ namespace OpenGL
                                              const size_t&                            in_width,
                                              const size_t&                            in_height);
 
+        /* Window system */
+        void present();
+
         /* Other: */
         void finish();
         void flush ();

@@ -256,6 +256,8 @@ namespace OpenGL
                                       const OpenGL::PixelFormat& in_format,
                                       const OpenGL::PixelType&   in_type,
                                       const void*                in_pixels) = 0;
+
+        virtual void present() = 0;
     };
 
     class IContext
