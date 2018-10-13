@@ -122,7 +122,6 @@ void OpenGL::VKNodes::BufferData::do_cpu_prepass()
      *       to need to make sure both buffer and mem block objects have been created.
      */
     auto                        backend_buffer_ptr                      = m_create_info_ptr->inputs.at(0).buffer_reference_ptr->get_payload().buffer_ptr;
-    auto                        backend_mem_block_ptr                   = m_create_info_ptr->inputs.at(0).buffer_reference_ptr->get_payload().memory_block_ptr;
     auto                        command_ptr                             = dynamic_cast<const OpenGL::BufferDataCommand*>(m_create_info_ptr->command_ptr.get() );
     const auto                  frontend_buffer_creation_time           = command_ptr->buffer_reference_ptr->get_payload().object_creation_time;
     const auto&                 frontend_buffer_id                      = command_ptr->buffer_reference_ptr->get_payload().id;
@@ -187,6 +186,7 @@ void OpenGL::VKNodes::BufferData::do_cpu_prepass()
 
     /* 3. Do we need a new VK mem block instance? */
     {
+        auto backend_mem_block_ptr      = backend_buffer_ptr->get_memory_block(0);
         bool need_new_backend_mem_block = true;
 
         if (backend_mem_block_ptr != nullptr)

@@ -154,8 +154,6 @@ void OpenGL::VKScheduler::process_buffer_data_command(OpenGL::CommandBaseUniqueP
         backend_buffer_reference_ptr = backend_buffer_manager_ptr->acquire_object(frontend_buffer_id,
                                                                                   frontend_buffer_creation_time,
                                                                                   backend_buffer_manager_ptr->get_tot_buffer_time_marker      (frontend_buffer_id,
-                                                                                                                                               frontend_buffer_creation_time),
-                                                                                  backend_buffer_manager_ptr->get_tot_memory_block_time_marker(frontend_buffer_id,
                                                                                                                                                frontend_buffer_creation_time) );
 
         vkgl_assert(backend_buffer_reference_ptr != nullptr);

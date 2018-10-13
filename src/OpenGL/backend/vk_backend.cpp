@@ -14,6 +14,7 @@
 #include "OpenGL/frontend/gl_program_manager.h"
 #include "OpenGL/frontend/gl_shader_manager.h"
 #include "OpenGL/frontend/gl_state_manager.h"
+#include "WGL/context.h"
 
 /* TODO: Touching heap memory is awful, but right now this happens in every command handler because
  *       command processing happens in scheduler's thread to ensure the app never gets blocked by VKGL.
@@ -28,10 +29,11 @@
     #undef min
 #endif
 
-OpenGL::VKBackend::VKBackend()
-    :m_frontend_ptr(nullptr)
+OpenGL::VKBackend::VKBackend(const VKGL::IWSIContext* in_wsi_context_ptr)
+    :m_frontend_ptr   (nullptr),
+     m_wsi_context_ptr(in_wsi_context_ptr)
 {
-    /* Stub */
+    vkgl_assert(m_wsi_context_ptr != nullptr);
 }
 
 OpenGL::VKBackend::~VKBackend()
@@ -277,11 +279,11 @@ void OpenGL::VKBackend::copy_tex_sub_image_3d(const GLuint&  in_id,
     vkgl_not_implemented();
 }
 
-OpenGL::VKBackendUniquePtr OpenGL::VKBackend::create()
+OpenGL::VKBackendUniquePtr OpenGL::VKBackend::create(const VKGL::IWSIContext* in_wsi_context_ptr)
 {
     OpenGL::VKBackendUniquePtr result_ptr;
 
-    result_ptr.reset(new OpenGL::VKBackend() );
+    result_ptr.reset(new OpenGL::VKBackend(in_wsi_context_ptr) );
 
     if (result_ptr != nullptr)
     {
@@ -450,6 +452,17 @@ bool OpenGL::VKBackend::init()
     if (m_buffer_manager_ptr == nullptr)
     {
         vkgl_assert(m_buffer_manager_ptr != nullptr);
+
+        goto end;
+    }
+
+    m_swapchain_manager_ptr = OpenGL::VKSwapchainManager::create(this,
+                                                                 2, /* in_n_swapchain_images - by GL's design */
+                                                                 m_wsi_context_ptr->get_pixel_format_requirements() );
+
+    if (m_swapchain_manager_ptr == nullptr)
+    {
+        vkgl_assert(m_swapchain_manager_ptr != nullptr);
 
         goto end;
     }
@@ -979,6 +992,14 @@ void OpenGL::VKBackend::set_frontend_callback(const OpenGL::IContextObjectManage
     {
         vkgl_assert(m_scheduler_ptr != nullptr);
     }
+}
+
+void OpenGL::VKBackend::set_target_window(HWND in_opt_window_handle)
+{
+    /* Forward the notification to swapchain manager. */
+    vkgl_assert(m_swapchain_manager_ptr != nullptr);
+
+    m_swapchain_manager_ptr->set_target_window(in_opt_window_handle);
 }
 
 void OpenGL::VKBackend::tex_image_1d(const GLuint&                 in_id,

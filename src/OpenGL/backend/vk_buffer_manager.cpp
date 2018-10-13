@@ -25,8 +25,7 @@ OpenGL::VKBufferManager::~VKBufferManager()
 
 OpenGL::VKBufferReferenceUniquePtr OpenGL::VKBufferManager::acquire_object(const GLuint&      in_id,
                                                                            OpenGL::TimeMarker in_frontend_object_creation_time,
-                                                                           OpenGL::TimeMarker in_buffer_time_marker,
-                                                                           OpenGL::TimeMarker in_mem_block_time_marker)
+                                                                           OpenGL::TimeMarker in_buffer_time_marker)
 {
     std::lock_guard<std::mutex>        lock                 (m_mutex);
     BufferData*                        buffer_data_ptr      (nullptr);
@@ -35,24 +34,17 @@ OpenGL::VKBufferReferenceUniquePtr OpenGL::VKBufferManager::acquire_object(const
     OpenGL::VKBufferReferenceUniquePtr new_reference_ptr    (nullptr,
                                                              [](OpenGL::VKBufferReference* in_ref_ptr){ delete in_ref_ptr; });
     Anvil::Buffer*                     ref_buffer_ptr       (nullptr);
-    Anvil::MemoryBlock*                ref_mem_block_ptr    (nullptr);
 
     vkgl_assert(buffer_props_iterator != m_buffers.end() );
 
     buffer_data_ptr = buffer_props_iterator->second.get();
 
     {
-        auto buffer_iterator    = buffer_data_ptr->buffer_map.find      (in_buffer_time_marker);
-        auto mem_block_iterator = buffer_data_ptr->memory_block_map.find(in_mem_block_time_marker);
+        auto buffer_iterator = buffer_data_ptr->buffer_map.find(in_buffer_time_marker);
 
         if (buffer_iterator != buffer_data_ptr->buffer_map.end() )
         {
             ref_buffer_ptr = nullptr;
-        }
-
-        if (mem_block_iterator != buffer_data_ptr->memory_block_map.end() )
-        {
-            ref_mem_block_ptr = mem_block_iterator->second->memory_block_ptr.get();
         }
     }
 
@@ -60,9 +52,7 @@ OpenGL::VKBufferReferenceUniquePtr OpenGL::VKBufferManager::acquire_object(const
         new OpenGL::VKBufferReference(OpenGL::VKBufferPayload(in_id,
                                                               in_frontend_object_creation_time,
                                                               ref_buffer_ptr,
-                                                              in_buffer_time_marker,
-                                                              ref_mem_block_ptr,
-                                                              in_mem_block_time_marker),
+                                                              in_buffer_time_marker),
                                       std::bind(&OpenGL::VKBufferManager::on_reference_created,
                                                 this,
                                                 buffer_data_ptr,
@@ -75,8 +65,7 @@ OpenGL::VKBufferReferenceUniquePtr OpenGL::VKBufferManager::acquire_object(const
                                                 this,
                                                 in_id,
                                                 in_frontend_object_creation_time,
-                                                in_buffer_time_marker,
-                                                in_mem_block_time_marker) )
+                                                in_buffer_time_marker) )
     );
     vkgl_assert(new_reference_ptr != nullptr);
 
@@ -158,11 +147,6 @@ uint32_t OpenGL::VKBufferManager::get_n_references(const BufferData* in_buffer_d
         result += static_cast<uint32_t>(current_buffer_props.second->reference_ptrs.size() );
     }
 
-    for (const auto& current_mem_block_props : in_buffer_data_ptr->memory_block_map)
-    {
-        result += static_cast<uint32_t>(current_mem_block_props.second->reference_ptrs.size() );
-    }
-
     return result;
 }
 
@@ -178,42 +162,23 @@ OpenGL::TimeMarker OpenGL::VKBufferManager::get_tot_buffer_time_marker(const GLu
     return buffer_props_iterator->second->tot_buffer_time_marker;
 }
 
-OpenGL::TimeMarker OpenGL::VKBufferManager::get_tot_memory_block_time_marker(const GLuint&             in_id,
-                                                                             const OpenGL::TimeMarker& in_frontend_object_creation_time) const
-{
-    std::lock_guard<std::mutex> lock                 (m_mutex);
-    const auto                  buffer_map_key       (BufferMapKey(in_id, in_frontend_object_creation_time) );
-    auto                        buffer_props_iterator(m_buffers.find(buffer_map_key) );
-
-    vkgl_assert(buffer_props_iterator != m_buffers.end() );
-
-    return buffer_props_iterator->second->tot_memory_block_time_marker;
-}
-
 void OpenGL::VKBufferManager::on_reference_created(BufferData*                in_buffer_data_ptr,
                                                    OpenGL::VKBufferReference* in_reference_ptr)
 {
     /* NOTE: m_mutex is assumed to be locked when this func is called */
-    auto buffer_iterator    = in_buffer_data_ptr->buffer_map.find      (in_reference_ptr->get_payload().backend_buffer_creation_time_marker);
-    auto mem_block_iterator = in_buffer_data_ptr->memory_block_map.find(in_reference_ptr->get_payload().backend_mem_block_creation_time_marker);
+    auto buffer_iterator = in_buffer_data_ptr->buffer_map.find(in_reference_ptr->get_payload().backend_buffer_creation_time_marker);
 
     if (buffer_iterator != in_buffer_data_ptr->buffer_map.end() )
     {
         buffer_iterator->second->reference_ptrs.push_back(in_reference_ptr);
-    }
-
-    if (mem_block_iterator != in_buffer_data_ptr->memory_block_map.end() )
-    {
-        mem_block_iterator->second->reference_ptrs.push_back(in_reference_ptr);
     }
 }
 
 void OpenGL::VKBufferManager::on_reference_destroyed(BufferData*                in_buffer_data_ptr,
                                                      OpenGL::VKBufferReference* in_reference_ptr)
 {
-    std::lock_guard<std::mutex> lock              (m_mutex);
-    auto                        buffer_iterator   (in_buffer_data_ptr->buffer_map.find      (in_reference_ptr->get_payload().backend_buffer_creation_time_marker) );
-    auto                        mem_block_iterator(in_buffer_data_ptr->memory_block_map.find(in_reference_ptr->get_payload().backend_mem_block_creation_time_marker) );
+    std::lock_guard<std::mutex> lock           (m_mutex);
+    auto                        buffer_iterator(in_buffer_data_ptr->buffer_map.find(in_reference_ptr->get_payload().backend_buffer_creation_time_marker) );
 
     if (buffer_iterator != in_buffer_data_ptr->buffer_map.end() )
     {
@@ -224,18 +189,6 @@ void OpenGL::VKBufferManager::on_reference_destroyed(BufferData*                
         if (ref_iterator != buffer_iterator->second->reference_ptrs.end() )
         {
             buffer_iterator->second->reference_ptrs.erase(ref_iterator);
-        }
-    }
-
-    if (mem_block_iterator != in_buffer_data_ptr->memory_block_map.end() )
-    {
-        auto ref_iterator = std::find(mem_block_iterator->second->reference_ptrs.begin(),
-                                      mem_block_iterator->second->reference_ptrs.end(),
-                                      in_reference_ptr);
-
-        if (ref_iterator != mem_block_iterator->second->reference_ptrs.end() )
-        {
-            mem_block_iterator->second->reference_ptrs.erase(ref_iterator);
         }
     }
 
@@ -275,31 +228,6 @@ OpenGL::TimeMarker OpenGL::VKBufferManager::set_tot_buffer_object(const GLuint& 
         vkgl_assert(new_props_ptr != nullptr);
 
         buffer_data_iterator->second->buffer_map[result] = std::move(new_props_ptr);
-    }
-
-    buffer_data_iterator->second->tot_buffer_time_marker = result;
-
-    return result;
-}
-
-OpenGL::TimeMarker OpenGL::VKBufferManager::set_tot_memory_block_object(const GLuint&               in_id,
-                                                                        const OpenGL::TimeMarker&   in_frontend_object_creation_time,
-                                                                        Anvil::MemoryBlockUniquePtr in_memory_block_ptr)
-{
-    std::lock_guard<std::mutex> lock                (m_mutex);
-    const auto                  buffer_map_key      (BufferMapKey(in_id, in_frontend_object_creation_time) );
-    auto                        buffer_data_iterator(m_buffers.find(buffer_map_key) );
-    OpenGL::TimeMarker          result              (std::chrono::high_resolution_clock::now() );
-
-    vkgl_assert(buffer_data_iterator != m_buffers.end() );
-    vkgl_assert(buffer_data_iterator->second->memory_block_map.find(result) == buffer_data_iterator->second->memory_block_map.end() );
-
-    {
-        MemoryBlockPropsUniquePtr new_props_ptr(new MemoryBlockProps(std::move(in_memory_block_ptr) ));
-
-        vkgl_assert(new_props_ptr != nullptr);
-
-        buffer_data_iterator->second->memory_block_map[result] = std::move(new_props_ptr);
     }
 
     buffer_data_iterator->second->tot_buffer_time_marker = result;

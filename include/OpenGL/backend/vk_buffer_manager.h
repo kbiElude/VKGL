@@ -24,24 +24,18 @@ namespace OpenGL
 
         OpenGL::VKBufferReferenceUniquePtr acquire_object(const GLuint&             in_id,
                                                           OpenGL::TimeMarker        in_frontend_object_creation_time,
-                                                          OpenGL::TimeMarker        in_buffer_time_marker,
-                                                          OpenGL::TimeMarker        in_mem_block_time_marker);
+                                                          OpenGL::TimeMarker        in_buffer_time_marker);
         bool                               create_object (const GLuint&             in_id,
                                                           const OpenGL::TimeMarker& in_frontend_object_creation_time);
         bool                               destroy_object(const GLuint&             in_id,
                                                           const OpenGL::TimeMarker& in_frontend_object_creation_time);
 
-        OpenGL::TimeMarker get_tot_buffer_time_marker      (const GLuint&             in_id,
-                                                            const OpenGL::TimeMarker& in_frontend_object_creation_time) const;
-        OpenGL::TimeMarker get_tot_memory_block_time_marker(const GLuint&             in_id,
-                                                            const OpenGL::TimeMarker& in_frontend_object_creation_time) const;
+        OpenGL::TimeMarker get_tot_buffer_time_marker(const GLuint&             in_id,
+                                                      const OpenGL::TimeMarker& in_frontend_object_creation_time) const;
 
-        OpenGL::TimeMarker set_tot_buffer_object      (const GLuint&               in_id,
-                                                       const OpenGL::TimeMarker&   in_frontend_object_creation_time,
-                                                       Anvil::BufferUniquePtr      in_buffer_ptr);
-        OpenGL::TimeMarker set_tot_memory_block_object(const GLuint&               in_id,
-                                                       const OpenGL::TimeMarker&   in_frontend_object_creation_time,
-                                                       Anvil::MemoryBlockUniquePtr in_memory_block_ptr);
+        OpenGL::TimeMarker set_tot_buffer_object(const GLuint&             in_id,
+                                                 const OpenGL::TimeMarker& in_frontend_object_creation_time,
+                                                 Anvil::BufferUniquePtr    in_buffer_ptr);
 
     private:
         /* Private type definitions */
@@ -58,19 +52,6 @@ namespace OpenGL
         } BufferProps;
         typedef std::unique_ptr<BufferProps> BufferPropsUniquePtr;
 
-        typedef struct MemoryBlockProps
-        {
-            Anvil::MemoryBlockUniquePtr             memory_block_ptr;
-            std::vector<OpenGL::VKBufferReference*> reference_ptrs;
-
-            MemoryBlockProps(Anvil::MemoryBlockUniquePtr in_mem_block_ptr)
-                :memory_block_ptr(std::move(in_mem_block_ptr) )
-            {
-                /* Stub */
-            }
-        } MemoryBlockProps;
-        typedef std::unique_ptr<MemoryBlockProps> MemoryBlockPropsUniquePtr;
-
         typedef struct BufferData
         {
             /* Maintain "snapshots" of object instances until all references are destroyed.
@@ -78,13 +59,10 @@ namespace OpenGL
              * This is important because, even though an app requests object deletion, a VK object
              * might still be referenced by command buffers, buffer views, etc.
              */
-            std::map<OpenGL::TimeMarker, BufferPropsUniquePtr>      buffer_map;
-            std::map<OpenGL::TimeMarker, MemoryBlockPropsUniquePtr> memory_block_map;
+            std::map<OpenGL::TimeMarker, BufferPropsUniquePtr> buffer_map;
 
             OpenGL::TimeMarker tot_buffer_time_marker;
-            OpenGL::TimeMarker tot_memory_block_time_marker;
-
-            bool has_been_destroyed;
+            bool               has_been_destroyed;
 
             BufferData()
             {

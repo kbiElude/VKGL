@@ -38,12 +38,11 @@ WGL::Context::Context()
      m_is_forward_compatible_context(false),
      m_n_layer_plane                (0),
      m_major_version                (1),
-     m_minor_version                (0),
-     m_swap_interval                (1)
+     m_minor_version                (0)
 {
-    memset(&m_pixel_format_descriptor,
+    memset(&m_pixel_format_reqs,
            0,
-           sizeof(m_pixel_format_descriptor) );
+           sizeof(m_pixel_format_reqs) );
 }
 
 WGL::Context::~Context()
@@ -96,18 +95,41 @@ bool WGL::Context::init(const HDC&     in_hdc,
         goto end;
     }
 
-    if (reinterpret_cast<GDI32::PFNDESCRIBEPIXELFORMATPROC>(GDI32::g_cached_describe_pixel_format_func_ptr)(in_hdc,
-                                                                                                            pixel_format_index,
-                                                                                                            sizeof(PIXELFORMATDESCRIPTOR),
-                                                                                                           &m_pixel_format_descriptor) == 0)
     {
-        VKGL_LOG(VKGL::LogLevel::Error,
-                 "Failed to retrieve pixel format properties for the specified HDC.");
+        PIXELFORMATDESCRIPTOR pixel_format_descriptor;
 
-        vkgl_assert_fail();
+        if (reinterpret_cast<GDI32::PFNDESCRIBEPIXELFORMATPROC>(GDI32::g_cached_describe_pixel_format_func_ptr)(in_hdc,
+                                                                                                                pixel_format_index,
+                                                                                                                sizeof(PIXELFORMATDESCRIPTOR),
+                                                                                                               &pixel_format_descriptor) == 0)
+        {
+            VKGL_LOG(VKGL::LogLevel::Error,
+                     "Failed to retrieve pixel format properties for the specified HDC.");
 
-        result = false;
-        goto end;
+            vkgl_assert_fail();
+
+            result = false;
+            goto end;
+        }
+
+        {
+            if (pixel_format_descriptor.cAccumBits != 0)
+            {
+                VKGL_LOG(VKGL::LogLevel::Warning,
+                         "Accumulation bits were incorrectly requested; accumulation is not supported by VKGL. Request will be ignored.");
+            }
+
+            m_pixel_format_reqs.n_alpha_bits       = pixel_format_descriptor.cAlphaBits;
+            m_pixel_format_reqs.n_alpha_shift_bits = pixel_format_descriptor.cAlphaShift;
+            m_pixel_format_reqs.n_blue_bits        = pixel_format_descriptor.cBlueBits;
+            m_pixel_format_reqs.n_blue_shift_bits  = pixel_format_descriptor.cBlueShift;
+            m_pixel_format_reqs.n_depth_bits       = pixel_format_descriptor.cDepthBits;
+            m_pixel_format_reqs.n_green_bits       = pixel_format_descriptor.cGreenBits;
+            m_pixel_format_reqs.n_green_shift_bits = pixel_format_descriptor.cGreenShift;
+            m_pixel_format_reqs.n_red_bits         = pixel_format_descriptor.cRedBits;
+            m_pixel_format_reqs.n_red_shift_bits   = pixel_format_descriptor.cRedShift;
+            m_pixel_format_reqs.n_stencil_bits     = pixel_format_descriptor.cStencilBits;
+        }
     }
 
     if (attribute_list_traveller_ptr == nullptr)
@@ -244,7 +266,7 @@ bool WGL::Context::init_gl_context()
     bool result = false;
 
     /* First, spawn a Vulkan backend instance we're going to use to translate all the GL calls to */
-    m_vk_backend_ptr = OpenGL::VKBackend::create();
+    m_vk_backend_ptr = OpenGL::VKBackend::create(this);
 
     if (m_vk_backend_ptr == nullptr)
     {
@@ -276,22 +298,29 @@ end:
 
 void WGL::Context::set_current_hdc(const HDC& in_hdc)
 {
-    /* Update the global HDC->context map */
+    if (m_current_hdc != in_hdc)
     {
-        std::lock_guard<std::mutex> lock(g_context_map_mutex);
-
-        if (in_hdc != nullptr)
+        /* Update the global HDC->context map */
         {
-            g_context_map[in_hdc] = this;
+            std::lock_guard<std::mutex> lock(g_context_map_mutex);
+
+            if (in_hdc != nullptr)
+            {
+                g_context_map[in_hdc] = this;
+            }
+
+            if (m_current_hdc != nullptr)
+            {
+                g_context_map.erase(m_current_hdc);
+            }
         }
 
-        if (m_current_hdc != nullptr &&
-            m_current_hdc != in_hdc)
-        {
-            g_context_map.erase(m_current_hdc);
-        }
+        /* Update the HDC associated with the WGL context */
+        m_current_hdc = in_hdc;
+
+        /* Inform backend of the event */
+        HWND hdc_window = ::WindowFromDC(in_hdc);
+
+        m_vk_backend_ptr->set_target_window(hdc_window);
     }
-
-    /* Update the HDC associated with the WGL context */
-    m_current_hdc = in_hdc;
 }

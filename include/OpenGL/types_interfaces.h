@@ -7,6 +7,21 @@
 
 namespace OpenGL
 {
+    class IBackend
+    {
+    public:
+        virtual ~IBackend()
+        {
+            /* Stub */
+        }
+
+        virtual VKBufferManager*        get_buffer_manager_ptr   () const = 0;
+        virtual Anvil::BaseDevice*      get_device_ptr           () const = 0;
+        virtual VKFrameGraph*           get_frame_graph_ptr      () const = 0;
+        virtual Anvil::MemoryAllocator* get_memory_allocator_ptr () const = 0;
+        virtual VKSwapchainManager*     get_swapchain_manager_ptr() const = 0;
+    };
+
     class IBackendCapabilities
     {
     public:
@@ -409,17 +424,14 @@ namespace OpenGL
             /* Stub */
         }
 
-        virtual OpenGL::VKBufferReferenceUniquePtr acquire_object                  (const GLuint&             in_id,
-                                                                                    OpenGL::TimeMarker        in_frontend_object_creation_time,
-                                                                                    OpenGL::TimeMarker        in_buffer_time_marker,
-                                                                                    OpenGL::TimeMarker        in_mem_block_time_marker)               = 0;
-        virtual bool                               create_object                   (const GLuint&             in_id,
-                                                                                    const OpenGL::TimeMarker& in_frontend_object_creation_time)       = 0;
+        virtual OpenGL::VKBufferReferenceUniquePtr acquire_object            (const GLuint&             in_id,
+                                                                              OpenGL::TimeMarker        in_frontend_object_creation_time,
+                                                                              OpenGL::TimeMarker        in_buffer_time_marker)                  = 0;
+        virtual bool                               create_object             (const GLuint&             in_id,
+                                                                              const OpenGL::TimeMarker& in_frontend_object_creation_time)       = 0;
 
-        virtual OpenGL::TimeMarker                 get_tot_buffer_time_marker      (const GLuint&             in_id,
-                                                                                    const OpenGL::TimeMarker& in_frontend_object_creation_time) const = 0;
-        virtual OpenGL::TimeMarker                 get_tot_memory_block_time_marker(const GLuint&             in_id,
-                                                                                    const OpenGL::TimeMarker& in_frontend_object_creation_time) const = 0;
+        virtual OpenGL::TimeMarker                 get_tot_buffer_time_marker(const GLuint&             in_id,
+                                                                              const OpenGL::TimeMarker& in_frontend_object_creation_time) const = 0;
     };
 };
 

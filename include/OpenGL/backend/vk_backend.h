@@ -6,26 +6,14 @@
 #define VKGL_VK_BACKEND_H
 
 #include "Anvil/include/misc/types.h"
+#include "Common/types.h"
 #include "OpenGL/backend/vk_buffer_manager.h"
 #include "OpenGL/backend/vk_frame_graph.h"
+#include "OpenGL/backend/vk_swapchain_manager.h"
 #include "OpenGL/types.h"
 
 namespace OpenGL
 {
-    class IBackend
-    {
-    public:
-        virtual ~IBackend()
-        {
-            /* Stub */
-        }
-
-        virtual VKBufferManager*        get_buffer_manager_ptr  () const = 0;
-        virtual VKFrameGraph*           get_frame_graph_ptr     () const = 0;
-        virtual Anvil::BaseDevice*      get_device_ptr          () const = 0;
-        virtual Anvil::MemoryAllocator* get_memory_allocator_ptr() const = 0;
-    };
-
     class VKBackend : public IBackend,
                       public IBackendCapabilities,
                       public IBackendGLCallbacks
@@ -33,11 +21,17 @@ namespace OpenGL
     public:
         /* Public functions */
 
-        static VKBackendUniquePtr create();
+        static VKBackendUniquePtr create(const VKGL::IWSIContext* in_wsi_context_ptr);
 
         ~VKBackend();
 
         void set_frontend_callback(const IContextObjectManagers* in_callback_ptr);
+
+        #if defined(_WIN32)
+            void set_target_window(HWND in_opt_window_handle);
+        #else
+            #error OS-specific bit.
+        #endif
 
     private:
         /* Private type definitions */
@@ -132,6 +126,13 @@ namespace OpenGL
             vkgl_assert(m_mem_allocator_ptr != nullptr);
 
             return m_mem_allocator_ptr.get();
+        }
+
+        VKSwapchainManager* get_swapchain_manager_ptr() const final
+        {
+            vkgl_assert(m_swapchain_manager_ptr != nullptr);
+
+            return m_swapchain_manager_ptr.get();
         }
 
         /* IBackendCapabilities functions */
@@ -375,7 +376,7 @@ namespace OpenGL
 
         /* Private functions */
 
-        VKBackend();
+        VKBackend(const VKGL::IWSIContext* in_wsi_context_ptr);
 
         bool init             ();
         bool init_anvil       ();
@@ -391,6 +392,8 @@ namespace OpenGL
         Anvil::InstanceUniquePtr                                      m_instance_ptr;
         Anvil::MemoryAllocatorUniquePtr                               m_mem_allocator_ptr;
         OpenGL::VKSchedulerUniquePtr                                  m_scheduler_ptr;
+        OpenGL::VKSwapchainManagerUniquePtr                           m_swapchain_manager_ptr;
+        const VKGL::IWSIContext*                                      m_wsi_context_ptr;
     };
 };
 #endif /* VKGL_VK_BACKEND_H */

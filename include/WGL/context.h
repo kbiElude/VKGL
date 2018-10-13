@@ -11,6 +11,7 @@
 #if !defined(VKGL_INCLUDE_OPENGL)
     #error WGL requires OpenGL component for successful compilation
 #else
+    #include "OpenGL/backend/vk_backend.h"
     #include "OpenGL/context.h"
     #include "OpenGL/types.h"
 #endif
@@ -41,14 +42,19 @@ namespace WGL
             return m_gl_context_ptr.get();
         }
 
-        const PIXELFORMATDESCRIPTOR& get_pixel_format_descriptor() const
+        const VKGL::PixelFormatRequirements& get_pixel_format_requirements() const
         {
-            return m_pixel_format_descriptor;
+            return m_pixel_format_reqs;
         }
 
         const int& get_swap_interval() const
         {
             return m_swap_interval;
+        }
+
+        OpenGL::IBackend* get_vk_backend_ptr()
+        {
+            return m_vk_backend_ptr.get();
         }
 
         const bool& is_debug_context() const
@@ -102,14 +108,14 @@ namespace WGL
         OpenGL::ContextUniquePtr   m_gl_context_ptr;
         OpenGL::VKBackendUniquePtr m_vk_backend_ptr;
 
-        HDC                   m_current_hdc;
-        bool                  m_is_debug_context;
-        bool                  m_is_forward_compatible_context;
-        uint32_t              m_major_version;
-        uint32_t              m_minor_version;
-        uint32_t              m_n_layer_plane;
-        PIXELFORMATDESCRIPTOR m_pixel_format_descriptor;
-        int                   m_swap_interval;
+        HDC                           m_current_hdc;
+        bool                          m_is_debug_context;
+        bool                          m_is_forward_compatible_context;
+        uint32_t                      m_major_version;
+        uint32_t                      m_minor_version;
+        uint32_t                      m_n_layer_plane;
+        VKGL::PixelFormatRequirements m_pixel_format_reqs;
+        int                           m_swap_interval;
     };
 
     /* Globally available funcs */
