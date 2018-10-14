@@ -258,6 +258,10 @@ namespace OpenGL
 
         bool is_context_property_gl_constant(const OpenGL::ContextProperty& in_pname);
         bool is_context_property_gl_limit   (const OpenGL::ContextProperty& in_pname);
+
+        uint32_t get_n_dimensions_for_texture_target(const OpenGL::TextureTarget& in_texture_target);
+        bool     is_texture_target_arrayed          (const OpenGL::TextureTarget& in_texture_target);
+        bool     is_texture_target_multisample      (const OpenGL::TextureTarget& in_texture_target);
     }
 };
 

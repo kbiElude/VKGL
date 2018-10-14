@@ -572,7 +572,7 @@ namespace OpenGL
         ShaderState();
     } ShaderState;
 
-    typedef struct TextureImageState
+    typedef struct TextureMipState
     {
         uint32_t               binding_texture_buffer_data_store;
         uint32_t               compressed_image_size;
@@ -583,26 +583,36 @@ namespace OpenGL
         uint32_t               samples;
         uint32_t               width;
 
-        explicit TextureImageState(const OpenGL::InternalFormat& in_internal_format);
-    } TextureImageState;
+        explicit TextureMipState(const OpenGL::InternalFormat& in_internal_format,
+                                 const uint32_t&               in_width,
+                                 const uint32_t&               in_height,
+                                 const uint32_t&               in_depth,
+                                 const uint32_t&               in_samples,
+                                 const bool&                   in_fixed_sample_locations);
+    } TextureMipState;
 
-    typedef std::unique_ptr<TextureImageState> TextureImageStateUniquePtr;
+    typedef std::unique_ptr<TextureMipState> TextureMipStateUniquePtr;
 
     typedef struct TextureState
     {
-        int32_t                        base_level;
-        uint32_t                       border_color[4];
-        OpenGL::TextureCompareFunction compare_function;
-        OpenGL::TextureCompareMode     compare_mode;
-        float                          lod_bias;
-        OpenGL::TextureMagFilter       mag_filter;
-        int32_t                        max_level;
-        float                          max_lod;
-        OpenGL::TextureMinFilter       min_filter;
-        float                          min_lod;
-        OpenGL::TextureWrapMode        wrap_r;
-        OpenGL::TextureWrapMode        wrap_s;
-        OpenGL::TextureWrapMode        wrap_t;
+        int32_t                         base_level;
+        uint32_t                        border_color[4];
+        OpenGL::TextureCompareFunction  compare_function;
+        OpenGL::TextureCompareMode      compare_mode;
+        OpenGL::DepthStencilTextureMode depth_stencil_texture_mode;
+        float                           lod_bias;
+        OpenGL::TextureMagFilter        mag_filter;
+        int32_t                         max_level;
+        float                           max_lod;
+        OpenGL::TextureMinFilter        min_filter;
+        float                           min_lod;
+        OpenGL::TextureSwizzle          swizzle_a;
+        OpenGL::TextureSwizzle          swizzle_b;
+        OpenGL::TextureSwizzle          swizzle_g;
+        OpenGL::TextureSwizzle          swizzle_r;
+        OpenGL::TextureWrapMode         wrap_r;
+        OpenGL::TextureWrapMode         wrap_s;
+        OpenGL::TextureWrapMode         wrap_t;
 
         explicit TextureState(const OpenGL::TextureMinFilter& in_min_filter,
                               const OpenGL::TextureWrapMode&  in_wrap_s,

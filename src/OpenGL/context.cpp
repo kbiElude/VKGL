@@ -615,15 +615,14 @@ void OpenGL::Context::bind_renderbuffer(const OpenGL::RenderbufferTarget& in_tar
 void OpenGL::Context::bind_texture(const OpenGL::TextureTarget& in_target,
                                    const uint32_t&              in_texture)
 {
-#if 0
     vkgl_assert(m_gl_state_manager_ptr != nullptr);
 
     m_gl_state_manager_ptr->set_texture_binding(m_gl_state_manager_ptr->get_state()->active_texture_unit,
                                                 in_target,
                                                 in_texture);
-#else
-    vkgl_not_implemented();
-#endif
+
+    m_gl_texture_manager_ptr->on_texture_bound_to_target(in_texture,
+                                                         in_target);
 }
 
 void OpenGL::Context::bind_vertex_array(const GLuint& in_array)
@@ -943,13 +942,24 @@ void OpenGL::Context::copy_tex_image_1d(const OpenGL::TextureTarget&  in_target,
                                         const GLsizei&                in_width,
                                         const GLint&                  in_border)
 {
-#if 0
     vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr     != nullptr);
+
+    vkgl_assert(!OpenGL::Utils::is_texture_target_multisample(in_target) );
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
+
+    m_gl_texture_manager_ptr->set_texture_mip_properties(texture_id,
+                                                         in_level,
+                                                         in_internalformat,
+                                                         in_width,
+                                                         1, /* in_height */
+                                                         1, /* in_depth  */
+                                                         in_border,
+                                                         1,     /* in_n_samples              */
+                                                         true); /* in_fixed_sample_locations */
 
     m_backend_gl_callbacks_ptr->copy_tex_image_1d(texture_id,
                                                   in_level,
@@ -958,9 +968,6 @@ void OpenGL::Context::copy_tex_image_1d(const OpenGL::TextureTarget&  in_target,
                                                   in_y,
                                                   in_width,
                                                   in_border);
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::copy_tex_image_2d(const OpenGL::TextureTarget&  in_target,
@@ -972,13 +979,24 @@ void OpenGL::Context::copy_tex_image_2d(const OpenGL::TextureTarget&  in_target,
                                         const GLsizei&                in_height,
                                         const GLint&                  in_border)
 {
-#if 0
     vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr     != nullptr);
+
+    vkgl_assert(!OpenGL::Utils::is_texture_target_multisample(in_target) );
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
+
+    m_gl_texture_manager_ptr->set_texture_mip_properties(texture_id,
+                                                         in_level,
+                                                         in_internalformat,
+                                                         in_width,
+                                                         in_height,
+                                                         1, /* in_depth  */
+                                                         in_border,
+                                                         1,     /* in_n_samples              */
+                                                         true); /* in_fixed_sample_locations */
 
     m_backend_gl_callbacks_ptr->copy_tex_image_2d(texture_id,
                                                   in_level,
@@ -988,9 +1006,6 @@ void OpenGL::Context::copy_tex_image_2d(const OpenGL::TextureTarget&  in_target,
                                                   in_width,
                                                   in_height,
                                                   in_border);
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::copy_tex_sub_image_1d(const OpenGL::TextureTarget& in_target,
@@ -1243,7 +1258,6 @@ void OpenGL::Context::delete_sync(const GLsync& in_sync)
 void OpenGL::Context::delete_textures(const GLsizei& in_n,
                                       const GLuint*  in_ids_ptr)
 {
-#if 0
     bool result;
 
     vkgl_assert(m_gl_texture_manager_ptr != nullptr);
@@ -1255,9 +1269,6 @@ void OpenGL::Context::delete_textures(const GLsizei& in_n,
     {
         vkgl_assert_fail();
     }
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::delete_vertex_arrays(const GLsizei& in_n,
@@ -1603,17 +1614,13 @@ void OpenGL::Context::gen_renderbuffers(const GLsizei& in_n,
 void OpenGL::Context::gen_textures(const GLsizei& in_n,
                                    GLuint*        out_ids_ptr)
 {
-#if 0
     vkgl_assert(m_gl_texture_manager_ptr != nullptr);
 
     if (!m_gl_texture_manager_ptr->generate_ids(in_n,
-                                                in_textures) )
+                                                out_ids_ptr) )
     {
         vkgl_assert_fail();
     }
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::gen_vertex_arrays(const GLsizei& in_n,
@@ -3120,15 +3127,9 @@ bool OpenGL::Context::is_sync(const GLsync& in_sync)
 
 bool OpenGL::Context::is_texture(const GLuint& in_texture) const
 {
-#if 0
     vkgl_assert(m_gl_texture_manager_ptr != nullptr);
 
     return m_gl_texture_manager_ptr->is_alive_id(in_texture);
-#else
-    vkgl_not_implemented();
-
-    return false;
-#endif
 }
 
 bool OpenGL::Context::is_vertex_array(const GLuint& in_array) const
@@ -3546,7 +3547,7 @@ void OpenGL::Context::set_scissor(const int32_t& in_x,
                                   const int32_t& in_y,
                                   const size_t&  in_width,
                                   const size_t&  in_height)
-{            
+{
     vkgl_assert(m_gl_state_manager_ptr != nullptr);
 
     m_gl_state_manager_ptr->set_scissor(in_x,
@@ -3654,7 +3655,6 @@ void OpenGL::Context::set_texture_parameter(const OpenGL::TextureTarget&      in
                                             const OpenGL::GetSetArgumentType& in_arg_type,
                                             const void*                       in_arg_value_ptr)
 {
-#if 0
     vkgl_assert(m_gl_state_manager_ptr   != nullptr);
     vkgl_assert(m_gl_texture_manager_ptr != nullptr);
 
@@ -3665,7 +3665,8 @@ void OpenGL::Context::set_texture_parameter(const OpenGL::TextureTarget&      in
 
     if (texture_id != 0)
     {
-        m_gl_texture_manager_ptr->set_texture_parameter(in_property,
+        m_gl_texture_manager_ptr->set_texture_parameter(texture_id,
+                                                        in_property,
                                                         in_arg_type,
                                                         in_arg_value_ptr);
     }
@@ -3673,9 +3674,6 @@ void OpenGL::Context::set_texture_parameter(const OpenGL::TextureTarget&      in
     {
         vkgl_assert_fail();
     }
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::set_transform_feedback_varyings(const GLuint&                              in_program,
@@ -3848,13 +3846,22 @@ void OpenGL::Context::tex_image_1d(const OpenGL::TextureTarget&  in_target,
                                    const OpenGL::PixelType&      in_type,
                                    const void*                   in_pixels_ptr)
 {
-#if 0
     vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
+
+    m_gl_texture_manager_ptr->set_texture_mip_properties(texture_id,
+                                                         in_level,
+                                                         in_internalformat,
+                                                         in_width,
+                                                         1, /* in_height */
+                                                         1, /* in_depth  */
+                                                         in_border,
+                                                         1,     /* in_n_samples              */
+                                                         true); /* in_fixed_sample_locations */
 
     m_backend_gl_callbacks_ptr->tex_image_1d(texture_id,
                                              in_level,
@@ -3864,9 +3871,6 @@ void OpenGL::Context::tex_image_1d(const OpenGL::TextureTarget&  in_target,
                                              in_format,
                                              in_type,
                                              in_pixels_ptr);
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::tex_image_2d(const OpenGL::TextureTarget&  in_target,
@@ -3879,13 +3883,22 @@ void OpenGL::Context::tex_image_2d(const OpenGL::TextureTarget&  in_target,
                                    const OpenGL::PixelType&      in_type,
                                    const void*                   in_pixels_ptr)
 {
-#if 0
     vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
+
+    m_gl_texture_manager_ptr->set_texture_mip_properties(texture_id,
+                                                         in_level,
+                                                         in_internalformat,
+                                                         in_width,
+                                                         in_height,
+                                                         1, /* in_depth  */
+                                                         in_border,
+                                                         1,     /* in_n_samples              */
+                                                         true); /* in_fixed_sample_locations */
 
     m_backend_gl_callbacks_ptr->tex_image_2d(texture_id,
                                              in_level,
@@ -3896,9 +3909,6 @@ void OpenGL::Context::tex_image_2d(const OpenGL::TextureTarget&  in_target,
                                              in_format,
                                              in_type,
                                              in_pixels_ptr);
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::tex_image_2d_multisample(const OpenGL::TextureTarget&  in_target,
@@ -3922,13 +3932,22 @@ void OpenGL::Context::tex_image_3d(const OpenGL::TextureTarget&  in_target,
                                    const OpenGL::PixelType&      in_type,
                                    const void*                   in_pixels_ptr)
 {
-#if 0
     vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
     const auto active_texture_unit = m_gl_state_manager_ptr->get_state()->active_texture_unit;
     const auto texture_id          = m_gl_state_manager_ptr->get_texture_binding(active_texture_unit,
                                                                                  in_target);
+
+    m_gl_texture_manager_ptr->set_texture_mip_properties(texture_id,
+                                                         in_level,
+                                                         in_internalformat,
+                                                         in_width,
+                                                         in_height,
+                                                         in_depth,
+                                                         in_border,
+                                                         1,     /* in_n_samples              */
+                                                         true); /* in_fixed_sample_locations */
 
     m_backend_gl_callbacks_ptr->tex_image_3d(texture_id,
                                              in_level,
@@ -3940,9 +3959,6 @@ void OpenGL::Context::tex_image_3d(const OpenGL::TextureTarget&  in_target,
                                              in_format,
                                              in_type,
                                              in_pixels_ptr);
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::tex_image_3d_multisample(const OpenGL::TextureTarget&  in_target,

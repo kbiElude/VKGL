@@ -327,6 +327,19 @@ Anvil::ImageUsageFlags OpenGL::VKSwapchainManager::get_swapchain_image_usage_fla
         vkgl_assert_fail();
     }
 
+    /* TODO: Lack of support for TRANSFER_SRC can be worked around but for now that's not supported.. */
+    if ((surface_caps.supported_usage_flags & Anvil::ImageUsageFlagBits::TRANSFER_SRC_BIT) != 0)
+    {
+        result |= Anvil::ImageUsageFlagBits::TRANSFER_SRC_BIT;
+    }
+    else
+    {
+        VKGL::g_logger_ptr->log(VKGL::LogLevel::Error,
+                                "No TRANSFER_SRC_BIT image usage flag support reported for the rendering surface.");
+
+        vkgl_assert_fail();
+    }
+
     /* TODO: Lack of support for TRANSFER_DST can be worked around but for now that's not supported.. */
     if ((surface_caps.supported_usage_flags & Anvil::ImageUsageFlagBits::TRANSFER_DST_BIT) != 0)
     {

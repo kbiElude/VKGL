@@ -500,16 +500,21 @@ OpenGL::ShaderState::ShaderState()
     type           = OpenGL::ShaderType::Unknown;
 }
 
-OpenGL::TextureImageState::TextureImageState(const OpenGL::InternalFormat& in_internal_format)
+OpenGL::TextureMipState::TextureMipState(const OpenGL::InternalFormat& in_internal_format,
+                                         const uint32_t&               in_width,
+                                         const uint32_t&               in_height,
+                                         const uint32_t&               in_depth,
+                                         const uint32_t&               in_samples,
+                                         const bool&                   in_fixed_sample_locations)
 {
     binding_texture_buffer_data_store = 0;
     compressed_image_size             = 0;
-    fixed_sample_locations            = true;
-    depth                             = 0;
-    height                            = 0;
+    fixed_sample_locations            = in_fixed_sample_locations;
+    depth                             = in_depth;
+    height                            = in_height;
     internal_format                   = in_internal_format;
-    samples                           = 0;
-    width                             = 0;
+    samples                           = in_samples;
+    width                             = in_width;
 }
 
 OpenGL::TextureState::TextureState(const OpenGL::TextureMinFilter& in_min_filter,
@@ -517,22 +522,27 @@ OpenGL::TextureState::TextureState(const OpenGL::TextureMinFilter& in_min_filter
                                    const OpenGL::TextureWrapMode&  in_wrap_t,
                                    const OpenGL::TextureWrapMode&  in_wrap_r)
 {
-    base_level       = 0;
-    border_color[0]  = 0;
-    border_color[1]  = 0;
-    border_color[2]  = 0;
-    border_color[3]  = 0;
-    compare_function = OpenGL::TextureCompareFunction::LEqual;
-    compare_mode     = OpenGL::TextureCompareMode::None;
-    lod_bias         = 0.0f;
-    mag_filter       = OpenGL::TextureMagFilter::Linear;
-    max_level        = 1000;
-    max_lod          = 1000.0f;
-    min_filter       = in_min_filter;
-    min_lod          = -1000.0f;
-    wrap_r           = in_wrap_r;
-    wrap_s           = in_wrap_s;
-    wrap_t           = in_wrap_t;
+    base_level                 = 0;
+    border_color[0]            = 0;
+    border_color[1]            = 0;
+    border_color[2]            = 0;
+    border_color[3]            = 0;
+    compare_function           = OpenGL::TextureCompareFunction::LEqual;
+    compare_mode               = OpenGL::TextureCompareMode::None;
+    depth_stencil_texture_mode = OpenGL::DepthStencilTextureMode::Depth_Component;
+    lod_bias                   = 0.0f;
+    mag_filter                 = OpenGL::TextureMagFilter::Linear;
+    max_level                  = 1000;
+    max_lod                    = 1000.0f;
+    min_filter                 = in_min_filter;
+    min_lod                    = -1000.0f;
+    swizzle_a                  = OpenGL::TextureSwizzle::Alpha;
+    swizzle_b                  = OpenGL::TextureSwizzle::Blue;
+    swizzle_g                  = OpenGL::TextureSwizzle::Green;
+    swizzle_r                  = OpenGL::TextureSwizzle::Red;
+    wrap_r                     = in_wrap_r;
+    wrap_s                     = in_wrap_s;
+    wrap_t                     = in_wrap_t;
 }
 
 OpenGL::TextureUnitState::TextureUnitState()

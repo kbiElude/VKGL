@@ -3170,6 +3170,64 @@ OpenGL::MipmapGenerationTextureTarget OpenGL::Utils::get_mipmap_generation_textu
     return result;
 }
 
+uint32_t OpenGL::Utils::get_n_dimensions_for_texture_target(const OpenGL::TextureTarget& in_texture_target)
+{
+    uint32_t result = 0;
+
+    switch (in_texture_target)
+    {
+        case OpenGL::TextureTarget::_1D:              /* fall-through */
+        case OpenGL::TextureTarget::Proxy_Texture_1D: /* fall-through */
+        case OpenGL::TextureTarget::Texture_Buffer:
+        {
+            result = 1;
+
+            break;
+        }
+
+        case OpenGL::TextureTarget::_1D_Array:                    /* fall-through */
+        case OpenGL::TextureTarget::_2D:                          /* fall-through */
+        case OpenGL::TextureTarget::_2D_Multisample:              /* fall-through */
+        case OpenGL::TextureTarget::Cube_Map:                     /* fall-through */
+        case OpenGL::TextureTarget::Proxy_Texture_1D_Array:       /* fall-through */
+        case OpenGL::TextureTarget::Proxy_Texture_2D:             /* fall-through */
+        case OpenGL::TextureTarget::Proxy_Texture_2D_Multisample: /* fall-through */
+        case OpenGL::TextureTarget::Proxy_Texture_Cube_Map:       /* fall-through */
+        case OpenGL::TextureTarget::Proxy_Texture_Rectangle:
+        case OpenGL::TextureTarget::Rectangle:
+        {
+            result = 2;
+
+            break;
+        }
+
+        case OpenGL::TextureTarget::_2D_Array:
+        case OpenGL::TextureTarget::_2D_Multisample_Array:
+        case OpenGL::TextureTarget::_3D:
+        case OpenGL::TextureTarget::Proxy_Texture_2D_Array:
+        case OpenGL::TextureTarget::Proxy_Texture_2D_Multisample_Array:
+        case OpenGL::TextureTarget::Proxy_Texture_3D:
+        {
+            result = 3;
+
+            break;
+        }
+
+        case OpenGL::TextureTarget::Cube_Map_Negative_X:
+        case OpenGL::TextureTarget::Cube_Map_Negative_Y:
+        case OpenGL::TextureTarget::Cube_Map_Negative_Z:
+        case OpenGL::TextureTarget::Cube_Map_Positive_X:
+        case OpenGL::TextureTarget::Cube_Map_Positive_Y:
+        case OpenGL::TextureTarget::Cube_Map_Positive_Z:
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 OpenGL::Capability OpenGL::Utils::get_nonindexed_capability_for_gl_enum(const GLenum& in_enum)
 {
     OpenGL::Capability result = OpenGL::Capability::Unknown;
@@ -5234,4 +5292,22 @@ bool OpenGL::Utils::is_texture_binding_pname(const OpenGL::ContextProperty& in_p
             in_pname == OpenGL::ContextProperty::Texture_Binding_Buffer               ||
             in_pname == OpenGL::ContextProperty::Texture_Binding_Cube_Map             ||
             in_pname == OpenGL::ContextProperty::Texture_Binding_Rectangle);
+}
+
+bool OpenGL::Utils::is_texture_target_arrayed(const OpenGL::TextureTarget& in_texture_target)
+{
+    return (in_texture_target == OpenGL::TextureTarget::Proxy_Texture_1D_Array             ||
+            in_texture_target == OpenGL::TextureTarget::Proxy_Texture_2D_Array             ||
+            in_texture_target == OpenGL::TextureTarget::Proxy_Texture_2D_Multisample_Array ||
+            in_texture_target == OpenGL::TextureTarget::_1D_Array                          ||
+            in_texture_target == OpenGL::TextureTarget::_2D_Array                          ||
+            in_texture_target == OpenGL::TextureTarget::_2D_Multisample_Array);
+}
+
+bool OpenGL::Utils::is_texture_target_multisample(const OpenGL::TextureTarget& in_texture_target)
+{
+    return (in_texture_target == OpenGL::TextureTarget::Proxy_Texture_2D_Multisample       ||
+            in_texture_target == OpenGL::TextureTarget::Proxy_Texture_2D_Multisample_Array ||
+            in_texture_target == OpenGL::TextureTarget::_2D_Multisample                    ||
+            in_texture_target == OpenGL::TextureTarget::_2D_Multisample_Array);
 }

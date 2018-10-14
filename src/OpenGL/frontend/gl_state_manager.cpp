@@ -707,6 +707,39 @@ const OpenGL::ContextState* OpenGL::GLStateManager::get_state(const OpenGL::Time
     return state_ptr;
 }
 
+GLuint OpenGL::GLStateManager::get_texture_binding(const uint32_t&              in_n_texture_unit,
+                                                   const OpenGL::TextureTarget& in_texture_target) const
+{
+    GLuint result                 = 0;
+    auto   state_ptr              = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
+    auto   texture_unit_state_ptr = state_ptr->texture_unit_to_state_ptr_map.at(in_n_texture_unit).get();
+
+    vkgl_assert(texture_unit_state_ptr != nullptr);
+    if (texture_unit_state_ptr != nullptr)
+    {
+        switch (in_texture_target)
+        {
+            case OpenGL::TextureTarget::_1D:                   result = texture_unit_state_ptr->binding_1d;                   break;
+            case OpenGL::TextureTarget::_1D_Array:             result = texture_unit_state_ptr->binding_1d_array;             break;
+            case OpenGL::TextureTarget::_2D:                   result = texture_unit_state_ptr->binding_2d;                   break;
+            case OpenGL::TextureTarget::_2D_Array:             result = texture_unit_state_ptr->binding_2d_array;             break;
+            case OpenGL::TextureTarget::_2D_Multisample:       result = texture_unit_state_ptr->binding_2d_multisample;       break;
+            case OpenGL::TextureTarget::_2D_Multisample_Array: result = texture_unit_state_ptr->binding_2d_multisample_array; break;
+            case OpenGL::TextureTarget::_3D:                   result = texture_unit_state_ptr->binding_3d;                   break;
+            case OpenGL::TextureTarget::Cube_Map:              result = texture_unit_state_ptr->binding_cube_map;             break;
+            case OpenGL::TextureTarget::Rectangle:             result = texture_unit_state_ptr->binding_rectangle;            break;
+            case OpenGL::TextureTarget::Texture_Buffer:        result = texture_unit_state_ptr->binding_texture_buffer;       break;
+
+            default:
+            {
+                vkgl_assert_fail();
+            }
+        }
+    }
+
+    return result;
+}
+
 void OpenGL::GLStateManager::get_texture_binding_parameter(const OpenGL::TextureBindingProperty& in_pname,
                                                            const OpenGL::GetSetArgumentType&     in_arg_type,
                                                            void*                                 out_arg_value_ptr) const
