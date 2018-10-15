@@ -2,9 +2,13 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+#include "Anvil/include/misc/image_create_info.h"
+#include "Anvil/include/misc/image_view_create_info.h"
 #include "Anvil/include/misc/swapchain_create_info.h"
 #include "Anvil/include/misc/window_factory.h"
 #include "Anvil/include/wrappers/device.h"
+#include "Anvil/include/wrappers/image.h"
+#include "Anvil/include/wrappers/image_view.h"
 #include "Anvil/include/wrappers/rendering_surface.h"
 #include "Anvil/include/wrappers/swapchain.h"
 #include "OpenGL/backend/vk_backend.h"
@@ -127,11 +131,13 @@ std::unique_ptr<void, std::function<void(void*)> > OpenGL::VKSwapchainManager::c
 
 OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainManager::create_swapchain(const SwapchainPropsSnapshot* in_swapchain_props_ptr) const
 {
-    auto                             device_ptr                  = m_backend_ptr->get_device_ptr();
-    InternalSwapchainDataUniquePtr   internal_swapchain_data_ptr;
-    Anvil::RenderingSurfaceUniquePtr rendering_surface_ptr;
-    Anvil::SwapchainUniquePtr        swapchain_ptr;
-    Anvil::WindowUniquePtr           window_ptr;
+    auto                                   device_ptr                  = m_backend_ptr->get_device_ptr();
+    std::vector<Anvil::ImageUniquePtr>     ds_images;
+    std::vector<Anvil::ImageViewUniquePtr> ds_image_views;
+    InternalSwapchainDataUniquePtr         internal_swapchain_data_ptr;
+    Anvil::RenderingSurfaceUniquePtr       rendering_surface_ptr;
+    Anvil::SwapchainUniquePtr              swapchain_ptr;
+    Anvil::WindowUniquePtr                 window_ptr;
 
     vkgl_assert(device_ptr != nullptr);
 
@@ -198,11 +204,20 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
         }
     }
 
-    /* 4. Pack all the dependencies together. */
+    /* 4. Create D/DS/S image & image views, if such were requested for the rendering surface */
+    if (m_pixel_format_reqs.n_depth_bits   != 0 ||
+        m_pixel_format_reqs.n_stencil_bits != 0)
+    {
+        todo;
+    }
+
+    /* 5. Pack all the stuff together. */
     internal_swapchain_data_ptr.reset(
         new InternalSwapchainData(std::move(rendering_surface_ptr),
                                   std::move(swapchain_ptr),
-                                  std::move(window_ptr) )
+                                  std::move(window_ptr),
+                                  ds_images,
+                                  ds_image_views)
     );
 
     if (internal_swapchain_data_ptr == nullptr)

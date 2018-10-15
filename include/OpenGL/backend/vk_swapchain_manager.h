@@ -41,20 +41,28 @@ namespace OpenGL
         /* Private type definitions */
         typedef struct InternalSwapchainData
         {
-            Anvil::RenderingSurfaceUniquePtr rendering_surface_ptr;
-            Anvil::SwapchainUniquePtr        swapchain_ptr;
-            Anvil::WindowUniquePtr           window_ptr;
+            std::vector<Anvil::ImageUniquePtr>     ds_image_ptrs;
+            std::vector<Anvil::ImageViewUniquePtr> ds_image_view_ptrs;
+            Anvil::RenderingSurfaceUniquePtr       rendering_surface_ptr;
+            Anvil::SwapchainUniquePtr              swapchain_ptr;
+            Anvil::WindowUniquePtr                 window_ptr;
 
-            InternalSwapchainData(Anvil::RenderingSurfaceUniquePtr in_rendering_surface_ptr,
-                                  Anvil::SwapchainUniquePtr        in_swapchain_ptr,
-                                  Anvil::WindowUniquePtr           in_window_ptr)
+            InternalSwapchainData(Anvil::RenderingSurfaceUniquePtr        in_rendering_surface_ptr,
+                                  Anvil::SwapchainUniquePtr               in_swapchain_ptr,
+                                  Anvil::WindowUniquePtr                  in_window_ptr,
+                                  std::vector<Anvil::ImageUniquePtr>&     inout_ds_image_ptrs,
+                                  std::vector<Anvil::ImageViewUniquePtr>& inout_ds_image_view_ptrs)
                 :rendering_surface_ptr(std::move(in_rendering_surface_ptr) ),
                  swapchain_ptr        (std::move(in_swapchain_ptr) ),
                  window_ptr           (std::move(in_window_ptr) )
             {
-                vkgl_assert(rendering_surface_ptr != nullptr);
-                vkgl_assert(swapchain_ptr         != nullptr);
-                vkgl_assert(window_ptr            != nullptr);
+                vkgl_assert(rendering_surface_ptr      != nullptr);
+                vkgl_assert(swapchain_ptr              != nullptr);
+                vkgl_assert(window_ptr                 != nullptr);
+                vkgl_assert(inout_ds_image_ptrs.size() == inout_ds_image_view_ptrs.size() );
+
+                ds_image_ptrs      = std::move(inout_ds_image_ptrs);
+                ds_image_view_ptrs = std::move(inout_ds_image_view_ptrs);
             }
 
             ~InternalSwapchainData()

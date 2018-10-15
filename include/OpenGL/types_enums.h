@@ -535,6 +535,19 @@ namespace OpenGL
         Unknown
     };
 
+    enum class FormatDataType
+    {
+        SFloat,
+        SInt,
+        SNorm,
+        SRGB,
+        UFloat,
+        UInt,
+        UNorm,
+
+        Unknown
+    };
+
     enum class FramebufferAttachmentComponentType
     {
         Float,
