@@ -8,6 +8,7 @@
 #include "Anvil/include/misc/types.h"
 #include "Common/types.h"
 #include "OpenGL/backend/vk_buffer_manager.h"
+#include "OpenGL/backend/vk_format_manager.h"
 #include "OpenGL/backend/vk_frame_graph.h"
 #include "OpenGL/backend/vk_swapchain_manager.h"
 #include "OpenGL/types.h"
@@ -112,6 +113,13 @@ namespace OpenGL
             vkgl_assert(m_device_ptr != nullptr);
 
             return m_device_ptr.get();
+        }
+
+        VKFormatManager* get_format_manager_ptr() const final
+        {
+            vkgl_assert(m_format_manager_ptr != nullptr);
+
+            return m_format_manager_ptr.get();
         }
 
         VKFrameGraph* get_frame_graph_ptr() const final
@@ -387,6 +395,7 @@ namespace OpenGL
         VKBufferManagerUniquePtr                                      m_buffer_manager_ptr;
         std::unordered_map<OpenGL::BackendCapability, CapabilityData> m_capabilities;
         Anvil::BaseDeviceUniquePtr                                    m_device_ptr;
+        OpenGL::VKFormatManagerUniquePtr                              m_format_manager_ptr;
         OpenGL::VKFrameGraphUniquePtr                                 m_frame_graph_ptr;
         const IContextObjectManagers*                                 m_frontend_ptr;
         Anvil::InstanceUniquePtr                                      m_instance_ptr;

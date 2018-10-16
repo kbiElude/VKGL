@@ -34,6 +34,7 @@ namespace OpenGL
     class  IGLLimits;
     class  VKBackend;
     class  VKBufferManager;
+    class  VKFormatManager;
     class  VKFrameGraph;
     class  VKScheduler;
     class  VKSwapchainManager;

@@ -108,9 +108,14 @@ namespace OpenGL
                            const uint32_t&                      in_n_swapchain_images,
                            const VKGL::PixelFormatRequirements& in_pixel_format_reqs);
 
-        InternalSwapchainDataUniquePtr create_swapchain                  (const SwapchainPropsSnapshot* in_swapchain_props_ptr) const;
+        bool                           create_ds_image_views             (const Anvil::Format&                    in_format,
+                                                                          const uint32_t&                         in_width,
+                                                                          const uint32_t&                         in_height,
+                                                                          std::vector<Anvil::ImageUniquePtr>&     out_ds_image_ptrs,
+                                                                          std::vector<Anvil::ImageViewUniquePtr>& out_ds_image_view_ptrs) const;
+        InternalSwapchainDataUniquePtr create_swapchain                  (const SwapchainPropsSnapshot*           in_swapchain_props_ptr) const;
         bool                           init                              ();
-        void                           on_swapchain_snapshot_out_of_scope(OpenGL::TimeMarker            in_time_marker);
+        void                           on_swapchain_snapshot_out_of_scope(OpenGL::TimeMarker                      in_time_marker);
 
         Anvil::PresentModeKHR  get_present_mode_for_swapchain_props(const SwapchainPropsSnapshot*  in_swapchain_props_ptr,
                                                                     const Anvil::RenderingSurface* in_surface_ptr)         const;

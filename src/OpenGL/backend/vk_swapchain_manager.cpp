@@ -2,8 +2,10 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+#include "Anvil/include/misc/formats.h"
 #include "Anvil/include/misc/image_create_info.h"
 #include "Anvil/include/misc/image_view_create_info.h"
+#include "Anvil/include/misc/memory_allocator.h"
 #include "Anvil/include/misc/swapchain_create_info.h"
 #include "Anvil/include/misc/window_factory.h"
 #include "Anvil/include/wrappers/device.h"
@@ -13,6 +15,7 @@
 #include "Anvil/include/wrappers/swapchain.h"
 #include "OpenGL/backend/vk_backend.h"
 #include "OpenGL/backend/vk_swapchain_manager.h"
+#include "OpenGL/frontend/gl_formats.h"
 #include "OpenGL/frontend/snapshot_manager.h"
 #include "Common/logger.h"
 #include "Common/macros.h"
@@ -116,6 +119,90 @@ OpenGL::VKSwapchainManagerUniquePtr OpenGL::VKSwapchainManager::create(IBackend*
     return result_ptr;
 }
 
+bool OpenGL::VKSwapchainManager::create_ds_image_views(const Anvil::Format&                    in_format,
+                                                       const uint32_t&                         in_width,
+                                                       const uint32_t&                         in_height,
+                                                       std::vector<Anvil::ImageUniquePtr>&     out_ds_image_ptrs,
+                                                       std::vector<Anvil::ImageViewUniquePtr>& out_ds_image_view_ptrs) const
+{
+    auto       allocator_ptr       = m_backend_ptr->get_memory_allocator_ptr();
+    auto       device_ptr          = dynamic_cast<Anvil::SGPUDevice*>(m_backend_ptr->get_device_ptr() );
+    bool       result              = false;
+    const bool uses_depth_aspect   = Anvil::Formats::has_depth_aspect  (in_format);
+    const bool uses_stencil_aspect = Anvil::Formats::has_stencil_aspect(in_format);
+
+    vkgl_assert(allocator_ptr                 != nullptr);
+    vkgl_assert(m_n_swapchain_images          != 0);
+    vkgl_assert(out_ds_image_ptrs.size     () == 0);
+    vkgl_assert(out_ds_image_view_ptrs.size() == 0);
+
+    for (uint32_t n_image = 0;
+                  n_image < m_n_swapchain_images;
+                ++n_image)
+    {
+        auto image_create_info_ptr = Anvil::ImageCreateInfo::create_no_alloc(device_ptr,
+                                                                             Anvil::ImageType::_2D,
+                                                                             in_format,
+                                                                             Anvil::ImageTiling::OPTIMAL,
+                                                                             Anvil::ImageUsageFlagBits::DEPTH_STENCIL_ATTACHMENT_BIT,
+                                                                             in_width,
+                                                                             in_height,
+                                                                             1, /* in_base_mipmap_depth */
+                                                                             1, /* in_n_layers          */
+                                                                             Anvil::SampleCountFlagBits::_1_BIT,
+                                                                             Anvil::QueueFamilyFlagBits::COMPUTE_BIT | Anvil::QueueFamilyFlagBits::GRAPHICS_BIT | Anvil::QueueFamilyFlagBits::DMA_BIT,
+                                                                             Anvil::SharingMode::EXCLUSIVE,
+                                                                             false, /* in_use_full_mipmap_chain */
+                                                                             Anvil::ImageCreateFlagBits::NONE);
+        auto image_ptr              = Anvil::Image::create                  (std::move(image_create_info_ptr) );
+
+        if (image_ptr == nullptr)
+        {
+            vkgl_assert(image_ptr != nullptr);
+
+            goto end;
+        }
+
+        allocator_ptr->add_image_whole(image_ptr.get(),
+                                       Anvil::MemoryFeatureFlagBits::DEVICE_LOCAL_BIT);
+
+        out_ds_image_ptrs.push_back(std::move(image_ptr) );
+    }
+
+    for (uint32_t n_image_view = 0;
+                  n_image_view < m_n_swapchain_images;
+                ++n_image_view)
+    {
+        auto create_info_ptr = Anvil::ImageViewCreateInfo::create_2D(device_ptr,
+                                                                     out_ds_image_ptrs.at(n_image_view).get(),
+                                                                     0, /* in_n_base_layer */
+                                                                     0, /* in_n_base_mipmap_level */
+                                                                     1, /* in_n_mimaps */
+                                                                     ((uses_depth_aspect)   ? Anvil::ImageAspectFlagBits::DEPTH_BIT   : Anvil::ImageAspectFlagBits::NONE) |
+                                                                     ((uses_stencil_aspect) ? Anvil::ImageAspectFlagBits::STENCIL_BIT : Anvil::ImageAspectFlagBits::NONE),
+                                                                     in_format,
+                                                                     Anvil::ComponentSwizzle::IDENTITY, /* in_swizzle_red   */
+                                                                     Anvil::ComponentSwizzle::IDENTITY, /* in_swizzle_green */
+                                                                     Anvil::ComponentSwizzle::IDENTITY, /* in_swizzle_blue  */
+                                                                     Anvil::ComponentSwizzle::IDENTITY);/* in_swizzle_alpha */
+        auto image_view_ptr  = Anvil::ImageView::create             (std::move(create_info_ptr) );
+
+        if (image_view_ptr == nullptr)
+        {
+            vkgl_assert(image_view_ptr != nullptr);
+
+            goto end;
+        }
+
+        out_ds_image_view_ptrs.push_back(std::move(image_view_ptr) );
+    }
+
+    /* All done */
+    result = true;
+end:
+    return result;
+}
+
 std::unique_ptr<void, std::function<void(void*)> > OpenGL::VKSwapchainManager::create_internal_data_object()
 {
     std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
@@ -134,6 +221,7 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
     auto                                   device_ptr                  = m_backend_ptr->get_device_ptr();
     std::vector<Anvil::ImageUniquePtr>     ds_images;
     std::vector<Anvil::ImageViewUniquePtr> ds_image_views;
+    auto                                   format_manager_ptr          = m_backend_ptr->get_format_manager_ptr();
     InternalSwapchainDataUniquePtr         internal_swapchain_data_ptr;
     Anvil::RenderingSurfaceUniquePtr       rendering_surface_ptr;
     Anvil::SwapchainUniquePtr              swapchain_ptr;
@@ -183,6 +271,7 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
                                                              rendering_surface_ptr.get(),
                                                              window_ptr.get           (),
                                                              swapchain_format,
+                                                             Anvil::ColorSpaceKHR::SRGB_NONLINEAR_KHR, //< TODO: prettify me
                                                              present_mode,
                                                              image_usage_flags,
                                                              m_n_swapchain_images);
@@ -208,7 +297,37 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
     if (m_pixel_format_reqs.n_depth_bits   != 0 ||
         m_pixel_format_reqs.n_stencil_bits != 0)
     {
-        todo;
+        auto          format_gl = OpenGL::GLFormats::get_best_fit_ds_internal_format(m_pixel_format_reqs.n_depth_bits,
+                                                                                     m_pixel_format_reqs.n_stencil_bits);
+        Anvil::Format format_vk = Anvil::Format::UNKNOWN;
+
+        if (format_gl == OpenGL::InternalFormat::Unknown)
+        {
+            vkgl_assert(format_gl != OpenGL::InternalFormat::Unknown);
+
+            goto end;
+        }
+
+        format_vk = format_manager_ptr->get_best_fit_anvil_format(format_gl,
+                                                                  Anvil::FormatFeatureFlagBits::DEPTH_STENCIL_ATTACHMENT_BIT); //< TODO: is this good enough?
+
+        if (format_vk == Anvil::Format::UNKNOWN)
+        {
+            vkgl_assert(format_vk != Anvil::Format::UNKNOWN);
+
+            goto end;
+        }
+
+        if (!create_ds_image_views(format_vk,
+                                   window_ptr->get_width_at_creation_time (),
+                                   window_ptr->get_height_at_creation_time(),
+                                   ds_images,
+                                   ds_image_views) )
+        {
+            vkgl_assert_fail();
+
+            goto end;
+        }
     }
 
     /* 5. Pack all the stuff together. */

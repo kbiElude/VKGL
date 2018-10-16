@@ -542,8 +542,10 @@ namespace OpenGL
         SNorm,
         SRGB,
         UFloat,
+        UFloat_UInt,
         UInt,
         UNorm,
+        UNorm_UFloat,
 
         Unknown
     };
@@ -793,6 +795,13 @@ namespace OpenGL
         RGBA8UI,
         SRGB8,
         SRGB8_Alpha8,
+
+        Depth_Component16,
+        Depth_Component24,
+        Depth_Component32,
+        Depth_Component32_Float,
+        Depth24_Stencil8,
+        Depth32_Float_Stencil8,
 
         /* Compressed internal formats */
         Compressed_Red,

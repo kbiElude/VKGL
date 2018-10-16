@@ -467,6 +467,15 @@ bool OpenGL::VKBackend::init()
         goto end;
     }
 
+    m_format_manager_ptr = OpenGL::VKFormatManager::create(dynamic_cast<Anvil::SGPUDevice*>(get_device_ptr()) );
+
+    if (m_format_manager_ptr == nullptr)
+    {
+        vkgl_assert(m_format_manager_ptr != nullptr);
+
+        goto end;
+    }
+
     m_frame_graph_ptr = OpenGL::VKFrameGraph::create();
 
     if (m_frame_graph_ptr == nullptr)

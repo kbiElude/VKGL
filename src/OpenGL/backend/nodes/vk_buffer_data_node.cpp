@@ -217,11 +217,12 @@ void OpenGL::VKNodes::BufferData::do_cpu_prepass()
     if (command_ptr->data_ptr != nullptr)
     {
         {
-            auto create_info_ptr = Anvil::BufferCreateInfo::create_nonsparse_no_alloc(m_backend_ptr->get_device_ptr(),
-                                                                                      command_ptr->size,
-                                                                                      Anvil::QueueFamilyFlagBits::COMPUTE_BIT | Anvil::QueueFamilyFlagBits::DMA_BIT | Anvil::QueueFamilyFlagBits::GRAPHICS_BIT,
-                                                                                      Anvil::SharingMode::EXCLUSIVE,
-                                                                                      Anvil::BufferUsageFlagBits::TRANSFER_SRC_BIT);
+            auto create_info_ptr = Anvil::BufferCreateInfo::create_no_alloc(m_backend_ptr->get_device_ptr(),
+                                                                            command_ptr->size,
+                                                                            Anvil::QueueFamilyFlagBits::COMPUTE_BIT | Anvil::QueueFamilyFlagBits::DMA_BIT | Anvil::QueueFamilyFlagBits::GRAPHICS_BIT,
+                                                                            Anvil::SharingMode::EXCLUSIVE,
+                                                                            Anvil::BufferCreateFlagBits::NONE,
+                                                                            Anvil::BufferUsageFlagBits::TRANSFER_SRC_BIT);
 
             vkgl_assert(create_info_ptr != nullptr);
 
@@ -275,11 +276,12 @@ Anvil::BufferCreateInfoUniquePtr OpenGL::VKNodes::BufferData::get_buffer_create_
     const auto                       usage_flags_vk = OpenGL::VKUtils::get_buffer_usage_flags_for_gl_buffer(in_n_buffer_targets,
                                                                                                             in_buffer_targets_ptr);
 
-    result_ptr = Anvil::BufferCreateInfo::create_nonsparse_no_alloc(m_backend_ptr->get_device_ptr(),
-                                                                    in_size,
-                                                                    Anvil::QueueFamilyFlagBits::COMPUTE_BIT | Anvil::QueueFamilyFlagBits::DMA_BIT | Anvil::QueueFamilyFlagBits::GRAPHICS_BIT,
-                                                                    Anvil::SharingMode::EXCLUSIVE,
-                                                                    usage_flags_vk);
+    result_ptr = Anvil::BufferCreateInfo::create_no_alloc(m_backend_ptr->get_device_ptr(),
+                                                          in_size,
+                                                          Anvil::QueueFamilyFlagBits::COMPUTE_BIT | Anvil::QueueFamilyFlagBits::DMA_BIT | Anvil::QueueFamilyFlagBits::GRAPHICS_BIT,
+                                                          Anvil::SharingMode::EXCLUSIVE,
+                                                          Anvil::BufferCreateFlagBits::NONE,
+                                                          usage_flags_vk);
 
     vkgl_assert(result_ptr != nullptr);
     return result_ptr;
