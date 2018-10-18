@@ -136,7 +136,6 @@ void OpenGL::VKScheduler::present()
 void OpenGL::VKScheduler::process_buffer_data_command(OpenGL::CommandBaseUniquePtr in_command_ptr)
 {
     auto                               backend_buffer_manager_ptr   = m_backend_ptr->get_buffer_manager_ptr();
-    const OpenGL::VKBufferPayload*     backend_buffer_props_ptr     = nullptr;
     OpenGL::VKBufferReferenceUniquePtr backend_buffer_reference_ptr;
     auto                               backend_frame_graph_ptr      = m_backend_ptr->get_frame_graph_ptr      ();
     OpenGL::BufferDataCommand*         command_ptr                  = dynamic_cast<OpenGL::BufferDataCommand*>(in_command_ptr.get() );
@@ -153,40 +152,19 @@ void OpenGL::VKScheduler::process_buffer_data_command(OpenGL::CommandBaseUniqueP
     {
         backend_buffer_reference_ptr = backend_buffer_manager_ptr->acquire_object(frontend_buffer_id,
                                                                                   frontend_buffer_creation_time,
-                                                                                  backend_buffer_manager_ptr->get_tot_buffer_time_marker      (frontend_buffer_id,
-                                                                                                                                               frontend_buffer_creation_time) );
+                                                                                  backend_buffer_manager_ptr->get_tot_buffer_time_marker(frontend_buffer_id,
+                                                                                                                                         frontend_buffer_creation_time) );
 
         vkgl_assert(backend_buffer_reference_ptr != nullptr);
-
-        backend_buffer_props_ptr = &backend_buffer_reference_ptr->get_payload();
     }
 
     /* 2. Spawn the node */
     {
-        OpenGL::VKFrameGraphNodeCreateInfoUniquePtr create_info_ptr(nullptr,
-                                                                    std::default_delete<OpenGL::VKFrameGraphNodeCreateInfo>() );
-
-        create_info_ptr.reset(new OpenGL::VKFrameGraphNodeCreateInfo() );
-        vkgl_assert(create_info_ptr != nullptr);
-
-        create_info_ptr->inputs.push_back(
-            OpenGL::NodeIO(backend_buffer_reference_ptr->clone(),
-                           0, /* in_start_offset */
-                           command_ptr->size)
-
-        );
-        create_info_ptr->outputs.push_back(
-            OpenGL::NodeIO(backend_buffer_reference_ptr->clone(),
-                           0, /* in_start_offset */
-                           command_ptr->size)
-
-        );
-
-        create_info_ptr->command_ptr = std::move(in_command_ptr);
-
-        node_ptr = OpenGL::VKNodes::BufferData::create(std::move(create_info_ptr),
-                                                       m_frontend_ptr,
-                                                       m_backend_ptr);
+        node_ptr = OpenGL::VKNodes::BufferData::create(m_frontend_ptr,
+                                                       m_backend_ptr,
+                                                       std::move(backend_buffer_reference_ptr),
+                                                       std::move(command_ptr->buffer_reference_ptr),
+                                                       std::move(command_ptr->data_ptr) );
     }
 
     /* 3. Submit the node to frame graph manager. */

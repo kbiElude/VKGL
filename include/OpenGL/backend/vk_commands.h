@@ -13,6 +13,7 @@ namespace OpenGL
 {
     enum class CommandType
     {
+        ACQUIRE_SWAPCHAIN_IMAGE,
         BUFFER_DATA,
         BUFFER_SUB_DATA,
         CLEAR,
@@ -82,6 +83,18 @@ namespace OpenGL
     } CommandBase;
 
     typedef std::unique_ptr<CommandBase, std::function<void(CommandBase*) > > CommandBaseUniquePtr;
+
+    struct AcquireSwapchainImageCommand : public CommandBase
+    {
+        OpenGL::VKSwapchainReferenceUniquePtr swapchain_reference_ptr;
+
+        AcquireSwapchainImageCommand(OpenGL::VKSwapchainReferenceUniquePtr in_swapchain_reference_ptr)
+            :CommandBase            (CommandType::ACQUIRE_SWAPCHAIN_IMAGE),
+             swapchain_reference_ptr(std::move(in_swapchain_reference_ptr) )
+        {
+            /* Stub */
+        }
+    };
 
     struct BufferDataCommand : public CommandBase
     {

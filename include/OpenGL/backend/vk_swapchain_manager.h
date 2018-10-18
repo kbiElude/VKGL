@@ -26,8 +26,9 @@ namespace OpenGL
 
         ~VKSwapchainManager();
 
-        VKSwapchainReferenceUniquePtr acquire_swapchain  (const OpenGL::TimeMarker& in_time_marker);
-        OpenGL::TimeMarker            get_tot_time_marker()                                          const;
+        VKSwapchainReferenceUniquePtr acquire_swapchain              (const OpenGL::TimeMarker& in_time_marker);
+        OpenGL::TimeMarker            get_tot_time_marker            ()                                          const;
+        Anvil::SemaphoreUniquePtr     pop_frame_acquisition_semaphore(const OpenGL::TimeMarker& in_time_marker);
 
         void set_swap_interval(const int32_t& in_swap_interval);
 
@@ -43,6 +44,7 @@ namespace OpenGL
         {
             std::vector<Anvil::ImageUniquePtr>     ds_image_ptrs;
             std::vector<Anvil::ImageViewUniquePtr> ds_image_view_ptrs;
+            std::vector<Anvil::SemaphoreUniquePtr> frame_acquisition_semaphore_ptrs;
             Anvil::RenderingSurfaceUniquePtr       rendering_surface_ptr;
             Anvil::SwapchainUniquePtr              swapchain_ptr;
             Anvil::WindowUniquePtr                 window_ptr;
@@ -50,6 +52,7 @@ namespace OpenGL
             InternalSwapchainData(Anvil::RenderingSurfaceUniquePtr        in_rendering_surface_ptr,
                                   Anvil::SwapchainUniquePtr               in_swapchain_ptr,
                                   Anvil::WindowUniquePtr                  in_window_ptr,
+                                  std::vector<Anvil::SemaphoreUniquePtr>& inout_frame_acquisition_semaphore_ptrs,
                                   std::vector<Anvil::ImageUniquePtr>&     inout_ds_image_ptrs,
                                   std::vector<Anvil::ImageViewUniquePtr>& inout_ds_image_view_ptrs)
                 :rendering_surface_ptr(std::move(in_rendering_surface_ptr) ),
@@ -61,8 +64,9 @@ namespace OpenGL
                 vkgl_assert(window_ptr                 != nullptr);
                 vkgl_assert(inout_ds_image_ptrs.size() == inout_ds_image_view_ptrs.size() );
 
-                ds_image_ptrs      = std::move(inout_ds_image_ptrs);
-                ds_image_view_ptrs = std::move(inout_ds_image_view_ptrs);
+                ds_image_ptrs                    = std::move(inout_ds_image_ptrs);
+                ds_image_view_ptrs               = std::move(inout_ds_image_view_ptrs);
+                frame_acquisition_semaphore_ptrs = std::move(inout_frame_acquisition_semaphore_ptrs);
             }
 
             ~InternalSwapchainData()

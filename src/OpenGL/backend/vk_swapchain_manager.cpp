@@ -6,12 +6,14 @@
 #include "Anvil/include/misc/image_create_info.h"
 #include "Anvil/include/misc/image_view_create_info.h"
 #include "Anvil/include/misc/memory_allocator.h"
+#include "Anvil/include/misc/semaphore_create_info.h"
 #include "Anvil/include/misc/swapchain_create_info.h"
 #include "Anvil/include/misc/window_factory.h"
 #include "Anvil/include/wrappers/device.h"
 #include "Anvil/include/wrappers/image.h"
 #include "Anvil/include/wrappers/image_view.h"
 #include "Anvil/include/wrappers/rendering_surface.h"
+#include "Anvil/include/wrappers/semaphore.h"
 #include "Anvil/include/wrappers/swapchain.h"
 #include "OpenGL/backend/vk_backend.h"
 #include "OpenGL/backend/vk_swapchain_manager.h"
@@ -222,6 +224,7 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
     std::vector<Anvil::ImageUniquePtr>     ds_images;
     std::vector<Anvil::ImageViewUniquePtr> ds_image_views;
     auto                                   format_manager_ptr          = m_backend_ptr->get_format_manager_ptr();
+    std::vector<Anvil::SemaphoreUniquePtr> frame_acquire_sems;
     InternalSwapchainDataUniquePtr         internal_swapchain_data_ptr;
     Anvil::RenderingSurfaceUniquePtr       rendering_surface_ptr;
     Anvil::SwapchainUniquePtr              swapchain_ptr;
@@ -330,11 +333,34 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
         }
     }
 
-    /* 5. Pack all the stuff together. */
+    /* 5. Instantiate semaphores we're going to use for frame acquisition purposes.
+     *
+     * NOTE: Yes, semaphores in Vulkan are NOT recyclable. However, Anvil provides a nifty reset method
+     *       which handles the recreation process under the hood. And we get RAII for free.
+     */
+    for (uint32_t n_semaphore = 0;
+                  n_semaphore < m_n_swapchain_images;
+                ++n_semaphore)
+    {
+        auto create_info_ptr = Anvil::SemaphoreCreateInfo::create(device_ptr);
+        auto semaphore_ptr   = Anvil::Semaphore::create          (std::move(create_info_ptr) );
+
+        if (semaphore_ptr == nullptr)
+        {
+            vkgl_assert(semaphore_ptr != nullptr);
+
+            goto end;
+        }
+
+        frame_acquire_sems.push_back(std::move(semaphore_ptr) );
+    }
+
+    /* 6. Pack all the stuff together. */
     internal_swapchain_data_ptr.reset(
         new InternalSwapchainData(std::move(rendering_surface_ptr),
                                   std::move(swapchain_ptr),
                                   std::move(window_ptr),
+                                  frame_acquire_sems,
                                   ds_images,
                                   ds_image_views)
     );

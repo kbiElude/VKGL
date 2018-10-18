@@ -15,58 +15,90 @@ namespace OpenGL
     enum class NodeIOType
     {
         Buffer,
-        Image
+        Image,
+        Swapchain_Image,
+
+        Unknown
     };
 
     typedef struct NodeIO
     {
-        VKBufferReferenceUniquePtr buffer_reference_ptr;
-        // VKImageReferenceUniquePtr image_reference_ptr; - todo
-        const NodeIOType           type;
-
         union
         {
-            struct BufferProps
-            {
-                VkDeviceSize size;
-                VkDeviceSize start_offset;
-
-                BufferProps()
-                {
-                    /* Stub */
-                }
-
-                BufferProps(const VkDeviceSize& in_start_offset,
-                            const VkDeviceSize& in_size)
-                    :size        (in_size),
-                     start_offset(in_start_offset)
-                {
-                    /* Stub */
-                }
-            } buffer_props;
-
-            struct ImageProps
-            {
-                Anvil::ImageSubresourceRange subresource_range;
-
-                ImageProps()
-                {
-                    /* Stub */
-                }
-                ImageProps(const Anvil::ImageSubresourceRange& in_subresource_range)
-                    :subresource_range(subresource_range)
-                {
-                    /* Stub */
-                }
-            } image_props;
+            VKBufferReference*    buffer_reference_ptr;
+            // VKImageReference*  image_reference_ptr; - todo
+            VKSwapchainReference* swapchain_reference_ptr;
         };
 
-        explicit NodeIO(VKBufferReferenceUniquePtr       in_vk_buffer_reference_ptr,
-                        const VkDeviceSize&              in_start_offset,
-                        const VkDeviceSize&              in_size)
+        NodeIOType type;
+
+        struct BufferProps
+        {
+            VkDeviceSize size;
+            VkDeviceSize start_offset;
+
+            BufferProps()
+            {
+                /* Stub */
+            }
+
+            BufferProps(const VkDeviceSize& in_start_offset,
+                        const VkDeviceSize& in_size)
+                :size        (in_size),
+                 start_offset(in_start_offset)
+            {
+                /* Stub */
+            }
+        } buffer_props;
+
+        struct ImageProps
+        {
+            Anvil::ImageSubresourceRange subresource_range;
+
+            ImageProps()
+            {
+                /* Stub */
+            }
+
+            ImageProps(const Anvil::ImageSubresourceRange& in_subresource_range)
+                :subresource_range(subresource_range)
+            {
+                /* Stub */
+            }
+        } image_props;
+
+        struct SwapchainImageProps
+        {
+            Anvil::Semaphore* acquire_sem_ptr;
+            uint32_t          swapchain_image_index;
+
+            SwapchainImageProps()
+                :swapchain_image_index(UINT32_MAX)
+            {
+                /* Stub */
+            }
+
+            SwapchainImageProps(Anvil::Semaphore* in_acquire_sem_ptr,
+                                const uint32_t&   in_swapchain_image_index)
+                :acquire_sem_ptr      (in_acquire_sem_ptr),
+                 swapchain_image_index(in_swapchain_image_index)
+            {
+                /* Stub */
+            }
+        } swapchain_image_props;
+
+        NodeIO()
+            :type(NodeIOType::Unknown)
+        {
+            /* Stub */
+        }
+
+        explicit NodeIO(VKBufferReference*  in_vk_buffer_reference_ptr,
+                        const VkDeviceSize& in_start_offset,
+                        const VkDeviceSize& in_size)
             :buffer_props        (in_start_offset,
                                   in_size),
-             buffer_reference_ptr(std::move(in_vk_buffer_reference_ptr) ),
+             buffer_reference_ptr(in_vk_buffer_reference_ptr),
              type                (NodeIOType::Buffer)
         {
             /* Stub */
@@ -75,26 +107,33 @@ namespace OpenGL
 #if 0
         TODO
 
-        explicit NodeIO(VKImageReferenceUniquePtr           in_vk_image_reference_ptr,
+        explicit NodeIO(VKImageReference*                   in_vk_image_reference_ptr,
                         const Anvil::ImageSubresourceRange& in_subresource_range)
             :image_props        (in_subresource_range),
-             image_reference_ptr(std::move(in_vk_image_reference_ptr) ),
+             image_reference_ptr(in_vk_image_reference_ptr),
              type               (NodeIOType::Image)
         {
             /* Stub */
         }
 #endif
-
-        NodeIO(const NodeIO& in_node_io);
+        explicit NodeIO(VKSwapchainReference* in_vk_swapchain_reference_ptr,
+                        Anvil::Semaphore*     in_acquire_sem_ptr,
+                        const uint32_t&       in_swapchain_image_index)
+            :swapchain_image_props  (in_acquire_sem_ptr,
+                                     in_swapchain_image_index),
+             swapchain_reference_ptr(in_vk_swapchain_reference_ptr),
+             type                   (NodeIOType::Swapchain_Image)
+        {
+            /* Stub */
+        }
     } NodeIO;
 
-    struct VKFrameGraphNodeCreateInfo
+    struct VKFrameGraphNodeInfo
     {
-        OpenGL::CommandBaseUniquePtr command_ptr;
-        std::vector<NodeIO>          inputs;
-        std::vector<NodeIO>          outputs;
+        std::vector<NodeIO> inputs;
+        std::vector<NodeIO> outputs;
     };
-    typedef std::unique_ptr<VKFrameGraphNodeCreateInfo, std::function<void(VKFrameGraphNodeCreateInfo*)> > VKFrameGraphNodeCreateInfoUniquePtr;
+    typedef std::unique_ptr<VKFrameGraphNodeInfo, std::function<void(VKFrameGraphNodeInfo*)> > VKFrameGraphNodeInfoUniquePtr;
 
     class IVKFrameGraphNode
     {
@@ -106,7 +145,7 @@ namespace OpenGL
 
         virtual void do_cpu_prepass() = 0; //< see requires_cpu_prepass(). called from within a random worker thread, make no assumptions.
 
-        virtual const VKFrameGraphNodeCreateInfo* get_create_info_ptr() const = 0;
+        virtual const VKFrameGraphNodeInfo* get_info_ptr() const = 0; //< contents may be altered by do_cpu_prepass() invocations.
 
         virtual bool get_input_access_properties (const uint32_t&                    in_n_input,
                                                   Anvil::PipelineStageFlags*         out_pipeline_stages_ptr,

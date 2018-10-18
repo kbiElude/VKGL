@@ -14,21 +14,40 @@
 #include "OpenGL/frontend/gl_buffer_manager.h"
 
 
-OpenGL::VKNodes::BufferData::BufferData(VKFrameGraphNodeCreateInfoUniquePtr in_create_info_ptr,
-                                        const IContextObjectManagers*       in_frontend_ptr,
-                                        IBackend*                           in_backend_ptr)
-    :m_backend_ptr    (in_backend_ptr),
-     m_create_info_ptr(std::move(in_create_info_ptr) ),
-     m_frontend_ptr   (in_frontend_ptr)
+OpenGL::VKNodes::BufferData::BufferData(const IContextObjectManagers*      in_frontend_ptr,
+                                        IBackend*                          in_backend_ptr,
+                                        OpenGL::VKBufferReferenceUniquePtr in_backend_buffer_reference_ptr,
+                                        OpenGL::GLBufferReferenceUniquePtr in_frontend_buffer_reference_ptr,
+                                        OpenGL::DataUniquePtr              in_opt_data_ptr)
+    :m_backend_ptr                  (in_backend_ptr),
+     m_backend_buffer_reference_ptr (std::move(in_backend_buffer_reference_ptr) ),
+     m_data_ptr                     ((in_opt_data_ptr != nullptr) ? std::move(in_opt_data_ptr) : nullptr),
+     m_frontend_ptr                 (in_frontend_ptr),
+     m_frontend_buffer_reference_ptr(std::move(in_frontend_buffer_reference_ptr) )
 {
-    vkgl_assert(m_create_info_ptr                    != nullptr);
-    vkgl_assert(m_create_info_ptr->command_ptr       != nullptr);
-    vkgl_assert(m_create_info_ptr->command_ptr->type == OpenGL::CommandType::BUFFER_DATA);
-    vkgl_assert(m_frontend_ptr                       != nullptr);
+    const auto size = m_frontend_ptr->get_buffer_manager_ptr()->get_buffer_size(m_frontend_buffer_reference_ptr->get_payload().id,
+                                                                               &m_frontend_buffer_reference_ptr->get_payload().time_marker);
 
-    auto command_ptr = dynamic_cast<const OpenGL::BufferDataCommand*>(m_create_info_ptr->command_ptr.get() );
+    vkgl_assert(m_backend_ptr  != nullptr);
+    vkgl_assert(m_frontend_ptr != nullptr);
+    vkgl_assert(size           != 0);
 
-    m_data_defined = (command_ptr->data_ptr != nullptr);
+    m_info_ptr = decltype(m_info_ptr)(nullptr,
+                                      std::default_delete<OpenGL::VKFrameGraphNodeInfo>() );
+
+    m_info_ptr.reset(new OpenGL::VKFrameGraphNodeInfo() );
+    vkgl_assert(m_info_ptr != nullptr);
+
+    m_info_ptr->inputs.push_back(
+        OpenGL::NodeIO(m_backend_buffer_reference_ptr.get(),
+                       0, /* in_start_offset */
+                       size)
+    );
+    m_info_ptr->outputs.push_back(
+        OpenGL::NodeIO(m_backend_buffer_reference_ptr.get(),
+                       0, /* in_start_offset */
+                       size)
+    );
 }
 
 OpenGL::VKNodes::BufferData::~BufferData()
@@ -94,17 +113,21 @@ end:
     return result;
 }
 
-OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::BufferData::create(VKFrameGraphNodeCreateInfoUniquePtr in_create_info_ptr,
-                                                                      const IContextObjectManagers*       in_frontend_ptr,
-                                                                      IBackend*                           in_backend_ptr)
+OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::BufferData::create(const IContextObjectManagers*      in_frontend_ptr,
+                                                                      OpenGL::IBackend*                  in_backend_ptr,
+                                                                      OpenGL::VKBufferReferenceUniquePtr in_backend_buffer_reference_ptr,
+                                                                      OpenGL::GLBufferReferenceUniquePtr in_frontend_buffer_reference_ptr,
+                                                                      OpenGL::DataUniquePtr              in_opt_data_ptr)
 {
     OpenGL::VKFrameGraphNodeUniquePtr result_ptr(nullptr,
                                                  std::default_delete<OpenGL::IVKFrameGraphNode>() );
 
     result_ptr.reset(
-        new OpenGL::VKNodes::BufferData(std::move(in_create_info_ptr),
-                                        in_frontend_ptr,
-                                        in_backend_ptr)
+        new OpenGL::VKNodes::BufferData(in_frontend_ptr,
+                                        in_backend_ptr,
+                                        std::move(in_backend_buffer_reference_ptr),
+                                        std::move(in_frontend_buffer_reference_ptr),
+                                        std::move(in_opt_data_ptr) )
     );
 
     vkgl_assert(result_ptr != nullptr);
@@ -121,18 +144,17 @@ void OpenGL::VKNodes::BufferData::do_cpu_prepass()
      *       If both hold, we can proceed directly with a data copy, granted new data has been provided. Otherwise, we're also going
      *       to need to make sure both buffer and mem block objects have been created.
      */
-    auto                        backend_buffer_ptr                      = m_create_info_ptr->inputs.at(0).buffer_reference_ptr->get_payload().buffer_ptr;
-    auto                        command_ptr                             = dynamic_cast<const OpenGL::BufferDataCommand*>(m_create_info_ptr->command_ptr.get() );
-    const auto                  frontend_buffer_creation_time           = command_ptr->buffer_reference_ptr->get_payload().object_creation_time;
-    const auto&                 frontend_buffer_id                      = command_ptr->buffer_reference_ptr->get_payload().id;
+    auto                        backend_buffer_ptr                      = m_info_ptr->outputs.at(0).buffer_reference_ptr->get_payload().buffer_ptr;
+    const auto                  frontend_buffer_creation_time           = m_frontend_buffer_reference_ptr->get_payload().object_creation_time;
+    const auto&                 frontend_buffer_id                      = m_frontend_buffer_reference_ptr->get_payload().id;
     uint32_t                    frontend_buffer_n_used_buffer_targets   = 0;
     size_t                      frontend_buffer_size                    = 0;
-    const auto&                 frontend_buffer_snapshot_time           = command_ptr->buffer_reference_ptr->get_payload().time_marker;
+    const auto&                 frontend_buffer_snapshot_time           = m_frontend_buffer_reference_ptr->get_payload().time_marker;
     OpenGL::BufferUsage         frontend_buffer_usage                   = OpenGL::BufferUsage::Unknown;
     const OpenGL::BufferTarget* frontend_buffer_used_buffer_targets_ptr = nullptr;
     auto                        mem_allocator_ptr                       = m_backend_ptr->get_memory_allocator_ptr();
 
-    vkgl_assert(*m_create_info_ptr->inputs.at(0).buffer_reference_ptr == *m_create_info_ptr->outputs.at(0).buffer_reference_ptr);
+    vkgl_assert(*m_info_ptr->inputs.at(0).buffer_reference_ptr == *m_info_ptr->outputs.at(0).buffer_reference_ptr);
 
     /* 1. Retrieve frontend buffer's properties */
     {
@@ -214,11 +236,11 @@ void OpenGL::VKNodes::BufferData::do_cpu_prepass()
      * TODO: Backend should host a pool of staging buffers to reuse. We should not be re-creating these buffers here
      *       all the time.
      */
-    if (command_ptr->data_ptr != nullptr)
+    if (m_data_ptr != nullptr)
     {
         {
             auto create_info_ptr = Anvil::BufferCreateInfo::create_no_alloc(m_backend_ptr->get_device_ptr(),
-                                                                            command_ptr->size,
+                                                                            m_info_ptr->outputs.at(0).buffer_props.size,
                                                                             Anvil::QueueFamilyFlagBits::COMPUTE_BIT | Anvil::QueueFamilyFlagBits::DMA_BIT | Anvil::QueueFamilyFlagBits::GRAPHICS_BIT,
                                                                             Anvil::SharingMode::EXCLUSIVE,
                                                                             Anvil::BufferCreateFlagBits::NONE,
@@ -243,7 +265,7 @@ void OpenGL::VKNodes::BufferData::do_cpu_prepass()
         vkgl_assert_fail();
     }
 
-    if (m_data_defined)
+    if (m_data_ptr != nullptr)
     {
         auto  staging_buffer_mem_block_ptr = m_staging_buffer_ptr->get_memory_block(0);
         void* staging_buffer_raw_ptr       = nullptr;
@@ -251,15 +273,15 @@ void OpenGL::VKNodes::BufferData::do_cpu_prepass()
         vkgl_assert(staging_buffer_mem_block_ptr != nullptr);
 
         if (!staging_buffer_mem_block_ptr->map(0, /* in_start_offset */
-                                               command_ptr->size,
+                                               m_info_ptr->outputs.at(0).buffer_props.size,
                                               &staging_buffer_raw_ptr) )
         {
             vkgl_assert_fail();
         }
 
         memcpy(staging_buffer_raw_ptr,
-               command_ptr->data_ptr.get(),
-               command_ptr->size);
+               m_data_ptr.get(),
+               static_cast<size_t>(m_staging_buffer_ptr->get_create_info_ptr()->get_size()) );
 
         if (!staging_buffer_mem_block_ptr->unmap() )
         {
@@ -292,7 +314,7 @@ bool OpenGL::VKNodes::BufferData::get_input_access_properties(const uint32_t&   
                                                               Anvil::AccessFlags*        out_access_flags_ptr) const
 {
     /* Protect against {R, W}aWs. */
-    if (m_data_defined)
+    if (m_data_ptr != nullptr)
     {
         *out_access_flags_ptr    = Anvil::AccessFlagBits::HOST_WRITE_BIT;
         *out_pipeline_stages_ptr = Anvil::PipelineStageFlagBits::TRANSFER_BIT;
@@ -311,7 +333,7 @@ bool OpenGL::VKNodes::BufferData::get_output_access_properties(const uint32_t&  
                                                                Anvil::PipelineStageFlags* out_pipeline_stages_ptr,
                                                                Anvil::AccessFlags*        out_access_flags_ptr) const
 {
-    if (m_data_defined)
+    if (m_data_ptr != nullptr)
     {
         /* Protect against {R, W}aWs. */
         *out_access_flags_ptr    = Anvil::AccessFlagBits::TRANSFER_WRITE_BIT;
@@ -353,7 +375,7 @@ void OpenGL::VKNodes::BufferData::record_commands(Anvil::CommandBufferBase* in_c
 
     if (m_staging_buffer_ptr != nullptr)
     {
-        auto              backend_buffer_ptr = m_create_info_ptr->inputs.at(0).buffer_reference_ptr->get_payload().buffer_ptr;
+        auto              backend_buffer_ptr = m_info_ptr->inputs.at(0).buffer_reference_ptr->get_payload().buffer_ptr;
         Anvil::BufferCopy copy_region;
 
         copy_region.dst_offset = 0;
@@ -369,11 +391,11 @@ void OpenGL::VKNodes::BufferData::record_commands(Anvil::CommandBufferBase* in_c
 
 bool OpenGL::VKNodes::BufferData::requires_gpu_side_execution() const
 {
-    return m_data_defined;
+    return m_data_ptr != nullptr;
 }
 
 bool OpenGL::VKNodes::BufferData::supports_renderpasses() const
 {
     /* Buffer->buffer copy ops are NOT supported for renderpass usage. */
-    return !m_data_defined;
+    return !(m_data_ptr != nullptr);
 }

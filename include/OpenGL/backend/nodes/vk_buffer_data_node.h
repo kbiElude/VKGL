@@ -16,9 +16,11 @@ namespace OpenGL
         {
         public:
             /* Public functions */
-            static VKFrameGraphNodeUniquePtr create(VKFrameGraphNodeCreateInfoUniquePtr in_create_info_ptr,
-                                                    const IContextObjectManagers*       in_frontend_ptr,
-                                                    IBackend*                           in_backend_ptr);
+            static VKFrameGraphNodeUniquePtr create(const IContextObjectManagers*      in_frontend_ptr,
+                                                    IBackend*                          in_backend_ptr,
+                                                    OpenGL::VKBufferReferenceUniquePtr in_backend_buffer_reference_ptr,
+                                                    OpenGL::GLBufferReferenceUniquePtr in_frontend_buffer_reference_ptr,
+                                                    OpenGL::DataUniquePtr              in_opt_data_ptr);
 
             ~BufferData();
 
@@ -26,9 +28,9 @@ namespace OpenGL
             /* IVKFrameGraphNode */
             void do_cpu_prepass();
 
-            const VKFrameGraphNodeCreateInfo* get_create_info_ptr() const final
+            const VKFrameGraphNodeInfo* get_info_ptr() const final
             {
-                return m_create_info_ptr.get();
+                return m_info_ptr.get();
             }
 
             bool get_input_access_properties (const uint32_t&                    in_n_input,
@@ -67,9 +69,11 @@ namespace OpenGL
 
             /* Private functions */
 
-            BufferData(VKFrameGraphNodeCreateInfoUniquePtr in_create_info_ptr,
-                       const IContextObjectManagers*       in_frontend_ptr,
-                       OpenGL::IBackend*                   in_backend_ptr);
+            BufferData(const IContextObjectManagers*      in_frontend_ptr,
+                       OpenGL::IBackend*                  in_backend_ptr,
+                       OpenGL::VKBufferReferenceUniquePtr in_backend_buffer_reference_ptr,
+                       OpenGL::GLBufferReferenceUniquePtr in_frontend_buffer_reference_ptr,
+                       OpenGL::DataUniquePtr              in_opt_data_ptr);
 
             bool can_buffer_handle_frontend_reqs      (const Anvil::Buffer*        in_buffer_ptr,
                                                        const uint32_t&             in_n_buffer_targets,
@@ -84,11 +88,13 @@ namespace OpenGL
                                                                                    const size_t&               in_size) const;
 
             /* Private variables */
-            IBackend*                           m_backend_ptr;
-            VKFrameGraphNodeCreateInfoUniquePtr m_create_info_ptr;
-            bool                                m_data_defined;
-            const IContextObjectManagers*       m_frontend_ptr;
-            Anvil::BufferUniquePtr              m_staging_buffer_ptr;
+            IBackend*                          m_backend_ptr;
+            OpenGL::VKBufferReferenceUniquePtr m_backend_buffer_reference_ptr;
+            OpenGL::GLBufferReferenceUniquePtr m_frontend_buffer_reference_ptr;
+            VKFrameGraphNodeInfoUniquePtr      m_info_ptr;
+            OpenGL::DataUniquePtr              m_data_ptr;
+            const IContextObjectManagers*      m_frontend_ptr;
+            Anvil::BufferUniquePtr             m_staging_buffer_ptr;
         };
     };
 };
