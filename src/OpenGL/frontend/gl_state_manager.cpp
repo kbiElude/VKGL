@@ -606,6 +606,16 @@ const OpenGL::GLBufferReference* OpenGL::GLStateManager::get_bound_buffer_object
     return state_ptr->indexed_buffer_binding_ptrs.at(IndexedBufferTarget(in_target, in_index) ).reference_ptr.get();
 }
 
+const OpenGL::GLRenderbufferReference* OpenGL::GLStateManager::get_bound_renderbuffer_object() const
+{
+    /* NOTE: There is ALWAYS a renderbuffer binding set up for a GL context. */
+    auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
+
+    vkgl_assert(state_ptr->renderbuffer_reference_ptr != nullptr);
+
+    return state_ptr->renderbuffer_reference_ptr.get();
+}
+
 const OpenGL::GLVAOReference* OpenGL::GLStateManager::get_bound_vertex_array_object() const
 {
     /* NOTE: There is ALWAYS a VAO binding set up for a GL context. */
@@ -1031,6 +1041,19 @@ void OpenGL::GLStateManager::set_bound_program_object(OpenGL::GLProgramReference
     }
 }
 
+void OpenGL::GLStateManager::set_bound_renderbuffer_object(OpenGL::GLRenderbufferReferenceUniquePtr in_renderbuffer_reference_ptr)
+{
+    auto state_ptr = reinterpret_cast<OpenGL::ContextState*>(m_snapshot_manager_ptr->get_rw_tot_snapshot() );
+
+    if ((in_renderbuffer_reference_ptr == nullptr && state_ptr->renderbuffer_reference_ptr != nullptr)                                                                             ||
+        (in_renderbuffer_reference_ptr != nullptr && state_ptr->renderbuffer_reference_ptr == nullptr)                                                                             ||
+        (in_renderbuffer_reference_ptr != nullptr && state_ptr->renderbuffer_reference_ptr != nullptr && *in_renderbuffer_reference_ptr != *state_ptr->renderbuffer_reference_ptr) )
+    {
+        state_ptr->program_reference_ptr = std::move(in_program_binding_ptr);
+
+        m_snapshot_manager_ptr->update_last_modified_time();
+    }
+}
 
 void OpenGL::GLStateManager::set_bound_vertex_array_object(OpenGL::GLVAOReferenceUniquePtr in_vao_binding_ptr)
 {

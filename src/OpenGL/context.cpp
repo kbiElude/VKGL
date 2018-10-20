@@ -9,6 +9,7 @@
 #include "OpenGL/frontend/gl_buffer_manager.h"
 #include "OpenGL/frontend/gl_program_manager.h"
 #include "OpenGL/frontend/gl_reference.h"
+#include "OpenGL/frontend/gl_renderbuffer_manager.h"
 #include "OpenGL/frontend/gl_shader_manager.h"
 #include "OpenGL/frontend/gl_vao_manager.h"
 #include "OpenGL/utils_enum.h"
@@ -453,11 +454,12 @@ OpenGL::Context::~Context()
 {
     m_gl_state_manager_ptr.reset();
 
-    m_gl_buffer_manager_ptr.reset ();
-    m_gl_program_manager_ptr.reset();
-    m_gl_shader_manager_ptr.reset ();
-    m_gl_texture_manager_ptr.reset();
-    m_gl_vao_manager_ptr.reset    ();
+    m_gl_buffer_manager_ptr.reset      ();
+    m_gl_program_manager_ptr.reset     ();
+    m_gl_renderbuffer_manager_ptr.reset();
+    m_gl_shader_manager_ptr.reset      ();
+    m_gl_texture_manager_ptr.reset     ();
+    m_gl_vao_manager_ptr.reset         ();
 
     /* Stub */
 }
@@ -609,7 +611,10 @@ void OpenGL::Context::bind_framebuffer(const OpenGL::FramebufferTarget& in_targe
 void OpenGL::Context::bind_renderbuffer(const OpenGL::RenderbufferTarget& in_target,
                                         const GLuint&                     in_renderbuffer)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_renderbuffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr        != nullptr);
+
+    m_gl_state_manager_ptr->set_bound_renderbuffer_object(m_gl_renderbuffer_manager_ptr->acquire_always_latest_snapshot_reference(in_renderbuffer) );
 }
 
 void OpenGL::Context::bind_texture(const OpenGL::TextureTarget& in_target,
@@ -1234,7 +1239,22 @@ void OpenGL::Context::delete_queries(const GLsizei&  in_n,
 void OpenGL::Context::delete_renderbuffers(const GLsizei& in_n,
                                            const GLuint*  in_renderbuffers_ptr)
 {
-    vkgl_not_implemented();
+    bool result;
+
+    vkgl_assert(m_backend_gl_callbacks_ptr    != nullptr);
+    vkgl_assert(m_gl_renderbuffer_manager_ptr != nullptr);
+
+    result = m_gl_renderbuffer_manager_ptr->delete_ids(in_n,
+                                                       in_renderbuffers_ptr);
+
+    if (!result)
+    {
+        vkgl_assert_fail();
+    }
+
+    m_backend_gl_callbacks_ptr->on_objects_destroyed(OpenGL::ObjectType::Renderbuffer,
+                                                     in_n,
+                                                     in_renderbuffers_ptr);
 }
 
 void OpenGL::Context::delete_shader(const GLuint& in_id)
@@ -1608,7 +1628,19 @@ void OpenGL::Context::gen_queries(const uint32_t& in_n,
 void OpenGL::Context::gen_renderbuffers(const GLsizei& in_n,
                                         GLuint*        out_renderbuffers_ptr)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_renderbuffer_manager_ptr != nullptr);
+
+    if (!m_gl_renderbuffer_manager_ptr->generate_ids(in_n,
+                                                     out_renderbuffers_ptr) )
+    {
+        vkgl_assert_fail();
+    }
+    else
+    {
+        m_backend_gl_callbacks_ptr->on_objects_created(OpenGL::ObjectType::Renderbuffer,
+                                                       in_n,
+                                                       out_renderbuffers_ptr);
+    }
 }
 
 void OpenGL::Context::gen_textures(const GLsizei& in_n,
@@ -2222,7 +2254,17 @@ void OpenGL::Context::get_renderbuffer_property(const OpenGL::RenderbufferTarget
                                                 const OpenGL::GetSetArgumentType&   in_params_type,
                                                 void*                               out_params_ptr) const
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_renderbuffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr        != nullptr);
+
+    const auto renderbuffer_id = m_gl_state_manager_ptr->get_bound_renderbuffer_object()->get_payload().id;
+
+    m_gl_renderbuffer_manager_ptr->get_renderbuffer_property(renderbuffer_id,
+                                                             nullptr, /* in_opt_time_marker_ptr */
+                                                             in_pname,
+                                                             in_params_type,
+                                                             1, /* in_n_args */
+                                                             out_params_ptr);
 }
 
 void OpenGL::Context::get_sample_position(const GLuint& in_index,
@@ -2631,6 +2673,16 @@ bool OpenGL::Context::init()
         goto end;
     }
 
+    /* Set up GL renderbuffer manager */
+    m_gl_renderbuffer_manager_ptr = OpenGL::GLRenderbufferManager::create();
+
+    if (m_gl_renderbuffer_manager_ptr == nullptr)
+    {
+        vkgl_assert(m_gl_renderbuffer_manager_ptr != nullptr);
+
+        goto end;
+
+    }
     /* Set up GL state manager */
     m_gl_state_manager_ptr.reset(
         new OpenGL::GLStateManager(dynamic_cast<IGLLimits*>                                           (m_gl_limits_ptr.get        () ),
@@ -3108,9 +3160,9 @@ bool OpenGL::Context::is_query(const GLuint& in_id) const
 
 bool OpenGL::Context::is_renderbuffer(const GLuint& in_renderbuffer) const
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_renderbuffer_manager_ptr != nullptr);
 
-    return false;
+    return m_gl_renderbuffer_manager_ptr->is_alive_id(in_renderbuffer);
 }
 
 bool OpenGL::Context::is_shader(const GLuint& in_shader) const
@@ -3516,7 +3568,24 @@ void OpenGL::Context::set_renderbuffer_storage(const OpenGL::RenderbufferTarget&
                                                const GLsizei&                    in_width,
                                                const GLsizei&                    in_height)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_backend_gl_callbacks_ptr    != nullptr);
+    vkgl_assert(m_gl_renderbuffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr        != nullptr);
+
+    const auto renderbuffer_id = m_gl_state_manager_ptr->get_bound_renderbuffer_object()->get_payload().id;
+    vkgl_assert(renderbuffer_id != 0);
+
+    m_gl_renderbuffer_manager_ptr->set_renderbuffer_storage(renderbuffer_id,
+                                                           in_internalformat,
+                                                           in_width,
+                                                           in_height,
+                                                           1 /* in_n_samples */);
+
+    m_backend_gl_callbacks_ptr->renderbuffer_storage(renderbuffer_id,
+                                                     in_internalformat,
+                                                     in_width,
+                                                     in_height,
+                                                     1 /* in_n_samples */);
 }
 
 void OpenGL::Context::set_renderbuffer_storage_multisample(const OpenGL::RenderbufferTarget& in_target,
@@ -3525,7 +3594,24 @@ void OpenGL::Context::set_renderbuffer_storage_multisample(const OpenGL::Renderb
                                                            const GLsizei&                    in_width,
                                                            const GLsizei&                    in_height)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_backend_gl_callbacks_ptr    != nullptr);
+    vkgl_assert(m_gl_renderbuffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr        != nullptr);
+
+    const auto renderbuffer_id = m_gl_state_manager_ptr->get_bound_renderbuffer_object()->get_payload().id;
+    vkgl_assert(renderbuffer_id != 0);
+
+    m_gl_renderbuffer_manager_ptr->set_renderbuffer_storage(renderbuffer_id,
+                                                           in_internalformat,
+                                                           in_width,
+                                                           in_height,
+                                                           in_samples);
+
+    m_backend_gl_callbacks_ptr->renderbuffer_storage(renderbuffer_id,
+                                                     in_internalformat,
+                                                     in_width,
+                                                     in_height,
+                                                     in_samples);
 }
 
 void OpenGL::Context::set_sample_coverage(const GLfloat&   in_value,

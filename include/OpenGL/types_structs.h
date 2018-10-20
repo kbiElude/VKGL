@@ -773,6 +773,7 @@ namespace OpenGL
         std::unordered_map<IndexedBufferTarget,  IndexedBufferBinding, IndexedBufferTargetHashFunction> indexed_buffer_binding_ptrs;
         std::unordered_map<OpenGL::BufferTarget, OpenGL::GLBufferReferenceUniquePtr>                    nonindexed_buffer_binding_ptrs;
         OpenGL::GLProgramReferenceUniquePtr                                                             program_reference_ptr;
+        OpenGL::GLRenderbufferReferenceUniquePtr                                                        renderbuffer_reference_ptr;
         std::unordered_map<TextureUnit, OpenGL::TextureUnitStateUniquePtr>                              texture_unit_to_state_ptr_map;
         OpenGL::GLVAOReferenceUniquePtr                                                                 vao_reference_ptr;
 
@@ -793,11 +794,12 @@ namespace OpenGL
         bool        is_program_point_size_enabled;
         PolygonMode polygon_mode;
 
-        explicit ContextState(const IGLObjectManager<GLBufferReferenceUniquePtr>* in_buffer_manager_ptr,
-                              const IGLObjectManager<GLVAOReferenceUniquePtr>*    in_vao_manager_ptr,
-                              const IGLLimits*                                    in_limits_ptr,
-                              const int32_t*                                      in_viewport_ivec4_ptr,
-                              const int32_t*                                      in_scissor_box_ivec4_ptr);
+        explicit ContextState(const IGLObjectManager<GLBufferReferenceUniquePtr>*               in_buffer_manager_ptr,
+                              const IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>* in_renderbuffer_manager_ptr,
+                              const IGLObjectManager<GLVAOReferenceUniquePtr>*                  in_vao_manager_ptr,
+                              const IGLLimits*                                                  in_limits_ptr,
+                              const int32_t*                                                    in_viewport_ivec4_ptr,
+                              const int32_t*                                                    in_scissor_box_ivec4_ptr);
 
         ContextState           (const ContextState& in_context_state);
         ContextState& operator=(const ContextState& in_context_state);

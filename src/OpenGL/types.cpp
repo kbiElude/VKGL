@@ -63,11 +63,12 @@ OpenGL::BufferState::BufferState()
     usage            = OpenGL::BufferUsage::Static_Draw;
 }
 
-OpenGL::ContextState::ContextState(const IGLObjectManager<OpenGL::GLBufferReferenceUniquePtr>* in_buffer_manager_ptr,
-                                   const IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*    in_vao_manager_ptr,
-                                   const IGLLimits*                                            in_limits_ptr,
-                                   const int32_t*                                              in_viewport_ivec4_ptr,
-                                   const int32_t*                                              in_scissor_box_ivec4_ptr)
+OpenGL::ContextState::ContextState(const IGLObjectManager<OpenGL::GLBufferReferenceUniquePtr>*       in_buffer_manager_ptr,
+                                   const IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>* in_renderbuffer_manager_ptr,
+                                   const IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*          in_vao_manager_ptr,
+                                   const IGLLimits*                                                  in_limits_ptr,
+                                   const int32_t*                                                    in_viewport_ivec4_ptr,
+                                   const int32_t*                                                    in_scissor_box_ivec4_ptr)
     :texture_image_units     (in_limits_ptr->get_max_texture_image_units() ),
      user_clip_planes_enabled(in_limits_ptr->get_max_clip_distances     (), false)
 {
@@ -224,8 +225,9 @@ OpenGL::ContextState::ContextState(const IGLObjectManager<OpenGL::GLBufferRefere
         nonindexed_buffer_binding_ptrs[current_nonindexed_target] = in_buffer_manager_ptr->get_default_object_reference();
     }
 
-    /* Set up default VAO binding */
-    vao_reference_ptr = in_vao_manager_ptr->get_default_object_reference();
+    /* Set up default bindings */
+    renderbuffer_reference_ptr = in_renderbuffer_manager_ptr->get_default_object_reference();
+    vao_reference_ptr          = in_vao_manager_ptr->get_default_object_reference         ();
 }
 
 OpenGL::ContextState::ContextState(const OpenGL::ContextState& in_context_state)
@@ -235,11 +237,12 @@ OpenGL::ContextState::ContextState(const OpenGL::ContextState& in_context_state)
 
 OpenGL::ContextState::~ContextState()
 {
-    binding_draw_framebuffer.reset();
-    binding_read_framebuffer.reset();
-    binding_renderbuffer.reset    ();
-    program_reference_ptr.reset   ();
-    vao_reference_ptr.reset       ();
+    binding_draw_framebuffer.reset  ();
+    binding_read_framebuffer.reset  ();
+    binding_renderbuffer.reset      ();
+    program_reference_ptr.reset     ();
+    renderbuffer_reference_ptr.reset();
+    vao_reference_ptr.reset         ();
 
     indexed_buffer_binding_ptrs.clear   ();
     nonindexed_buffer_binding_ptrs.clear();
@@ -249,11 +252,12 @@ OpenGL::ContextState::~ContextState()
 OpenGL::ContextState& OpenGL::ContextState::operator=(const OpenGL::ContextState& in_context_state)
 {
     /* GL references need extra care.. */
-    binding_draw_framebuffer = (in_context_state.binding_draw_framebuffer != nullptr) ? in_context_state.binding_draw_framebuffer->clone() : nullptr;
-    binding_read_framebuffer = (in_context_state.binding_read_framebuffer != nullptr) ? in_context_state.binding_read_framebuffer->clone() : nullptr;
-    binding_renderbuffer     = (in_context_state.binding_renderbuffer     != nullptr) ? in_context_state.binding_renderbuffer->clone    () : nullptr;
-    program_reference_ptr    = (in_context_state.program_reference_ptr    != nullptr) ? in_context_state.program_reference_ptr->clone   () : nullptr;
-    vao_reference_ptr        = (in_context_state.vao_reference_ptr        != nullptr) ? in_context_state.vao_reference_ptr->clone       () : nullptr;
+    binding_draw_framebuffer   = (in_context_state.binding_draw_framebuffer   != nullptr) ? in_context_state.binding_draw_framebuffer->clone  () : nullptr;
+    binding_read_framebuffer   = (in_context_state.binding_read_framebuffer   != nullptr) ? in_context_state.binding_read_framebuffer->clone  () : nullptr;
+    binding_renderbuffer       = (in_context_state.binding_renderbuffer       != nullptr) ? in_context_state.binding_renderbuffer->clone      () : nullptr;
+    program_reference_ptr      = (in_context_state.program_reference_ptr      != nullptr) ? in_context_state.program_reference_ptr->clone     () : nullptr;
+    renderbuffer_reference_ptr = (in_context_state.renderbuffer_reference_ptr != nullptr) ? in_context_state.renderbuffer_reference_ptr->clone() : nullptr;
+    vao_reference_ptr          = (in_context_state.vao_reference_ptr          != nullptr) ? in_context_state.vao_reference_ptr->clone         () : nullptr;
 
     for (const auto& current_nonindexed_buffer_binding : in_context_state.nonindexed_buffer_binding_ptrs)
     {

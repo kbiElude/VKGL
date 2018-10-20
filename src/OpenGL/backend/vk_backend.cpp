@@ -985,6 +985,16 @@ void OpenGL::VKBackend::read_pixels(const int32_t&             in_x,
     vkgl_not_implemented();
 }
 
+void OpenGL::VKBackend::renderbuffer_storage(const GLuint&                 in_id,
+                                             const OpenGL::InternalFormat& in_internalformat,
+                                             const uint32_t&               in_width,
+                                             const uint32_t&               in_height,
+                                             const uint32_t&               in_samples)
+
+{
+    vkgl_not_implemented();
+}
+
 void OpenGL::VKBackend::set_frontend_callback(const OpenGL::IContextObjectManagers* in_callback_ptr)
 {
     vkgl_assert(in_callback_ptr != nullptr);

@@ -34,20 +34,22 @@ namespace OpenGL
 
        const ContextState* get_state(const OpenGL::TimeMarker& in_time_marker = OpenGL::LATEST_SNAPSHOT_AVAILABLE) const;
 
-       const OpenGL::GLBufferReference* get_bound_buffer_object      (const OpenGL::BufferTarget& in_target) const;
-       const OpenGL::GLBufferReference* get_bound_buffer_object      (const OpenGL::BufferTarget& in_target,
-                                                                      const uint32_t&             in_index) const;
-       const OpenGL::GLVAOReference*    get_bound_vertex_array_object() const;
+       const OpenGL::GLBufferReference*       get_bound_buffer_object      (const OpenGL::BufferTarget& in_target) const;
+       const OpenGL::GLBufferReference*       get_bound_buffer_object      (const OpenGL::BufferTarget& in_target,
+                                                                            const uint32_t&             in_index) const;
+       const OpenGL::GLRenderbufferReference* get_bound_renderbuffer_object() const;
+       const OpenGL::GLVAOReference*          get_bound_vertex_array_object() const;
 
-       void set_bound_buffer_object      (const OpenGL::BufferTarget&          in_target,
-                                          OpenGL::GLBufferReferenceUniquePtr   in_buffer_reference_ptr);
-       void set_bound_buffer_object      (const OpenGL::BufferTarget&          in_target,
-                                          const uint32_t&                      in_index,
-                                          OpenGL::GLBufferReferenceUniquePtr   in_buffer_reference_ptr,
-                                          const size_t&                        in_start_offset,
-                                          const size_t&                        in_size);
-       void set_bound_program_object     (OpenGL::GLProgramReferenceUniquePtr  in_program_reference_ptr);
-       void set_bound_vertex_array_object(OpenGL::GLVAOReferenceUniquePtr      in_vao_reference_ptr);
+       void set_bound_buffer_object      (const OpenGL::BufferTarget&              in_target,
+                                          OpenGL::GLBufferReferenceUniquePtr       in_buffer_reference_ptr);
+       void set_bound_buffer_object      (const OpenGL::BufferTarget&              in_target,
+                                          const uint32_t&                          in_index,
+                                          OpenGL::GLBufferReferenceUniquePtr       in_buffer_reference_ptr,
+                                          const size_t&                            in_start_offset,
+                                          const size_t&                            in_size);
+       void set_bound_program_object     (OpenGL::GLProgramReferenceUniquePtr      in_program_reference_ptr);
+       void set_bound_renderbuffer_object(OpenGL::GLRenderbufferReferenceUniquePtr in_renderbuffer_reference_ptr);
+       void set_bound_vertex_array_object(OpenGL::GLVAOReferenceUniquePtr          in_vao_reference_ptr);
 
        void set_active_texture          (const uint32_t&                     in_n_texture_unit);
        void set_blend_color             (const float&                        in_red,

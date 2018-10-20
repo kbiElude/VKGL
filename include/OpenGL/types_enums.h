@@ -860,6 +860,7 @@ namespace OpenGL
     {
         Buffer,
         Program,
+        Renderbuffer,
         Shader,
         Texture,
         Vertex_Array_Object,

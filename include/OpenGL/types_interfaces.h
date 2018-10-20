@@ -124,6 +124,12 @@ namespace OpenGL
                                               const OpenGL::PixelType&       in_type,
                                               void*                          out_pixels_ptr) = 0;
 
+        virtual void renderbuffer_storage(const GLuint&                 in_id,
+                                          const OpenGL::InternalFormat& in_internalformat,
+                                          const uint32_t&               in_width,
+                                          const uint32_t&               in_height,
+                                          const uint32_t&               in_samples) = 0;
+
         virtual void copy_tex_image_1d(const GLuint&                 in_id,
                                        const GLint                   in_level,
                                        const OpenGL::InternalFormat& in_internalformat,
@@ -297,12 +303,13 @@ namespace OpenGL
         }
 
         /* TODO: Replace with per-manager interfaces allowing to acquire references + retrieve object properties. */
-        virtual OpenGL::GLBufferManager*  get_buffer_manager_ptr () const = 0;
-        virtual OpenGL::GLProgramManager* get_program_manager_ptr() const = 0;
-        virtual OpenGL::GLShaderManager*  get_shader_manager_ptr () const = 0;
-        virtual OpenGL::GLStateManager*   get_state_manager_ptr  () const = 0;
-        virtual OpenGL::GLTextureManager* get_texture_manager_ptr() const = 0;
-        virtual OpenGL::GLVAOManager*     get_vao_manager_ptr    () const = 0;
+        virtual OpenGL::GLBufferManager*       get_buffer_manager_ptr      () const = 0;
+        virtual OpenGL::GLProgramManager*      get_program_manager_ptr     () const = 0;
+        virtual OpenGL::GLRenderbufferManager* get_renderbuffer_manager_ptr() const = 0;
+        virtual OpenGL::GLShaderManager*       get_shader_manager_ptr      () const = 0;
+        virtual OpenGL::GLStateManager*        get_state_manager_ptr       () const = 0;
+        virtual OpenGL::GLTextureManager*      get_texture_manager_ptr     () const = 0;
+        virtual OpenGL::GLVAOManager*          get_vao_manager_ptr         () const = 0;
     };
 
     class IGLConstants

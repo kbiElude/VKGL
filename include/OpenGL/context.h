@@ -10,6 +10,7 @@
 #include "OpenGL/frontend/gl_constants.h"
 #include "OpenGL/frontend/gl_limits.h"
 #include "OpenGL/frontend/gl_program_manager.h"
+#include "OpenGL/frontend/gl_renderbuffer_manager.h"
 #include "OpenGL/frontend/gl_shader_manager.h"
 #include "OpenGL/frontend/gl_state_manager.h"
 #include "OpenGL/frontend/gl_texture_manager.h"
@@ -827,6 +828,13 @@ namespace OpenGL
             return m_gl_program_manager_ptr.get();
         }
 
+        OpenGL::GLRenderbufferManager* get_renderbuffer_manager_ptr() const final
+        {
+            vkgl_assert(m_gl_renderbuffer_manager_ptr != nullptr);
+
+            return m_gl_renderbuffer_manager_ptr.get();
+        }
+
         OpenGL::GLShaderManager* get_shader_manager_ptr() const final
         {
             vkgl_assert(m_gl_shader_manager_ptr != nullptr);
@@ -876,14 +884,15 @@ namespace OpenGL
         std::vector<std::string>     m_supported_extensions;
         const VKGL::IWSIContext*     m_wsi_context_ptr;
 
-        GLBufferManagerUniquePtr  m_gl_buffer_manager_ptr;
-        GLConstantsUniquePtr      m_gl_constants_ptr;
-        GLLimitsUniquePtr         m_gl_limits_ptr;
-        GLProgramManagerUniquePtr m_gl_program_manager_ptr;
-        GLShaderManagerUniquePtr  m_gl_shader_manager_ptr;
-        GLStateManagerUniquePtr   m_gl_state_manager_ptr;
-        GLTextureManagerUniquePtr m_gl_texture_manager_ptr;
-        GLVAOManagerUniquePtr     m_gl_vao_manager_ptr;
+        GLBufferManagerUniquePtr       m_gl_buffer_manager_ptr;
+        GLConstantsUniquePtr           m_gl_constants_ptr;
+        GLLimitsUniquePtr              m_gl_limits_ptr;
+        GLProgramManagerUniquePtr      m_gl_program_manager_ptr;
+        GLRenderbufferManagerUniquePtr m_gl_renderbuffer_manager_ptr;
+        GLShaderManagerUniquePtr       m_gl_shader_manager_ptr;
+        GLStateManagerUniquePtr        m_gl_state_manager_ptr;
+        GLTextureManagerUniquePtr      m_gl_texture_manager_ptr;
+        GLVAOManagerUniquePtr          m_gl_vao_manager_ptr;
     };
 }
 

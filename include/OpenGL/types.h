@@ -27,6 +27,7 @@ namespace OpenGL
     class  GLBufferManager;
     class  GLLimits;
     class  GLProgramManager;
+    class  GLRenderbufferManager;
     class  GLShaderManager;
     class  GLStateManager;
     class  GLTextureManager;

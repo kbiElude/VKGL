@@ -231,6 +231,12 @@ namespace OpenGL
                                       const OpenGL::PixelType&       in_type,
                                       void*                          out_pixels_ptr) final;
 
+        void renderbuffer_storage(const GLuint&                 in_id,
+                                  const OpenGL::InternalFormat& in_internalformat,
+                                  const uint32_t&               in_width,
+                                  const uint32_t&               in_height,
+                                  const uint32_t&               in_samples);
+
         void copy_tex_image_1d(const GLuint&                 in_id,
                                const GLint                   in_level,
                                const OpenGL::InternalFormat& in_internalformat,
