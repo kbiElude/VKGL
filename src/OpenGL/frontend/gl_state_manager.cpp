@@ -9,13 +9,15 @@
 #include "OpenGL/utils_enum.h"
 #include <cmath>
 
-OpenGL::GLStateManager::GLStateManager(const IGLLimits*                                            in_limits_ptr,
-                                       const IGLObjectManager<OpenGL::GLBufferReferenceUniquePtr>* in_buffer_manager_ptr,
-                                       const IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*    in_vao_manager_ptr)
-    :m_buffer_manager_ptr(in_buffer_manager_ptr),
-     m_current_error_code(OpenGL::ErrorCode::No_Error),
-     m_limits_ptr        (in_limits_ptr),
-     m_vao_manager_ptr   (in_vao_manager_ptr)
+OpenGL::GLStateManager::GLStateManager(const IGLLimits*                                                  in_limits_ptr,
+                                       const IGLObjectManager<OpenGL::GLBufferReferenceUniquePtr>*       in_buffer_manager_ptr,
+                                       const IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>* in_renderbuffer_manager_ptr,
+                                       const IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*          in_vao_manager_ptr)
+    :m_buffer_manager_ptr      (in_buffer_manager_ptr),
+     m_current_error_code      (OpenGL::ErrorCode::No_Error),
+     m_limits_ptr              (in_limits_ptr),
+     m_renderbuffer_manager_ptr(in_renderbuffer_manager_ptr),
+     m_vao_manager_ptr         (in_vao_manager_ptr)
 {
     /* Initialize snapshot manager.. */
     m_snapshot_manager_ptr.reset(
@@ -77,6 +79,7 @@ std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLStateManager::creat
 
     result_ptr.reset(
         new OpenGL::ContextState(m_buffer_manager_ptr,
+                                 m_renderbuffer_manager_ptr,
                                  m_vao_manager_ptr,
                                  m_limits_ptr,
                                  viewport,
@@ -606,6 +609,25 @@ const OpenGL::GLBufferReference* OpenGL::GLStateManager::get_bound_buffer_object
     return state_ptr->indexed_buffer_binding_ptrs.at(IndexedBufferTarget(in_target, in_index) ).reference_ptr.get();
 }
 
+const OpenGL::GLFramebufferReference* OpenGL::GLStateManager::get_bound_framebuffer_object(const OpenGL::FramebufferTarget& in_target) const
+{
+    const OpenGL::GLFramebufferReference* result_ptr = nullptr;
+    auto                                  state_ptr  = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
+
+    switch (in_target)
+    {
+        case OpenGL::FramebufferTarget::Draw_Framebuffer: result_ptr = state_ptr->draw_framebuffer_reference_ptr.get(); break;
+        case OpenGL::FramebufferTarget::Read_Framebuffer: result_ptr = state_ptr->read_framebuffer_reference_ptr.get(); break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result_ptr;
+}
+
 const OpenGL::GLRenderbufferReference* OpenGL::GLStateManager::get_bound_renderbuffer_object() const
 {
     /* NOTE: There is ALWAYS a renderbuffer binding set up for a GL context. */
@@ -808,7 +830,7 @@ void OpenGL::GLStateManager::init_prop_maps()
         {OpenGL::ContextProperty::Depth_Test,                                 {OpenGL::GetSetArgumentType::Boolean,                       1, offsetof(OpenGL::ContextState, is_depth_test_enabled)} },
         {OpenGL::ContextProperty::Depth_Writemask,                            {OpenGL::GetSetArgumentType::Boolean,                       1, offsetof(OpenGL::ContextState, depth_writemask)} },
         {OpenGL::ContextProperty::Dither,                                     {OpenGL::GetSetArgumentType::Boolean,                       1, offsetof(OpenGL::ContextState, is_dither_enabled)} },
-        {OpenGL::ContextProperty::Draw_Framebuffer_Binding,                   {OpenGL::GetSetArgumentType::Int,                           1, offsetof(OpenGL::ContextState, binding_draw_framebuffer)} },
+        {OpenGL::ContextProperty::Draw_Framebuffer_Binding,                   {OpenGL::GetSetArgumentType::RereferenceObjectIDPtrVKGL,    1, offsetof(OpenGL::ContextState, draw_framebuffer_reference_ptr)} },
         {OpenGL::ContextProperty::Fragment_Shader_Derivative_Hint,            {OpenGL::GetSetArgumentType::HintModeVKGL,                  1, offsetof(OpenGL::ContextState, hint_fragment_shader_derivative)} },
         {OpenGL::ContextProperty::Line_Smooth,                                {OpenGL::GetSetArgumentType::Boolean,                       1, offsetof(OpenGL::ContextState, is_line_smooth_enabled)} },
         {OpenGL::ContextProperty::Line_Smooth_Hint,                           {OpenGL::GetSetArgumentType::HintModeVKGL,                  1, offsetof(OpenGL::ContextState, hint_line_smooth)} },
@@ -826,7 +848,7 @@ void OpenGL::GLStateManager::init_prop_maps()
         {OpenGL::ContextProperty::Primitive_Restart_Index,                    {OpenGL::GetSetArgumentType::Int,                           1, offsetof(OpenGL::ContextState, primitive_restart_index)} },
         {OpenGL::ContextProperty::Program_Point_Size,                         {OpenGL::GetSetArgumentType::Boolean,                       1, offsetof(OpenGL::ContextState, is_program_point_size_enabled)} },
         {OpenGL::ContextProperty::Provoking_Vertex,                           {OpenGL::GetSetArgumentType::ProvokingVertexConventionVKGL, 1, offsetof(OpenGL::ContextState, provoking_vertex)} },
-        {OpenGL::ContextProperty::Read_Framebuffer_Binding,                   {OpenGL::GetSetArgumentType::Int,                           1, offsetof(OpenGL::ContextState, binding_read_framebuffer)} },
+        {OpenGL::ContextProperty::Read_Framebuffer_Binding,                   {OpenGL::GetSetArgumentType::RereferenceObjectIDPtrVKGL,    1, offsetof(OpenGL::ContextState, read_framebuffer_reference_ptr)} },
         // todo {OpenGL::ContextProperty::Sampler_Binding,                            {OpenGL::GetSetArgumentType::, 1, &m_state_ptr->} },
         {OpenGL::ContextProperty::Sample_Coverage_Invert,                     {OpenGL::GetSetArgumentType::Boolean,                       1, offsetof(OpenGL::ContextState, is_sample_coverage_invert_enabled)} },
         {OpenGL::ContextProperty::Sample_Coverage_Value,                      {OpenGL::GetSetArgumentType::Float,                         1, offsetof(OpenGL::ContextState, sample_coverage_value)} },
@@ -1041,6 +1063,21 @@ void OpenGL::GLStateManager::set_bound_program_object(OpenGL::GLProgramReference
     }
 }
 
+void OpenGL::GLStateManager::set_bound_framebuffer_object(const OpenGL::FramebufferTarget&        in_target,
+                                                          OpenGL::GLFramebufferReferenceUniquePtr in_framebuffer_reference_ptr)
+{
+    auto state_ptr = reinterpret_cast<OpenGL::ContextState*>(m_snapshot_manager_ptr->get_rw_tot_snapshot() );
+
+    if ((in_framebuffer_reference_ptr == nullptr && state_ptr->draw_framebuffer_reference_ptr != nullptr)                                                                 ||
+        (in_framebuffer_reference_ptr != nullptr && state_ptr->draw_framebuffer_reference_ptr == nullptr)                                                                 ||
+        (in_framebuffer_reference_ptr != nullptr && state_ptr->draw_framebuffer_reference_ptr != nullptr && *in_framebuffer_reference_ptr != *state_ptr->program_reference_ptr) )
+    {
+        state_ptr->program_reference_ptr = std::move(in_framebuffer_reference_ptr);
+
+        m_snapshot_manager_ptr->update_last_modified_time();
+    }
+}
+
 void OpenGL::GLStateManager::set_bound_renderbuffer_object(OpenGL::GLRenderbufferReferenceUniquePtr in_renderbuffer_reference_ptr)
 {
     auto state_ptr = reinterpret_cast<OpenGL::ContextState*>(m_snapshot_manager_ptr->get_rw_tot_snapshot() );
@@ -1049,7 +1086,7 @@ void OpenGL::GLStateManager::set_bound_renderbuffer_object(OpenGL::GLRenderbuffe
         (in_renderbuffer_reference_ptr != nullptr && state_ptr->renderbuffer_reference_ptr == nullptr)                                                                             ||
         (in_renderbuffer_reference_ptr != nullptr && state_ptr->renderbuffer_reference_ptr != nullptr && *in_renderbuffer_reference_ptr != *state_ptr->renderbuffer_reference_ptr) )
     {
-        state_ptr->program_reference_ptr = std::move(in_program_binding_ptr);
+        state_ptr->program_reference_ptr = std::move(in_renderbuffer_reference_ptr);
 
         m_snapshot_manager_ptr->update_last_modified_time();
     }
@@ -1182,18 +1219,6 @@ void OpenGL::GLStateManager::set_depth_range(const double& in_near,
 
         m_snapshot_manager_ptr->update_last_modified_time();
     }
-}
-
-void OpenGL::GLStateManager::set_draw_buffer(const OpenGL::DrawBuffer& in_draw_buffer)
-{
-    vkgl_not_implemented();
-
-#if 0
-    if (modified)
-    {
-        m_snapshot_manager_ptr->update_last_modified_time();
-    }
-#endif
 }
 
 void OpenGL::GLStateManager::set_front_face_orientation(const OpenGL::FrontFaceOrientation& in_orientation)
@@ -1385,18 +1410,6 @@ void OpenGL::GLStateManager::set_polygon_offset(const float& in_factor,
 
         m_snapshot_manager_ptr->update_last_modified_time();
     }
-}
-
-void OpenGL::GLStateManager::set_read_buffer(const OpenGL::ReadBuffer& in_read_buffer)
-{
-    vkgl_not_implemented();
-
-#if 0
-    if (modified)
-    {
-        m_snapshot_manager_ptr->update_last_modified_time();
-    }
-#endif
 }
 
 void OpenGL::GLStateManager::set_sample_coverage(const float& in_value,

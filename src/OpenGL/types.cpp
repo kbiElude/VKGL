@@ -167,10 +167,6 @@ OpenGL::ContextState::ContextState(const IGLObjectManager<OpenGL::GLBufferRefere
     stencil_writemask_back           = ~0;
     stencil_writemask_front          = ~0;
 
-    binding_draw_framebuffer = 0;
-    binding_read_framebuffer = 0;
-    binding_renderbuffer     = 0;
-
     pack_alignment      = 4;
     pack_image_height   = 0;
     pack_lsb_first      = false;
@@ -237,12 +233,12 @@ OpenGL::ContextState::ContextState(const OpenGL::ContextState& in_context_state)
 
 OpenGL::ContextState::~ContextState()
 {
-    binding_draw_framebuffer.reset  ();
-    binding_read_framebuffer.reset  ();
-    binding_renderbuffer.reset      ();
-    program_reference_ptr.reset     ();
-    renderbuffer_reference_ptr.reset();
-    vao_reference_ptr.reset         ();
+    draw_framebuffer_reference_ptr.reset();
+    read_framebuffer_reference_ptr.reset();
+    renderbuffer_reference_ptr.reset    ();
+    program_reference_ptr.reset         ();
+    renderbuffer_reference_ptr.reset    ();
+    vao_reference_ptr.reset             ();
 
     indexed_buffer_binding_ptrs.clear   ();
     nonindexed_buffer_binding_ptrs.clear();
@@ -252,12 +248,12 @@ OpenGL::ContextState::~ContextState()
 OpenGL::ContextState& OpenGL::ContextState::operator=(const OpenGL::ContextState& in_context_state)
 {
     /* GL references need extra care.. */
-    binding_draw_framebuffer   = (in_context_state.binding_draw_framebuffer   != nullptr) ? in_context_state.binding_draw_framebuffer->clone  () : nullptr;
-    binding_read_framebuffer   = (in_context_state.binding_read_framebuffer   != nullptr) ? in_context_state.binding_read_framebuffer->clone  () : nullptr;
-    binding_renderbuffer       = (in_context_state.binding_renderbuffer       != nullptr) ? in_context_state.binding_renderbuffer->clone      () : nullptr;
-    program_reference_ptr      = (in_context_state.program_reference_ptr      != nullptr) ? in_context_state.program_reference_ptr->clone     () : nullptr;
-    renderbuffer_reference_ptr = (in_context_state.renderbuffer_reference_ptr != nullptr) ? in_context_state.renderbuffer_reference_ptr->clone() : nullptr;
-    vao_reference_ptr          = (in_context_state.vao_reference_ptr          != nullptr) ? in_context_state.vao_reference_ptr->clone         () : nullptr;
+    draw_framebuffer_reference_ptr = (in_context_state.draw_framebuffer_reference_ptr != nullptr) ? in_context_state.draw_framebuffer_reference_ptr->clone() : nullptr;
+    read_framebuffer_reference_ptr = (in_context_state.read_framebuffer_reference_ptr != nullptr) ? in_context_state.read_framebuffer_reference_ptr->clone() : nullptr;
+    renderbuffer_reference_ptr     = (in_context_state.renderbuffer_reference_ptr     != nullptr) ? in_context_state.renderbuffer_reference_ptr->clone    () : nullptr;
+    program_reference_ptr          = (in_context_state.program_reference_ptr          != nullptr) ? in_context_state.program_reference_ptr->clone         () : nullptr;
+    renderbuffer_reference_ptr     = (in_context_state.renderbuffer_reference_ptr     != nullptr) ? in_context_state.renderbuffer_reference_ptr->clone    () : nullptr;
+    vao_reference_ptr              = (in_context_state.vao_reference_ptr              != nullptr) ? in_context_state.vao_reference_ptr->clone             () : nullptr;
 
     for (const auto& current_nonindexed_buffer_binding : in_context_state.nonindexed_buffer_binding_ptrs)
     {
@@ -413,7 +409,6 @@ OpenGL::FramebufferAttachmentPointState::FramebufferAttachmentPointState()
 {
     component_type           = OpenGL::FramebufferAttachmentComponentType::None;
     layered                  = false;
-    name                     = 0;
     size_alpha               = 0;
     size_blue                = 0;
     size_depth               = 0;
@@ -427,15 +422,67 @@ OpenGL::FramebufferAttachmentPointState::FramebufferAttachmentPointState()
     uses_srgb_color_encoding = false;
 }
 
+OpenGL::FramebufferState::FramebufferState()
+{
+    is_doublebuffer  = false;
+    is_stereo        = false;
+    n_sample_buffers = 0;
+    n_samples        = 0;
+    read_buffer      = OpenGL::ReadBuffer::Unknown;
+}
+
 OpenGL::FramebufferState::FramebufferState(const uint32_t& in_n_color_attachments)
     :color_attachments           (in_n_color_attachments),
-     draw_buffer_per_color_output(in_n_color_attachments)
+     draw_buffer_per_color_output(in_n_color_attachments, OpenGL::DrawBuffer::None)
 {
     is_doublebuffer  = false;
     is_stereo        = false;
     n_sample_buffers = 0;
     n_samples        = 1;
-    read_buffer      = 0;
+    read_buffer      = OpenGL::ReadBuffer::None;
+}
+
+OpenGL::FramebufferState& OpenGL::FramebufferState::operator=(const OpenGL::FramebufferState& in_state)
+{
+    color_attachments            = in_state.color_attachments;
+    depth_attachment             = in_state.depth_attachment;
+    draw_buffer_per_color_output = in_state.draw_buffer_per_color_output;
+    is_doublebuffer              = in_state.is_doublebuffer;
+    is_stereo                    = in_state.is_stereo;
+    n_samples                    = in_state.n_samples;
+    n_sample_buffers             = in_state.n_sample_buffers;
+    read_buffer                  = in_state.read_buffer;
+    sample_position              = in_state.sample_position;
+    stencil_attachment           = in_state.stencil_attachment;
+
+    return *this;
+}
+
+OpenGL::FramebufferAttachmentPointState::FramebufferAttachmentPointState(const OpenGL::FramebufferAttachmentPointState& in_state)
+{
+    *this = in_state;
+}
+
+OpenGL::FramebufferAttachmentPointState& OpenGL::FramebufferAttachmentPointState::operator=(const OpenGL::FramebufferAttachmentPointState& in_state)
+{
+    component_type           = in_state.component_type;
+    layered                  = in_state.layered;
+    size_alpha               = in_state.size_alpha;
+    size_blue                = in_state.size_blue;
+    size_depth               = in_state.size_depth;
+    size_green               = in_state.size_green;
+    size_red                 = in_state.size_red;
+    size_stencil             = in_state.size_stencil;
+    texture_cube_map_face    = in_state.texture_cube_map_face;
+    texture_layer            = in_state.texture_layer;
+    texture_level            = in_state.texture_level;
+    type                     = in_state.type;
+    uses_srgb_color_encoding = in_state.uses_srgb_color_encoding;
+
+    renderbuffer_reference_ptr = (in_state.renderbuffer_reference_ptr != nullptr) ? in_state.renderbuffer_reference_ptr->clone() : nullptr;
+    texture_reference_ptr      = (in_state.texture_reference_ptr      != nullptr) ? in_state.texture_reference_ptr->clone     () : nullptr;
+
+    return *this;
 }
 
 OpenGL::IndexedBufferBinding::IndexedBufferBinding(const OpenGL::IndexedBufferBinding& in_binding)

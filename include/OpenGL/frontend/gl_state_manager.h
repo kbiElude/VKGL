@@ -14,9 +14,10 @@ namespace OpenGL
     class GLStateManager : public IStateSnapshotAccessors
     {
     public:
-        GLStateManager(const IGLLimits*        in_limits_ptr,
-                       const IGLObjectManager<GLBufferReferenceUniquePtr>* in_buffer_manager_ptr,
-                       const IGLObjectManager<GLVAOReferenceUniquePtr>*    in_vao_manager_ptr);
+        GLStateManager(const IGLLimits*                                                  in_limits_ptr,
+                       const IGLObjectManager<GLBufferReferenceUniquePtr>*               in_buffer_manager_ptr,
+                       const IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>* in_renderbuffer_manager_ptr,
+                       const IGLObjectManager<GLVAOReferenceUniquePtr>*                  in_vao_manager_ptr);
        ~GLStateManager();
 
        GLContextStateReferenceUniquePtr acquire_current_latest_snapshot_reference();
@@ -34,9 +35,10 @@ namespace OpenGL
 
        const ContextState* get_state(const OpenGL::TimeMarker& in_time_marker = OpenGL::LATEST_SNAPSHOT_AVAILABLE) const;
 
-       const OpenGL::GLBufferReference*       get_bound_buffer_object      (const OpenGL::BufferTarget& in_target) const;
-       const OpenGL::GLBufferReference*       get_bound_buffer_object      (const OpenGL::BufferTarget& in_target,
-                                                                            const uint32_t&             in_index) const;
+       const OpenGL::GLBufferReference*       get_bound_buffer_object      (const OpenGL::BufferTarget&      in_target) const;
+       const OpenGL::GLBufferReference*       get_bound_buffer_object      (const OpenGL::BufferTarget&      in_target,
+                                                                            const uint32_t&                  in_index) const;
+       const OpenGL::GLRenderbufferReference* get_bound_framebuffer_object (const OpenGL::FramebufferTarget& in_target) const;
        const OpenGL::GLRenderbufferReference* get_bound_renderbuffer_object() const;
        const OpenGL::GLVAOReference*          get_bound_vertex_array_object() const;
 
@@ -47,6 +49,8 @@ namespace OpenGL
                                           OpenGL::GLBufferReferenceUniquePtr       in_buffer_reference_ptr,
                                           const size_t&                            in_start_offset,
                                           const size_t&                            in_size);
+       void set_bound_framebuffer_object (const OpenGL::FramebufferTarget&         in_target,
+                                          OpenGL::GLFramebufferReferenceUniquePtr  in_framebuffer_reference_ptr);
        void set_bound_program_object     (OpenGL::GLProgramReferenceUniquePtr      in_program_reference_ptr);
        void set_bound_renderbuffer_object(OpenGL::GLRenderbufferReferenceUniquePtr in_renderbuffer_reference_ptr);
        void set_bound_vertex_array_object(OpenGL::GLVAOReferenceUniquePtr          in_vao_reference_ptr);
@@ -78,7 +82,6 @@ namespace OpenGL
        void set_depth_mask              (const bool&                         in_flag);
        void set_depth_range             (const double&                       in_near,
                                          const double&                       in_far);
-       void set_draw_buffer             (const OpenGL::DrawBuffer&           in_draw_buffer);
        void set_front_face_orientation  (const OpenGL::FrontFaceOrientation& in_orientation);
        void set_hint                    (const OpenGL::HintTarget&           in_target,
                                          const OpenGL::HintMode&             in_mode);
@@ -94,7 +97,6 @@ namespace OpenGL
        void set_polygon_mode            (const OpenGL::PolygonMode&          in_mode);
        void set_polygon_offset          (const float&                        in_factor,
                                          const float&                        in_units);
-       void set_read_buffer             (const OpenGL::ReadBuffer&           in_read_buffer);
        void set_sample_coverage         (const float&                        in_value,
                                          const bool&                         in_invert);
        void set_scissor                 (const int32_t&                      in_x,
@@ -151,6 +153,7 @@ namespace OpenGL
         const IGLObjectManager<GLBufferReferenceUniquePtr>*                                                                                 m_buffer_manager_ptr;
         OpenGL::ErrorCode                                                                                                                   m_current_error_code;
         const IGLLimits* const                                                                                                              m_limits_ptr;
+        const IGLObjectManager<GLRenderbufferReferenceUniquePtr>*                                                                           m_renderbuffer_manager_ptr;
         std::unique_ptr<OpenGL::SnapshotManager<GLContextStateReference, GLContextStateReferenceUniquePtr, OpenGL::GLContextStatePayload> > m_snapshot_manager_ptr;
         const IGLObjectManager<GLVAOReferenceUniquePtr>*                                                                                    m_vao_manager_ptr;
 

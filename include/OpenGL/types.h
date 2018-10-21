@@ -25,6 +25,7 @@ namespace OpenGL
     class  Context;
     struct DispatchTable;
     class  GLBufferManager;
+    class  GLFramebufferManager;
     class  GLLimits;
     class  GLProgramManager;
     class  GLRenderbufferManager;

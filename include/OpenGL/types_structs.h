@@ -486,7 +486,6 @@ namespace OpenGL
     {
         FramebufferAttachmentComponentType component_type;
         bool                               layered;
-        GLuint                             name;
         uint32_t                           size_alpha;
         uint32_t                           size_blue;
         uint32_t                           size_depth;
@@ -499,14 +498,19 @@ namespace OpenGL
         FramebufferAttachmentObjectType    type;
         bool                               uses_srgb_color_encoding;
 
+        OpenGL::GLRenderbufferReferenceUniquePtr renderbuffer_reference_ptr;
+        OpenGL::GLTextureReferenceUniquePtr      texture_reference_ptr;
 
-        FramebufferAttachmentPointState();
+        FramebufferAttachmentPointState           ();
+        FramebufferAttachmentPointState           (const FramebufferAttachmentPointState&);
+        FramebufferAttachmentPointState& operator=(const FramebufferAttachmentPointState&);
+
     } FramebufferAttachmentPointState;
 
     typedef struct FramebufferState
     {
-        std::vector<uint32_t> draw_buffer_per_color_output;
-        uint32_t              read_buffer;
+        std::vector<OpenGL::DrawBuffer> draw_buffer_per_color_output;
+        OpenGL::ReadBuffer              read_buffer;
 
         std::vector<FramebufferAttachmentPointState> color_attachments;
         FramebufferAttachmentPointState              depth_attachment;
@@ -518,7 +522,10 @@ namespace OpenGL
         uint32_t                    n_samples;
         std::vector<SamplePosition> sample_position;
 
-        explicit FramebufferState(const uint32_t& in_n_color_attachments);
+        FramebufferState           ();
+        explicit FramebufferState  (const uint32_t& in_n_color_attachments);
+
+        FramebufferState& operator=(const FramebufferState& in_state);
     } FramebufferState;
 
     typedef struct ProgramState
@@ -749,9 +756,9 @@ namespace OpenGL
         uint32_t stencil_writemask_back;
         uint32_t stencil_writemask_front;
 
-        OpenGL::GLFramebufferReferenceUniquePtr binding_draw_framebuffer;
-        OpenGL::GLFramebufferReferenceUniquePtr binding_read_framebuffer;
-        OpenGL::GLRenderbufferReferenceUniquePtr binding_renderbuffer;
+        OpenGL::GLFramebufferReferenceUniquePtr  draw_framebuffer_reference_ptr;
+        OpenGL::GLFramebufferReferenceUniquePtr  read_framebuffer_reference_ptr;
+        OpenGL::GLRenderbufferReferenceUniquePtr renderbuffer_reference_ptr;
 
         uint32_t pack_alignment;
         uint32_t pack_image_height;
@@ -773,7 +780,6 @@ namespace OpenGL
         std::unordered_map<IndexedBufferTarget,  IndexedBufferBinding, IndexedBufferTargetHashFunction> indexed_buffer_binding_ptrs;
         std::unordered_map<OpenGL::BufferTarget, OpenGL::GLBufferReferenceUniquePtr>                    nonindexed_buffer_binding_ptrs;
         OpenGL::GLProgramReferenceUniquePtr                                                             program_reference_ptr;
-        OpenGL::GLRenderbufferReferenceUniquePtr                                                        renderbuffer_reference_ptr;
         std::unordered_map<TextureUnit, OpenGL::TextureUnitStateUniquePtr>                              texture_unit_to_state_ptr_map;
         OpenGL::GLVAOReferenceUniquePtr                                                                 vao_reference_ptr;
 

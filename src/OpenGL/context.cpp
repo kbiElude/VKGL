@@ -455,6 +455,7 @@ OpenGL::Context::~Context()
     m_gl_state_manager_ptr.reset();
 
     m_gl_buffer_manager_ptr.reset      ();
+    m_gl_framebuffer_manager_ptr.reset ();
     m_gl_program_manager_ptr.reset     ();
     m_gl_renderbuffer_manager_ptr.reset();
     m_gl_shader_manager_ptr.reset      ();
@@ -605,7 +606,11 @@ void OpenGL::Context::bind_frag_data_location(const GLuint& in_program,
 void OpenGL::Context::bind_framebuffer(const OpenGL::FramebufferTarget& in_target,
                                        const GLuint&                    in_framebuffer)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_framebuffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr       != nullptr);
+
+    m_gl_state_manager_ptr->set_bound_framebuffer_object(in_target,
+                                                         m_gl_framebuffer_manager_ptr->acquire_always_latest_snapshot_reference(in_framebuffer) );
 }
 
 void OpenGL::Context::bind_renderbuffer(const OpenGL::RenderbufferTarget& in_target,
@@ -1200,7 +1205,22 @@ void OpenGL::Context::delete_buffers(const GLsizei&  in_n,
 void OpenGL::Context::delete_framebuffers(const GLsizei&  in_n,
                                           const uint32_t* in_framebuffers_ptr)
 {
-    vkgl_not_implemented();
+    bool result;
+
+    vkgl_assert(m_backend_gl_callbacks_ptr   != nullptr);
+    vkgl_assert(m_gl_framebuffer_manager_ptr != nullptr);
+
+    result = m_gl_framebuffer_manager_ptr->delete_ids(in_n,
+                                                      in_framebuffers_ptr);
+
+    if (!result)
+    {
+        vkgl_assert_fail();
+    }
+
+    m_backend_gl_callbacks_ptr->on_objects_destroyed(OpenGL::ObjectType::Framebuffer,
+                                                     in_n,
+                                                     in_framebuffers_ptr);
 }
 
 void OpenGL::Context::delete_program(const GLuint& in_id)
@@ -1532,7 +1552,17 @@ void OpenGL::Context::framebuffer_renderbuffer(const OpenGL::FramebufferTarget& 
                                                const OpenGL::RenderbufferTarget&         in_renderbuffertarget,
                                                const GLuint&                             in_renderbuffer)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_framebuffer_manager_ptr  != nullptr);
+    vkgl_assert(m_gl_renderbuffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr        != nullptr);
+    vkgl_assert(in_renderbuffertarget         == OpenGL::RenderbufferTarget::Renderbuffer);
+
+    const auto bound_fb_id            = m_gl_state_manager_ptr->get_bound_framebuffer_object                    (in_target)->get_payload().id;
+    auto       bound_rb_reference_ptr = m_gl_renderbuffer_manager_ptr->acquire_current_latest_snapshot_reference(in_renderbuffer);
+
+    m_gl_framebuffer_manager_ptr->set_attachment_renderbuffer(bound_fb_id,
+                                                              in_attachment,
+                                                              std::move(bound_rb_reference_ptr) );
 }
 
 void OpenGL::Context::framebuffer_texture(const OpenGL::FramebufferTarget&          in_target,
@@ -1540,7 +1570,17 @@ void OpenGL::Context::framebuffer_texture(const OpenGL::FramebufferTarget&      
                                           const GLuint&                             in_texture,
                                           const GLint&                              in_level)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_framebuffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr       != nullptr);
+    vkgl_assert(m_gl_texture_manager_ptr     != nullptr);
+
+    const auto bound_fb_id                 = m_gl_state_manager_ptr->get_bound_framebuffer_object (in_target)->get_payload().id;
+    auto       bound_texture_reference_ptr = m_gl_texture_manager_ptr->acquire_current_latest_snapshot_reference(in_texture);
+
+    m_gl_framebuffer_manager_ptr->set_attachment_texture(bound_fb_id,
+                                                         in_attachment,
+                                                         std::move(bound_texture_reference_ptr),
+                                                         in_level);
 }
 
 void OpenGL::Context::framebuffer_texture_1D(const OpenGL::FramebufferTarget&          in_target,
@@ -1549,7 +1589,18 @@ void OpenGL::Context::framebuffer_texture_1D(const OpenGL::FramebufferTarget&   
                                              const GLuint&                             in_texture,
                                              const GLint&                              in_level)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_framebuffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr       != nullptr);
+    vkgl_assert(m_gl_texture_manager_ptr     != nullptr);
+    vkgl_assert(in_textarget                 == OpenGL::TextureTarget::_1D);
+
+    const auto bound_fb_id                 = m_gl_state_manager_ptr->get_bound_framebuffer_object               (in_target)->get_payload().id;
+    auto       bound_texture_reference_ptr = m_gl_texture_manager_ptr->acquire_current_latest_snapshot_reference(in_texture);
+
+    m_gl_framebuffer_manager_ptr->set_attachment_texture_1D(bound_fb_id,
+                                                            in_attachment,
+                                                            std::move(bound_texture_reference_ptr),
+                                                            in_level);
 }
 
 void OpenGL::Context::framebuffer_texture_2D(const OpenGL::FramebufferTarget&          in_target,
@@ -1558,7 +1609,18 @@ void OpenGL::Context::framebuffer_texture_2D(const OpenGL::FramebufferTarget&   
                                              const GLuint&                             in_texture,
                                              const GLint&                              in_level)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_framebuffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr       != nullptr);
+    vkgl_assert(m_gl_texture_manager_ptr     != nullptr);
+
+    const auto bound_fb_id                 = m_gl_state_manager_ptr->get_bound_framebuffer_object               (in_target)->get_payload().id;
+    auto       bound_texture_reference_ptr = m_gl_texture_manager_ptr->acquire_current_latest_snapshot_reference(in_texture);
+
+    m_gl_framebuffer_manager_ptr->set_attachment_texture_2D(bound_fb_id,
+                                                            in_attachment,
+                                                            in_textarget,
+                                                            std::move(bound_texture_reference_ptr),
+                                                            in_level);
 }
 
 void OpenGL::Context::framebuffer_texture_3D(const OpenGL::FramebufferTarget&          in_target,
@@ -1568,7 +1630,19 @@ void OpenGL::Context::framebuffer_texture_3D(const OpenGL::FramebufferTarget&   
                                              const GLint&                              in_level,
                                              const GLint&                              in_zoffset)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_framebuffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr       != nullptr);
+    vkgl_assert(m_gl_texture_manager_ptr     != nullptr);
+
+    const auto bound_fb_id                 = m_gl_state_manager_ptr->get_bound_framebuffer_object               (in_target)->get_payload().id;
+    auto       bound_texture_reference_ptr = m_gl_texture_manager_ptr->acquire_current_latest_snapshot_reference(in_texture);
+
+    m_gl_framebuffer_manager_ptr->set_attachment_texture_3D(bound_fb_id,
+                                                            in_attachment,
+                                                            in_textarget,
+                                                            std::move(bound_texture_reference_ptr),
+                                                            in_level,
+                                                            in_zoffset);
 }
 
 void OpenGL::Context::framebuffer_texture_layer(const OpenGL::FramebufferTarget&          in_target,
@@ -1577,7 +1651,18 @@ void OpenGL::Context::framebuffer_texture_layer(const OpenGL::FramebufferTarget&
                                                 const GLint&                              in_level,
                                                 const GLint&                              in_layer)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_framebuffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr       != nullptr);
+    vkgl_assert(m_gl_texture_manager_ptr     != nullptr);
+
+    const auto bound_fb_id                 = m_gl_state_manager_ptr->get_bound_framebuffer_object               (in_target)->get_payload().id;
+    auto       bound_texture_reference_ptr = m_gl_texture_manager_ptr->acquire_current_latest_snapshot_reference(in_texture);
+
+    m_gl_framebuffer_manager_ptr->set_attachment_texture_layer(bound_fb_id,
+                                                               in_attachment,
+                                                               std::move(bound_texture_reference_ptr),
+                                                               in_level,
+                                                               in_layer);
 }
 
 void OpenGL::Context::generate_mipmap(const OpenGL::MipmapGenerationTextureTarget& in_target)
@@ -1606,7 +1691,19 @@ void OpenGL::Context::gen_buffers(const uint32_t& in_n,
 void OpenGL::Context::gen_framebuffers(const GLsizei& in_n,
                                        GLuint*        out_framebuffers_ptr)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_framebuffer_manager_ptr != nullptr);
+
+    if (!m_gl_framebuffer_manager_ptr->generate_ids(in_n,
+                                                    out_framebuffers_ptr) )
+    {
+        vkgl_assert_fail();
+    }
+    else
+    {
+        m_backend_gl_callbacks_ptr->on_objects_created(OpenGL::ObjectType::Framebuffer,
+                                                       in_n,
+                                                       out_framebuffers_ptr);
+    }
 }
 
 void OpenGL::Context::gen_queries(const uint32_t& in_n,
@@ -2683,11 +2780,24 @@ bool OpenGL::Context::init()
         goto end;
 
     }
+
+    /* Set up GL framebuffer manager */
+    m_gl_framebuffer_manager_ptr = OpenGL::GLFramebufferManager::create(m_gl_limits_ptr.get() );
+
+    if (m_gl_framebuffer_manager_ptr == nullptr)
+    {
+        vkgl_assert(m_gl_framebuffer_manager_ptr != nullptr);
+
+        goto end;
+
+    }
+
     /* Set up GL state manager */
     m_gl_state_manager_ptr.reset(
-        new OpenGL::GLStateManager(dynamic_cast<IGLLimits*>                                           (m_gl_limits_ptr.get        () ),
-                                   dynamic_cast<IGLObjectManager<OpenGL::GLBufferReferenceUniquePtr>*>(m_gl_buffer_manager_ptr.get() ),
-                                   dynamic_cast<IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*>   (m_gl_vao_manager_ptr.get   () ) )
+        new OpenGL::GLStateManager(dynamic_cast<IGLLimits*>                                                 (m_gl_limits_ptr.get              () ),
+                                   dynamic_cast<IGLObjectManager<OpenGL::GLBufferReferenceUniquePtr>*>      (m_gl_buffer_manager_ptr.get      () ),
+                                   dynamic_cast<IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>*>(m_gl_renderbuffer_manager_ptr.get() ),
+                                   dynamic_cast<IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*>         (m_gl_vao_manager_ptr.get         () ) )
     );
 
     if (m_gl_state_manager_ptr == nullptr)
@@ -3133,9 +3243,9 @@ bool OpenGL::Context::is_enabled_indexed(const OpenGL::Capability& in_capability
 
 bool OpenGL::Context::is_framebuffer(const GLuint& in_framebuffer) const
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_framebuffer_manager_ptr != nullptr);
 
-    return false;
+    return m_gl_framebuffer_manager_ptr->is_alive_id(in_framebuffer);
 }
 
 bool OpenGL::Context::is_program(const GLuint& in_program) const
@@ -3450,15 +3560,29 @@ void OpenGL::Context::set_depth_range(const double& in_near,
 
 void OpenGL::Context::set_draw_buffer(const OpenGL::DrawBuffer& in_draw_buffer)
 {
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_gl_framebuffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr       != nullptr);
 
-    m_gl_state_manager_ptr->set_draw_buffer(in_draw_buffer);
+    const auto bound_fb_reference_ptr = m_gl_state_manager_ptr->get_bound_framebuffer_object(OpenGL::FramebufferTarget::Draw_Framebuffer);
+    vkgl_assert(bound_fb_reference_ptr != nullptr);
+
+    m_gl_framebuffer_manager_ptr->set_draw_buffers(bound_fb_reference_ptr->get_payload().id,
+                                                   1,
+                                                  &in_draw_buffer);
 }
 
 void OpenGL::Context::set_draw_buffers(const GLsizei&            in_n,
                                        const OpenGL::DrawBuffer* in_bufs_ptr)
 {
-    vkgl_not_implemented();
+    vkgl_assert(m_gl_framebuffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr       != nullptr);
+
+    const auto bound_fb_reference_ptr = m_gl_state_manager_ptr->get_bound_framebuffer_object(OpenGL::FramebufferTarget::Draw_Framebuffer);
+    vkgl_assert(bound_fb_reference_ptr != nullptr);
+
+    m_gl_framebuffer_manager_ptr->set_draw_buffers(bound_fb_reference_ptr->get_payload().id,
+                                                   in_n,
+                                                   in_bufs_ptr);
 }
 
 void OpenGL::Context::set_front_face_orientation(const OpenGL::FrontFaceOrientation& in_orientation)
@@ -3558,9 +3682,14 @@ void OpenGL::Context::set_provoking_vertex(const OpenGL::ProvokingVertexConventi
 
 void OpenGL::Context::set_read_buffer(const OpenGL::ReadBuffer& in_read_buffer)
 {
-    vkgl_assert(m_gl_state_manager_ptr != nullptr);
+    vkgl_assert(m_gl_framebuffer_manager_ptr != nullptr);
+    vkgl_assert(m_gl_state_manager_ptr       != nullptr);
 
-    m_gl_state_manager_ptr->set_read_buffer(in_read_buffer);
+    const auto bound_fb_reference_ptr = m_gl_state_manager_ptr->get_bound_framebuffer_object(OpenGL::FramebufferTarget::Read_Framebuffer);
+    vkgl_assert(bound_fb_reference_ptr != nullptr);
+
+    m_gl_framebuffer_manager_ptr->set_read_buffer(bound_fb_reference_ptr->get_payload().id,
+                                                  in_read_buffer);
 }
 
 void OpenGL::Context::set_renderbuffer_storage(const OpenGL::RenderbufferTarget& in_target,

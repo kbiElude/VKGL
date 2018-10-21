@@ -8,6 +8,7 @@
 #include "Common/types.h"
 #include "OpenGL/frontend/gl_buffer_manager.h"
 #include "OpenGL/frontend/gl_constants.h"
+#include "OpenGL/frontend/gl_framebuffer_manager.h"
 #include "OpenGL/frontend/gl_limits.h"
 #include "OpenGL/frontend/gl_program_manager.h"
 #include "OpenGL/frontend/gl_renderbuffer_manager.h"
@@ -886,6 +887,7 @@ namespace OpenGL
 
         GLBufferManagerUniquePtr       m_gl_buffer_manager_ptr;
         GLConstantsUniquePtr           m_gl_constants_ptr;
+        GLFramebufferManagerUniquePtr  m_gl_framebuffer_manager_ptr;
         GLLimitsUniquePtr              m_gl_limits_ptr;
         GLProgramManagerUniquePtr      m_gl_program_manager_ptr;
         GLRenderbufferManagerUniquePtr m_gl_renderbuffer_manager_ptr;

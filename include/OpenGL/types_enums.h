@@ -568,6 +568,10 @@ namespace OpenGL
         None,
         Renderbuffer,
         Texture,
+        Texture_1D,
+        Texture_2D,
+        Texture_3D,
+        Texture_Layer,
 
         Unknown
     };
@@ -859,6 +863,7 @@ namespace OpenGL
     enum class ObjectType
     {
         Buffer,
+        Framebuffer,
         Program,
         Renderbuffer,
         Shader,
