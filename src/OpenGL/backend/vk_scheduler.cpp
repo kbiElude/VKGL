@@ -6,6 +6,7 @@
 #include "OpenGL/backend/vk_frame_graph.h"
 #include "OpenGL/backend/vk_scheduler.h"
 #include "OpenGL/backend/nodes/vk_buffer_data_node.h"
+#include "OpenGL/backend/nodes/vk_present_swapchain_image_node.h"
 #include "OpenGL/frontend/gl_buffer_manager.h"
 #include "Common/logger.h"
 
@@ -128,9 +129,22 @@ void OpenGL::VKScheduler::main_thread_entrypoint()
                             "VK scheduler thread quitting now.");
 }
 
-void OpenGL::VKScheduler::present()
+void OpenGL::VKScheduler::present(OpenGL::VKSwapchainReferenceUniquePtr in_swapchain_ptr)
 {
-    vkgl_not_implemented();
+    auto                              backend_frame_graph_ptr = m_backend_ptr->get_frame_graph_ptr();
+    OpenGL::VKFrameGraphNodeUniquePtr node_ptr;
+
+    vkgl_assert(in_swapchain_ptr != nullptr);
+
+    /* 1. Spawn the node */
+    {
+        node_ptr = OpenGL::VKNodes::PresentSwapchainImage::create(m_frontend_ptr,
+                                                                  m_backend_ptr,
+                                                                  std::move(in_swapchain_ptr) );
+    }
+
+    /* 2. Submit the node to frame graph manager. */
+    backend_frame_graph_ptr->add_node(std::move(node_ptr) );
 }
 
 void OpenGL::VKScheduler::process_buffer_data_command(OpenGL::CommandBaseUniquePtr in_command_ptr)

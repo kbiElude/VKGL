@@ -69,19 +69,22 @@ namespace OpenGL
 
         struct SwapchainImageProps
         {
-            Anvil::Semaphore* acquire_sem_ptr;
-            uint32_t          swapchain_image_index;
+            Anvil::AccessFlags        access;
+            Anvil::ImageLayout        image_layout; //< for inputs:  layout the image must be in prior node execution;
+                                                    //< for outputs: layout the image is in after node finishes executing.
+            Anvil::PipelineStageFlags pipeline_stages;
 
             SwapchainImageProps()
-                :swapchain_image_index(UINT32_MAX)
             {
                 /* Stub */
             }
 
-            SwapchainImageProps(Anvil::Semaphore* in_acquire_sem_ptr,
-                                const uint32_t&   in_swapchain_image_index)
-                :acquire_sem_ptr      (in_acquire_sem_ptr),
-                 swapchain_image_index(in_swapchain_image_index)
+            SwapchainImageProps(const Anvil::ImageLayout&        in_image_layout,
+                                const Anvil::PipelineStageFlags& in_pipeline_stages,
+                                const Anvil::AccessFlags&        in_access)
+                :access         (in_access),
+                 image_layout   (in_image_layout),
+                 pipeline_stages(in_pipeline_stages)
             {
                 /* Stub */
             }
@@ -116,11 +119,13 @@ namespace OpenGL
             /* Stub */
         }
 #endif
-        explicit NodeIO(VKSwapchainReference* in_vk_swapchain_reference_ptr,
-                        Anvil::Semaphore*     in_acquire_sem_ptr,
-                        const uint32_t&       in_swapchain_image_index)
-            :swapchain_image_props  (in_acquire_sem_ptr,
-                                     in_swapchain_image_index),
+        explicit NodeIO(VKSwapchainReference*            in_vk_swapchain_reference_ptr,
+                        const Anvil::ImageLayout&        in_image_layout,
+                        const Anvil::PipelineStageFlags& in_pipeline_stages,
+                        const Anvil::AccessFlags&        in_access)
+            :swapchain_image_props  (in_image_layout,
+                                     in_pipeline_stages,
+                                     in_access),
              swapchain_reference_ptr(in_vk_swapchain_reference_ptr),
              type                   (NodeIOType::Swapchain_Image)
         {
@@ -132,6 +137,17 @@ namespace OpenGL
     {
         std::vector<NodeIO> inputs;
         std::vector<NodeIO> outputs;
+
+        Anvil::Event*     opt_post_sync_event_ptr;     //< if not null, scheduler will use the event to sync with subsequent nodes
+        Anvil::Fence*     opt_post_sync_fence_ptr;     //< if not null, scheduler will use the fence to sync with subsequent nodes
+        Anvil::Semaphore* opt_post_sync_semaphore_ptr; //< if not null, scheduler will use the sem to sync with subsequent nodes
+
+        VKFrameGraphNodeInfo()
+        {
+            opt_post_sync_event_ptr     = nullptr;
+            opt_post_sync_fence_ptr     = nullptr;
+            opt_post_sync_semaphore_ptr = nullptr;
+        }
     };
     typedef std::unique_ptr<VKFrameGraphNodeInfo, std::function<void(VKFrameGraphNodeInfo*)> > VKFrameGraphNodeInfoUniquePtr;
 
@@ -143,7 +159,9 @@ namespace OpenGL
             /* Stub */
         }
 
-        virtual void do_cpu_prepass() = 0; //< see requires_cpu_prepass(). called from within a random worker thread, make no assumptions.
+        virtual void do_cpu_prepass(IVKFrameGraphNodeCallback* in_callback_ptr) = 0; //< see requires_cpu_prepass(). called from within a random worker thread, make no assumptions.
+
+        virtual void execute_cpu_side(IVKFrameGraphNodeCallback* in_callback_ptr) = 0; //< called from within a random worker thread, make no assumptions. only invoked if requires_cpu_side_execution() returns true.
 
         virtual const VKFrameGraphNodeInfo* get_info_ptr() const = 0; //< contents may be altered by do_cpu_prepass() invocations.
 
@@ -161,8 +179,19 @@ namespace OpenGL
         virtual void record_commands(Anvil::CommandBufferBase* in_cmd_buffer_ptr,
                                      const bool&               in_inside_renderpass) const = 0;
 
+        virtual bool requires_cpu_side_execution       () const = 0;
         virtual bool requires_cpu_prepass              () const = 0; //< true if needs a do_cpu_prepass() invocation prior to cmd buffer recording
         virtual bool requires_gpu_side_execution       () const = 0;
+        virtual bool requires_manual_wait_sem_sync     () const = 0; //< true if node must be provided a list of semaphores required for synchronization.
+                                                                     //< Nodes acknowledge they will wait on the provided sems prior to proceeding with their work.
+                                                                     //<
+                                                                     //< By default, this is handled by the scheduler but certain nodes (eg. present node) may need to handle this on their own.
+                                                                     //<
+                                                                     //< If true, requires_cpu_side_execution() must return true and requires_gpu_side_execution() must return false.
+                                                                     //<
+                                                                     //< If true, the list must be obtained by calling IVKFrameGraphNodeCallback::get_wait_sems() at execute_cpu_side() call time.
+                                                                     //<
+                                                                     //< If false, all necessary sync is performed automatically by the scheduler, using node info exposed by nodes.
         virtual bool supports_primary_command_buffers  () const = 0;
         virtual bool supports_renderpasses             () const = 0;
         virtual bool supports_secondary_command_buffers() const = 0;

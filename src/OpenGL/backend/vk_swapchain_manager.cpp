@@ -226,6 +226,7 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
     auto                                   format_manager_ptr          = m_backend_ptr->get_format_manager_ptr();
     std::vector<Anvil::SemaphoreUniquePtr> frame_acquire_sems;
     InternalSwapchainDataUniquePtr         internal_swapchain_data_ptr;
+    std::vector<Anvil::Queue*>             presentable_queue_ptrs;
     Anvil::RenderingSurfaceUniquePtr       rendering_surface_ptr;
     Anvil::SwapchainUniquePtr              swapchain_ptr;
     Anvil::WindowUniquePtr                 window_ptr;
@@ -234,7 +235,7 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
 
     /* 1. Create a window wrapper for the window handle specified by the app. */
     {
-        window_ptr = Anvil::WindowFactory::create_window(Anvil::WINDOW_PLATFORM_DUMMY,
+        window_ptr = Anvil::WindowFactory::create_window(Anvil::WINDOW_PLATFORM_SYSTEM,
                                                          in_swapchain_props_ptr->window_handle);
 
         if (window_ptr == nullptr)
@@ -355,11 +356,46 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
         frame_acquire_sems.push_back(std::move(semaphore_ptr) );
     }
 
-    /* 6. Pack all the stuff together. */
+    /* 6. Cache all queues which can be used for presentation purposes */
+    {
+        auto                         device_sgpu_ptr                     = dynamic_cast<Anvil::SGPUDevice*>(device_ptr);
+        const std::vector<uint32_t>* presentable_queue_fam_index_vec_ptr = nullptr;
+
+        if (!rendering_surface_ptr->get_queue_families_with_present_support(device_sgpu_ptr->get_physical_device(),
+                                                                           &presentable_queue_fam_index_vec_ptr) )
+        {
+            vkgl_assert_fail();
+
+            goto end;
+        }
+
+        for (const auto& current_queue_fam_index : *presentable_queue_fam_index_vec_ptr)
+        {
+            const auto n_queues = device_ptr->get_n_queues(current_queue_fam_index);
+
+            for (uint32_t n_queue = 0;
+                          n_queue < n_queues;
+                        ++n_queue)
+            {
+                auto current_queue_ptr = device_ptr->get_queue_for_queue_family_index(current_queue_fam_index,
+                                                                                      n_queue);
+
+                vkgl_assert(current_queue_ptr != nullptr);
+                vkgl_assert(std::find(presentable_queue_ptrs.begin(),
+                                      presentable_queue_ptrs.end  (),
+                                      current_queue_ptr)             == presentable_queue_ptrs.end() );
+
+                presentable_queue_ptrs.push_back(current_queue_ptr);
+            }
+        }
+    }
+
+    /* 7. Pack all the stuff together. */
     internal_swapchain_data_ptr.reset(
         new InternalSwapchainData(std::move(rendering_surface_ptr),
                                   std::move(swapchain_ptr),
                                   std::move(window_ptr),
+                                  presentable_queue_ptrs,
                                   frame_acquire_sems,
                                   ds_images,
                                   ds_image_views)
@@ -394,9 +430,8 @@ Anvil::PresentModeKHR OpenGL::VKSwapchainManager::get_present_mode_for_swapchain
     }
     else
     {
-        /* TODO: We do NOT support EXT_swap_control_tear at this point. */
-        vkgl_assert_fail();
-        vkgl_assert     (in_swapchain_props_ptr->swap_interval == -1);
+        /* TODO: We do NOT report support for EXT_swap_control_tear yet. */
+        vkgl_assert(in_swapchain_props_ptr->swap_interval == -1);
 
         result = Anvil::PresentModeKHR::FIFO_RELAXED_KHR;
     }
@@ -435,15 +470,28 @@ end:
     return result;
 }
 
+Anvil::Queue* OpenGL::VKSwapchainManager::get_presentable_queue(const OpenGL::TimeMarker& in_time_marker)
+{
+    auto internal_data_iterator = m_time_marker_to_internal_swapchain_data_map.find(in_time_marker);
+
+    vkgl_assert(internal_data_iterator != m_time_marker_to_internal_swapchain_data_map.end() );
+
+    /* Push the ring buffer start index.. */
+    internal_data_iterator->second->n_last_returned_presentable_queue = (1 + internal_data_iterator->second->n_last_returned_presentable_queue) % internal_data_iterator->second->presentable_queue_ptrs.size();
+
+    /* Return the queue */
+    return internal_data_iterator->second->presentable_queue_ptrs.at(internal_data_iterator->second->n_last_returned_presentable_queue);
+}
+
 Anvil::Format OpenGL::VKSwapchainManager::get_swapchain_format(const SwapchainPropsSnapshot*  in_swapchain_props_ptr,
                                                                const Anvil::RenderingSurface* in_surface_ptr) const
 {
-    Anvil::Format result = Anvil::Format::UNKNOWN;
-
-    /* TODO: For now, stick to RGBA8_UNORM.
+    /* TODO: For now, stick to BGRA8_UNORM.
      *
      *       We should actually be picking a supported format which most closely matches the requested configuration.
      */
+    Anvil::Format result = Anvil::Format::B8G8R8A8_UNORM;
+
     vkgl_assert(m_pixel_format_reqs.n_blue_bits  == 8);
     vkgl_assert(m_pixel_format_reqs.n_green_bits == 8);
     vkgl_assert(m_pixel_format_reqs.n_red_bits   == 8);

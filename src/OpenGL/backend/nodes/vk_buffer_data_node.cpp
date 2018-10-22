@@ -134,7 +134,7 @@ OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::BufferData::create(const ICon
     return result_ptr;
 }
 
-void OpenGL::VKNodes::BufferData::do_cpu_prepass()
+void OpenGL::VKNodes::BufferData::do_cpu_prepass(IVKFrameGraphNodeCallback*)
 {
     /* NOTE: "Buffer data" command drops existing memory storage. For perf reasons, we can skip this step IF
      *

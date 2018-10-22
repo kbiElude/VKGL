@@ -2,8 +2,8 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
-#ifndef VKGL_VK_ACQUIRE_SWAPCHAIN_IMAGE_NODE_H
-#define VKGL_VK_ACQUIRE_SWAPCHAIN_IMAGE_NODE_H
+#ifndef VKGL_VK_PRESENT_SWAPCHAIN_IMAGE_NODE_H
+#define VKGL_VK_PRESENT_SWAPCHAIN_IMAGE_NODE_H
 
 #include "OpenGL/backend/vk_backend.h"
 #include "OpenGL/backend/vk_frame_graph_node.h"
@@ -12,7 +12,7 @@ namespace OpenGL
 {
     namespace VKNodes
     {
-        class AcquireSwapchainImage : public OpenGL::IVKFrameGraphNode
+        class PresentSwapchainImage : public OpenGL::IVKFrameGraphNode
         {
         public:
             /* Public functions */
@@ -20,42 +20,29 @@ namespace OpenGL
                                                     IBackend*                             in_backend_ptr,
                                                     OpenGL::VKSwapchainReferenceUniquePtr in_swapchain_reference_ptr);
 
-            ~AcquireSwapchainImage();
+            ~PresentSwapchainImage();
 
         private:
             /* IVKFrameGraphNode */
-            void do_cpu_prepass(IVKFrameGraphNodeCallback*) final;
-
-            void execute_cpu_side(IVKFrameGraphNodeCallback*) final
+            void do_cpu_prepass(IVKFrameGraphNodeCallback*) final
             {
                 /* Should never be called */
                 vkgl_assert_fail();
             }
+
+            void execute_cpu_side(IVKFrameGraphNodeCallback*) final;
 
             const VKFrameGraphNodeInfo* get_info_ptr() const final
             {
                 return m_info_ptr.get();
             }
 
-            bool get_input_access_properties(const uint32_t&            in_n_input,
-                                             Anvil::PipelineStageFlags* out_pipeline_stages_ptr,
-                                             Anvil::AccessFlags*        out_access_flags_ptr) const final
-            {
-                /* Should never be called */
-                vkgl_assert_fail();
-
-                return false;
-            }
-
+            bool get_input_access_properties (const uint32_t&            in_n_input,
+                                              Anvil::PipelineStageFlags* out_pipeline_stages_ptr,
+                                              Anvil::AccessFlags*        out_access_flags_ptr) const final;
             bool get_output_access_properties(const uint32_t&            in_n_output,
                                               Anvil::PipelineStageFlags* out_pipeline_stages_ptr,
-                                              Anvil::AccessFlags*        out_access_flags_ptr) const final
-            {
-                /* Should never be called */
-                vkgl_assert_fail();
-
-                return false;
-            }
+                                              Anvil::AccessFlags*        out_access_flags_ptr) const final;
 
             void get_supported_queue_families(uint32_t*                          out_n_queue_fams_ptr,
                                               const Anvil::QueueFamilyFlagBits** out_queue_fams_ptr_ptr) const final
@@ -77,15 +64,13 @@ namespace OpenGL
                 vkgl_assert_fail();
             }
 
-            bool requires_cpu_side_execution() const final
+            bool requires_cpu_prepass() const final
             {
-                /* None needed - image acquisition is handled in CPU prepass. */
                 return false;
             }
 
-            bool requires_cpu_prepass() const final
+            bool requires_cpu_side_execution() const final
             {
-                /* Image acquisition is a host-side operation. */
                 return true;
             }
 
@@ -97,10 +82,10 @@ namespace OpenGL
 
             bool requires_manual_wait_sem_sync() const final
             {
-                /* Frame acquisition occurs at the beginning of the frame; no manual sync is needed,
-                 * granted we maintain a set of required color/d/ds/s images per each swapchain image.
+                /* For presentation purposes, we must manually provide the list of semaphores presentation engine must wait upon
+                 * before proceeding.
                  */
-                return false;
+                return true;
             }
 
             bool supports_primary_command_buffers() const final
@@ -129,7 +114,7 @@ namespace OpenGL
 
             /* Private functions */
 
-            AcquireSwapchainImage(const IContextObjectManagers*         in_frontend_ptr,
+            PresentSwapchainImage(const IContextObjectManagers*         in_frontend_ptr,
                                   OpenGL::IBackend*                     in_backend_ptr,
                                   OpenGL::VKSwapchainReferenceUniquePtr in_swapchain_reference_ptr);
 
@@ -138,10 +123,8 @@ namespace OpenGL
             const IContextObjectManagers*         m_frontend_ptr;
             OpenGL::VKFrameGraphNodeInfoUniquePtr m_info_ptr;
             OpenGL::VKSwapchainReferenceUniquePtr m_swapchain_reference_ptr;
-
-            Anvil::SemaphoreUniquePtr             m_frame_acquire_sem_ptr;
         };
     };
 };
 
-#endif /* VKGL_VK_ACQUIRE_SWAPCHAIN_IMAGE_NODE_H */
+#endif /* VKGL_VK_PRESENT_SWAPCHAIN_IMAGE_NODE_H */

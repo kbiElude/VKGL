@@ -476,7 +476,7 @@ bool OpenGL::VKBackend::init()
         goto end;
     }
 
-    m_frame_graph_ptr = OpenGL::VKFrameGraph::create();
+    m_frame_graph_ptr = OpenGL::VKFrameGraph::create(this);
 
     if (m_frame_graph_ptr == nullptr)
     {
@@ -970,8 +970,13 @@ void OpenGL::VKBackend::on_objects_destroyed(const OpenGL::ObjectType& in_object
 
 void OpenGL::VKBackend::present()
 {
+    /* TODO: Is this valid? Should we be using a clone of the reference used at acquisition time instead? */
+    auto swapchain_reference_ptr = m_swapchain_manager_ptr->acquire_swapchain(m_swapchain_manager_ptr->get_tot_time_marker() );
+
+    vkgl_assert(swapchain_reference_ptr != nullptr);
+
     /* Forward the request to the scheduler. */
-    m_scheduler_ptr->present();
+    m_scheduler_ptr->present(std::move(swapchain_reference_ptr) );
 }
 
 void OpenGL::VKBackend::read_pixels(const int32_t&             in_x,

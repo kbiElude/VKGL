@@ -26,7 +26,13 @@ namespace OpenGL
 
         private:
             /* IVKFrameGraphNode */
-            void do_cpu_prepass();
+            void do_cpu_prepass(IVKFrameGraphNodeCallback*);
+
+            void execute_cpu_side(IVKFrameGraphNodeCallback*) final
+            {
+                /* Should never be called */
+                vkgl_assert_fail();
+            }
 
             const VKFrameGraphNodeInfo* get_info_ptr() const final
             {
@@ -47,6 +53,12 @@ namespace OpenGL
             void record_commands(Anvil::CommandBufferBase* in_cmd_buffer_ptr,
                                  const bool&               in_inside_renderpass) const final;
 
+            bool requires_cpu_side_execution() const final
+            {
+                /* None needed */
+                return false;
+            }
+
             bool requires_cpu_prepass() const final
             {
                 /* We might need to do mem block allocation + binding, before we can actually record the commands. */
@@ -54,6 +66,11 @@ namespace OpenGL
             }
 
             bool requires_gpu_side_execution() const final;
+
+            bool requires_manual_wait_sem_sync() const final
+            {
+                return false;
+            }
 
             bool supports_primary_command_buffers() const final
             {

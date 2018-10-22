@@ -441,6 +441,29 @@ namespace OpenGL
         virtual OpenGL::TimeMarker                 get_tot_buffer_time_marker(const GLuint&             in_id,
                                                                               const OpenGL::TimeMarker& in_frontend_object_creation_time) const = 0;
     };
+
+    class IVKFrameGraphNodeCallback
+    {
+    public:
+        virtual ~IVKFrameGraphNodeCallback()
+        {
+            /* Stub */
+        }
+
+        virtual uint32_t          get_acquired_swapchain_image_index() const = 0;
+        virtual Anvil::Semaphore* get_swapchain_image_acquired_sem  () const = 0;
+
+        //< Provides a list of wait semaphores the node must wait on before proceeding with work.
+        //<
+        //< Can only be called by nodes reporting true via IVKFrameGraphNode::requires_manual_wait_sem_sync().
+        //< Otherwise, the function will trigger an assertion failure and fail.
+        virtual bool get_wait_sems(uint32_t*                         out_n_wait_sems_ptr,
+                                   Anvil::Semaphore**                out_wait_sems_ptr_ptr,
+                                   const Anvil::PipelineStageFlags** out_wait_sem_stage_mask_ptr_ptr) = 0;
+
+        virtual void              set_acquired_swapchain_image_index(const uint32_t&   in_index)   = 0;
+        virtual void              set_swapchain_image_acquired_sem  (Anvil::Semaphore* in_sem_ptr) = 0;
+    };
 };
 
 #endif /* VKGL_TYPES_INTERFACES_H */

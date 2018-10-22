@@ -5,6 +5,7 @@
 #ifndef VKGL_VK_SWAPCHAIN_MANAGER_H
 #define VKGL_VK_SWAPCHAIN_MANAGER_H
 
+#include "Common/types.h"
 #include "OpenGL/types.h"
 #include "OpenGL/frontend/snapshot_manager.h"
 
@@ -26,9 +27,15 @@ namespace OpenGL
 
         ~VKSwapchainManager();
 
-        VKSwapchainReferenceUniquePtr acquire_swapchain              (const OpenGL::TimeMarker& in_time_marker);
-        OpenGL::TimeMarker            get_tot_time_marker            ()                                          const;
-        Anvil::SemaphoreUniquePtr     pop_frame_acquisition_semaphore(const OpenGL::TimeMarker& in_time_marker);
+        VKSwapchainReferenceUniquePtr acquire_swapchain               (const OpenGL::TimeMarker& in_time_marker);
+        Anvil::Queue*                 get_presentable_queue           (const OpenGL::TimeMarker& in_time_marker);
+        OpenGL::TimeMarker            get_tot_time_marker             ()                                          const;
+        Anvil::SemaphoreUniquePtr     pop_frame_acquisition_semaphore (const OpenGL::TimeMarker& in_time_marker); //< deleter automatically pushes the sem back to the ring buffer.
+
+        uint32_t get_n_swapchain_images() const
+        {
+            return m_n_swapchain_images;
+        }
 
         void set_swap_interval(const int32_t& in_swap_interval);
 
@@ -45,6 +52,8 @@ namespace OpenGL
             std::vector<Anvil::ImageUniquePtr>     ds_image_ptrs;
             std::vector<Anvil::ImageViewUniquePtr> ds_image_view_ptrs;
             std::vector<Anvil::SemaphoreUniquePtr> frame_acquisition_semaphore_ptrs;
+            uint32_t                               n_last_returned_presentable_queue;
+            std::vector<Anvil::Queue*>             presentable_queue_ptrs;
             Anvil::RenderingSurfaceUniquePtr       rendering_surface_ptr;
             Anvil::SwapchainUniquePtr              swapchain_ptr;
             Anvil::WindowUniquePtr                 window_ptr;
@@ -52,17 +61,21 @@ namespace OpenGL
             InternalSwapchainData(Anvil::RenderingSurfaceUniquePtr        in_rendering_surface_ptr,
                                   Anvil::SwapchainUniquePtr               in_swapchain_ptr,
                                   Anvil::WindowUniquePtr                  in_window_ptr,
+                                  const std::vector<Anvil::Queue*>&       in_presentable_queue_ptrs,
                                   std::vector<Anvil::SemaphoreUniquePtr>& inout_frame_acquisition_semaphore_ptrs,
                                   std::vector<Anvil::ImageUniquePtr>&     inout_ds_image_ptrs,
                                   std::vector<Anvil::ImageViewUniquePtr>& inout_ds_image_view_ptrs)
-                :rendering_surface_ptr(std::move(in_rendering_surface_ptr) ),
-                 swapchain_ptr        (std::move(in_swapchain_ptr) ),
-                 window_ptr           (std::move(in_window_ptr) )
+                :n_last_returned_presentable_queue(0),
+                 presentable_queue_ptrs           (in_presentable_queue_ptrs),
+                 rendering_surface_ptr            (std::move(in_rendering_surface_ptr) ),
+                 swapchain_ptr                    (std::move(in_swapchain_ptr) ),
+                 window_ptr                       (std::move(in_window_ptr) )
             {
-                vkgl_assert(rendering_surface_ptr      != nullptr);
-                vkgl_assert(swapchain_ptr              != nullptr);
-                vkgl_assert(window_ptr                 != nullptr);
-                vkgl_assert(inout_ds_image_ptrs.size() == inout_ds_image_view_ptrs.size() );
+                vkgl_assert(rendering_surface_ptr            != nullptr);
+                vkgl_assert(swapchain_ptr                    != nullptr);
+                vkgl_assert(window_ptr                       != nullptr);
+                vkgl_assert(in_presentable_queue_ptrs.size() != 0);
+                vkgl_assert(inout_ds_image_ptrs.size      () == inout_ds_image_view_ptrs.size() );
 
                 ds_image_ptrs                    = std::move(inout_ds_image_ptrs);
                 ds_image_view_ptrs               = std::move(inout_ds_image_view_ptrs);
@@ -85,7 +98,7 @@ namespace OpenGL
             HWND    window_handle;
 
             SwapchainPropsSnapshot()
-                :swap_interval(INT32_MAX),
+                :swap_interval(0),
                  window_handle(nullptr)
             {
                 /* Stub */
