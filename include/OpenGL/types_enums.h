@@ -545,7 +545,7 @@ namespace OpenGL
         UFloat_UInt,
         UInt,
         UNorm,
-        UNorm_UFloat,
+        UNorm_UInt,
 
         Unknown
     };

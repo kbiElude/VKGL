@@ -35,13 +35,14 @@ Anvil::FormatType OpenGL::VKFormatManager::get_anvil_format_type_for_gl_format_d
 
     switch (in_data_type)
     {
-        case OpenGL::FormatDataType::SFloat: result = Anvil::FormatType::SFLOAT; break;
-        case OpenGL::FormatDataType::SInt:   result = Anvil::FormatType::SINT;   break;
-        case OpenGL::FormatDataType::SNorm:  result = Anvil::FormatType::SNORM;  break;
-        case OpenGL::FormatDataType::SRGB:   result = Anvil::FormatType::SRGB;   break;
-        case OpenGL::FormatDataType::UFloat: result = Anvil::FormatType::UFLOAT; break;
-        case OpenGL::FormatDataType::UInt:   result = Anvil::FormatType::UINT;   break;
-        case OpenGL::FormatDataType::UNorm:  result = Anvil::FormatType::UNORM;  break;
+        case OpenGL::FormatDataType::SFloat:     result = Anvil::FormatType::SFLOAT;     break;
+        case OpenGL::FormatDataType::SInt:       result = Anvil::FormatType::SINT;       break;
+        case OpenGL::FormatDataType::SNorm:      result = Anvil::FormatType::SNORM;      break;
+        case OpenGL::FormatDataType::SRGB:       result = Anvil::FormatType::SRGB;       break;
+        case OpenGL::FormatDataType::UFloat:     result = Anvil::FormatType::UFLOAT;     break;
+        case OpenGL::FormatDataType::UInt:       result = Anvil::FormatType::UINT;       break;
+        case OpenGL::FormatDataType::UNorm:      result = Anvil::FormatType::UNORM;      break;
+        case OpenGL::FormatDataType::UNorm_UInt: result = Anvil::FormatType::UNORM_UINT; break;
 
         default:
         {
@@ -237,10 +238,10 @@ Anvil::Format OpenGL::VKFormatManager::get_best_fit_anvil_format(const OpenGL::I
             goto end;
         }
 
-        if (internal_format_size_ds[0] != 0 ||
-            internal_format_size_ds[1] != 0)
+        if (internal_format_size_ds[0] == 0 &&
+            internal_format_size_ds[1] == 0)
         {
-            /* Internal format is a D/DS/S format */
+            /* Internal format is a color format */
             vkgl_assert(internal_format_size_rgba[0] == 0 &&
                         internal_format_size_rgba[1] == 0 &&
                         internal_format_size_rgba[2] == 0 &&
@@ -251,9 +252,9 @@ Anvil::Format OpenGL::VKFormatManager::get_best_fit_anvil_format(const OpenGL::I
         }
         else
         {
-            /* Internal format is a color format */
-            vkgl_assert(internal_format_size_ds[0] == 0 &&
-                        internal_format_size_ds[1] == 0);
+            /* Internal format is a D/DS/S format */
+            vkgl_assert(internal_format_size_ds[0] != 0 ||
+                        internal_format_size_ds[1] != 0);
 
             input_formats   = ds_formats;
             n_input_formats = sizeof(ds_formats) / sizeof(ds_formats[0]);

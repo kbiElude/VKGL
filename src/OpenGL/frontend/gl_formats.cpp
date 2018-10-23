@@ -142,7 +142,7 @@ static const std::unordered_map<OpenGL::InternalFormat, InternalFormatData> g_gl
     {OpenGL::InternalFormat::Depth_Component24,       InternalFormatData(OpenGL::FormatDataType::UNorm,        1,             0,       0,       0,       0,       24,      0,        0,           false,     false,           true) },
     {OpenGL::InternalFormat::Depth_Component32,       InternalFormatData(OpenGL::FormatDataType::UNorm,        1,             0,       0,       0,       0,       32,      0,        0,           false,     false,           true) },
     {OpenGL::InternalFormat::Depth_Component32_Float, InternalFormatData(OpenGL::FormatDataType::UFloat,       1,             0,       0,       0,       0,       32,      0,        0,           false,     false,           true) },
-    {OpenGL::InternalFormat::Depth24_Stencil8,        InternalFormatData(OpenGL::FormatDataType::UNorm_UFloat, 2,             0,       0,       0,       0,       24,      8,        0,           false,     false,           true) },
+    {OpenGL::InternalFormat::Depth24_Stencil8,        InternalFormatData(OpenGL::FormatDataType::UNorm_UInt,   2,             0,       0,       0,       0,       24,      8,        0,           false,     false,           true) },
     {OpenGL::InternalFormat::Depth32_Float_Stencil8,  InternalFormatData(OpenGL::FormatDataType::UFloat_UInt,  2,             0,       0,       0,       0,       32,      8,        0,           false,     false,           true) },
 
     /* Compressed internal formats */
