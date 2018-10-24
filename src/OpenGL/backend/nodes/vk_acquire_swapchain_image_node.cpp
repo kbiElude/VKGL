@@ -78,6 +78,7 @@ void OpenGL::VKNodes::AcquireSwapchainImage::do_cpu_prepass(IVKFrameGraphNodeCal
         m_frame_acquire_sem_ptr = std::move(frame_acquire_sem_ptr);
 
         m_info_ptr->outputs.at(0) = OpenGL::NodeIO(m_swapchain_reference_ptr.get(),
+                                                   Anvil::ImageAspectFlagBits::COLOR_BIT | Anvil::ImageAspectFlagBits::DEPTH_BIT | Anvil::ImageAspectFlagBits::STENCIL_BIT,
                                                    Anvil::ImageLayout::UNDEFINED,
                                                    Anvil::PipelineStageFlagBits::ALL_COMMANDS_BIT,
                                                    Anvil::AccessFlagBits::NONE);

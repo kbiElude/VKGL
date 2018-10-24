@@ -78,6 +78,14 @@ OpenGL::GLFramebufferManagerUniquePtr OpenGL::GLFramebufferManager::create(const
         result_ptr.reset();
     }
 
+    /* Make sure to set default framebuffer's draw buffer to Back. */
+    {
+        static const OpenGL::DrawBuffer default_fb_draw_buffer = OpenGL::DrawBuffer::Back;
+
+        result_ptr->set_draw_buffers(0, /* in_id */
+                                     1, /* in_n  */
+                                    &default_fb_draw_buffer);
+    }
 end:
     return result_ptr;
 }
@@ -117,6 +125,22 @@ void OpenGL::GLFramebufferManager::get_framebuffer_property(const GLuint&       
                                                             void*                               out_result_ptr) const
 {
     vkgl_not_implemented();
+}
+
+const OpenGL::FramebufferState* OpenGL::GLFramebufferManager::get_framebuffer_state(const GLuint&             in_id,
+                                                                                    const OpenGL::TimeMarker* in_opt_time_marker_ptr) const
+{
+    auto                            fb_ptr     = get_framebuffer_ptr(in_id,
+                                                                     in_opt_time_marker_ptr);
+    const OpenGL::FramebufferState* result_ptr = nullptr;
+
+    vkgl_assert(fb_ptr != nullptr);
+    if (fb_ptr != nullptr)
+    {
+        result_ptr = &fb_ptr->state;
+    }
+
+    return result_ptr;
 }
 
 bool OpenGL::GLFramebufferManager::set_attachment_renderbuffer(const GLuint&                             in_id,

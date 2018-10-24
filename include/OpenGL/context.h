@@ -822,6 +822,13 @@ namespace OpenGL
             return m_gl_buffer_manager_ptr.get();
         }
 
+        OpenGL::GLFramebufferManager* get_framebuffer_manager_ptr() const final
+        {
+            vkgl_assert(m_gl_framebuffer_manager_ptr != nullptr);
+
+            return m_gl_framebuffer_manager_ptr.get();
+        }
+
         OpenGL::GLProgramManager* get_program_manager_ptr() const final
         {
             vkgl_assert(m_gl_program_manager_ptr != nullptr);

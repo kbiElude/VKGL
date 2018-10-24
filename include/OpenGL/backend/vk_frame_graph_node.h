@@ -34,18 +34,24 @@ namespace OpenGL
 
         struct BufferProps
         {
-            VkDeviceSize size;
-            VkDeviceSize start_offset;
+            Anvil::AccessFlags        access;
+            Anvil::PipelineStageFlags pipeline_stages;
+            VkDeviceSize              size;
+            VkDeviceSize              start_offset;
 
             BufferProps()
             {
                 /* Stub */
             }
 
-            BufferProps(const VkDeviceSize& in_start_offset,
-                        const VkDeviceSize& in_size)
-                :size        (in_size),
-                 start_offset(in_start_offset)
+            BufferProps(const VkDeviceSize&              in_start_offset,
+                        const VkDeviceSize&              in_size,
+                        const Anvil::PipelineStageFlags& in_pipeline_stages,
+                        const Anvil::AccessFlags&        in_access)
+                :access         (in_access),
+                 pipeline_stages(in_pipeline_stages),
+                 size           (in_size),
+                 start_offset   (in_start_offset)
             {
                 /* Stub */
             }
@@ -70,6 +76,7 @@ namespace OpenGL
         struct SwapchainImageProps
         {
             Anvil::AccessFlags        access;
+            Anvil::ImageAspectFlags   aspect;
             Anvil::ImageLayout        image_layout; //< for inputs:  layout the image must be in prior node execution;
                                                     //< for outputs: layout the image is in after node finishes executing.
             Anvil::PipelineStageFlags pipeline_stages;
@@ -79,10 +86,12 @@ namespace OpenGL
                 /* Stub */
             }
 
-            SwapchainImageProps(const Anvil::ImageLayout&        in_image_layout,
+            SwapchainImageProps(const Anvil::ImageAspectFlags&   in_aspect,
+                                const Anvil::ImageLayout&        in_image_layout,
                                 const Anvil::PipelineStageFlags& in_pipeline_stages,
                                 const Anvil::AccessFlags&        in_access)
                 :access         (in_access),
+                 aspect         (in_aspect),
                  image_layout   (in_image_layout),
                  pipeline_stages(in_pipeline_stages)
             {
@@ -96,11 +105,15 @@ namespace OpenGL
             /* Stub */
         }
 
-        explicit NodeIO(VKBufferReference*  in_vk_buffer_reference_ptr,
-                        const VkDeviceSize& in_start_offset,
-                        const VkDeviceSize& in_size)
+        explicit NodeIO(VKBufferReference*               in_vk_buffer_reference_ptr,
+                        const VkDeviceSize&              in_start_offset,
+                        const VkDeviceSize&              in_size,
+                        const Anvil::PipelineStageFlags& in_pipeline_stage_mask,
+                        const Anvil::AccessFlags&        in_access_mask)
             :buffer_props        (in_start_offset,
-                                  in_size),
+                                  in_size,
+                                  in_pipeline_stage_mask,
+                                  in_access_mask),
              buffer_reference_ptr(in_vk_buffer_reference_ptr),
              type                (NodeIOType::Buffer)
         {
@@ -120,10 +133,12 @@ namespace OpenGL
         }
 #endif
         explicit NodeIO(VKSwapchainReference*            in_vk_swapchain_reference_ptr,
+                        const Anvil::ImageAspectFlags&   in_aspect,
                         const Anvil::ImageLayout&        in_image_layout,
                         const Anvil::PipelineStageFlags& in_pipeline_stages,
                         const Anvil::AccessFlags&        in_access)
-            :swapchain_image_props  (in_image_layout,
+            :swapchain_image_props  (in_aspect,
+                                     in_image_layout,
                                      in_pipeline_stages,
                                      in_access),
              swapchain_reference_ptr(in_vk_swapchain_reference_ptr),
@@ -165,19 +180,12 @@ namespace OpenGL
 
         virtual const VKFrameGraphNodeInfo* get_info_ptr() const = 0; //< contents may be altered by do_cpu_prepass() invocations.
 
-        virtual bool get_input_access_properties (const uint32_t&                    in_n_input,
-                                                  Anvil::PipelineStageFlags*         out_pipeline_stages_ptr,
-                                                  Anvil::AccessFlags*                out_access_flags_ptr)   const = 0;
-        virtual bool get_output_access_properties(const uint32_t&                    in_n_output,
-                                                  Anvil::PipelineStageFlags*         out_pipeline_stages_ptr,
-                                                  Anvil::AccessFlags*                out_access_flags_ptr)   const = 0;
         virtual void get_supported_queue_families(uint32_t*                          out_n_queue_fams_ptr,
                                                   const Anvil::QueueFamilyFlagBits** out_queue_fams_ptr_ptr) const = 0; //< return in preferred order
 
-        virtual void on_commands_finished_executing_gpu_side() = 0;
-
-        virtual void record_commands(Anvil::CommandBufferBase* in_cmd_buffer_ptr,
-                                     const bool&               in_inside_renderpass) const = 0;
+        virtual void record_commands(Anvil::CommandBufferBase*  in_cmd_buffer_ptr,
+                                     const bool&                in_inside_renderpass,
+                                     IVKFrameGraphNodeCallback* in_graph_callback_ptr) const = 0;
 
         virtual bool requires_cpu_side_execution       () const = 0;
         virtual bool requires_cpu_prepass              () const = 0; //< true if needs a do_cpu_prepass() invocation prior to cmd buffer recording

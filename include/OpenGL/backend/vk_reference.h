@@ -46,6 +46,40 @@ namespace OpenGL
         }
     } VKBufferPayload;
 
+    typedef struct VKImagePayload
+    {
+        OpenGL::TimeMarker  backend_buffer_creation_time_marker;
+        Anvil::Image*       image_ptr;
+        OpenGL::TimeMarker  frontend_object_creation_time_marker;
+        GLuint              id;
+
+        const VKImagePayload(const GLuint&              in_id,
+                              const OpenGL::TimeMarker& in_frontend_object_creation_time_marker,
+                              Anvil::Image*             in_image_ptr,
+                              const OpenGL::TimeMarker& in_backend_buffer_creation_time_marker)
+           :backend_buffer_creation_time_marker (in_backend_buffer_creation_time_marker),
+            image_ptr                           (in_image_ptr),
+            frontend_object_creation_time_marker(in_frontend_object_creation_time_marker),
+            id                                  (in_id)
+        {
+            /* Stub */
+        }
+
+        bool operator==(const VKImagePayload& in_ref) const
+        {
+            return (id                                     == in_ref.id                                     &&
+                    backend_buffer_creation_time_marker    == in_ref.backend_buffer_creation_time_marker    &&
+                    frontend_object_creation_time_marker   == in_ref.frontend_object_creation_time_marker);
+        }
+
+        bool operator!=(const VKImagePayload& in_ref) const
+        {
+            return (id                                     != in_ref.id                                     ||
+                    backend_buffer_creation_time_marker    != in_ref.backend_buffer_creation_time_marker    ||
+                    frontend_object_creation_time_marker   != in_ref.frontend_object_creation_time_marker);
+        }
+    } VKImagePayload;
+
     typedef struct VKSwapchainPayload
     {
         Anvil::Swapchain*   swapchain_ptr;
@@ -55,7 +89,6 @@ namespace OpenGL
                                  const OpenGL::TimeMarker& in_time_marker)
            :swapchain_ptr(in_swapchain_ptr),
             time_marker  (in_time_marker)
-            
         {
             /* Stub */
         }
@@ -72,6 +105,7 @@ namespace OpenGL
     } VKSwapchainPayload;
 
     typedef ReferenceBase<VKBufferPayload>    VKBufferReference;
+    typedef ReferenceBase<VKImagePayload>     VKImageReference;
     typedef ReferenceBase<VKSwapchainPayload> VKSwapchainReference;
 }
 

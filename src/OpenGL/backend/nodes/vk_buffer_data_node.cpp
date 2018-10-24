@@ -38,16 +38,31 @@ OpenGL::VKNodes::BufferData::BufferData(const IContextObjectManagers*      in_fr
     m_info_ptr.reset(new OpenGL::VKFrameGraphNodeInfo() );
     vkgl_assert(m_info_ptr != nullptr);
 
-    m_info_ptr->inputs.push_back(
-        OpenGL::NodeIO(m_backend_buffer_reference_ptr.get(),
-                       0, /* in_start_offset */
-                       size)
-    );
-    m_info_ptr->outputs.push_back(
-        OpenGL::NodeIO(m_backend_buffer_reference_ptr.get(),
-                       0, /* in_start_offset */
-                       size)
-    );
+    {
+        const Anvil::AccessFlags        input_access          = (m_data_ptr != nullptr) ? Anvil::AccessFlagBits::HOST_WRITE_BIT      : Anvil::AccessFlagBits::NONE;
+        const Anvil::PipelineStageFlags input_pipeline_stages = (m_data_ptr != nullptr) ? Anvil::PipelineStageFlagBits::TRANSFER_BIT : Anvil::PipelineStageFlagBits::NONE;
+
+        m_info_ptr->inputs.push_back(
+            OpenGL::NodeIO(m_backend_buffer_reference_ptr.get(),
+                           0, /* in_start_offset */
+                           size,
+                           input_pipeline_stages,
+                           input_access)
+        );
+    }
+
+    {
+        const Anvil::AccessFlags        output_access          = (m_data_ptr != nullptr) ? Anvil::AccessFlagBits::TRANSFER_WRITE_BIT  : Anvil::AccessFlagBits::NONE;
+        const Anvil::PipelineStageFlags output_pipeline_stages = (m_data_ptr != nullptr) ? Anvil::PipelineStageFlagBits::TRANSFER_BIT : Anvil::PipelineStageFlagBits::NONE;
+
+        m_info_ptr->outputs.push_back(
+            OpenGL::NodeIO(m_backend_buffer_reference_ptr.get(),
+                           0, /* in_start_offset */
+                           size,
+                           output_pipeline_stages,
+                           output_access)
+        );
+    }
 }
 
 OpenGL::VKNodes::BufferData::~BufferData()
@@ -309,46 +324,6 @@ Anvil::BufferCreateInfoUniquePtr OpenGL::VKNodes::BufferData::get_buffer_create_
     return result_ptr;
 }
 
-bool OpenGL::VKNodes::BufferData::get_input_access_properties(const uint32_t&            in_n_input,
-                                                              Anvil::PipelineStageFlags* out_pipeline_stages_ptr,
-                                                              Anvil::AccessFlags*        out_access_flags_ptr) const
-{
-    /* Protect against {R, W}aWs. */
-    if (m_data_ptr != nullptr)
-    {
-        *out_access_flags_ptr    = Anvil::AccessFlagBits::HOST_WRITE_BIT;
-        *out_pipeline_stages_ptr = Anvil::PipelineStageFlagBits::TRANSFER_BIT;
-    }
-    else
-    {
-        *out_access_flags_ptr    = Anvil::AccessFlagBits::NONE;
-        *out_pipeline_stages_ptr = Anvil::PipelineStageFlagBits::NONE;
-    }
-
-    vkgl_assert(in_n_input == 0);
-    return (in_n_input == 0);
-}
-
-bool OpenGL::VKNodes::BufferData::get_output_access_properties(const uint32_t&            in_n_output,
-                                                               Anvil::PipelineStageFlags* out_pipeline_stages_ptr,
-                                                               Anvil::AccessFlags*        out_access_flags_ptr) const
-{
-    if (m_data_ptr != nullptr)
-    {
-        /* Protect against {R, W}aWs. */
-        *out_access_flags_ptr    = Anvil::AccessFlagBits::TRANSFER_WRITE_BIT;
-        *out_pipeline_stages_ptr = Anvil::PipelineStageFlagBits::TRANSFER_BIT;
-    }
-    else
-    {
-        *out_access_flags_ptr    = Anvil::AccessFlagBits::NONE;
-        *out_pipeline_stages_ptr = Anvil::PipelineStageFlagBits::NONE;
-    }
-
-    vkgl_assert(in_n_output == 0);
-    return (in_n_output == 0);
-}
-
 void OpenGL::VKNodes::BufferData::get_supported_queue_families(uint32_t*                          out_n_queue_fams_ptr,
                                                                const Anvil::QueueFamilyFlagBits** out_queue_fams_ptr_ptr) const
 {
@@ -363,13 +338,9 @@ void OpenGL::VKNodes::BufferData::get_supported_queue_families(uint32_t*        
     *out_queue_fams_ptr_ptr = compatible_queue_fams;
 }
 
-void OpenGL::VKNodes::BufferData::on_commands_finished_executing_gpu_side()
-{
-    m_staging_buffer_ptr.reset();
-}
-
-void OpenGL::VKNodes::BufferData::record_commands(Anvil::CommandBufferBase* in_cmd_buffer_ptr,
-                                                  const bool&               in_inside_renderpass) const
+void OpenGL::VKNodes::BufferData::record_commands(Anvil::CommandBufferBase*  in_cmd_buffer_ptr,
+                                                  const bool&                in_inside_renderpass,
+                                                  IVKFrameGraphNodeCallback* in_graph_callback_ptr) const
 {
     auto command_ptr = dynamic_cast<const OpenGL::BufferDataCommand*>(in_cmd_buffer_ptr);
 

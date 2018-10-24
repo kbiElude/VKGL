@@ -29,6 +29,7 @@ OpenGL::VKNodes::PresentSwapchainImage::PresentSwapchainImage(const IContextObje
     m_info_ptr->inputs.resize(1);
 
     m_info_ptr->inputs.at(0) = OpenGL::NodeIO(m_swapchain_reference_ptr.get(),
+                                              Anvil::ImageAspectFlagBits::COLOR_BIT,
                                               Anvil::ImageLayout::PRESENT_SRC_KHR,
                                               Anvil::PipelineStageFlagBits::BOTTOM_OF_PIPE_BIT,
                                               Anvil::AccessFlagBits::NONE);
@@ -90,22 +91,4 @@ void OpenGL::VKNodes::PresentSwapchainImage::execute_cpu_side(IVKFrameGraphNodeC
     /* Mark the swapchain image as presented */
     in_callback_ptr->set_acquired_swapchain_image_index(UINT32_MAX);
     in_callback_ptr->set_swapchain_image_acquired_sem  (nullptr);
-}
-
-bool OpenGL::VKNodes::PresentSwapchainImage::get_input_access_properties(const uint32_t&            in_n_input,
-                                                                         Anvil::PipelineStageFlags* out_pipeline_stages_ptr,
-                                                                         Anvil::AccessFlags*        out_access_flags_ptr) const
-{
-    vkgl_not_implemented();
-
-    return false;
-}
-
-bool OpenGL::VKNodes::PresentSwapchainImage::get_output_access_properties(const uint32_t&            in_n_output,
-                                                                          Anvil::PipelineStageFlags* out_pipeline_stages_ptr,
-                                                                          Anvil::AccessFlags*        out_access_flags_ptr) const
-{
-    vkgl_not_implemented();
-
-    return false;
 }

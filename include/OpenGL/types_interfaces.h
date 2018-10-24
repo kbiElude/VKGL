@@ -304,6 +304,7 @@ namespace OpenGL
 
         /* TODO: Replace with per-manager interfaces allowing to acquire references + retrieve object properties. */
         virtual OpenGL::GLBufferManager*       get_buffer_manager_ptr      () const = 0;
+        virtual OpenGL::GLFramebufferManager*  get_framebuffer_manager_ptr () const = 0;
         virtual OpenGL::GLProgramManager*      get_program_manager_ptr     () const = 0;
         virtual OpenGL::GLRenderbufferManager* get_renderbuffer_manager_ptr() const = 0;
         virtual OpenGL::GLShaderManager*       get_shader_manager_ptr      () const = 0;

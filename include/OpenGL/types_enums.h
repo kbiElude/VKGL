@@ -591,6 +591,7 @@ namespace OpenGL
         Stencil_Attachment,
 
         Unknown,
+        Count = Unknown,
     };
 
     enum class FramebufferAttachmentProperty

@@ -21,12 +21,14 @@ namespace OpenGL
 
         ~GLFramebufferManager();
 
-        void get_framebuffer_property(const GLuint&                       in_id,
-                                      const OpenGL::TimeMarker*           in_opt_time_marker_ptr,
-                                      const OpenGL::RenderbufferProperty& in_pname,
-                                      const OpenGL::GetSetArgumentType&   in_arg_type,
-                                      const uint32_t&                     in_n_args,
-                                      void*                               out_result_ptr) const;
+        void                    get_framebuffer_property(const GLuint&                       in_id,
+                                                         const OpenGL::TimeMarker*           in_opt_time_marker_ptr,
+                                                         const OpenGL::RenderbufferProperty& in_pname,
+                                                         const OpenGL::GetSetArgumentType&   in_arg_type,
+                                                         const uint32_t&                     in_n_args,
+                                                         void*                               out_result_ptr) const;
+        const FramebufferState* get_framebuffer_state   (const GLuint&                       in_id,
+                                                         const OpenGL::TimeMarker*           in_opt_time_marker_ptr) const;
 
         bool set_attachment_renderbuffer (const GLuint&                             in_id,
                                           const OpenGL::FramebufferAttachmentPoint& in_attachment,

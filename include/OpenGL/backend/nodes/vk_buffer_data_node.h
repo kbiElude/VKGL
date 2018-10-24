@@ -39,19 +39,12 @@ namespace OpenGL
                 return m_info_ptr.get();
             }
 
-            bool get_input_access_properties (const uint32_t&                    in_n_input,
-                                              Anvil::PipelineStageFlags*         out_pipeline_stages_ptr,
-                                              Anvil::AccessFlags*                out_access_flags_ptr) const final;
-            bool get_output_access_properties(const uint32_t&                    in_n_output,
-                                              Anvil::PipelineStageFlags*         out_pipeline_stages_ptr,
-                                              Anvil::AccessFlags*                out_access_flags_ptr) const final;
             void get_supported_queue_families(uint32_t*                          out_n_queue_fams_ptr,
                                               const Anvil::QueueFamilyFlagBits** out_queue_fams_ptr_ptr) const final;
 
-            void on_commands_finished_executing_gpu_side() final;
-
-            void record_commands(Anvil::CommandBufferBase* in_cmd_buffer_ptr,
-                                 const bool&               in_inside_renderpass) const final;
+            void record_commands(Anvil::CommandBufferBase*  in_cmd_buffer_ptr,
+                                 const bool&                in_inside_renderpass,
+                                 IVKFrameGraphNodeCallback* in_graph_callback_ptr) const final;
 
             bool requires_cpu_side_execution() const final
             {
