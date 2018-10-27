@@ -15,20 +15,18 @@
 OpenGL::VKNodes::Clear::Clear(const IContextObjectManagers*            in_frontend_ptr,
                               IBackend*                                in_backend_ptr,
                               OpenGL::GLContextStateReferenceUniquePtr in_context_state_ptr,
-                              OpenGL::GLFramebufferReferenceUniquePtr  in_framebuffer_reference_ptr,
                               OpenGL::VKSwapchainReferenceUniquePtr    in_swapchain_reference_ptr,
                               const OpenGL::ClearBufferBits&           in_buffers_to_clear)
     :m_backend_ptr              (in_backend_ptr),
      m_buffers_to_clear         (in_buffers_to_clear),
      m_context_state_ptr        (std::move(in_context_state_ptr) ),
-     m_framebuffer_reference_ptr(std::move(in_framebuffer_reference_ptr) ),
      m_frontend_ptr             (in_frontend_ptr),
      m_swapchain_reference_ptr  (std::move(in_swapchain_reference_ptr) )
 {
-    vkgl_assert(m_backend_ptr               != nullptr);
-    vkgl_assert(m_framebuffer_reference_ptr != nullptr);
-    vkgl_assert(m_frontend_ptr              != nullptr);
-    vkgl_assert(m_swapchain_reference_ptr   != nullptr);
+    vkgl_assert(m_backend_ptr             != nullptr);
+    vkgl_assert(m_context_state_ptr       != nullptr);
+    vkgl_assert(m_frontend_ptr            != nullptr);
+    vkgl_assert(m_swapchain_reference_ptr != nullptr);
 
     init_info();
 }
@@ -41,7 +39,6 @@ OpenGL::VKNodes::Clear::~Clear()
 OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::Clear::create(const IContextObjectManagers*            in_frontend_ptr,
                                                                  IBackend*                                in_backend_ptr,
                                                                  OpenGL::GLContextStateReferenceUniquePtr in_context_state_ptr,
-                                                                 OpenGL::GLFramebufferReferenceUniquePtr  in_framebuffer_reference_ptr,
                                                                  OpenGL::VKSwapchainReferenceUniquePtr    in_swapchain_reference_ptr,
                                                                  const OpenGL::ClearBufferBits&           in_buffers_to_clear)
 {
@@ -52,7 +49,6 @@ OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::Clear::create(const IContextO
         new OpenGL::VKNodes::Clear(in_frontend_ptr,
                                    in_backend_ptr,
                                    std::move(in_context_state_ptr),
-                                   std::move(in_framebuffer_reference_ptr),
                                    std::move(in_swapchain_reference_ptr),
                                    in_buffers_to_clear)
     );
@@ -68,8 +64,8 @@ void OpenGL::VKNodes::Clear::init_info()
     auto       state_manager_ptr  = m_frontend_ptr->get_state_manager_ptr      ();
 
     const auto context_state_ptr  = state_manager_ptr->get_state         (m_context_state_ptr->get_payload().time_marker);
-    const auto fb_state_ptr       = fb_manager_ptr->get_framebuffer_state(m_framebuffer_reference_ptr->get_payload().id,
-                                                                         &m_framebuffer_reference_ptr->get_payload().time_marker);
+    const auto fb_state_ptr       = fb_manager_ptr->get_framebuffer_state(context_state_ptr->draw_framebuffer_reference_ptr->get_payload().id,
+                                                                         &context_state_ptr->draw_framebuffer_reference_ptr->get_payload().time_marker);
 
     vkgl_assert(context_state_ptr != nullptr);
     vkgl_assert(fb_state_ptr      != nullptr);

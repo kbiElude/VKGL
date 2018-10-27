@@ -6,6 +6,7 @@
 #include "OpenGL/backend/vk_frame_graph.h"
 #include "OpenGL/backend/vk_scheduler.h"
 #include "OpenGL/backend/nodes/vk_buffer_data_node.h"
+#include "OpenGL/backend/nodes/vk_clear_node.h"
 #include "OpenGL/backend/nodes/vk_present_swapchain_image_node.h"
 #include "OpenGL/frontend/gl_buffer_manager.h"
 #include "Common/logger.h"
@@ -192,7 +193,26 @@ void OpenGL::VKScheduler::process_buffer_sub_data_command(OpenGL::CommandBaseUni
 
 void OpenGL::VKScheduler::process_clear_command(OpenGL::ClearCommand* in_command_ptr)
 {
-    vkgl_not_implemented();
+    auto                              backend_frame_graph_ptr = m_backend_ptr->get_frame_graph_ptr ();
+    OpenGL::ClearCommand*             command_ptr             = dynamic_cast<OpenGL::ClearCommand*>(in_command_ptr);
+    OpenGL::VKFrameGraphNodeUniquePtr node_ptr;
+
+    vkgl_assert(command_ptr != nullptr);
+
+    /* 1. Spawn the node */
+    {
+        auto backend_swapchain_manager_ptr   = m_backend_ptr->get_swapchain_manager_ptr        ();
+        auto backend_swapchain_reference_ptr = backend_swapchain_manager_ptr->acquire_swapchain(backend_swapchain_manager_ptr->get_tot_time_marker() );
+
+        node_ptr = OpenGL::VKNodes::Clear::create(m_frontend_ptr,
+                                                  m_backend_ptr,
+                                                  std::move(command_ptr->context_state_reference_ptr),
+                                                  std::move(backend_swapchain_reference_ptr),
+                                                  command_ptr->buffers_to_clear);
+    }
+
+    /* 2. Submit the node to frame graph manager. */
+    backend_frame_graph_ptr->add_node(std::move(node_ptr) );
 }
 
 void OpenGL::VKScheduler::process_compile_shader_command(OpenGL::CompileShaderCommand* in_command_ptr)

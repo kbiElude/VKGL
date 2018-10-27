@@ -113,7 +113,10 @@ void OpenGL::VKBackend::buffer_sub_data(const GLuint&     in_id,
 
 void OpenGL::VKBackend::clear(const OpenGL::ClearBufferBits& in_buffers_to_clear)
 {
-    OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::ClearCommand(in_buffers_to_clear),
+    auto context_state_reference_ptr = m_frontend_ptr->get_state_manager_ptr()->acquire_current_latest_snapshot_reference();
+
+    OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::ClearCommand(in_buffers_to_clear,
+                                                                  std::move(context_state_reference_ptr) ),
                                          std::default_delete<OpenGL::CommandBase>() );
 
     vkgl_assert(cmd_ptr != nullptr);

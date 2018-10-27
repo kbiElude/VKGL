@@ -139,11 +139,14 @@ namespace OpenGL
 
     struct ClearCommand : public CommandBase
     {
-        OpenGL::ClearBufferBits buffers_to_clear;
+        OpenGL::ClearBufferBits                  buffers_to_clear;
+        OpenGL::GLContextStateReferenceUniquePtr context_state_reference_ptr;
 
-        ClearCommand(const OpenGL::ClearBufferBits& in_buffers_to_clear)
-            :CommandBase     (CommandType::CLEAR),
-             buffers_to_clear(in_buffers_to_clear)
+        ClearCommand(const OpenGL::ClearBufferBits&           in_buffers_to_clear,
+                     OpenGL::GLContextStateReferenceUniquePtr in_context_state_reference_ptr)
+            :CommandBase                (CommandType::CLEAR),
+             buffers_to_clear           (in_buffers_to_clear),
+             context_state_reference_ptr(std::move(in_context_state_reference_ptr) )
         {
             /* Stub */
         }
