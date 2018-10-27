@@ -64,6 +64,7 @@ OpenGL::BufferState::BufferState()
 }
 
 OpenGL::ContextState::ContextState(const IGLObjectManager<OpenGL::GLBufferReferenceUniquePtr>*       in_buffer_manager_ptr,
+                                   const IGLObjectManager<OpenGL::GLFramebufferReferenceUniquePtr>*  in_framebuffer_manager_ptr,
                                    const IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>* in_renderbuffer_manager_ptr,
                                    const IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*          in_vao_manager_ptr,
                                    const IGLLimits*                                                  in_limits_ptr,
@@ -222,8 +223,10 @@ OpenGL::ContextState::ContextState(const IGLObjectManager<OpenGL::GLBufferRefere
     }
 
     /* Set up default bindings */
-    renderbuffer_reference_ptr = in_renderbuffer_manager_ptr->get_default_object_reference();
-    vao_reference_ptr          = in_vao_manager_ptr->get_default_object_reference         ();
+    draw_framebuffer_reference_ptr = in_framebuffer_manager_ptr->get_default_object_reference ();
+    read_framebuffer_reference_ptr = in_framebuffer_manager_ptr->get_default_object_reference ();
+    renderbuffer_reference_ptr     = in_renderbuffer_manager_ptr->get_default_object_reference();
+    vao_reference_ptr              = in_vao_manager_ptr->get_default_object_reference         ();
 }
 
 OpenGL::ContextState::ContextState(const OpenGL::ContextState& in_context_state)

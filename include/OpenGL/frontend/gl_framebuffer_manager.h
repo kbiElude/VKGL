@@ -5,6 +5,7 @@
 #ifndef VKGL_GL_FRAMEBUFFER_MANAGER_H
 #define VKGL_GL_FRAMEBUFFER_MANAGER_H
 
+#include "Common/types.h"
 #include "OpenGL/frontend/gl_object_manager.h"
 #include "OpenGL/frontend/snapshot_manager.h"
 
@@ -17,7 +18,8 @@ namespace OpenGL
     public:
         /* Public functions */
 
-        static GLFramebufferManagerUniquePtr create(const OpenGL::IGLLimits* in_limits_ptr);
+        static GLFramebufferManagerUniquePtr create(const OpenGL::IGLLimits* in_limits_ptr,
+                                                    const VKGL::IWSIContext* in_wsi_context_ptr);
 
         ~GLFramebufferManager();
 
@@ -85,7 +87,8 @@ namespace OpenGL
 
         /* Private functions */
 
-        GLFramebufferManager(const OpenGL::IGLLimits* in_limits_ptr);
+        GLFramebufferManager(const OpenGL::IGLLimits* in_limits_ptr,
+                             const VKGL::IWSIContext* in_wsi_context_ptr);
 
         const Framebuffer* get_framebuffer_ptr(const GLuint&             in_id,
                                                const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
@@ -94,6 +97,7 @@ namespace OpenGL
 
         /* Private variables */
         const OpenGL::IGLLimits* m_limits_ptr;
+        const VKGL::IWSIContext* m_wsi_context_ptr;
     };
 }
 #endif /* VKGL_GL_FRAMEBUFFER_MANAGER_H */

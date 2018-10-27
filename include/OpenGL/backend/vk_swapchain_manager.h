@@ -146,6 +146,7 @@ namespace OpenGL
         std::unique_ptr<OpenGL::SnapshotManager<VKSwapchainReference, VKSwapchainReferenceUniquePtr, VKSwapchainPayload> > m_snapshot_manager_ptr;
         std::map<OpenGL::TimeMarker, InternalSwapchainDataUniquePtr>                                                       m_time_marker_to_internal_swapchain_data_map;
 
+        mutable std::mutex                  m_mutex;
         const uint32_t                      m_n_swapchain_images;
         const VKGL::PixelFormatRequirements m_pixel_format_reqs;
     };

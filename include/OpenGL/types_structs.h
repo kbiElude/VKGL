@@ -801,6 +801,7 @@ namespace OpenGL
         PolygonMode polygon_mode;
 
         explicit ContextState(const IGLObjectManager<GLBufferReferenceUniquePtr>*               in_buffer_manager_ptr,
+                              const IGLObjectManager<OpenGL::GLFramebufferReferenceUniquePtr>*  in_framebuffer_manager_ptr,
                               const IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>* in_renderbuffer_manager_ptr,
                               const IGLObjectManager<GLVAOReferenceUniquePtr>*                  in_vao_manager_ptr,
                               const IGLLimits*                                                  in_limits_ptr,

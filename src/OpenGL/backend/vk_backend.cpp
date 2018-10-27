@@ -38,6 +38,15 @@ OpenGL::VKBackend::VKBackend(const VKGL::IWSIContext* in_wsi_context_ptr)
 
 OpenGL::VKBackend::~VKBackend()
 {
+    /* Make sure to release the scheduler before we go ahead and destroy core VK objects. */
+    m_scheduler_ptr.reset  ();
+    m_frame_graph_ptr.reset();
+
+    m_buffer_manager_ptr.reset   ();
+    m_format_manager_ptr.reset   ();
+    m_mem_allocator_ptr.reset    ();
+    m_swapchain_manager_ptr.reset();
+
     m_device_ptr.reset  ();
     m_instance_ptr.reset();
 }

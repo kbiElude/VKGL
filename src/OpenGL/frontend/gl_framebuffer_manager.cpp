@@ -26,10 +26,12 @@ OpenGL::GLFramebufferManager::Framebuffer::Framebuffer(const OpenGL::IGLLimits* 
     /* Stub */
 }
 
-OpenGL::GLFramebufferManager::GLFramebufferManager(const OpenGL::IGLLimits* in_limits_ptr)
-    :GLObjectManager(0,     /* in_first_valid_nondefault_id */
-                     true), /* in_expose_default_object     */
-     m_limits_ptr   (in_limits_ptr)
+OpenGL::GLFramebufferManager::GLFramebufferManager(const OpenGL::IGLLimits* in_limits_ptr,
+                                                   const VKGL::IWSIContext* in_wsi_context_ptr)
+    :GLObjectManager  (0,     /* in_first_valid_nondefault_id */
+                       true), /* in_expose_default_object     */
+     m_limits_ptr     (in_limits_ptr),
+     m_wsi_context_ptr(in_wsi_context_ptr)
 {
     /*  Stub */
 }
@@ -58,11 +60,13 @@ void OpenGL::GLFramebufferManager::copy_internal_data_object(const void* in_src_
     *reinterpret_cast<Framebuffer*>(in_dst_ptr) = *reinterpret_cast<const Framebuffer*>(in_src_ptr);
 }
 
-OpenGL::GLFramebufferManagerUniquePtr OpenGL::GLFramebufferManager::create(const OpenGL::IGLLimits* in_limits_ptr)
+OpenGL::GLFramebufferManagerUniquePtr OpenGL::GLFramebufferManager::create(const OpenGL::IGLLimits* in_limits_ptr,
+                                                                           const VKGL::IWSIContext* in_wsi_context_ptr)
 {
     OpenGL::GLFramebufferManagerUniquePtr result_ptr;
 
-    result_ptr.reset(new GLFramebufferManager(in_limits_ptr) );
+    result_ptr.reset(new GLFramebufferManager(in_limits_ptr,
+                                              in_wsi_context_ptr) );
 
     if (result_ptr == nullptr)
     {
@@ -86,6 +90,32 @@ OpenGL::GLFramebufferManagerUniquePtr OpenGL::GLFramebufferManager::create(const
                                      1, /* in_n  */
                                     &default_fb_draw_buffer);
     }
+
+    /* If depth and/or stencil planes were requested, mark that in default FB's config, too. */
+    {
+        auto        default_fb_ptr    = result_ptr->get_framebuffer_ptr                  (0, /* in_id */
+                                                                                          nullptr);
+        const auto& pixel_format_reqs = in_wsi_context_ptr->get_pixel_format_requirements();
+        bool        update_needed     = false;
+
+        if (pixel_format_reqs.n_depth_bits > 0)
+        {
+            default_fb_ptr->state.depth_attachment.type = OpenGL::FramebufferAttachmentObjectType::Framebuffer_Default;
+            update_needed                               = true;
+        }
+
+        if (pixel_format_reqs.n_stencil_bits > 0)
+        {
+            default_fb_ptr->state.stencil_attachment.type = OpenGL::FramebufferAttachmentObjectType::Framebuffer_Default;
+            update_needed                                 = true;
+        }
+
+        if (update_needed)
+        {
+            result_ptr->update_last_modified_time(0 /* in_id */);
+        }
+    }
+
 end:
     return result_ptr;
 }

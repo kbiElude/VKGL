@@ -106,7 +106,8 @@ void OpenGL::VKNodes::Clear::init_info()
         }
         else
         {
-            vkgl_assert(current_draw_buffer == OpenGL::DrawBuffer::None);
+            vkgl_assert(current_draw_buffer == OpenGL::DrawBuffer::None ||
+                        current_draw_buffer == OpenGL::DrawBuffer::Back);
         }
     }
 
@@ -148,6 +149,11 @@ void OpenGL::VKNodes::Clear::init_info()
                     break;
                 }
 
+                case OpenGL::DrawBuffer::None:
+                {
+                    continue;
+                }
+
                 default:
                 {
                     vkgl_assert_fail();
@@ -176,7 +182,7 @@ void OpenGL::VKNodes::Clear::init_info()
     if (m_buffers_to_clear & OpenGL::ClearBufferBit::CLEAR_BUFFER_BIT_STENCIL)
     {
         /* TODO */
-        if (fb_state_ptr->depth_attachment.type == OpenGL::FramebufferAttachmentObjectType::Framebuffer_Default)
+        if (fb_state_ptr->stencil_attachment.type == OpenGL::FramebufferAttachmentObjectType::Framebuffer_Default)
         {
             auto new_node_io = OpenGL::NodeIO(m_swapchain_reference_ptr.get(),
                                               Anvil::ImageAspectFlagBits::STENCIL_BIT,

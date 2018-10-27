@@ -11,10 +11,12 @@
 
 OpenGL::GLStateManager::GLStateManager(const IGLLimits*                                                  in_limits_ptr,
                                        const IGLObjectManager<OpenGL::GLBufferReferenceUniquePtr>*       in_buffer_manager_ptr,
+                                       const IGLObjectManager<OpenGL::GLFramebufferReferenceUniquePtr>*  in_framebuffer_manager_ptr,
                                        const IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>* in_renderbuffer_manager_ptr,
                                        const IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*          in_vao_manager_ptr)
     :m_buffer_manager_ptr      (in_buffer_manager_ptr),
      m_current_error_code      (OpenGL::ErrorCode::No_Error),
+     m_framebuffer_manager_ptr (in_framebuffer_manager_ptr),
      m_limits_ptr              (in_limits_ptr),
      m_renderbuffer_manager_ptr(in_renderbuffer_manager_ptr),
      m_vao_manager_ptr         (in_vao_manager_ptr)
@@ -79,6 +81,7 @@ std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLStateManager::creat
 
     result_ptr.reset(
         new OpenGL::ContextState(m_buffer_manager_ptr,
+                                 m_framebuffer_manager_ptr,
                                  m_renderbuffer_manager_ptr,
                                  m_vao_manager_ptr,
                                  m_limits_ptr,

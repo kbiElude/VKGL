@@ -39,6 +39,8 @@ OpenGL::VKSwapchainManager::~VKSwapchainManager()
 
 OpenGL::VKSwapchainReferenceUniquePtr OpenGL::VKSwapchainManager::acquire_swapchain(const OpenGL::TimeMarker& in_time_marker)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
     decltype(m_time_marker_to_internal_swapchain_data_map)::const_iterator internal_swapchain_data_iterator = m_time_marker_to_internal_swapchain_data_map.find(in_time_marker);
     OpenGL::VKSwapchainReferenceUniquePtr                                  result_ptr;
     auto                                                                   snapshot_ptr                     = reinterpret_cast<const SwapchainPropsSnapshot*>  (m_snapshot_manager_ptr->get_readonly_snapshot(in_time_marker) );
@@ -567,6 +569,8 @@ end:
 
 OpenGL::TimeMarker OpenGL::VKSwapchainManager::get_tot_time_marker() const
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
     vkgl_assert(m_snapshot_manager_ptr != nullptr);
 
     return m_snapshot_manager_ptr->get_last_modified_time();

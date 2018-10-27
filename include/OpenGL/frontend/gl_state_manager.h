@@ -16,6 +16,7 @@ namespace OpenGL
     public:
         GLStateManager(const IGLLimits*                                                  in_limits_ptr,
                        const IGLObjectManager<GLBufferReferenceUniquePtr>*               in_buffer_manager_ptr,
+                       const IGLObjectManager<OpenGL::GLFramebufferReferenceUniquePtr>*  in_framebuffer_manager_ptr,
                        const IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>* in_renderbuffer_manager_ptr,
                        const IGLObjectManager<GLVAOReferenceUniquePtr>*                  in_vao_manager_ptr);
        ~GLStateManager();
@@ -152,6 +153,7 @@ namespace OpenGL
 
         const IGLObjectManager<GLBufferReferenceUniquePtr>*                                                                                 m_buffer_manager_ptr;
         OpenGL::ErrorCode                                                                                                                   m_current_error_code;
+        const IGLObjectManager<GLFramebufferReferenceUniquePtr>*                                                                            m_framebuffer_manager_ptr;
         const IGLLimits* const                                                                                                              m_limits_ptr;
         const IGLObjectManager<GLRenderbufferReferenceUniquePtr>*                                                                           m_renderbuffer_manager_ptr;
         std::unique_ptr<OpenGL::SnapshotManager<GLContextStateReference, GLContextStateReferenceUniquePtr, OpenGL::GLContextStatePayload> > m_snapshot_manager_ptr;
