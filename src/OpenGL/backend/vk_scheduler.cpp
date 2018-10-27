@@ -130,24 +130,6 @@ void OpenGL::VKScheduler::main_thread_entrypoint()
                             "VK scheduler thread quitting now.");
 }
 
-void OpenGL::VKScheduler::present(OpenGL::VKSwapchainReferenceUniquePtr in_swapchain_ptr)
-{
-    auto                              backend_frame_graph_ptr = m_backend_ptr->get_frame_graph_ptr();
-    OpenGL::VKFrameGraphNodeUniquePtr node_ptr;
-
-    vkgl_assert(in_swapchain_ptr != nullptr);
-
-    /* 1. Spawn the node */
-    {
-        node_ptr = OpenGL::VKNodes::PresentSwapchainImage::create(m_frontend_ptr,
-                                                                  m_backend_ptr,
-                                                                  std::move(in_swapchain_ptr) );
-    }
-
-    /* 2. Submit the node to frame graph manager. */
-    backend_frame_graph_ptr->add_node(std::move(node_ptr) );
-}
-
 void OpenGL::VKScheduler::process_buffer_data_command(OpenGL::CommandBaseUniquePtr in_command_ptr)
 {
     auto                               backend_buffer_manager_ptr   = m_backend_ptr->get_buffer_manager_ptr();
@@ -253,6 +235,7 @@ void OpenGL::VKScheduler::process_command(OpenGL::CommandBaseUniquePtr in_comman
         case OpenGL::CommandType::MAP_BUFFER:                  process_map_buffer_command                 (dynamic_cast<OpenGL::MapBufferCommand*>              (in_command_ptr.get() )); break;
         case OpenGL::CommandType::MULTI_DRAW_ARRAYS:           process_multi_draw_arrays_command          (dynamic_cast<OpenGL::MultiDrawArraysCommand*>        (in_command_ptr.get() )); break;
         case OpenGL::CommandType::MULTI_DRAW_ELEMENTS:         process_multi_draw_elements_command        (dynamic_cast<OpenGL::MultiDrawElementsCommand*>      (in_command_ptr.get() )); break;
+        case OpenGL::CommandType::PRESENT:                     process_present_command                    (dynamic_cast<OpenGL::PresentCommand*>                (in_command_ptr.get() )); break;
         case OpenGL::CommandType::READ_PIXELS:                 process_read_pixels_command                (dynamic_cast<OpenGL::ReadPixelsCommand*>             (in_command_ptr.get() )); break;
         case OpenGL::CommandType::TEX_IMAGE_1D:                process_tex_image_1D_command               (dynamic_cast<OpenGL::TexImage1DCommand*>             (in_command_ptr.get() )); break;
         case OpenGL::CommandType::TEX_IMAGE_2D:                process_tex_image_2D_command               (dynamic_cast<OpenGL::TexImage2DCommand*>             (in_command_ptr.get() )); break;
@@ -352,12 +335,12 @@ void OpenGL::VKScheduler::process_draw_range_elements_command(OpenGL::DrawRangeE
 
 void OpenGL::VKScheduler::process_finish_command(OpenGL::FinishCommand* in_command_ptr)
 {
-    vkgl_not_implemented();
+    m_backend_ptr->get_frame_graph_ptr()->execute(true /* in_block_until_finished */);
 }
 
 void OpenGL::VKScheduler::process_flush_command(OpenGL::FlushCommand* in_command_ptr)
 {
-    vkgl_not_implemented();
+    m_backend_ptr->get_frame_graph_ptr()->execute(false /* in_block_until_finished */);
 }
 
 void OpenGL::VKScheduler::process_flush_mapped_buffer_range_command(OpenGL::FlushMappedBufferRangeCommand* in_command_ptr)
@@ -398,6 +381,24 @@ void OpenGL::VKScheduler::process_multi_draw_arrays_command(OpenGL::MultiDrawArr
 void OpenGL::VKScheduler::process_multi_draw_elements_command(OpenGL::MultiDrawElementsCommand* in_command_ptr)
 {
     vkgl_not_implemented();
+}
+
+void OpenGL::VKScheduler::process_present_command(OpenGL::PresentCommand* in_command_ptr)
+{
+    /* TODO: Is it 100% OK swapchain reference is initialized from a ToT marker here? */
+    auto                              backend_frame_graph_ptr = m_backend_ptr->get_frame_graph_ptr();
+    OpenGL::VKFrameGraphNodeUniquePtr node_ptr;
+    auto                              swapchain_reference_ptr = m_backend_ptr->get_swapchain_manager_ptr()->acquire_swapchain(m_backend_ptr->get_swapchain_manager_ptr()->get_tot_time_marker() );
+
+    /* 1. Spawn the node */
+    {
+        node_ptr = OpenGL::VKNodes::PresentSwapchainImage::create(m_frontend_ptr,
+                                                                  m_backend_ptr,
+                                                                  std::move(swapchain_reference_ptr) );
+    }
+
+    /* 2. Submit the node to frame graph manager. */
+    backend_frame_graph_ptr->add_node(std::move(node_ptr) );
 }
 
 void OpenGL::VKScheduler::process_read_pixels_command(OpenGL::ReadPixelsCommand* in_command_ptr)

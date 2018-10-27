@@ -22,7 +22,6 @@ namespace OpenGL
 
         ~VKScheduler();
 
-        void present(OpenGL::VKSwapchainReferenceUniquePtr in_swapchain_ptr);
         void submit (OpenGL::CommandBaseUniquePtr          in_command_ptr);
 
     private:
@@ -63,6 +62,7 @@ namespace OpenGL
         void process_map_buffer_command                 (OpenGL::MapBufferCommand*               in_command_ptr);
         void process_multi_draw_arrays_command          (OpenGL::MultiDrawArraysCommand*         in_command_ptr);
         void process_multi_draw_elements_command        (OpenGL::MultiDrawElementsCommand*       in_command_ptr);
+        void process_present_command                    (OpenGL::PresentCommand*                 in_command_ptr);
         void process_read_pixels_command                (OpenGL::ReadPixelsCommand*              in_command_ptr);
         void process_tex_image_1D_command               (OpenGL::TexImage1DCommand*              in_command_ptr);
         void process_tex_image_2D_command               (OpenGL::TexImage2DCommand*              in_command_ptr);

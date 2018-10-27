@@ -43,6 +43,7 @@ namespace OpenGL
         MAP_BUFFER,
         MULTI_DRAW_ARRAYS,
         MULTI_DRAW_ELEMENTS,
+        PRESENT,
         READ_PIXELS,
         TEX_IMAGE_1D,
         TEX_IMAGE_2D,
@@ -843,6 +844,15 @@ namespace OpenGL
              mode               (in_mode),
              state_reference_ptr(std::move(in_state_reference_ptr) ),
              type               (in_type)
+        {
+            /* Stub */
+        }
+    };
+
+    struct PresentCommand : public CommandBase
+    {
+        PresentCommand()
+            :CommandBase(CommandType::PRESENT)
         {
             /* Stub */
         }

@@ -474,6 +474,8 @@ end:
 
 Anvil::Queue* OpenGL::VKSwapchainManager::get_presentable_queue(const OpenGL::TimeMarker& in_time_marker)
 {
+    std::lock_guard<std::mutex> lock(m_mutex);
+
     auto internal_data_iterator = m_time_marker_to_internal_swapchain_data_map.find(in_time_marker);
 
     vkgl_assert(internal_data_iterator != m_time_marker_to_internal_swapchain_data_map.end() );
@@ -617,7 +619,8 @@ void OpenGL::VKSwapchainManager::on_swapchain_snapshot_out_of_scope(OpenGL::Time
 
 void OpenGL::VKSwapchainManager::set_swap_interval(const int32_t& in_swap_interval)
 {
-    SwapchainPropsSnapshot* tot_swapchain_ptr = reinterpret_cast<SwapchainPropsSnapshot*>(m_snapshot_manager_ptr->get_rw_tot_snapshot() );
+    std::lock_guard<std::mutex> lock(m_mutex);
+    SwapchainPropsSnapshot*     tot_swapchain_ptr = reinterpret_cast<SwapchainPropsSnapshot*>(m_snapshot_manager_ptr->get_rw_tot_snapshot() );
 
     vkgl_assert(tot_swapchain_ptr != nullptr);
 
@@ -631,7 +634,8 @@ void OpenGL::VKSwapchainManager::set_swap_interval(const int32_t& in_swap_interv
 
 void OpenGL::VKSwapchainManager::set_target_window(HWND in_window_handle)
 {
-    SwapchainPropsSnapshot* tot_swapchain_ptr = reinterpret_cast<SwapchainPropsSnapshot*>(m_snapshot_manager_ptr->get_rw_tot_snapshot() );
+    std::lock_guard<std::mutex> lock(m_mutex);
+    SwapchainPropsSnapshot*     tot_swapchain_ptr = reinterpret_cast<SwapchainPropsSnapshot*>(m_snapshot_manager_ptr->get_rw_tot_snapshot() );
 
     vkgl_assert(tot_swapchain_ptr != nullptr);
 

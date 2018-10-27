@@ -452,6 +452,10 @@ OpenGL::Context::Context(const VKGL::IWSIContext*     in_wsi_context_ptr,
 
 OpenGL::Context::~Context()
 {
+    /* Before continuing, flush any outstanding commands & wait till they complete GPU-side */
+    finish();
+
+    /* Go on.. */
     m_gl_state_manager_ptr.reset();
 
     m_gl_buffer_manager_ptr.reset      ();
@@ -1513,24 +1517,16 @@ GLsync OpenGL::Context::fence_sync(const OpenGL::SyncCondition& in_condition)
 
 void OpenGL::Context::finish()
 {
-#if 0
     vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
     m_backend_gl_callbacks_ptr->finish();
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::flush()
 {
-#if 0
     vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
     m_backend_gl_callbacks_ptr->flush();
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::flush_mapped_buffer_range(const OpenGL::BufferTarget& in_target,

@@ -982,13 +982,17 @@ void OpenGL::VKBackend::on_objects_destroyed(const OpenGL::ObjectType& in_object
 
 void OpenGL::VKBackend::present()
 {
-    /* TODO: Is this valid? Should we be using a clone of the reference used at acquisition time instead? */
-    auto swapchain_reference_ptr = m_swapchain_manager_ptr->acquire_swapchain(m_swapchain_manager_ptr->get_tot_time_marker() );
+    {
+        /* Submit the request to the backend thread. */
+        OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::PresentCommand(),
+                                             std::default_delete<OpenGL::CommandBase>() );
+        vkgl_assert(cmd_ptr != nullptr);
 
-    vkgl_assert(swapchain_reference_ptr != nullptr);
+        m_scheduler_ptr->submit(std::move(cmd_ptr) );
+    }
 
-    /* Forward the request to the scheduler. */
-    m_scheduler_ptr->present(std::move(swapchain_reference_ptr) );
+    /* ALSO, make sure to flush the command stream, to ensure the frame is actually presented to the end user! */
+    flush();
 }
 
 void OpenGL::VKBackend::read_pixels(const int32_t&             in_x,

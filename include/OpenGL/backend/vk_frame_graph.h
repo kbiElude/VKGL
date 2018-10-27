@@ -22,8 +22,10 @@ namespace OpenGL
         ~VKFrameGraph();
 
         void add_node(OpenGL::VKFrameGraphNodeUniquePtr in_node_ptr);
-        void clear   ();
-        void execute ();
+        void execute (const bool&                       in_block_until_finished);
+
+        void on_buffer_deleted(Anvil::Buffer* in_buffer_ptr);
+        void on_image_deleted (Anvil::Image*  in_image_ptr);
 
     private:
         /* Private type definitions */

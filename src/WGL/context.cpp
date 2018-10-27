@@ -47,7 +47,11 @@ WGL::Context::Context()
 
 WGL::Context::~Context()
 {
+    m_gl_context_ptr.reset();
+
     set_current_hdc(nullptr);
+
+    m_vk_backend_ptr.reset();
 }
 
 WGL::Context* WGL::Context::create(const HDC&     in_hdc,
