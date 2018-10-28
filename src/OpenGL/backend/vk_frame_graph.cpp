@@ -2,12 +2,14 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
-#include "OpenGL/backend/vk_frame_graph.h"
+#include "OpenGL/backend/nodes/vk_acquire_swapchain_image_node.h"
 #include "OpenGL/backend/vk_swapchain_manager.h"
 
-OpenGL::VKFrameGraph::VKFrameGraph(const OpenGL::IBackend* in_backend_ptr)
+OpenGL::VKFrameGraph::VKFrameGraph(const OpenGL::IContextObjectManagers* in_frontend_ptr,
+                                   const OpenGL::IBackend*               in_backend_ptr)
     :m_acquired_swapchain_image_index(UINT32_MAX),
      m_backend_ptr                   (in_backend_ptr),
+     m_frontend_ptr                  (in_frontend_ptr),
      m_swapchain_acquire_sem_ptr     (nullptr)
 {
     vkgl_assert(in_backend_ptr != nullptr);
@@ -20,20 +22,22 @@ OpenGL::VKFrameGraph::~VKFrameGraph()
 
 void OpenGL::VKFrameGraph::add_node(OpenGL::VKFrameGraphNodeUniquePtr in_node_ptr)
 {
-    /* todo */
+    std::lock_guard<std::mutex> lock(m_general_mutex);
 
     m_node_ptrs.push_back(
         std::move(in_node_ptr)
     );
 }
 
-OpenGL::VKFrameGraphUniquePtr OpenGL::VKFrameGraph::create(const OpenGL::IBackend* in_backend_ptr)
+OpenGL::VKFrameGraphUniquePtr OpenGL::VKFrameGraph::create(const OpenGL::IContextObjectManagers* in_frontend_ptr,
+                                                           const OpenGL::IBackend*               in_backend_ptr)
 {
     OpenGL::VKFrameGraphUniquePtr result_ptr(nullptr,
                                              [](OpenGL::VKFrameGraph* in_ptr){ delete in_ptr; });
 
     result_ptr.reset(
-        new OpenGL::VKFrameGraph(in_backend_ptr)
+        new OpenGL::VKFrameGraph(in_frontend_ptr,
+                                 in_backend_ptr)
     );
 
     vkgl_assert(result_ptr != nullptr);
@@ -47,12 +51,21 @@ OpenGL::VKFrameGraphUniquePtr OpenGL::VKFrameGraph::create(const OpenGL::IBacken
 
 void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
 {
-    if (m_node_ptrs.size() == 0)
-    {
-        goto end;
-    }
-
     /* NOTE: This function must NEVER be called from app's rendering thread. */
+    std::lock_guard<std::mutex> execute_lock(m_execute_mutex);
+    decltype(m_node_ptrs)       node_ptrs;
+
+    /* Cache node data, so that apps can continue rendering subsequent frames while we do the GL->VK conversion */
+    {
+        std::lock_guard<std::mutex> node_lock(m_general_mutex);
+
+        if (m_node_ptrs.size() == 0)
+        {
+            goto end;
+        }
+
+        node_ptrs = std::move(m_node_ptrs);
+    }
 
     /* NOTE: This is an extremely naive implementation. Once more complex examples are proven to work
      *       and a better understanding of actual architectural requirements is made, this code is expected
@@ -61,10 +74,10 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
      *       Things which are already planned to be taken into account:
      *
      *       - Command buffer reuse.
-     *       - Multi-threading (CPU prepasses should be executed as thread pool jobs, layout/pipeline objects
-     *                          should be created using multiple threads, etc.)
-     *       - Node clustering (as an example, transfer operations touching the same image should be clustered
-     *                          and submitted to a sDMA queue).
+     *       - Multi-threading             (CPU prepasses should be executed as thread pool jobs, layout/pipeline objects
+     *                                      should be created using multiple threads, etc.)
+     *       - Node reshuffling+clustering (as an example, transfer operations touching the same image should be clustered
+     *                                      and submitted to a sDMA queue if only feasible).
      *
      *       For now, the goal is to get to a point where simple example apps work. This will give us a starting point,
      *       where we can compare performance of different architectures.
@@ -77,7 +90,84 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
      *       this work needs to be postponed after we have a functional prototype of the frame graph available.
      */
 
+    /* 0. If NO swapchain is acquired at any point in the graph and currently processed node claims it needs one, prepend
+     *    the node with acquire node.
+     *
+     *    NOTE: Present operations are explicit in (W)GL but there is no equivalent of frame acquisition in GL, which is why
+     *          we need this step.
+     **/
+    {
+        bool     is_swapchain_image_acquired = (m_acquired_swapchain_image_index != UINT32_MAX);
+        uint32_t n_nodes                     = static_cast<uint32_t>(node_ptrs.size() );
+
+        for (uint32_t n_current_node = 0;
+                      n_current_node < n_nodes;
+                    ++n_current_node)
+        {
+            auto&      current_node_ptr      = node_ptrs.at                  (n_current_node);
+            const auto current_node_info_ptr = current_node_ptr->get_info_ptr();
+            const auto current_node_type     = current_node_ptr->get_type    ();
+            bool       needs_swapchain_image = false;
+
+            vkgl_assert(current_node_type != FrameGraphNodeType::Acquire_Swapchain_Image);
+
+            if (current_node_type == FrameGraphNodeType::Present_Swapchain_Image)
+            {
+                vkgl_assert(is_swapchain_image_acquired);
+
+                is_swapchain_image_acquired = false;
+            }
+            else
+            {
+                for (const auto& current_input : current_node_info_ptr->inputs)
+                {
+                    if (current_input.type == NodeIOType::Swapchain_Image)
+                    {
+                        needs_swapchain_image = true;
+
+                        break;
+                    }
+                }
+
+                if (!needs_swapchain_image)
+                {
+                    for (const auto& current_output : current_node_info_ptr->outputs)
+                    {
+                        if (current_output.type == NodeIOType::Swapchain_Image)
+                        {
+                            needs_swapchain_image = true;
+
+                            break;
+                        }
+                    }
+                }
+
+                if ( needs_swapchain_image       &&
+                    !is_swapchain_image_acquired)
+                {
+                    auto swapchain_manager_ptr = m_backend_ptr->get_swapchain_manager_ptr      ();
+                    auto new_acquire_node_ptr  = OpenGL::VKNodes::AcquireSwapchainImage::create(m_frontend_ptr,
+                                                                                                m_backend_ptr,
+                                                                                                swapchain_manager_ptr->acquire_swapchain(swapchain_manager_ptr->get_tot_time_marker() ));
+
+                    node_ptrs.insert(node_ptrs.begin() + n_current_node,
+                                     std::move(new_acquire_node_ptr) );
+
+                    is_swapchain_image_acquired = true;
+                }
+            }
+        }
+
+    }
+
     /* 1. Execute CPU prepasses for nodes which require doing so. */
+    for (auto& current_node_ptr : node_ptrs)
+    {
+        if (current_node_ptr->requires_cpu_prepass() )
+        {
+            current_node_ptr->do_cpu_prepass(this);
+        }
+    }
 
     /* 2. Determine which nodes can be squashed into a single command buffer.
      *
@@ -106,7 +196,7 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
     vkgl_not_implemented();
 
 end:
-    ;
+    node_ptrs.clear();
 }
 
 uint32_t OpenGL::VKFrameGraph::get_acquired_swapchain_image_index() const

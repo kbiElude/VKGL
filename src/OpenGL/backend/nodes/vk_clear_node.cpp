@@ -33,6 +33,7 @@ OpenGL::VKNodes::Clear::Clear(const IContextObjectManagers*            in_fronte
 
 OpenGL::VKNodes::Clear::~Clear()
 {
+    m_swapchain_reference_ptr.reset();
      /* Stub */
 }
 

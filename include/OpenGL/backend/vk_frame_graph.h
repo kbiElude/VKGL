@@ -17,7 +17,8 @@ namespace OpenGL
     {
     public:
         /* Public functions */
-        static VKFrameGraphUniquePtr create(const OpenGL::IBackend* in_backend_ptr);
+        static VKFrameGraphUniquePtr create(const OpenGL::IContextObjectManagers* in_frontend_ptr,
+                                            const OpenGL::IBackend*               in_backend_ptr);
 
         ~VKFrameGraph();
 
@@ -42,14 +43,19 @@ namespace OpenGL
 
         /* Private functions */
 
-        VKFrameGraph(const OpenGL::IBackend* in_backend_ptr);
+        VKFrameGraph(const OpenGL::IContextObjectManagers* in_frontend_ptr,
+                     const OpenGL::IBackend*               in_backend_ptr);
 
         /* Private variables */
         uint32_t                               m_acquired_swapchain_image_index;
         Anvil::Semaphore*                      m_swapchain_acquire_sem_ptr;
 
         const OpenGL::IBackend*                m_backend_ptr;
+        const OpenGL::IContextObjectManagers*  m_frontend_ptr;
         std::vector<VKFrameGraphNodeUniquePtr> m_node_ptrs;
+
+        std::mutex m_execute_mutex;
+        std::mutex m_general_mutex;
     };
 };
 

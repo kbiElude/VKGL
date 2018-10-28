@@ -37,7 +37,7 @@ OpenGL::VKNodes::PresentSwapchainImage::PresentSwapchainImage(const IContextObje
 
 OpenGL::VKNodes::PresentSwapchainImage::~PresentSwapchainImage()
 {
-     /* Stub */
+     m_swapchain_reference_ptr.reset();
 }
 
 OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::PresentSwapchainImage::create(const IContextObjectManagers*         in_frontend_ptr,

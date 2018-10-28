@@ -42,6 +42,11 @@ namespace OpenGL
             void get_supported_queue_families(uint32_t*                          out_n_queue_fams_ptr,
                                               const Anvil::QueueFamilyFlagBits** out_queue_fams_ptr_ptr) const final;
 
+            FrameGraphNodeType get_type() const final
+            {
+                return FrameGraphNodeType::Buffer_Data;
+            }
+
             void record_commands(Anvil::CommandBufferBase*  in_cmd_buffer_ptr,
                                  const bool&                in_inside_renderpass,
                                  IVKFrameGraphNodeCallback* in_graph_callback_ptr) const final;

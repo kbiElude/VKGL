@@ -586,7 +586,7 @@ bool OpenGL::VKSwapchainManager::init()
     const auto time_now = std::chrono::high_resolution_clock::now();
 
     m_snapshot_manager_ptr.reset(
-        new decltype(m_snapshot_manager_ptr)::element_type(0, /* in_object_id */
+        new decltype(m_snapshot_manager_ptr)::element_type(0,    /* in_object_id                    */
                                                            this, /* in_state_snapshot_accessors_ptr */
                                                            time_now,
                                                            std::bind(&OpenGL::VKSwapchainManager::on_swapchain_snapshot_out_of_scope,
@@ -607,6 +607,22 @@ end:
     return result;
 }
 
+void OpenGL::VKSwapchainManager::on_frame_acquisition_semaphore_out_of_scope(InternalSwapchainData* in_swapchain_data_ptr,
+                                                                             Anvil::Semaphore*      in_sem_ptr)
+{
+    vkgl_assert(in_sem_ptr != nullptr);
+
+    if (!in_sem_ptr->reset() )
+    {
+        vkgl_assert_fail();
+    }
+
+    Anvil::SemaphoreUniquePtr sem_ptr(in_sem_ptr,
+                                      [](Anvil::Semaphore* sem_ptr){delete sem_ptr;});
+
+    in_swapchain_data_ptr->frame_acquisition_semaphore_ptrs.push_back(std::move(sem_ptr) );
+}
+
 void OpenGL::VKSwapchainManager::on_swapchain_snapshot_out_of_scope(OpenGL::TimeMarker in_time_marker)
 {
     /* Release the swapchain instance. */
@@ -615,6 +631,26 @@ void OpenGL::VKSwapchainManager::on_swapchain_snapshot_out_of_scope(OpenGL::Time
     vkgl_assert(internal_data_iterator != m_time_marker_to_internal_swapchain_data_map.end() );
 
     m_time_marker_to_internal_swapchain_data_map.erase(internal_data_iterator);
+}
+
+Anvil::SemaphoreUniquePtr OpenGL::VKSwapchainManager::pop_frame_acquisition_semaphore(const OpenGL::TimeMarker& in_time_marker)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+    auto                        internal_data_iterator = m_time_marker_to_internal_swapchain_data_map.find(in_time_marker);
+
+    vkgl_assert(internal_data_iterator                                                  != m_time_marker_to_internal_swapchain_data_map.end() );
+    vkgl_assert(internal_data_iterator->second->frame_acquisition_semaphore_ptrs.size() >  0);
+
+    auto                      internal_data_ptr = internal_data_iterator->second.get();
+    Anvil::SemaphoreUniquePtr result_sem_ptr    = std::move(internal_data_ptr->frame_acquisition_semaphore_ptrs.back() );
+
+    internal_data_ptr->frame_acquisition_semaphore_ptrs.pop_back();
+
+    return Anvil::SemaphoreUniquePtr(result_sem_ptr.release(),
+                                     std::bind(&OpenGL::VKSwapchainManager::on_frame_acquisition_semaphore_out_of_scope,
+                                               this,
+                                               internal_data_ptr,
+                                               result_sem_ptr.get() ));
 }
 
 void OpenGL::VKSwapchainManager::set_swap_interval(const int32_t& in_swap_interval)

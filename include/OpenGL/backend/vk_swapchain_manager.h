@@ -30,7 +30,7 @@ namespace OpenGL
         VKSwapchainReferenceUniquePtr acquire_swapchain               (const OpenGL::TimeMarker& in_time_marker);
         Anvil::Queue*                 get_presentable_queue           (const OpenGL::TimeMarker& in_time_marker);
         OpenGL::TimeMarker            get_tot_time_marker             ()                                          const;
-        Anvil::SemaphoreUniquePtr     pop_frame_acquisition_semaphore (const OpenGL::TimeMarker& in_time_marker); //< deleter automatically pushes the sem back to the ring buffer.
+        Anvil::SemaphoreUniquePtr     pop_frame_acquisition_semaphore (const OpenGL::TimeMarker& in_time_marker); //< deleter automatically resets & pushes the sem back to cache.
 
         uint32_t get_n_swapchain_images() const
         {
@@ -125,14 +125,17 @@ namespace OpenGL
                            const uint32_t&                      in_n_swapchain_images,
                            const VKGL::PixelFormatRequirements& in_pixel_format_reqs);
 
-        bool                           create_ds_image_views             (const Anvil::Format&                    in_format,
-                                                                          const uint32_t&                         in_width,
-                                                                          const uint32_t&                         in_height,
-                                                                          std::vector<Anvil::ImageUniquePtr>&     out_ds_image_ptrs,
-                                                                          std::vector<Anvil::ImageViewUniquePtr>& out_ds_image_view_ptrs) const;
-        InternalSwapchainDataUniquePtr create_swapchain                  (const SwapchainPropsSnapshot*           in_swapchain_props_ptr) const;
-        bool                           init                              ();
-        void                           on_swapchain_snapshot_out_of_scope(OpenGL::TimeMarker                      in_time_marker);
+        bool                           create_ds_image_views(const Anvil::Format&                    in_format,
+                                                             const uint32_t&                         in_width,
+                                                             const uint32_t&                         in_height,
+                                                             std::vector<Anvil::ImageUniquePtr>&     out_ds_image_ptrs,
+                                                             std::vector<Anvil::ImageViewUniquePtr>& out_ds_image_view_ptrs) const;
+        InternalSwapchainDataUniquePtr create_swapchain     (const SwapchainPropsSnapshot*           in_swapchain_props_ptr) const;
+        bool                           init                 ();
+
+        void                           on_frame_acquisition_semaphore_out_of_scope(InternalSwapchainData* in_swapchain_data_ptr,
+                                                                                   Anvil::Semaphore*      in_sem_ptr);
+        void                           on_swapchain_snapshot_out_of_scope         (OpenGL::TimeMarker     in_time_marker);
 
         Anvil::PresentModeKHR  get_present_mode_for_swapchain_props(const SwapchainPropsSnapshot*  in_swapchain_props_ptr,
                                                                     const Anvil::RenderingSurface* in_surface_ptr)         const;

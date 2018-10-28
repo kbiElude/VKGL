@@ -148,6 +148,16 @@ namespace OpenGL
         }
     } NodeIO;
 
+    enum class FrameGraphNodeType
+    {
+        Acquire_Swapchain_Image,
+        Buffer_Data,
+        Clear,
+        Present_Swapchain_Image,
+
+        Unknown
+    };
+
     struct VKFrameGraphNodeInfo
     {
         std::vector<NodeIO> inputs;
@@ -164,7 +174,7 @@ namespace OpenGL
             opt_post_sync_semaphore_ptr = nullptr;
         }
     };
-    typedef std::unique_ptr<VKFrameGraphNodeInfo, std::function<void(VKFrameGraphNodeInfo*)> > VKFrameGraphNodeInfoUniquePtr;
+    typedef std::unique_ptr<VKFrameGraphNodeInfo> VKFrameGraphNodeInfoUniquePtr;
 
     class IVKFrameGraphNode
     {
@@ -182,6 +192,8 @@ namespace OpenGL
 
         virtual void get_supported_queue_families(uint32_t*                          out_n_queue_fams_ptr,
                                                   const Anvil::QueueFamilyFlagBits** out_queue_fams_ptr_ptr) const = 0; //< return in preferred order
+
+        virtual FrameGraphNodeType get_type() const = 0;
 
         virtual void record_commands(Anvil::CommandBufferBase*  in_cmd_buffer_ptr,
                                      const bool&                in_inside_renderpass,

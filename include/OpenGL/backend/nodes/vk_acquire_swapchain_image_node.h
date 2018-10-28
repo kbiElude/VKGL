@@ -17,7 +17,7 @@ namespace OpenGL
         public:
             /* Public functions */
             static VKFrameGraphNodeUniquePtr create(const IContextObjectManagers*         in_frontend_ptr,
-                                                    IBackend*                             in_backend_ptr,
+                                                    const IBackend*                       in_backend_ptr,
                                                     OpenGL::VKSwapchainReferenceUniquePtr in_swapchain_reference_ptr);
 
             ~AcquireSwapchainImage();
@@ -42,6 +42,11 @@ namespace OpenGL
             {
                 /* Should never be called */
                 vkgl_assert_fail();
+            }
+
+            FrameGraphNodeType get_type() const final
+            {
+                return FrameGraphNodeType::Acquire_Swapchain_Image;
             }
 
             void record_commands(Anvil::CommandBufferBase*  in_cmd_buffer_ptr,
@@ -105,11 +110,11 @@ namespace OpenGL
             /* Private functions */
 
             AcquireSwapchainImage(const IContextObjectManagers*         in_frontend_ptr,
-                                  OpenGL::IBackend*                     in_backend_ptr,
+                                  const OpenGL::IBackend*               in_backend_ptr,
                                   OpenGL::VKSwapchainReferenceUniquePtr in_swapchain_reference_ptr);
 
             /* Private variables */
-            IBackend*                             m_backend_ptr;
+            const IBackend*                       m_backend_ptr;
             const IContextObjectManagers*         m_frontend_ptr;
             OpenGL::VKFrameGraphNodeInfoUniquePtr m_info_ptr;
             OpenGL::VKSwapchainReferenceUniquePtr m_swapchain_reference_ptr;

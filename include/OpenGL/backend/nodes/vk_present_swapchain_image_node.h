@@ -44,6 +44,11 @@ namespace OpenGL
                 vkgl_assert_fail();
             }
 
+            FrameGraphNodeType get_type() const final
+            {
+                return FrameGraphNodeType::Present_Swapchain_Image;
+            }
+
             void record_commands(Anvil::CommandBufferBase*  in_cmd_buffer_ptr,
                                  const bool&                in_inside_renderpass,
                                  IVKFrameGraphNodeCallback* in_graph_callback_ptr) const final

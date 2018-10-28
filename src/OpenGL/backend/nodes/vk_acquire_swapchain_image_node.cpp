@@ -10,7 +10,7 @@
 
 
 OpenGL::VKNodes::AcquireSwapchainImage::AcquireSwapchainImage(const IContextObjectManagers*         in_frontend_ptr,
-                                                              IBackend*                             in_backend_ptr,
+                                                              const IBackend*                       in_backend_ptr,
                                                               OpenGL::VKSwapchainReferenceUniquePtr in_swapchain_reference_ptr)
     :m_backend_ptr            (in_backend_ptr),
      m_frontend_ptr           (in_frontend_ptr),
@@ -30,11 +30,12 @@ OpenGL::VKNodes::AcquireSwapchainImage::AcquireSwapchainImage(const IContextObje
 
 OpenGL::VKNodes::AcquireSwapchainImage::~AcquireSwapchainImage()
 {
-     /* Stub */
+    m_info_ptr.reset                ();
+    m_swapchain_reference_ptr.reset();
 }
 
 OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::AcquireSwapchainImage::create(const IContextObjectManagers*         in_frontend_ptr,
-                                                                                 IBackend*                             in_backend_ptr,
+                                                                                 const IBackend*                       in_backend_ptr,
                                                                                  OpenGL::VKSwapchainReferenceUniquePtr in_swapchain_reference_ptr)
 {
     OpenGL::VKFrameGraphNodeUniquePtr result_ptr(nullptr,

@@ -488,15 +488,6 @@ bool OpenGL::VKBackend::init()
         goto end;
     }
 
-    m_frame_graph_ptr = OpenGL::VKFrameGraph::create(this);
-
-    if (m_frame_graph_ptr == nullptr)
-    {
-        vkgl_assert(m_frame_graph_ptr != nullptr);
-
-        goto end;
-    }
-
     m_mem_allocator_ptr = Anvil::MemoryAllocator::create_vma(m_device_ptr.get() );
 
     if (m_mem_allocator_ptr == nullptr)
@@ -506,7 +497,7 @@ bool OpenGL::VKBackend::init()
         goto end;
     }
 
-    /* NOTE: We postpone creation of the scheduler to set_frontend_callback(), since we need to be able to pass
+    /* NOTE: We postpone creation of frame graph and scheduler to set_frontend_callback(), since we need to be able to pass
      *       a ptr to the frontend at scheduler creation time. However, in order to create the frontend, backend
      *       instance need to be specified.
      */
@@ -1024,6 +1015,17 @@ void OpenGL::VKBackend::set_frontend_callback(const OpenGL::IContextObjectManage
 
     m_frontend_ptr = in_callback_ptr;
 
+    /* Create the frame graph, now that we know where the frontend is. */
+    m_frame_graph_ptr = OpenGL::VKFrameGraph::create(m_frontend_ptr,
+                                                     this);
+
+    if (m_frame_graph_ptr == nullptr)
+    {
+        vkgl_assert(m_frame_graph_ptr != nullptr);
+
+        goto end;
+    }
+
     /* OK, go ahead and proceed with kicking off the scheduler. */
     m_scheduler_ptr = OpenGL::VKScheduler::create(in_callback_ptr,
                                                   this);
@@ -1032,6 +1034,9 @@ void OpenGL::VKBackend::set_frontend_callback(const OpenGL::IContextObjectManage
     {
         vkgl_assert(m_scheduler_ptr != nullptr);
     }
+
+end:
+    ;
 }
 
 void OpenGL::VKBackend::set_target_window(HWND in_opt_window_handle)
