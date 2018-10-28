@@ -46,6 +46,9 @@ namespace OpenGL
         VKFrameGraph(const OpenGL::IContextObjectManagers* in_frontend_ptr,
                      const OpenGL::IBackend*               in_backend_ptr);
 
+        bool execute_cpu_prepass           (const std::vector<VKFrameGraphNodeUniquePtr>& in_node_ptrs);
+        bool inject_swapchain_acquire_nodes(std::vector<VKFrameGraphNodeUniquePtr>&       inout_node_ptrs);
+
         /* Private variables */
         uint32_t                               m_acquired_swapchain_image_index;
         Anvil::Semaphore*                      m_swapchain_acquire_sem_ptr;

@@ -96,77 +96,19 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
      *    NOTE: Present operations are explicit in (W)GL but there is no equivalent of frame acquisition in GL, which is why
      *          we need this step.
      **/
+    if (!inject_swapchain_acquire_nodes(node_ptrs) )
     {
-        bool     is_swapchain_image_acquired = (m_acquired_swapchain_image_index != UINT32_MAX);
-        uint32_t n_nodes                     = static_cast<uint32_t>(node_ptrs.size() );
+        vkgl_assert_fail();
 
-        for (uint32_t n_current_node = 0;
-                      n_current_node < n_nodes;
-                    ++n_current_node)
-        {
-            auto&      current_node_ptr      = node_ptrs.at                  (n_current_node);
-            const auto current_node_info_ptr = current_node_ptr->get_info_ptr();
-            const auto current_node_type     = current_node_ptr->get_type    ();
-            bool       needs_swapchain_image = false;
-
-            vkgl_assert(current_node_type != FrameGraphNodeType::Acquire_Swapchain_Image);
-
-            if (current_node_type == FrameGraphNodeType::Present_Swapchain_Image)
-            {
-                vkgl_assert(is_swapchain_image_acquired);
-
-                is_swapchain_image_acquired = false;
-            }
-            else
-            {
-                for (const auto& current_input : current_node_info_ptr->inputs)
-                {
-                    if (current_input.type == NodeIOType::Swapchain_Image)
-                    {
-                        needs_swapchain_image = true;
-
-                        break;
-                    }
-                }
-
-                if (!needs_swapchain_image)
-                {
-                    for (const auto& current_output : current_node_info_ptr->outputs)
-                    {
-                        if (current_output.type == NodeIOType::Swapchain_Image)
-                        {
-                            needs_swapchain_image = true;
-
-                            break;
-                        }
-                    }
-                }
-
-                if ( needs_swapchain_image       &&
-                    !is_swapchain_image_acquired)
-                {
-                    auto swapchain_manager_ptr = m_backend_ptr->get_swapchain_manager_ptr      ();
-                    auto new_acquire_node_ptr  = OpenGL::VKNodes::AcquireSwapchainImage::create(m_frontend_ptr,
-                                                                                                m_backend_ptr,
-                                                                                                swapchain_manager_ptr->acquire_swapchain(swapchain_manager_ptr->get_tot_time_marker() ));
-
-                    node_ptrs.insert(node_ptrs.begin() + n_current_node,
-                                     std::move(new_acquire_node_ptr) );
-
-                    is_swapchain_image_acquired = true;
-                }
-            }
-        }
-
+        goto end;
     }
 
     /* 1. Execute CPU prepasses for nodes which require doing so. */
-    for (auto& current_node_ptr : node_ptrs)
+    if (!execute_cpu_prepass(node_ptrs) )
     {
-        if (current_node_ptr->requires_cpu_prepass() )
-        {
-            current_node_ptr->do_cpu_prepass(this);
-        }
+        vkgl_assert_fail();
+
+        goto end;
     }
 
     /* 2. Determine which nodes can be squashed into a single command buffer.
@@ -199,6 +141,19 @@ end:
     node_ptrs.clear();
 }
 
+bool OpenGL::VKFrameGraph::execute_cpu_prepass(const std::vector<VKFrameGraphNodeUniquePtr>& in_node_ptrs)
+{
+    for (auto& current_node_ptr : in_node_ptrs)
+    {
+        if (current_node_ptr->requires_cpu_prepass() )
+        {
+            current_node_ptr->do_cpu_prepass(this);
+        }
+    }
+
+    return true;
+}
+
 uint32_t OpenGL::VKFrameGraph::get_acquired_swapchain_image_index() const
 {
     vkgl_assert(m_acquired_swapchain_image_index != UINT32_MAX);
@@ -220,6 +175,74 @@ bool OpenGL::VKFrameGraph::get_wait_sems(uint32_t*                         out_n
     vkgl_not_implemented();
 
     return false;
+}
+
+bool OpenGL::VKFrameGraph::inject_swapchain_acquire_nodes(std::vector<VKFrameGraphNodeUniquePtr>& inout_node_ptrs)
+{
+    bool     is_swapchain_image_acquired = (m_acquired_swapchain_image_index != UINT32_MAX);
+    uint32_t n_nodes                     = static_cast<uint32_t>(inout_node_ptrs.size() );
+    bool     result                      = false;
+
+    for (uint32_t n_current_node = 0;
+                  n_current_node < n_nodes;
+                ++n_current_node)
+    {
+        auto&      current_node_ptr      = inout_node_ptrs.at            (n_current_node);
+        const auto current_node_info_ptr = current_node_ptr->get_info_ptr();
+        const auto current_node_type     = current_node_ptr->get_type    ();
+        bool       needs_swapchain_image = false;
+
+        vkgl_assert(current_node_type != FrameGraphNodeType::Acquire_Swapchain_Image);
+
+        if (current_node_type == FrameGraphNodeType::Present_Swapchain_Image)
+        {
+            vkgl_assert(is_swapchain_image_acquired);
+
+            is_swapchain_image_acquired = false;
+        }
+        else
+        {
+            for (const auto& current_input : current_node_info_ptr->inputs)
+            {
+                if (current_input.type == NodeIOType::Swapchain_Image)
+                {
+                    needs_swapchain_image = true;
+
+                    break;
+                }
+            }
+
+            if (!needs_swapchain_image)
+            {
+                for (const auto& current_output : current_node_info_ptr->outputs)
+                {
+                    if (current_output.type == NodeIOType::Swapchain_Image)
+                    {
+                        needs_swapchain_image = true;
+
+                        break;
+                    }
+                }
+            }
+
+            if ( needs_swapchain_image       &&
+                !is_swapchain_image_acquired)
+            {
+                auto swapchain_manager_ptr = m_backend_ptr->get_swapchain_manager_ptr      ();
+                auto new_acquire_node_ptr  = OpenGL::VKNodes::AcquireSwapchainImage::create(m_frontend_ptr,
+                                                                                            m_backend_ptr,
+                                                                                            swapchain_manager_ptr->acquire_swapchain(swapchain_manager_ptr->get_tot_time_marker() ));
+
+                inout_node_ptrs.insert(inout_node_ptrs.begin() + n_current_node,
+                                       std::move(new_acquire_node_ptr) );
+
+                is_swapchain_image_acquired = true;
+            }
+        }
+    }
+
+    result = true;
+    return result;
 }
 
 void OpenGL::VKFrameGraph::on_buffer_deleted(Anvil::Buffer* in_buffer_ptr)
