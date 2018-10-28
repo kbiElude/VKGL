@@ -133,9 +133,9 @@ namespace OpenGL
         InternalSwapchainDataUniquePtr create_swapchain     (const SwapchainPropsSnapshot*           in_swapchain_props_ptr) const;
         bool                           init                 ();
 
+        void                           on_all_swapchain_snapshots_out_of_scope    ();
         void                           on_frame_acquisition_semaphore_out_of_scope(InternalSwapchainData* in_swapchain_data_ptr,
                                                                                    Anvil::Semaphore*      in_sem_ptr);
-        void                           on_swapchain_snapshot_out_of_scope         (OpenGL::TimeMarker     in_time_marker);
 
         Anvil::PresentModeKHR  get_present_mode_for_swapchain_props(const SwapchainPropsSnapshot*  in_swapchain_props_ptr,
                                                                     const Anvil::RenderingSurface* in_surface_ptr)         const;

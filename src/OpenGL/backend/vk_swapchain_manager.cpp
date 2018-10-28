@@ -589,9 +589,8 @@ bool OpenGL::VKSwapchainManager::init()
         new decltype(m_snapshot_manager_ptr)::element_type(0,    /* in_object_id                    */
                                                            this, /* in_state_snapshot_accessors_ptr */
                                                            time_now,
-                                                           std::bind(&OpenGL::VKSwapchainManager::on_swapchain_snapshot_out_of_scope,
-                                                                     this,
-                                                                     time_now)
+                                                           std::bind(&OpenGL::VKSwapchainManager::on_all_swapchain_snapshots_out_of_scope,
+                                                                     this)
                                                                     ) );
 
     if (m_snapshot_manager_ptr == nullptr)
@@ -605,6 +604,38 @@ bool OpenGL::VKSwapchainManager::init()
     result = true;
 end:
     return result;
+}
+
+void OpenGL::VKSwapchainManager::on_all_swapchain_snapshots_out_of_scope()
+{
+    /* When this function is called, none of the swapchains are being referenced. While we must not assume ToT
+     * swapchain is not being used at this point, anything older than ToT should technically no longer be in use.
+     * Hence, this is a good opportunity to do some housekeeping */
+    std::lock_guard<std::mutex> lock        (m_mutex);
+    const uint32_t              n_swapchains(static_cast<uint32_t>(m_time_marker_to_internal_swapchain_data_map.size() ));
+
+    if (n_swapchains > 1)
+    {
+        const auto tot_time_marker = m_snapshot_manager_ptr->get_last_modified_time();
+
+        while (m_time_marker_to_internal_swapchain_data_map.size() > 1)
+        {
+            for (auto map_iterator  = m_time_marker_to_internal_swapchain_data_map.begin();
+                      map_iterator != m_time_marker_to_internal_swapchain_data_map.end  ();
+                      map_iterator ++)
+            {
+                if (map_iterator->first != tot_time_marker)
+                {
+                    vkgl_assert(map_iterator->first < tot_time_marker);
+
+                    m_time_marker_to_internal_swapchain_data_map.erase(map_iterator);
+
+                    /* Iterators are no longer valid, need to restart. */
+                    break;
+                }
+            }
+        }
+    }
 }
 
 void OpenGL::VKSwapchainManager::on_frame_acquisition_semaphore_out_of_scope(InternalSwapchainData* in_swapchain_data_ptr,
@@ -621,16 +652,6 @@ void OpenGL::VKSwapchainManager::on_frame_acquisition_semaphore_out_of_scope(Int
                                       [](Anvil::Semaphore* sem_ptr){delete sem_ptr;});
 
     in_swapchain_data_ptr->frame_acquisition_semaphore_ptrs.push_back(std::move(sem_ptr) );
-}
-
-void OpenGL::VKSwapchainManager::on_swapchain_snapshot_out_of_scope(OpenGL::TimeMarker in_time_marker)
-{
-    /* Release the swapchain instance. */
-    auto internal_data_iterator = m_time_marker_to_internal_swapchain_data_map.find(in_time_marker);
-
-    vkgl_assert(internal_data_iterator != m_time_marker_to_internal_swapchain_data_map.end() );
-
-    m_time_marker_to_internal_swapchain_data_map.erase(internal_data_iterator);
 }
 
 Anvil::SemaphoreUniquePtr OpenGL::VKSwapchainManager::pop_frame_acquisition_semaphore(const OpenGL::TimeMarker& in_time_marker)
