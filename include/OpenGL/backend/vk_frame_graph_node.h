@@ -32,6 +32,10 @@ namespace OpenGL
 
         NodeIOType type;
 
+        Anvil::Event*     opt_post_sync_event_ptr;     //< if not null, scheduler will use the event to sync subsequent IO users. Only valid for outputs.
+        Anvil::Fence*     opt_post_sync_fence_ptr;     //< if not null, scheduler will use the fence to sync subsequent IO users. Only valid for outputs.
+        Anvil::Semaphore* opt_post_sync_semaphore_ptr; //< if not null, scheduler will use the sem to sync subsequent IO users. Only valid for outputs.
+
         struct BufferProps
         {
             Anvil::AccessFlags        access;
@@ -102,7 +106,9 @@ namespace OpenGL
         NodeIO()
             :type(NodeIOType::Unknown)
         {
-            /* Stub */
+            opt_post_sync_event_ptr     = nullptr;
+            opt_post_sync_fence_ptr     = nullptr;
+            opt_post_sync_semaphore_ptr = nullptr;
         }
 
         explicit NodeIO(VKBufferReference*               in_vk_buffer_reference_ptr,
@@ -117,7 +123,9 @@ namespace OpenGL
              buffer_reference_ptr(in_vk_buffer_reference_ptr),
              type                (NodeIOType::Buffer)
         {
-            /* Stub */
+            opt_post_sync_event_ptr     = nullptr;
+            opt_post_sync_fence_ptr     = nullptr;
+            opt_post_sync_semaphore_ptr = nullptr;
         }
 
 #if 0
@@ -129,7 +137,9 @@ namespace OpenGL
              image_reference_ptr(in_vk_image_reference_ptr),
              type               (NodeIOType::Image)
         {
-            /* Stub */
+            opt_post_sync_event_ptr     = nullptr;
+            opt_post_sync_fence_ptr     = nullptr;
+            opt_post_sync_semaphore_ptr = nullptr;
         }
 #endif
         explicit NodeIO(VKSwapchainReference*            in_vk_swapchain_reference_ptr,
@@ -144,9 +154,13 @@ namespace OpenGL
              swapchain_reference_ptr(in_vk_swapchain_reference_ptr),
              type                   (NodeIOType::Swapchain_Image)
         {
-            /* Stub */
+            opt_post_sync_event_ptr     = nullptr;
+            opt_post_sync_fence_ptr     = nullptr;
+            opt_post_sync_semaphore_ptr = nullptr;
         }
     } NodeIO;
+
+    typedef std::unique_ptr<NodeIO, std::function<void(NodeIO*)> > NodeIOUniquePtr;
 
     enum class FrameGraphNodeType
     {
@@ -162,17 +176,6 @@ namespace OpenGL
     {
         std::vector<NodeIO> inputs;
         std::vector<NodeIO> outputs;
-
-        Anvil::Event*     opt_post_sync_event_ptr;     //< if not null, scheduler will use the event to sync with subsequent nodes
-        Anvil::Fence*     opt_post_sync_fence_ptr;     //< if not null, scheduler will use the fence to sync with subsequent nodes
-        Anvil::Semaphore* opt_post_sync_semaphore_ptr; //< if not null, scheduler will use the sem to sync with subsequent nodes
-
-        VKFrameGraphNodeInfo()
-        {
-            opt_post_sync_event_ptr     = nullptr;
-            opt_post_sync_fence_ptr     = nullptr;
-            opt_post_sync_semaphore_ptr = nullptr;
-        }
     };
     typedef std::unique_ptr<VKFrameGraphNodeInfo> VKFrameGraphNodeInfoUniquePtr;
 

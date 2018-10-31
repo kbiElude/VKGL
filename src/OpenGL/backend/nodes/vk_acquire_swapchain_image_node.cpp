@@ -53,11 +53,12 @@ OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::AcquireSwapchainImage::create
 
 void OpenGL::VKNodes::AcquireSwapchainImage::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callback_ptr)
 {
-    Anvil::SemaphoreUniquePtr frame_acquire_sem_ptr;
-    uint32_t                  swapchain_frame_index    = UINT32_MAX;
-    Anvil::ImageView*         swapchain_image_view_ptr = nullptr;
-    auto                      swapchain_manager_ptr    = m_backend_ptr->get_swapchain_manager_ptr();
-    Anvil::Swapchain*         swapchain_ptr            = m_swapchain_reference_ptr->get_payload().swapchain_ptr;
+    auto              frame_acquire_sem_ptr    = Anvil::SemaphoreUniquePtr(nullptr,
+                                                                           std::default_delete<Anvil::Semaphore>() );
+    uint32_t          swapchain_frame_index    = UINT32_MAX;
+    Anvil::ImageView* swapchain_image_view_ptr = nullptr;
+    auto              swapchain_manager_ptr    = m_backend_ptr->get_swapchain_manager_ptr();
+    Anvil::Swapchain* swapchain_ptr            = m_swapchain_reference_ptr->get_payload().swapchain_ptr;
 
     vkgl_assert(swapchain_ptr != nullptr);
 
@@ -84,7 +85,7 @@ void OpenGL::VKNodes::AcquireSwapchainImage::do_cpu_prepass(IVKFrameGraphNodeCal
                                                    Anvil::PipelineStageFlagBits::ALL_COMMANDS_BIT,
                                                    Anvil::AccessFlagBits::NONE);
 
-        m_info_ptr->opt_post_sync_semaphore_ptr = m_frame_acquire_sem_ptr.get();
+        m_info_ptr->outputs.at(0).opt_post_sync_semaphore_ptr = m_frame_acquire_sem_ptr.get();
 
         in_callback_ptr->set_acquired_swapchain_image_index(swapchain_frame_index);
         in_callback_ptr->set_swapchain_image_acquired_sem  (m_frame_acquire_sem_ptr.get() );
