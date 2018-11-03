@@ -22,7 +22,6 @@ namespace VKGL
              :m_counter_in     (0),
               m_counter_out    (0),
               m_count_semaphore(0),
-              
               m_space_semaphore(1 << in_n_max_items_log_2)
          {
              vkgl_assert(in_n_max_items_log_2 > 0);

@@ -127,6 +127,7 @@ void OpenGL::VKNodes::Clear::init_info()
                     auto new_node_io = OpenGL::NodeIO(m_swapchain_reference_ptr.get(),
                                                       Anvil::ImageAspectFlagBits::COLOR_BIT,
                                                       Anvil::ImageLayout::TRANSFER_DST_OPTIMAL,
+                                                      Anvil::ImageLayout::UNKNOWN,
                                                       Anvil::PipelineStageFlagBits::TRANSFER_BIT,
                                                       Anvil::AccessFlagBits::TRANSFER_WRITE_BIT);
 
@@ -170,6 +171,7 @@ void OpenGL::VKNodes::Clear::init_info()
         {
             auto new_node_io = OpenGL::NodeIO(m_swapchain_reference_ptr.get(),
                                               Anvil::ImageAspectFlagBits::DEPTH_BIT,
+                                              Anvil::ImageLayout::UNKNOWN,
                                               Anvil::ImageLayout::TRANSFER_DST_OPTIMAL,
                                               Anvil::PipelineStageFlagBits::TRANSFER_BIT,
                                               Anvil::AccessFlagBits::TRANSFER_WRITE_BIT);
@@ -187,6 +189,7 @@ void OpenGL::VKNodes::Clear::init_info()
         {
             auto new_node_io = OpenGL::NodeIO(m_swapchain_reference_ptr.get(),
                                               Anvil::ImageAspectFlagBits::STENCIL_BIT,
+                                              Anvil::ImageLayout::UNKNOWN,
                                               Anvil::ImageLayout::TRANSFER_DST_OPTIMAL,
                                               Anvil::PipelineStageFlagBits::TRANSFER_BIT,
                                               Anvil::AccessFlagBits::TRANSFER_WRITE_BIT);
@@ -243,13 +246,13 @@ void OpenGL::VKNodes::Clear::record_commands(Anvil::CommandBufferBase*  in_cmd_b
                  *
                  * Default FB is a simple single-mip 2D image, so not much rocket science here
                  */
-                subresource_range.aspect_mask      = current_output.swapchain_image_props.aspect;
+                subresource_range.aspect_mask      = current_output.swapchain_image_props.aspects_touched;
                 subresource_range.base_array_layer = 0;
                 subresource_range.base_mip_level   = 0;
                 subresource_range.layer_count      = 1;
                 subresource_range.level_count      = 1;
 
-                if (current_output.swapchain_image_props.aspect == Anvil::ImageAspectFlagBits::COLOR_BIT)
+                if ((current_output.swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::COLOR_BIT) != 0)
                 {
                     VkClearColorValue clear_color_value;
 
@@ -266,18 +269,18 @@ void OpenGL::VKNodes::Clear::record_commands(Anvil::CommandBufferBase*  in_cmd_b
                                                                 1, /* in_range_count */
                                                                &subresource_range);
                 }
-                else
+
+                if ((current_output.swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::DEPTH_BIT)   != 0 ||
+                    (current_output.swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::STENCIL_BIT) != 0)
                 {
                     VkClearDepthStencilValue clear_ds_value;
 
-                    vkgl_assert(current_output.swapchain_image_props.aspect == Anvil::ImageAspectFlagBits::DEPTH_BIT   ||
-                                current_output.swapchain_image_props.aspect == Anvil::ImageAspectFlagBits::STENCIL_BIT);
-
-                    if (current_output.swapchain_image_props.aspect == Anvil::ImageAspectFlagBits::DEPTH_BIT)
+                    if ((current_output.swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::DEPTH_BIT) != 0)
                     {
                         clear_ds_value.depth = static_cast<float>(state_ptr->depth_clear_value);
                     }
-                    else
+
+                    if ((current_output.swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::STENCIL_BIT) != 0)
                     {
                         clear_ds_value.stencil = state_ptr->stencil_clear_value;
                     }
@@ -288,6 +291,8 @@ void OpenGL::VKNodes::Clear::record_commands(Anvil::CommandBufferBase*  in_cmd_b
                                                                         1, /* in_range_count */
                                                                        &subresource_range);
                 }
+
+                break;
             }
 
             default:

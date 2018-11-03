@@ -80,24 +80,32 @@ namespace OpenGL
         struct SwapchainImageProps
         {
             Anvil::AccessFlags        access;
-            Anvil::ImageAspectFlags   aspect;
-            Anvil::ImageLayout        image_layout; //< for inputs:  layout the image must be in prior node execution;
-                                                    //< for outputs: layout the image is in after node finishes executing.
+            Anvil::ImageAspectFlags   aspects_touched;    //< may be COLOR, COLOR | DS or DS. Indicates which aspects are going to be used by the IO.
             Anvil::PipelineStageFlags pipeline_stages;
+
+            Anvil::ImageLayout        color_image_layout; //< for inputs:  layout the image must be in prior node execution;
+                                                          //< for outputs: layout the image is in after node finishes executing.
+            Anvil::ImageLayout        ds_image_layout;
 
             SwapchainImageProps()
             {
-                /* Stub */
+                access             = Anvil::AccessFlagBits::NONE;
+                aspects_touched    = Anvil::ImageAspectFlagBits::NONE;
+                color_image_layout = Anvil::ImageLayout::UNKNOWN;
+                ds_image_layout    = Anvil::ImageLayout::UNKNOWN;
+                pipeline_stages    = Anvil::PipelineStageFlagBits::NONE;
             }
 
-            SwapchainImageProps(const Anvil::ImageAspectFlags&   in_aspect,
-                                const Anvil::ImageLayout&        in_image_layout,
+            SwapchainImageProps(const Anvil::ImageAspectFlags&   in_aspects_touched,
+                                const Anvil::ImageLayout&        in_color_image_layout,
+                                const Anvil::ImageLayout&        in_ds_image_layout,
                                 const Anvil::PipelineStageFlags& in_pipeline_stages,
                                 const Anvil::AccessFlags&        in_access)
-                :access         (in_access),
-                 aspect         (in_aspect),
-                 image_layout   (in_image_layout),
-                 pipeline_stages(in_pipeline_stages)
+                :access            (in_access),
+                 aspects_touched   (in_aspects_touched),
+                 color_image_layout(in_color_image_layout),
+                 ds_image_layout   (in_ds_image_layout),
+                 pipeline_stages   (in_pipeline_stages)
             {
                 /* Stub */
             }
@@ -144,11 +152,13 @@ namespace OpenGL
 #endif
         explicit NodeIO(VKSwapchainReference*            in_vk_swapchain_reference_ptr,
                         const Anvil::ImageAspectFlags&   in_aspect,
-                        const Anvil::ImageLayout&        in_image_layout,
+                        const Anvil::ImageLayout&        in_color_image_layout,
+                        const Anvil::ImageLayout&        in_ds_image_layout,
                         const Anvil::PipelineStageFlags& in_pipeline_stages,
                         const Anvil::AccessFlags&        in_access)
             :swapchain_image_props  (in_aspect,
-                                     in_image_layout,
+                                     in_color_image_layout,
+                                     in_ds_image_layout,
                                      in_pipeline_stages,
                                      in_access),
              swapchain_reference_ptr(in_vk_swapchain_reference_ptr),

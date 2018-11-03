@@ -31,6 +31,7 @@ OpenGL::VKNodes::PresentSwapchainImage::PresentSwapchainImage(const IContextObje
     m_info_ptr->inputs.at(0) = OpenGL::NodeIO(m_swapchain_reference_ptr.get(),
                                               Anvil::ImageAspectFlagBits::COLOR_BIT,
                                               Anvil::ImageLayout::PRESENT_SRC_KHR,
+                                              Anvil::ImageLayout::UNKNOWN,                      //< don't care
                                               Anvil::PipelineStageFlagBits::BOTTOM_OF_PIPE_BIT,
                                               Anvil::AccessFlagBits::NONE);
 }

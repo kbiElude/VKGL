@@ -28,6 +28,8 @@ namespace OpenGL
         ~VKSwapchainManager();
 
         VKSwapchainReferenceUniquePtr acquire_swapchain               (const OpenGL::TimeMarker& in_time_marker);
+        Anvil::Image*                 get_ds_image                    (const OpenGL::TimeMarker& in_time_marker,
+                                                                       const uint32_t&           in_n_swapchain_image);
         Anvil::Queue*                 get_presentable_queue           (const OpenGL::TimeMarker& in_time_marker);
         OpenGL::TimeMarker            get_tot_time_marker             ()                                          const;
         Anvil::SemaphoreUniquePtr     pop_frame_acquisition_semaphore (const OpenGL::TimeMarker& in_time_marker); //< deleter automatically resets & pushes the sem back to cache.

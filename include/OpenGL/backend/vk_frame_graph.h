@@ -58,15 +58,55 @@ namespace OpenGL
             }
         } BufferSubRangeInfo;
 
+        typedef struct SwapchainImageInfo
+        {
+            /* NOTE: In OpenGL, default framebuffer encapsulates up to 3 aspects at once. In Vulkan, a swapchain only holds color data.
+             *       From frame graph's perspective, we still need to make sure we keep track of information necessary to correctly sync all
+             *       aspects of the default FB's state.
+             */
+            Anvil::ImageLayout color_aspect_layout;
+            Anvil::ImageLayout ds_aspect_layout;
+            uint32_t           owning_queue_family_index;
+
+            SwapchainImageInfo()
+                :color_aspect_layout      (Anvil::ImageLayout::UNDEFINED),    //< default value as per spec
+                 ds_aspect_layout         (Anvil::ImageLayout::UNDEFINED),
+                 owning_queue_family_index(UINT32_MAX)
+            {
+                /* Stub */
+            }
+        } SwapchainImageInfo;
+
+        typedef struct CommandBufferSubmission
+        {
+            Anvil::Queue* queue_ptr; //< possibly null if this is a CPU-based submission.
+
+            std::vector<Anvil::CommandBufferBaseUniquePtr> command_buffers_ptr;
+            std::vector<Anvil::Semaphore*>                 signal_semaphore_ptrs;
+            std::vector<Anvil::PipelineStageFlags>         wait_dst_stage_masks;
+            std::vector<Anvil::Semaphore*>                 wait_semaphore_ptrs;
+
+            std::vector<Anvil::SemaphoreUniquePtr> owned_semaphore_ptrs;
+
+            CommandBufferSubmission(Anvil::Queue* in_queue_ptr)
+                :queue_ptr(in_queue_ptr)
+            {
+                /* Stub */
+            }
+        } CommandBufferSubmission;
+        typedef std::unique_ptr<CommandBufferSubmission, std::function<void(CommandBufferSubmission*)> > CommandBufferSubmissionUniquePtr;
+
         typedef struct GroupNodeConnectionInfo
         {
             const GroupNode*      src_group_node_ptr;
             const OpenGL::NodeIO* src_group_node_io_ptr; // output
 
+            uint32_t n_dst_group_node;
             uint32_t n_dst_group_node_input;
 
             GroupNodeConnectionInfo()
-                :n_dst_group_node_input(UINT32_MAX),
+                :n_dst_group_node      (UINT32_MAX),
+                 n_dst_group_node_input(UINT32_MAX),
                  src_group_node_io_ptr (nullptr),
                  src_group_node_ptr    (nullptr)
             {
@@ -75,8 +115,10 @@ namespace OpenGL
 
             GroupNodeConnectionInfo(const GroupNode*      in_src_group_node_ptr,
                                     const OpenGL::NodeIO* in_src_group_node_io_ptr,
+                                    const uint32_t&       in_n_dst_group_node,
                                     const uint32_t&       in_n_dst_group_node_input)
-                :n_dst_group_node_input(in_n_dst_group_node_input),
+                :n_dst_group_node      (in_n_dst_group_node),
+                 n_dst_group_node_input(in_n_dst_group_node_input),
                  src_group_node_io_ptr (in_src_group_node_io_ptr),
                  src_group_node_ptr    (in_src_group_node_ptr)
             {
@@ -87,22 +129,26 @@ namespace OpenGL
 
         typedef struct GroupNode
         {
-            Anvil::QueueFamilyFlagBits queue_family;
+            Anvil::QueueFamilyType queue_family;
 
             std::vector<OpenGL::IVKFrameGraphNode*> graph_node_ptrs;
             std::vector<OpenGL::NodeIOUniquePtr>    input_ptrs;
             std::vector<OpenGL::NodeIOUniquePtr>    output_ptrs;
 
+            std::vector<GroupNodeConnectionInfoUniquePtr>              incoming_connections_ptr;
             std::unordered_map<const OpenGL::NodeIO*, OpenGL::NodeIO*> node_io_ptr_to_group_node_io_ptr_map;
+            CommandBufferSubmission*                                   parent_submission_ptr;
 
             GroupNode()
-                :queue_family(Anvil::QueueFamilyFlagBits::NONE)
+                :parent_submission_ptr(nullptr),
+                 queue_family         (Anvil::QueueFamilyType::UNDEFINED)
             {
                 /* Stub */
             }
 
-            GroupNode(const Anvil::QueueFamilyFlagBits& in_queue_family)
-                :queue_family(in_queue_family)
+            GroupNode(const Anvil::QueueFamilyType& in_queue_family)
+                :queue_family         (in_queue_family),
+                 parent_submission_ptr(nullptr)
             {
                 /* Stub */
             }
@@ -113,6 +159,31 @@ namespace OpenGL
                         const bool&           in_is_input);
         } GroupNode;
         typedef std::unique_ptr<GroupNode, std::function<void(GroupNode*)> > GroupNodeUniquePtr;
+
+        typedef struct QueueRing
+        {
+            QueueRing(const uint32_t&      in_n_queues,
+                      Anvil::Queue** const in_queues_ptr)
+                :n_last_queue_grabbed(in_n_queues - 1),
+                 queue_ptrs          (in_n_queues)
+            {
+                memcpy(queue_ptrs.data(),
+                       in_queues_ptr,
+                       in_n_queues * sizeof(Anvil::Queue*) );
+            }
+
+            Anvil::Queue* get_queue_ptr()
+            {
+                const auto queue_index = ((++n_last_queue_grabbed) % static_cast<uint32_t>(queue_ptrs.size() ));
+
+                return queue_ptrs.at(queue_index);
+            }
+
+        private:
+            std::vector<Anvil::Queue*> queue_ptrs;
+            uint32_t                   n_last_queue_grabbed;
+        } QueueRing;
+        typedef std::unique_ptr<QueueRing> QueueRingUniquePtr;
 
         /* IVKFrameGraphNodeCallback functions */
         uint32_t          get_acquired_swapchain_image_index()                             const final;
@@ -129,11 +200,31 @@ namespace OpenGL
         VKFrameGraph(const OpenGL::IContextObjectManagers* in_frontend_ptr,
                      const OpenGL::IBackend*               in_backend_ptr);
 
-        bool coalesce_to_group_nodes       (const std::vector<VKFrameGraphNodeUniquePtr>&                          in_node_ptrs,
-                                            std::vector<GroupNodeUniquePtr>*                                       out_group_nodes_ptr,
-                                            std::unordered_map<const GroupNode*, std::vector<const GroupNode* > >* out_src_dst_group_node_connections_ptr);
-        bool execute_cpu_prepass           (const std::vector<VKFrameGraphNodeUniquePtr>&                          in_node_ptrs);
-        bool inject_swapchain_acquire_nodes(std::vector<VKFrameGraphNodeUniquePtr>&                                inout_node_ptrs);
+        void process_swapchain_image_node_input            (std::vector<Anvil::ImageBarrier>& inout_image_barriers,
+                                                            const NodeIO*                     in_input_ptr,
+                                                            const Anvil::Queue*               in_opt_queue_ptr,
+                                                            const Anvil::AccessFlags&         in_access_mask_for_color_aspect,
+                                                            const Anvil::AccessFlags&         in_access_mask_for_ds_aspects);
+        void split_access_mask_to_color_and_ds_access_masks(const Anvil::AccessFlags&         in_access_mask,
+                                                            Anvil::AccessFlags*               out_color_aspect_access_mask_ptr,
+                                                            Anvil::AccessFlags*               out_ds_aspects_access_mask_ptr) const;
+
+        bool coalesce_to_group_nodes       (const std::vector<VKFrameGraphNodeUniquePtr>&                                in_node_ptrs,
+                                            std::vector<GroupNodeUniquePtr>*                                             out_group_nodes_ptr,
+                                            std::unordered_map<const GroupNode*, std::vector<const GroupNode* > >*       out_src_dst_group_node_connections_ptr);
+        bool execute_cpu_prepass           (const std::vector<VKFrameGraphNodeUniquePtr>&                                in_node_ptrs);
+        bool inject_swapchain_acquire_nodes(std::vector<VKFrameGraphNodeUniquePtr>&                                      inout_node_ptrs);
+        bool record_command_buffers        (const std::vector<GroupNodeUniquePtr>&                                       in_group_nodes_ptr,
+                                            const std::unordered_map<const GroupNode*, std::vector<const GroupNode* > >& in_src_dst_group_node_connections_ptr,
+                                            std::vector<CommandBufferSubmissionUniquePtr>*                               out_cmd_buffer_submissions_ptr);
+        bool submit_command_buffers        (const std::vector<CommandBufferSubmissionUniquePtr>&                         in_cmd_buffer_submissions_ptr,
+                                            Anvil::Fence*                                                                in_opt_wait_fence_ptr);
+
+        bool init                ();
+        bool init_per_object_data();
+        bool init_queue_rings    ();
+
+        bool do_group_nodes_encapsulate_swapchain_acquire_present_command_stream(const std::vector<GroupNodeUniquePtr>& in_group_nodes_ptr) const;
 
         /* Private variables */
         uint32_t                               m_acquired_swapchain_image_index;
@@ -144,6 +235,9 @@ namespace OpenGL
         std::vector<VKFrameGraphNodeUniquePtr> m_node_ptrs;
 
         std::unordered_map<Anvil::Buffer*, std::vector<BufferSubRangeInfo> > m_buffer_data; //< todo: Use binary tree or a more fancy structure to speed up coalesce/split ops
+        std::vector<SwapchainImageInfo>                                      m_swapchain_image_data;
+
+        std::unordered_map<Anvil::QueueFamilyType, QueueRingUniquePtr> m_queue_ring_ptr_per_queue_fam;
 
         std::mutex m_execute_mutex;
         std::mutex m_general_mutex;
