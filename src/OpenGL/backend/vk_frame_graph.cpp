@@ -916,10 +916,14 @@ void OpenGL::VKFrameGraph::process_swapchain_image_node_input(std::vector<Anvil:
         !ds_image_layouts_match    ||
         !queue_fams_match)
     {
+        /* NOTE: current_swapchain_image_props.owning_queue_family_index may be UINT32_MAX if the swapchain image has never been used. In this case, we acquire ownership
+         *       of the image by specifying the same dst & src queue fam in the image barrier.
+         */
         const auto dst_queue_family_index = (queue_fams_match) ? VK_QUEUE_FAMILY_IGNORED
                                                                : in_opt_queue_ptr->get_queue_family_index();
         const auto src_queue_family_index = (queue_fams_match) ? VK_QUEUE_FAMILY_IGNORED
-                                                               : current_swapchain_image_props.owning_queue_family_index;
+                                                               : (current_swapchain_image_props.owning_queue_family_index == UINT32_MAX) ? dst_queue_family_index
+                                                                                                                                         : current_swapchain_image_props.owning_queue_family_index;
 
         for (uint32_t n_iteration = 0;
                       n_iteration < 2; /* color, ds */
