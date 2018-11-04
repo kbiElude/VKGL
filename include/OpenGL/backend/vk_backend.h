@@ -396,6 +396,9 @@ namespace OpenGL
         bool init_anvil       ();
         bool init_capabilities();
 
+        VkBool32 on_debug_callback_received(VkDebugReportFlagsEXT in_message_flags,
+                                            const char*           in_message) const;
+
         /* Private variables */
 
         VKBufferManagerUniquePtr                                      m_buffer_manager_ptr;

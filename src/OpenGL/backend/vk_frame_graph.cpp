@@ -673,10 +673,7 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
         goto end;
     }
 
-    /* 5. Update layout, ownership, etc. information for buffer ranges and image subresources touched by the submissions. */
-    vkgl_not_implemented();
-
-    /* 6. If this was requested, wait for the GPU-side operations to finish before leaving. */
+    /* 5. If this was requested, wait for the GPU-side operations to finish before leaving. */
     if (wait_fence_ptr != nullptr)
     {
         VkResult result_vk = Anvil::Vulkan::vkWaitForFences(device_ptr->get_device_vk(),

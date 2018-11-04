@@ -15,6 +15,7 @@
 #include "OpenGL/frontend/gl_shader_manager.h"
 #include "OpenGL/frontend/gl_state_manager.h"
 #include "WGL/context.h"
+#include <sstream>
 
 /* TODO: Touching heap memory is awful, but right now this happens in every command handler because
  *       command processing happens in scheduler's thread to ensure the app never gets blocked by VKGL.
@@ -516,7 +517,14 @@ bool OpenGL::VKBackend::init_anvil()
     /* Create a Vulkan instance. */
     m_instance_ptr = Anvil::Instance::create("VKGL",
                                              "VKGL",
+#if defined(_DEBUG)
+                                             std::bind(&OpenGL::VKBackend::on_debug_callback_received,
+                                                       this,
+                                                       std::placeholders::_1,
+                                                       std::placeholders::_4),
+#else
                                              Anvil::DebugCallbackFunction(),
+#endif
                                              true); /* in_mt_safe */
 
     if (m_instance_ptr == nullptr)
@@ -857,6 +865,33 @@ void OpenGL::VKBackend::multi_draw_elements(const OpenGL::DrawCallMode&      in_
                                             const GLsizei&                   in_drawcount)
 {
     vkgl_not_implemented();
+}
+
+VkBool32 OpenGL::VKBackend::on_debug_callback_received(VkDebugReportFlagsEXT in_message_flags,
+                                                       const char*           in_message) const
+{
+    VkBool32 result = VK_SUCCESS;
+
+    if ((in_message_flags & VK_DEBUG_REPORT_ERROR_BIT_EXT) != 0)
+    {
+        #if defined(_WIN32)
+        {
+            std::stringstream error_sstream;
+
+            error_sstream << "[VALIDATION ERROR]: "
+                          << in_message;
+
+            ::OutputDebugStringA(error_sstream.str().c_str() );
+        }
+        #else
+        {
+            #error Unsupported OS
+        }
+        #endif
+    }
+
+    return false;
+
 }
 
 void OpenGL::VKBackend::on_objects_created(const OpenGL::ObjectType& in_object_type,
