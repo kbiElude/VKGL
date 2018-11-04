@@ -79,12 +79,14 @@ void OpenGL::VKNodes::AcquireSwapchainImage::do_cpu_prepass(IVKFrameGraphNodeCal
         vkgl_assert(m_frame_acquire_sem_ptr == nullptr);
         m_frame_acquire_sem_ptr = std::move(frame_acquire_sem_ptr);
 
+        /* TODO: Access mask should be adjusted by frame graph to match actual swapchain image usage! */
         m_info_ptr->outputs.at(0) = OpenGL::NodeIO(m_swapchain_reference_ptr.get(),
                                                    Anvil::ImageAspectFlagBits::COLOR_BIT | Anvil::ImageAspectFlagBits::DEPTH_BIT | Anvil::ImageAspectFlagBits::STENCIL_BIT,
                                                    Anvil::ImageLayout::UNDEFINED,
                                                    Anvil::ImageLayout::UNDEFINED,
                                                    Anvil::PipelineStageFlagBits::ALL_COMMANDS_BIT,
-                                                   Anvil::AccessFlagBits::NONE);
+                                                   Anvil::AccessFlagBits::COLOR_ATTACHMENT_READ_BIT | Anvil::AccessFlagBits::COLOR_ATTACHMENT_WRITE_BIT |
+                                                   Anvil::AccessFlagBits::TRANSFER_READ_BIT         | Anvil::AccessFlagBits::TRANSFER_WRITE_BIT);
 
         m_info_ptr->outputs.at(0).opt_post_sync_semaphore_ptr = m_frame_acquire_sem_ptr.get();
 

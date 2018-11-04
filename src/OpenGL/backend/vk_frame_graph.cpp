@@ -124,6 +124,10 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
                                                      std::default_delete<GroupNode>() );
     bool result                 = false;
 
+    auto       device_ptr                     = m_backend_ptr->get_device_ptr();
+    const auto device_supports_compute_queues = device_ptr->get_n_compute_queues () > 0;
+    const auto device_supports_dma_queues     = device_ptr->get_n_transfer_queues() > 0;
+
     for (const auto& current_node_ptr : in_node_ptrs)
     {
         const auto                        current_node_info_ptr                       = current_node_ptr->get_info_ptr                 ();
@@ -230,8 +234,8 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
         /* Next, we need to decide when it is actually sensible to coalesce input nodes into as single group node.
          * For now, follow the following heuristics:
          *
-         * 1. If a node supports DMA queue, make sure to offload the operations there.
-         * 2. If a node supports compute queue, make sure to use it.
+         * 1. If a node AND HW supports DMA queue, make sure to offload the operations there.
+         * 2. If a node AND HW supports compute queue, make sure to use it.
          * 3. Otherwise, use universal queue.
          *
          * In specific, ignore the preferred order reported by nodes. At least for now.
@@ -239,10 +243,10 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
          * TODO: Once node reshuffling is introduced, this should actually become performant. For now, I'm expecting
          *       this logic to create a flurry of command buffers. Oh well.
          */
-        const Anvil::QueueFamilyType required_queue_family_type = (current_node_supports_dma_queues)       ? Anvil::QueueFamilyType::TRANSFER
-                                                                : (current_node_supports_compute_queues)   ? Anvil::QueueFamilyType::COMPUTE
-                                                                : (current_node_supports_universal_queues) ? Anvil::QueueFamilyType::UNIVERSAL
-                                                                                                           : Anvil::QueueFamilyType::UNDEFINED;
+        const Anvil::QueueFamilyType required_queue_family_type = (current_node_supports_dma_queues       && device_supports_dma_queues)     ? Anvil::QueueFamilyType::TRANSFER
+                                                                : (current_node_supports_compute_queues   && device_supports_compute_queues) ? Anvil::QueueFamilyType::COMPUTE
+                                                                : (current_node_supports_universal_queues)                                   ? Anvil::QueueFamilyType::UNIVERSAL
+                                                                                                                                             : Anvil::QueueFamilyType::UNDEFINED;
 
         vkgl_assert(( current_node_requires_gpu_side_execution && required_queue_family_type != Anvil::QueueFamilyType::UNDEFINED) ||
                     (!current_node_requires_gpu_side_execution && required_queue_family_type == Anvil::QueueFamilyType::UNDEFINED) );
@@ -900,7 +904,8 @@ void OpenGL::VKFrameGraph::process_swapchain_image_node_input(std::vector<Anvil:
                                                               const NodeIO*                     in_input_ptr,
                                                               const Anvil::Queue*               in_opt_queue_ptr,
                                                               const Anvil::AccessFlags&         in_access_mask_for_color_aspect,
-                                                              const Anvil::AccessFlags&         in_access_mask_for_ds_aspects)
+                                                              const Anvil::AccessFlags&         in_access_mask_for_ds_aspects,
+                                                              Anvil::PipelineStageFlags&        inout_src_pipeline_stages)
 {
     auto swapchain_manager_ptr = m_backend_ptr->get_swapchain_manager_ptr();
 
@@ -952,18 +957,25 @@ void OpenGL::VKFrameGraph::process_swapchain_image_node_input(std::vector<Anvil:
                 (!layouts_match        ||
                  !queue_fams_match) )
             {
-                const auto         old_layout          = (is_color_iteration) ? current_swapchain_image_props.color_aspect_layout
-                                                                              : current_swapchain_image_props.ds_aspect_layout;
-                const auto         new_layout          = (is_color_iteration) ? in_input_ptr->swapchain_image_props.color_image_layout
-                                                                              : in_input_ptr->swapchain_image_props.ds_image_layout;
-                const auto         src_access_mask     = (is_color_iteration) ? in_access_mask_for_color_aspect
-                                                                              : in_access_mask_for_ds_aspects;
-                auto               subresource_range   = image_ptr->get_subresource_range();
+                const auto old_layout          = (is_color_iteration) ? current_swapchain_image_props.color_aspect_layout
+                                                                      : current_swapchain_image_props.ds_aspect_layout;
+                const auto new_layout          = (is_color_iteration) ? in_input_ptr->swapchain_image_props.color_image_layout
+                                                                      : in_input_ptr->swapchain_image_props.ds_image_layout;
+                auto       src_access_mask     = (is_color_iteration) ? in_access_mask_for_color_aspect
+                                                                      : in_access_mask_for_ds_aspects;
+                const auto dst_access_mask     = in_input_ptr->swapchain_image_props.access;
+                auto       subresource_range   = image_ptr->get_subresource_range();
+
+                if (src_access_mask == Anvil::AccessFlagBits::NONE)
+                {
+                    src_access_mask            = dst_access_mask;
+                    inout_src_pipeline_stages |= in_input_ptr->swapchain_image_props.pipeline_stages;
+                }
 
                 /* Cache the image memory barrier */
                 {
                     auto image_barrier = Anvil::ImageBarrier(src_access_mask,
-                                                             in_input_ptr->swapchain_image_props.access, /* in_destination_access_mask */
+                                                             dst_access_mask,
                                                              old_layout,
                                                              new_layout,
                                                              src_queue_family_index,
@@ -1194,7 +1206,8 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
                                                        current_input_ptr.get(),
                                                        current_submission_ptr->queue_ptr,
                                                        color_src_access_mask,
-                                                       ds_src_access_mask);
+                                                       ds_src_access_mask,
+                                                       group_node_pre_barriers.src_pipeline_stages);
 
                     group_node_pre_barriers.dst_pipeline_stages |= current_input_ptr->swapchain_image_props.pipeline_stages;
 
@@ -1273,7 +1286,8 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
                                                            dst_io_ptr,
                                                            current_submission_ptr->queue_ptr,
                                                            dst_access_mask_color,
-                                                           dst_access_mask_ds);
+                                                           dst_access_mask_ds,
+                                                           dst_graph_node_pre_barriers.src_pipeline_stages);
 
                         dst_graph_node_pre_barriers.dst_pipeline_stages |= dst_io_ptr->swapchain_image_props.pipeline_stages;
                         dst_graph_node_pre_barriers.src_pipeline_stages |= src_io_ptr->swapchain_image_props.pipeline_stages;

@@ -210,7 +210,6 @@ void OpenGL::VKNodes::Clear::get_supported_queue_families(uint32_t*             
     static const Anvil::QueueFamilyFlagBits supported_queue_fams[] =
     {
         Anvil::QueueFamilyFlagBits::COMPUTE_BIT,
-        Anvil::QueueFamilyFlagBits::DMA_BIT,
         Anvil::QueueFamilyFlagBits::GRAPHICS_BIT,
     };
 

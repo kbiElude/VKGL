@@ -236,7 +236,8 @@ namespace OpenGL
                                                             const NodeIO*                     in_input_ptr,
                                                             const Anvil::Queue*               in_opt_queue_ptr,
                                                             const Anvil::AccessFlags&         in_access_mask_for_color_aspect,
-                                                            const Anvil::AccessFlags&         in_access_mask_for_ds_aspects);
+                                                            const Anvil::AccessFlags&         in_access_mask_for_ds_aspects,
+                                                            Anvil::PipelineStageFlags&        inout_src_pipeline_stages);
         void split_access_mask_to_color_and_ds_access_masks(const Anvil::AccessFlags&         in_access_mask,
                                                             Anvil::AccessFlags*               out_color_aspect_access_mask_ptr,
                                                             Anvil::AccessFlags*               out_ds_aspects_access_mask_ptr) const;
