@@ -1381,8 +1381,10 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
             }
         }
 
-        current_submission_ptr->command_buffers_ptr.push_back(
-            std::move(cmd_buffer_ptr));
+        current_submission_ptr->command_buffers_ptr.push_back(cmd_buffer_ptr.get() );
+
+        /* TODO: ONCE GRAVEYARD COLLECTOR LANDS, ENSURE THIS COMMAND BUFFER DOES NOT GO OUT OF SCOPE BEFORE ACTUAL SUBMISSIONS ARE MADE! */
+        m_cmd_buffer_ptr_graveyard.push_back(std::move(cmd_buffer_ptr) );
 
         out_cmd_buffer_submissions_ptr->push_back(
             std::move(current_submission_ptr)
@@ -1405,7 +1407,11 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
                 current_connection_data.dst_node_ptr->parent_submission_ptr->wait_dst_stage_masks.push_back(current_connection_data.dst_pipeline_stages);
                 current_connection_data.dst_node_ptr->parent_submission_ptr->wait_semaphore_ptrs.push_back (sem_ptr.get() );
                 src_group_node_ptr->parent_submission_ptr->signal_semaphore_ptrs.push_back                 (sem_ptr.get() );
-                src_group_node_ptr->parent_submission_ptr->owned_semaphore_ptrs.push_back                  (std::move  (sem_ptr) );
+
+                /* TODO: THIS NEEDS TO BE MOVED OUT ONCE GRAVEYARD COLLECTOR ACTUALLY LANDS. We don't want it to release the sem before it's actually
+                 *       used for a submission !
+                 */
+                m_sem_ptr_graveyard.push_back(std::move(sem_ptr) );
             }
         }
     }
@@ -1514,7 +1520,7 @@ bool OpenGL::VKFrameGraph::submit_command_buffers(const std::vector<CommandBuffe
                 signal_sem_ptrs.push_back(cpu_submission_sem_ptr.get() );
 
                 /* Follow with actual submission. */
-                Anvil::SubmitInfo submit_info = Anvil::SubmitInfo::create(current_submission_ptr->command_buffers_ptr.at(0).get(),
+                Anvil::SubmitInfo submit_info = Anvil::SubmitInfo::create(current_submission_ptr->command_buffers_ptr.at(0),
                                                                           static_cast<uint32_t>(signal_sem_ptrs.size() ),
                                                                           (signal_sem_ptrs.size() > 0) ? &signal_sem_ptrs.at(0) : nullptr,
                                                                           static_cast<uint32_t>(current_submission_ptr->wait_semaphore_ptrs.size() ),
@@ -1528,7 +1534,7 @@ bool OpenGL::VKFrameGraph::submit_command_buffers(const std::vector<CommandBuffe
             else
             {
                 /* Just do the submit directly. */
-                Anvil::SubmitInfo submit_info = Anvil::SubmitInfo::create(current_submission_ptr->command_buffers_ptr.at(0).get(),
+                Anvil::SubmitInfo submit_info = Anvil::SubmitInfo::create(current_submission_ptr->command_buffers_ptr.at(0),
                                                                           static_cast<uint32_t>(current_submission_ptr->signal_semaphore_ptrs.size() ),
                                                                           (current_submission_ptr->signal_semaphore_ptrs.size() > 0) ? &current_submission_ptr->signal_semaphore_ptrs.at(0) : nullptr,
                                                                           static_cast<uint32_t>(current_submission_ptr->wait_semaphore_ptrs.size() ),
@@ -1600,6 +1606,11 @@ bool OpenGL::VKFrameGraph::submit_command_buffers(const std::vector<CommandBuffe
             {
                 m_wait_sem_vec_for_current_cpu_node.clear();
             }
+        }
+
+        if (cpu_submission_sem_ptr != nullptr)
+        {
+            m_sem_ptr_graveyard.push_back(std::move(cpu_submission_sem_ptr) );
         }
     }
 

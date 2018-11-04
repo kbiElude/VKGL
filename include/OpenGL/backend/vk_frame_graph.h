@@ -82,12 +82,10 @@ namespace OpenGL
             GroupNode*    parent_group_node_ptr;
             Anvil::Queue* queue_ptr; //< possibly null if this is a CPU-based submission.
 
-            std::vector<Anvil::PrimaryCommandBufferUniquePtr> command_buffers_ptr;
-            std::vector<Anvil::Semaphore*>                    signal_semaphore_ptrs;
-            std::vector<Anvil::PipelineStageFlags>            wait_dst_stage_masks;
-            std::vector<Anvil::Semaphore*>                    wait_semaphore_ptrs;
-
-            std::vector<Anvil::SemaphoreUniquePtr> owned_semaphore_ptrs;
+            std::vector<Anvil::PrimaryCommandBuffer*> command_buffers_ptr;
+            std::vector<Anvil::Semaphore*>            signal_semaphore_ptrs;
+            std::vector<Anvil::PipelineStageFlags>    wait_dst_stage_masks;
+            std::vector<Anvil::Semaphore*>            wait_semaphore_ptrs;
 
             CommandBufferSubmission(GroupNode*    in_parent_group_node_ptr,
                                     Anvil::Queue* in_queue_ptr)
@@ -274,6 +272,14 @@ namespace OpenGL
         std::vector<Anvil::Semaphore*>         m_wait_sem_vec_for_current_cpu_node;
 
         std::unordered_map<Anvil::QueueFamilyType, QueueRingUniquePtr> m_queue_ring_ptr_per_queue_fam;
+
+        //< todo: this holds sems which have been used for submission and no fence has been used which would let us determine
+        //<       the status of the sem.. Once we're sure they're no longer used, they should be destroyed or released back to the sem pool.
+        //<       One way of determining this would be to spawn a "cleanup" task every second which would device-idle and wipe out all
+        //<       sems from the graveyard (the list would've had to be cached before the wait op, of course).
+        //<       Other types of graveyards are also used. Same rules apply.
+        std::vector<Anvil::PrimaryCommandBufferUniquePtr> m_cmd_buffer_ptr_graveyard;
+        std::vector<Anvil::SemaphoreUniquePtr>            m_sem_ptr_graveyard;
 
         std::mutex m_execute_mutex;
         std::mutex m_general_mutex;
