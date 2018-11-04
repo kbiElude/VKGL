@@ -459,11 +459,11 @@ namespace OpenGL
         //< Can only be called by nodes reporting true via IVKFrameGraphNode::requires_manual_wait_sem_sync().
         //< Otherwise, the function will trigger an assertion failure and fail.
         virtual bool get_wait_sems(uint32_t*                         out_n_wait_sems_ptr,
-                                   Anvil::Semaphore**                out_wait_sems_ptr_ptr,
+                                   Anvil::Semaphore***               out_wait_sems_ptr_ptr_ptr,
                                    const Anvil::PipelineStageFlags** out_wait_sem_stage_mask_ptr_ptr) = 0;
 
-        virtual void              set_acquired_swapchain_image_index(const uint32_t&   in_index)   = 0;
-        virtual void              set_swapchain_image_acquired_sem  (Anvil::Semaphore* in_sem_ptr) = 0;
+        virtual void set_acquired_swapchain_image_index(const uint32_t&   in_index)   = 0;
+        virtual void set_swapchain_image_acquired_sem  (Anvil::Semaphore* in_sem_ptr) = 0;
     };
 };
 

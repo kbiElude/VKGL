@@ -79,19 +79,22 @@ namespace OpenGL
 
         typedef struct CommandBufferSubmission
         {
+            GroupNode*    parent_group_node_ptr;
             Anvil::Queue* queue_ptr; //< possibly null if this is a CPU-based submission.
 
-            std::vector<Anvil::CommandBufferBaseUniquePtr> command_buffers_ptr;
-            std::vector<Anvil::Semaphore*>                 signal_semaphore_ptrs;
-            std::vector<Anvil::PipelineStageFlags>         wait_dst_stage_masks;
-            std::vector<Anvil::Semaphore*>                 wait_semaphore_ptrs;
+            std::vector<Anvil::PrimaryCommandBufferUniquePtr> command_buffers_ptr;
+            std::vector<Anvil::Semaphore*>                    signal_semaphore_ptrs;
+            std::vector<Anvil::PipelineStageFlags>            wait_dst_stage_masks;
+            std::vector<Anvil::Semaphore*>                    wait_semaphore_ptrs;
 
             std::vector<Anvil::SemaphoreUniquePtr> owned_semaphore_ptrs;
 
-            CommandBufferSubmission(Anvil::Queue* in_queue_ptr)
-                :queue_ptr(in_queue_ptr)
+            CommandBufferSubmission(GroupNode*    in_parent_group_node_ptr,
+                                    Anvil::Queue* in_queue_ptr)
+                :parent_group_node_ptr(in_parent_group_node_ptr),
+                 queue_ptr            (in_queue_ptr)
             {
-                /* Stub */
+                vkgl_assert(parent_group_node_ptr != nullptr);
             }
         } CommandBufferSubmission;
         typedef std::unique_ptr<CommandBufferSubmission, std::function<void(CommandBufferSubmission*)> > CommandBufferSubmissionUniquePtr;
@@ -138,17 +141,20 @@ namespace OpenGL
             std::vector<GroupNodeConnectionInfoUniquePtr>              incoming_connections_ptr;
             std::unordered_map<const OpenGL::NodeIO*, OpenGL::NodeIO*> node_io_ptr_to_group_node_io_ptr_map;
             CommandBufferSubmission*                                   parent_submission_ptr;
+            bool                                                       needs_post_submission_cpu_execution;
 
             GroupNode()
-                :parent_submission_ptr(nullptr),
-                 queue_family         (Anvil::QueueFamilyType::UNDEFINED)
+                :needs_post_submission_cpu_execution(false),
+                 parent_submission_ptr              (nullptr),
+                 queue_family                       (Anvil::QueueFamilyType::UNDEFINED)
             {
                 /* Stub */
             }
 
             GroupNode(const Anvil::QueueFamilyType& in_queue_family)
-                :queue_family         (in_queue_family),
-                 parent_submission_ptr(nullptr)
+                :needs_post_submission_cpu_execution(false),
+                 queue_family                       (in_queue_family),
+                 parent_submission_ptr              (nullptr)
             {
                 /* Stub */
             }
@@ -159,6 +165,32 @@ namespace OpenGL
                         const bool&           in_is_input);
         } GroupNode;
         typedef std::unique_ptr<GroupNode, std::function<void(GroupNode*)> > GroupNodeUniquePtr;
+
+        typedef struct GroupNodeToGroupNodeSquashedConnection
+        {
+            const GroupNode*          dst_node_ptr;
+            Anvil::PipelineStageFlags dst_pipeline_stages;
+
+            GroupNodeToGroupNodeSquashedConnection()
+                :dst_node_ptr       (nullptr),
+                 dst_pipeline_stages(Anvil::PipelineStageFlagBits::NONE)
+            {
+                /* Stub */
+            }
+
+            GroupNodeToGroupNodeSquashedConnection(const Anvil::PipelineStageFlags& in_dst_pipeline_stages,
+                                                   const GroupNode*                 in_dst_node_ptr)
+                :dst_node_ptr       (in_dst_node_ptr),
+                 dst_pipeline_stages(in_dst_pipeline_stages)
+            {
+                vkgl_assert(dst_node_ptr != nullptr);
+            }
+
+            bool operator==(const GroupNode* in_dst_node_ptr) const
+            {
+                return (dst_node_ptr == in_dst_node_ptr);
+            }
+        } GroupNodeToGroupNodeSquashedConnection;
 
         typedef struct QueueRing
         {
@@ -192,7 +224,7 @@ namespace OpenGL
         void              set_swapchain_image_acquired_sem  (Anvil::Semaphore* in_sem_ptr)       final;
 
         bool get_wait_sems(uint32_t*                         out_n_wait_sems_ptr,
-                           Anvil::Semaphore**                out_wait_sems_ptr_ptr,
+                           Anvil::Semaphore***               out_wait_sems_ptr_ptr_ptr,
                            const Anvil::PipelineStageFlags** out_wait_sem_stage_mask_ptr_ptr) final;
 
         /* Private functions */
@@ -209,16 +241,16 @@ namespace OpenGL
                                                             Anvil::AccessFlags*               out_color_aspect_access_mask_ptr,
                                                             Anvil::AccessFlags*               out_ds_aspects_access_mask_ptr) const;
 
-        bool coalesce_to_group_nodes       (const std::vector<VKFrameGraphNodeUniquePtr>&                                in_node_ptrs,
-                                            std::vector<GroupNodeUniquePtr>*                                             out_group_nodes_ptr,
-                                            std::unordered_map<const GroupNode*, std::vector<const GroupNode* > >*       out_src_dst_group_node_connections_ptr);
-        bool execute_cpu_prepass           (const std::vector<VKFrameGraphNodeUniquePtr>&                                in_node_ptrs);
-        bool inject_swapchain_acquire_nodes(std::vector<VKFrameGraphNodeUniquePtr>&                                      inout_node_ptrs);
-        bool record_command_buffers        (const std::vector<GroupNodeUniquePtr>&                                       in_group_nodes_ptr,
-                                            const std::unordered_map<const GroupNode*, std::vector<const GroupNode* > >& in_src_dst_group_node_connections_ptr,
-                                            std::vector<CommandBufferSubmissionUniquePtr>*                               out_cmd_buffer_submissions_ptr);
-        bool submit_command_buffers        (const std::vector<CommandBufferSubmissionUniquePtr>&                         in_cmd_buffer_submissions_ptr,
-                                            Anvil::Fence*                                                                in_opt_wait_fence_ptr);
+        bool coalesce_to_group_nodes       (const std::vector<VKFrameGraphNodeUniquePtr>&                                                     in_node_ptrs,
+                                            std::vector<GroupNodeUniquePtr>*                                                                  out_group_nodes_ptr,
+                                            std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection> >*       out_src_dst_group_node_connections_ptr);
+        bool execute_cpu_prepass           (const std::vector<VKFrameGraphNodeUniquePtr>&                                                     in_node_ptrs);
+        bool inject_swapchain_acquire_nodes(std::vector<VKFrameGraphNodeUniquePtr>&                                                           inout_node_ptrs);
+        bool record_command_buffers        (const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr,
+                                            const std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection> >& in_src_dst_group_node_connections_ptr,
+                                            std::vector<CommandBufferSubmissionUniquePtr>*                                                    out_cmd_buffer_submissions_ptr);
+        bool submit_command_buffers        (const std::vector<CommandBufferSubmissionUniquePtr>&                                              in_cmd_buffer_submissions_ptr,
+                                            Anvil::Fence*                                                                                     in_opt_wait_fence_ptr);
 
         bool init                ();
         bool init_per_object_data();
@@ -236,6 +268,9 @@ namespace OpenGL
 
         std::unordered_map<Anvil::Buffer*, std::vector<BufferSubRangeInfo> > m_buffer_data; //< todo: Use binary tree or a more fancy structure to speed up coalesce/split ops
         std::vector<SwapchainImageInfo>                                      m_swapchain_image_data;
+
+        std::vector<Anvil::PipelineStageFlags> m_wait_sem_stage_masks_for_current_cpu_node;
+        std::vector<Anvil::Semaphore*>         m_wait_sem_vec_for_current_cpu_node;
 
         std::unordered_map<Anvil::QueueFamilyType, QueueRingUniquePtr> m_queue_ring_ptr_per_queue_fam;
 

@@ -116,9 +116,9 @@ void OpenGL::VKFrameGraph::add_node(OpenGL::VKFrameGraphNodeUniquePtr in_node_pt
     );
 }
 
-bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGraphNodeUniquePtr>&                          in_node_ptrs,
-                                                   std::vector<GroupNodeUniquePtr>*                                       out_group_nodes_ptr,
-                                                   std::unordered_map<const GroupNode*, std::vector<const GroupNode* > >* out_src_dst_group_node_connections_ptr)
+bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGraphNodeUniquePtr>&                                                in_node_ptrs,
+                                                   std::vector<GroupNodeUniquePtr>*                                                             out_group_nodes_ptr,
+                                                   std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection > >* out_src_dst_group_node_connections_ptr)
 {
     auto current_group_node_ptr = GroupNodeUniquePtr(nullptr,
                                                      std::default_delete<GroupNode>() );
@@ -338,7 +338,7 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
 
                                 {
                                     auto new_connection_ptr    = GroupNodeConnectionInfoUniquePtr(nullptr,
-                                                                                              std::default_delete<GroupNodeConnectionInfo>() );
+                                                                                                  std::default_delete<GroupNodeConnectionInfo>() );
                                     auto src_group_node_io_ptr = object_ptr_map_iterator->second.group_node_output_ptr;
 
                                     new_connection_ptr.reset(
@@ -351,12 +351,23 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
                                     dst_group_node_ptr->incoming_connections_ptr.push_back(std::move(new_connection_ptr) );
                                 }
 
-                                /* Also cache the general src->dst node connection. Avoid caching duplicate entries  */
-                                if (std::find((*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].begin(),
-                                              (*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].end(),
-                                              dst_group_node_ptr) == (*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].end() )
+                                /* Also cache the general src->dst node connection. */
                                 {
-                                    (*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].push_back(dst_group_node_ptr);
+                                    auto conn_iterator = std::find((*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].begin(),
+                                                                   (*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].end(),
+                                                                   dst_group_node_ptr);
+
+                                    if (conn_iterator == (*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].end() )
+                                    {
+                                        (*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].push_back(
+                                            GroupNodeToGroupNodeSquashedConnection(current_group_node_input_ptr->buffer_props.pipeline_stages,
+                                                                                   dst_group_node_ptr)
+                                        );
+                                    }
+                                    else
+                                    {
+                                        conn_iterator->dst_pipeline_stages |= current_group_node_input_ptr->buffer_props.pipeline_stages;
+                                    }
                                 }
                             }
 
@@ -369,10 +380,10 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
                             {
                                 /* Object reuse - add a connection */
                                 auto dst_group_node_ptr    = current_group_node_ptr.get();
+                                auto dst_group_node_io_ptr = dst_group_node_ptr->input_ptrs.at(n_dst_group_node_input).get();
                                 auto src_group_node_ptr    = last_swapchain_output_data.group_node_ptr;
 
                                 {
-                                    auto dst_group_node_io_ptr = dst_group_node_ptr->input_ptrs.at(n_dst_group_node_input).get();
                                     auto new_connection_ptr    = GroupNodeConnectionInfoUniquePtr(nullptr,
                                                                                                   std::default_delete<GroupNodeConnectionInfo>() );
                                     auto src_group_node_io_ptr = last_swapchain_output_data.group_node_output_ptr;
@@ -387,12 +398,23 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
                                     dst_group_node_ptr->incoming_connections_ptr.push_back(std::move(new_connection_ptr) );
                                 }
 
-                                /* Also cache the general src->dst node connection. Avoid caching duplicate entries  */
-                                if (std::find((*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].begin(),
-                                              (*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].end(),
-                                              dst_group_node_ptr) == (*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].end() )
+                                /* Also cache the general src->dst node connection. */
                                 {
-                                    (*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].push_back(dst_group_node_ptr);
+                                    auto conn_iterator = std::find((*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].begin(),
+                                                                   (*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].end(),
+                                                                   dst_group_node_ptr);
+
+                                    if (conn_iterator == (*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].end() )
+                                    {
+                                        (*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].push_back(
+                                            GroupNodeToGroupNodeSquashedConnection(dst_group_node_io_ptr->swapchain_image_props.pipeline_stages,
+                                                                                   dst_group_node_ptr)
+                                        );
+                                    }
+                                    else
+                                    {
+                                        conn_iterator->dst_pipeline_stages |= dst_group_node_io_ptr->swapchain_image_props.pipeline_stages;
+                                    }
                                 }
                             }
 
@@ -541,12 +563,12 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
     /* NOTE: This function must NEVER be called from app's rendering thread. */
     std::lock_guard<std::mutex> execute_lock(m_execute_mutex);
 
-    std::vector<CommandBufferSubmissionUniquePtr>                        command_buffer_submissions;
-    auto                                                                 device_ptr                 = m_backend_ptr->get_device_ptr();
-    std::unordered_map<const GroupNode*, std::vector<const GroupNode*> > group_node_connections;
-    std::vector<GroupNodeUniquePtr>                                      group_node_ptrs;
-    decltype(m_node_ptrs)                                                node_ptrs;
-    Anvil::FenceUniquePtr                                                wait_fence_ptr;
+    std::vector<CommandBufferSubmissionUniquePtr>                                              command_buffer_submissions;
+    auto                                                                                       device_ptr                 = m_backend_ptr->get_device_ptr();
+    std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection> > group_node_connections;
+    std::vector<GroupNodeUniquePtr>                                                            group_node_ptrs;
+    decltype(m_node_ptrs)                                                                      node_ptrs;
+    Anvil::FenceUniquePtr                                                                      wait_fence_ptr;
 
     /* Cache node data, so that apps can continue rendering subsequent frames while we do the GL->VK conversion */
     {
@@ -700,12 +722,16 @@ Anvil::Semaphore* OpenGL::VKFrameGraph::get_swapchain_image_acquired_sem() const
 }
 
 bool OpenGL::VKFrameGraph::get_wait_sems(uint32_t*                         out_n_wait_sems_ptr,
-                                         Anvil::Semaphore**                out_wait_sems_ptr_ptr,
+                                         Anvil::Semaphore***               out_wait_sems_ptr_ptr_ptr,
                                          const Anvil::PipelineStageFlags** out_wait_sem_stage_masks_ptr)
 {
-    vkgl_not_implemented();
+    const uint32_t n_wait_sems = static_cast<uint32_t>(m_wait_sem_vec_for_current_cpu_node.size() );
 
-    return false;
+    *out_n_wait_sems_ptr          = n_wait_sems;
+    *out_wait_sems_ptr_ptr_ptr    = (n_wait_sems > 0) ? &m_wait_sem_vec_for_current_cpu_node.at        (0) : nullptr;
+    *out_wait_sem_stage_masks_ptr = (n_wait_sems > 0) ? &m_wait_sem_stage_masks_for_current_cpu_node.at(0) : nullptr;
+
+    return true;
 }
 
 bool OpenGL::VKFrameGraph::init()
@@ -966,9 +992,9 @@ void OpenGL::VKFrameGraph::process_swapchain_image_node_input(std::vector<Anvil:
     }
 }
 
-bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUniquePtr>&                                       in_group_nodes_ptr,
-                                                  const std::unordered_map<const GroupNode*, std::vector<const GroupNode* > >& in_src_dst_group_node_connections_ptr,
-                                                  std::vector<CommandBufferSubmissionUniquePtr>*                               out_cmd_buffer_submissions_ptr)
+bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr,
+                                                  const std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection> >& in_src_dst_group_node_connections,
+                                                  std::vector<CommandBufferSubmissionUniquePtr>*                                                    out_cmd_buffer_submissions_ptr)
 {
     typedef struct BarrierData
     {
@@ -1065,7 +1091,8 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
                 vkgl_assert(queue_ptr != nullptr);
             }
 
-            current_submission_ptr.reset(new CommandBufferSubmission(queue_ptr) );
+            current_submission_ptr.reset(new CommandBufferSubmission(current_group_node_ptr.get(),
+                                                                     queue_ptr) );
             vkgl_assert(current_submission_ptr != nullptr);
 
             current_group_node_ptr->parent_submission_ptr = current_submission_ptr.get();
@@ -1306,6 +1333,10 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
                                                             (current_node_pre_barriers.image_barriers.size() > 0) ? &current_node_pre_barriers.image_barriers.at(0) : nullptr);
                 }
 
+                /* NOTE/TODO: 01 or 10 is fine, but 00 or 11 means bad stuff (dummy submission - wtf? not sure if cpu+gpu execution is handled correctly - need to verify?) */
+                vkgl_assert(current_node_ptr->requires_gpu_side_execution() != current_node_ptr->requires_cpu_side_execution() ||
+                            current_node_ptr->requires_cpu_prepass       () );
+
                 if (current_node_ptr->requires_gpu_side_execution() )
                 {
                     current_node_ptr->record_commands(cmd_buffer_ptr.get(),
@@ -1315,10 +1346,11 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
                 else
                 if (current_node_ptr->requires_cpu_side_execution() )
                 {
-                    /* TODO: Fence-based CPU/GPU synchro */
-                    vkgl_assert(current_node_ptr->requires_manual_wait_sem_sync() );
+                    vkgl_assert(current_group_node_ptr->graph_node_ptrs.size   () == 1);
+                    vkgl_assert(current_node_ptr->requires_manual_wait_sem_sync() );      /* TODO: Fence-based CPU/GPU synchro */
 
                     /* NOTE: Actual execution is done at submission time */
+                    current_group_node_ptr->needs_post_submission_cpu_execution = true;
                 }
             }
         }
@@ -1334,6 +1366,9 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
             }
         }
 
+        current_submission_ptr->command_buffers_ptr.push_back(
+            std::move(cmd_buffer_ptr));
+
         out_cmd_buffer_submissions_ptr->push_back(
             std::move(current_submission_ptr)
         );
@@ -1342,19 +1377,20 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
     /* 6. Determine wait and signal semaphores that need to be used for the submission */
     {
         /* NOTE: Each command buffer submission owns exactly one group node. */
-        for (auto& current_connection_ptr : in_src_dst_group_node_connections_ptr)
+        for (auto& current_connection : in_src_dst_group_node_connections)
         {
-            auto  src_group_node_ptr  = current_connection_ptr.first;
-            auto& dst_group_node_ptrs = current_connection_ptr.second;
+            auto        src_group_node_ptr         = current_connection.first;
+            const auto& dst_group_node_connections = current_connection.second;
 
-            for (auto& current_dst_group_node_ptr : dst_group_node_ptrs)
+            for (auto& current_connection_data : dst_group_node_connections)
             {
                 auto                      sem_create_info_ptr = Anvil::SemaphoreCreateInfo::create(device_ptr);
                 Anvil::SemaphoreUniquePtr sem_ptr             = Anvil::Semaphore::create          (std::move(sem_create_info_ptr) );
 
-                current_dst_group_node_ptr->parent_submission_ptr->wait_semaphore_ptrs.push_back(sem_ptr.get() );
-                src_group_node_ptr->parent_submission_ptr->signal_semaphore_ptrs.push_back      (sem_ptr.get() );
-                src_group_node_ptr->parent_submission_ptr->owned_semaphore_ptrs.push_back       (std::move  (sem_ptr) );
+                current_connection_data.dst_node_ptr->parent_submission_ptr->wait_dst_stage_masks.push_back(current_connection_data.dst_pipeline_stages);
+                current_connection_data.dst_node_ptr->parent_submission_ptr->wait_semaphore_ptrs.push_back (sem_ptr.get() );
+                src_group_node_ptr->parent_submission_ptr->signal_semaphore_ptrs.push_back                 (sem_ptr.get() );
+                src_group_node_ptr->parent_submission_ptr->owned_semaphore_ptrs.push_back                  (std::move  (sem_ptr) );
             }
         }
     }
@@ -1366,17 +1402,33 @@ end:
 
 void OpenGL::VKFrameGraph::set_acquired_swapchain_image_index(const uint32_t& in_index)
 {
-    vkgl_assert(in_index                         >= 0                                                                    &&
-                in_index                         <  m_backend_ptr->get_swapchain_manager_ptr()->get_n_swapchain_images() );
-    vkgl_assert(m_acquired_swapchain_image_index == UINT32_MAX);
+    /* Sanity check: Protect against cases where acquire->present->acquire->present->.. pattern is not followed */
+    if (in_index == UINT32_MAX)
+    {
+        vkgl_assert(m_acquired_swapchain_image_index != UINT32_MAX);
+    }
+    else
+    {
+        vkgl_assert(in_index                         >= 0                                                                    &&
+                    in_index                         <  m_backend_ptr->get_swapchain_manager_ptr()->get_n_swapchain_images() );
+        vkgl_assert(m_acquired_swapchain_image_index == UINT32_MAX);
+    }
 
     m_acquired_swapchain_image_index = in_index;
 }
 
 void OpenGL::VKFrameGraph::set_swapchain_image_acquired_sem(Anvil::Semaphore* in_sem_ptr)
 {
-    vkgl_assert(in_sem_ptr                  != nullptr);
-    vkgl_assert(m_swapchain_acquire_sem_ptr == nullptr);
+    if (m_swapchain_acquire_sem_ptr == nullptr)
+    {
+        vkgl_assert(in_sem_ptr                  != nullptr);
+        vkgl_assert(m_swapchain_acquire_sem_ptr == nullptr);
+    }
+    else
+    {
+        vkgl_assert(in_sem_ptr                  == nullptr);
+        vkgl_assert(m_swapchain_acquire_sem_ptr != nullptr);
+    }
 
     m_swapchain_acquire_sem_ptr = in_sem_ptr;
 }
@@ -1413,13 +1465,83 @@ void OpenGL::VKFrameGraph::split_access_mask_to_color_and_ds_access_masks(const 
 bool OpenGL::VKFrameGraph::submit_command_buffers(const std::vector<CommandBufferSubmissionUniquePtr>& in_cmd_buffer_submissions_ptr,
                                                   Anvil::Fence*                                        in_opt_wait_fence_ptr)
 {
-    bool result = false;
+    const uint32_t n_submissions = static_cast<uint32_t>(in_cmd_buffer_submissions_ptr.size() );
+    bool           result        = false;
 
-    for (const auto& current_submission_ptr : in_cmd_buffer_submissions_ptr)
+    /* Submissions are arranged in execution order. GPU is still free to interleave the work chunks of course, but the order
+     * is important for CPU group nodes.
+     */
+    for (uint32_t n_submission = 0;
+                  n_submission < n_submissions;
+                ++n_submission)
     {
-        vkgl_not_implemented();
+        const auto& current_submission_ptr = in_cmd_buffer_submissions_ptr.at(n_submission);
+        const bool  is_last_submission     = ((n_submission + 1) == n_submissions);
+
+        if (current_submission_ptr->command_buffers_ptr.size() != 0)
+        {
+            vkgl_assert(current_submission_ptr->queue_ptr                  != nullptr);
+            vkgl_assert(current_submission_ptr->command_buffers_ptr.size() == 1); /* todo - works for now */
+
+            Anvil::SubmitInfo submit_info = Anvil::SubmitInfo::create(current_submission_ptr->command_buffers_ptr.at(0).get(),
+                                                                      static_cast<uint32_t>(current_submission_ptr->signal_semaphore_ptrs.size() ),
+                                                                      (current_submission_ptr->signal_semaphore_ptrs.size() > 0) ? &current_submission_ptr->signal_semaphore_ptrs.at(0) : nullptr,
+                                                                      static_cast<uint32_t>(current_submission_ptr->wait_semaphore_ptrs.size() ),
+                                                                      (current_submission_ptr->wait_semaphore_ptrs.size() > 0)   ? &current_submission_ptr->wait_semaphore_ptrs.at (0) : nullptr,
+                                                                      (current_submission_ptr->wait_semaphore_ptrs.size() > 0)   ? &current_submission_ptr->wait_dst_stage_masks.at(0) : nullptr,
+                                                                      false, /* in_should_block */
+                                                                      (is_last_submission) ? in_opt_wait_fence_ptr : nullptr);
+
+            current_submission_ptr->queue_ptr->submit(submit_info);
+        }
+
+        if (current_submission_ptr->parent_group_node_ptr->needs_post_submission_cpu_execution)
+        {
+            vkgl_assert(current_submission_ptr->parent_group_node_ptr->graph_node_ptrs.size() == 1);
+
+            auto cpu_graph_node_ptr = current_submission_ptr->parent_group_node_ptr->graph_node_ptrs.at(0);
+            vkgl_assert(cpu_graph_node_ptr != nullptr);
+
+            const bool should_update_internal_wait_sem_list = cpu_graph_node_ptr->requires_manual_wait_sem_sync();
+
+            if (should_update_internal_wait_sem_list)
+            {
+                const uint32_t n_wait_sems = static_cast<uint32_t>(current_submission_ptr->wait_semaphore_ptrs.size() );
+
+                m_wait_sem_stage_masks_for_current_cpu_node.resize(n_wait_sems);
+                m_wait_sem_vec_for_current_cpu_node.resize        (n_wait_sems);
+
+                if (n_wait_sems > 0)
+                {
+                    vkgl_assert(current_submission_ptr->wait_semaphore_ptrs.size() == current_submission_ptr->wait_dst_stage_masks.size() );
+
+                    memcpy(&m_wait_sem_stage_masks_for_current_cpu_node.at (0),
+                           &current_submission_ptr->wait_dst_stage_masks.at(0),
+                           sizeof(Anvil::PipelineStageFlags) * n_wait_sems);
+
+                    memcpy(&m_wait_sem_vec_for_current_cpu_node.at       (0),
+                          &current_submission_ptr->wait_semaphore_ptrs.at(0),
+                           sizeof(Anvil::Semaphore*) * n_wait_sems);
+                }
+            }
+            else
+            {
+                /* TODO: This path requires a fence synchronization between this block and the preceding one (where the actual submission is done) !
+                 *       It's not currently implemented.
+                 */
+                vkgl_not_implemented();
+            }
+
+            cpu_graph_node_ptr->execute_cpu_side(this);
+
+            if (should_update_internal_wait_sem_list)
+            {
+                m_wait_sem_vec_for_current_cpu_node.clear();
+            }
+        }
     }
 
+    result = true;
 end:
     return result;
 }

@@ -66,14 +66,14 @@ void OpenGL::VKNodes::PresentSwapchainImage::execute_cpu_side(IVKFrameGraphNodeC
     auto                             swapchain_ptr            = m_swapchain_reference_ptr->get_payload().swapchain_ptr;
     VkResult                         present_result;
     auto                             queue_ptr                = swapchain_manager_ptr->get_presentable_queue(m_swapchain_reference_ptr->get_payload().time_marker);
-    Anvil::Semaphore*                wait_sem_ptrs            = nullptr;
+    Anvil::Semaphore**               wait_sem_ptr_ptr         = nullptr;
     const Anvil::PipelineStageFlags* wait_sem_stage_masks_ptr = nullptr;
 
     vkgl_assert(queue_ptr != nullptr);
 
     /* Retrieve wait semaphores we need to wait upon prior to submitting a presentation request */
     if (!in_callback_ptr->get_wait_sems(&n_wait_sems,
-                                        &wait_sem_ptrs,
+                                        &wait_sem_ptr_ptr,
                                         &wait_sem_stage_masks_ptr) )
     {
         vkgl_assert_fail();
@@ -84,7 +84,7 @@ void OpenGL::VKNodes::PresentSwapchainImage::execute_cpu_side(IVKFrameGraphNodeC
     present_result = queue_ptr->present(swapchain_ptr,
                                         in_callback_ptr->get_acquired_swapchain_image_index(),
                                         n_wait_sems,
-                                       &wait_sem_ptrs);
+                                        wait_sem_ptr_ptr);
 
     /* TODO: Support for window resize events.. */
     vkgl_assert(present_result == VK_SUCCESS);
