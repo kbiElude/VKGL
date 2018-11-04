@@ -1490,24 +1490,55 @@ bool OpenGL::VKFrameGraph::submit_command_buffers(const std::vector<CommandBuffe
                   n_submission < n_submissions;
                 ++n_submission)
     {
-        const auto& current_submission_ptr = in_cmd_buffer_submissions_ptr.at(n_submission);
-        const bool  is_last_submission     = ((n_submission + 1) == n_submissions);
+        Anvil::SemaphoreUniquePtr cpu_submission_sem_ptr;
+        const auto&               current_submission_ptr = in_cmd_buffer_submissions_ptr.at(n_submission);
+        const bool                is_last_submission     = ((n_submission + 1) == n_submissions);
 
         if (current_submission_ptr->command_buffers_ptr.size() != 0)
         {
             vkgl_assert(current_submission_ptr->queue_ptr                  != nullptr);
             vkgl_assert(current_submission_ptr->command_buffers_ptr.size() == 1); /* todo - works for now */
 
-            Anvil::SubmitInfo submit_info = Anvil::SubmitInfo::create(current_submission_ptr->command_buffers_ptr.at(0).get(),
-                                                                      static_cast<uint32_t>(current_submission_ptr->signal_semaphore_ptrs.size() ),
-                                                                      (current_submission_ptr->signal_semaphore_ptrs.size() > 0) ? &current_submission_ptr->signal_semaphore_ptrs.at(0) : nullptr,
-                                                                      static_cast<uint32_t>(current_submission_ptr->wait_semaphore_ptrs.size() ),
-                                                                      (current_submission_ptr->wait_semaphore_ptrs.size() > 0)   ? &current_submission_ptr->wait_semaphore_ptrs.at (0) : nullptr,
-                                                                      (current_submission_ptr->wait_semaphore_ptrs.size() > 0)   ? &current_submission_ptr->wait_dst_stage_masks.at(0) : nullptr,
-                                                                      false, /* in_should_block */
-                                                                      (is_last_submission) ? in_opt_wait_fence_ptr : nullptr);
+            if (current_submission_ptr->parent_group_node_ptr->needs_post_submission_cpu_execution                    &&
+                current_submission_ptr->parent_group_node_ptr->graph_node_ptrs.at(0)->requires_manual_wait_sem_sync() )
+            {
+                /* This node will also be doing a CPU-based operation that needs to wait on a sem! Spawn a temporary sem which
+                 * will also be signaled once this submission finishes GPU-side, and use it as a wait sem for the node's purposes.
+                 */
+                auto create_info_ptr = Anvil::SemaphoreCreateInfo::create(m_backend_ptr->get_device_ptr() );
+                auto signal_sem_ptrs = current_submission_ptr->signal_semaphore_ptrs;
 
-            current_submission_ptr->queue_ptr->submit(submit_info);
+                cpu_submission_sem_ptr = Anvil::Semaphore::create(std::move(create_info_ptr) );
+                vkgl_assert(cpu_submission_sem_ptr != nullptr);
+
+                signal_sem_ptrs.push_back(cpu_submission_sem_ptr.get() );
+
+                /* Follow with actual submission. */
+                Anvil::SubmitInfo submit_info = Anvil::SubmitInfo::create(current_submission_ptr->command_buffers_ptr.at(0).get(),
+                                                                          static_cast<uint32_t>(signal_sem_ptrs.size() ),
+                                                                          (signal_sem_ptrs.size() > 0) ? &signal_sem_ptrs.at(0) : nullptr,
+                                                                          static_cast<uint32_t>(current_submission_ptr->wait_semaphore_ptrs.size() ),
+                                                                          (current_submission_ptr->wait_semaphore_ptrs.size() > 0)   ? &current_submission_ptr->wait_semaphore_ptrs.at (0) : nullptr,
+                                                                          (current_submission_ptr->wait_semaphore_ptrs.size() > 0)   ? &current_submission_ptr->wait_dst_stage_masks.at(0) : nullptr,
+                                                                          false, /* in_should_block */
+                                                                          (is_last_submission) ? in_opt_wait_fence_ptr : nullptr);
+
+                current_submission_ptr->queue_ptr->submit(submit_info);
+            }
+            else
+            {
+                /* Just do the submit directly. */
+                Anvil::SubmitInfo submit_info = Anvil::SubmitInfo::create(current_submission_ptr->command_buffers_ptr.at(0).get(),
+                                                                          static_cast<uint32_t>(current_submission_ptr->signal_semaphore_ptrs.size() ),
+                                                                          (current_submission_ptr->signal_semaphore_ptrs.size() > 0) ? &current_submission_ptr->signal_semaphore_ptrs.at(0) : nullptr,
+                                                                          static_cast<uint32_t>(current_submission_ptr->wait_semaphore_ptrs.size() ),
+                                                                          (current_submission_ptr->wait_semaphore_ptrs.size() > 0)   ? &current_submission_ptr->wait_semaphore_ptrs.at (0) : nullptr,
+                                                                          (current_submission_ptr->wait_semaphore_ptrs.size() > 0)   ? &current_submission_ptr->wait_dst_stage_masks.at(0) : nullptr,
+                                                                          false, /* in_should_block */
+                                                                          (is_last_submission) ? in_opt_wait_fence_ptr : nullptr);
+
+                current_submission_ptr->queue_ptr->submit(submit_info);
+            }
         }
 
         if (current_submission_ptr->parent_group_node_ptr->needs_post_submission_cpu_execution)
@@ -1521,22 +1552,38 @@ bool OpenGL::VKFrameGraph::submit_command_buffers(const std::vector<CommandBuffe
 
             if (should_update_internal_wait_sem_list)
             {
-                const uint32_t n_wait_sems = static_cast<uint32_t>(current_submission_ptr->wait_semaphore_ptrs.size() );
-
-                m_wait_sem_stage_masks_for_current_cpu_node.resize(n_wait_sems);
-                m_wait_sem_vec_for_current_cpu_node.resize        (n_wait_sems);
-
-                if (n_wait_sems > 0)
+                if (cpu_submission_sem_ptr == nullptr)
                 {
-                    vkgl_assert(current_submission_ptr->wait_semaphore_ptrs.size() == current_submission_ptr->wait_dst_stage_masks.size() );
+                    const uint32_t n_wait_sems = static_cast<uint32_t>(current_submission_ptr->wait_semaphore_ptrs.size() );
 
-                    memcpy(&m_wait_sem_stage_masks_for_current_cpu_node.at (0),
-                           &current_submission_ptr->wait_dst_stage_masks.at(0),
-                           sizeof(Anvil::PipelineStageFlags) * n_wait_sems);
+                    m_wait_sem_stage_masks_for_current_cpu_node.resize(n_wait_sems);
+                    m_wait_sem_vec_for_current_cpu_node.resize        (n_wait_sems);
 
-                    memcpy(&m_wait_sem_vec_for_current_cpu_node.at       (0),
-                          &current_submission_ptr->wait_semaphore_ptrs.at(0),
-                           sizeof(Anvil::Semaphore*) * n_wait_sems);
+                    if (n_wait_sems > 0)
+                    {
+                        vkgl_assert(current_submission_ptr->wait_semaphore_ptrs.size() == current_submission_ptr->wait_dst_stage_masks.size() );
+
+                        memcpy(&m_wait_sem_stage_masks_for_current_cpu_node.at (0),
+                               &current_submission_ptr->wait_dst_stage_masks.at(0),
+                               sizeof(Anvil::PipelineStageFlags) * n_wait_sems);
+
+                        memcpy(&m_wait_sem_vec_for_current_cpu_node.at       (0),
+                              &current_submission_ptr->wait_semaphore_ptrs.at(0),
+                               sizeof(Anvil::Semaphore*) * n_wait_sems);
+                    }
+                }
+                else
+                {
+                    /* Need to use temporary sem instead. */
+                    vkgl_assert(cpu_submission_sem_ptr != nullptr);
+
+                    m_wait_sem_stage_masks_for_current_cpu_node.resize(1, Anvil::PipelineStageFlagBits::NONE);
+                    m_wait_sem_vec_for_current_cpu_node.resize        (1, cpu_submission_sem_ptr.get() );
+
+                    for (const auto& current_wait_sem_stage : current_submission_ptr->wait_dst_stage_masks)
+                    {
+                        m_wait_sem_stage_masks_for_current_cpu_node.at(0) |= current_wait_sem_stage;
+                    }
                 }
             }
             else
