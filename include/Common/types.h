@@ -10,6 +10,9 @@
 
 namespace VKGL
 {
+    /* Forward declarations */
+    class Fence;
+
     struct FunctionInterceptor
     {
         void** pfn_func_to_intercept_ptr_ptr;

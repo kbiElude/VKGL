@@ -659,10 +659,13 @@ namespace OpenGL
 
     struct FinishCommand : public CommandBase
     {
-        FinishCommand()
-            :CommandBase(CommandType::FINISH)
+        VKGL::Fence* fence_ptr;
+
+        FinishCommand(VKGL::Fence* in_fence_ptr)
+            :CommandBase(CommandType::FINISH),
+             fence_ptr  (in_fence_ptr)
         {
-            /* Stub */
+            vkgl_assert(fence_ptr != nullptr);
         }
     };
 

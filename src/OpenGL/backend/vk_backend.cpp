@@ -5,6 +5,7 @@
 #include "Anvil/include/misc/memory_allocator.h"
 #include "Anvil/include/wrappers/device.h"
 #include "Anvil/include/wrappers/instance.h"
+#include "Common/fence.h"
 #include "Common/macros.h"
 #include "OpenGL/types.h"
 #include "OpenGL/converters.h"
@@ -358,19 +359,23 @@ void OpenGL::VKBackend::draw_range_elements(const OpenGL::DrawCallMode&      in_
 
 void OpenGL::VKBackend::finish()
 {
-    /* Spawn the command container .. */
-    OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::FinishCommand(),
-                                         std::default_delete<OpenGL::CommandBase>() );
+    OpenGL::CommandBaseUniquePtr cmd_ptr  (nullptr,
+                                           std::default_delete<OpenGL::CommandBase>() );
+    VKGL::FenceUniquePtr         fence_ptr(nullptr,
+                                           std::default_delete<VKGL::Fence>() );
 
+    /* Instantiate a fence we're going to use for app thread<->backend thread sync purposes */
+    fence_ptr.reset(new VKGL::Fence() );
+    vkgl_assert(fence_ptr != nullptr);
+
+    /* Spawn the command container .. */
+    cmd_ptr.reset(new OpenGL::FinishCommand(fence_ptr.get() ));
     vkgl_assert(cmd_ptr != nullptr);
 
     m_scheduler_ptr->submit(std::move(cmd_ptr) );
 
-    /* Block until the scheduler finishes GPU-side execution.
-     *
-     * TODO.
-     */
-    vkgl_not_implemented();
+    /* Block until the scheduler finishes GPU-side execution. */
+    fence_ptr->wait();
 }
 
 void OpenGL::VKBackend::flush()

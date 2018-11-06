@@ -9,6 +9,7 @@
 #include "OpenGL/backend/nodes/vk_clear_node.h"
 #include "OpenGL/backend/nodes/vk_present_swapchain_image_node.h"
 #include "OpenGL/frontend/gl_buffer_manager.h"
+#include "Common/fence.h"
 #include "Common/logger.h"
 
 #define N_MAX_SCHEDULED_COMMANDS_LOG_2 (16)
@@ -336,6 +337,8 @@ void OpenGL::VKScheduler::process_draw_range_elements_command(OpenGL::DrawRangeE
 void OpenGL::VKScheduler::process_finish_command(OpenGL::FinishCommand* in_command_ptr)
 {
     m_backend_ptr->get_frame_graph_ptr()->execute(true /* in_block_until_finished */);
+
+    in_command_ptr->fence_ptr->signal();
 }
 
 void OpenGL::VKScheduler::process_flush_command(OpenGL::FlushCommand* in_command_ptr)

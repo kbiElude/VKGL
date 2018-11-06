@@ -15,6 +15,7 @@
 
 #define VKGL_APIENTRY KHRONOS_APIENTRY
 
+#include "Common/types.h"
 #include "OpenGL/types_enums.h"
 #include "OpenGL/backend/vk_reference.h"
 #include "OpenGL/frontend/gl_reference.h"
