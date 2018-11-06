@@ -32,6 +32,21 @@ namespace OpenGL
         /* Private type definitions */
         struct GroupNode;
 
+        typedef struct BarrierData
+        {
+            Anvil::PipelineStageFlags dst_pipeline_stages;
+            Anvil::PipelineStageFlags src_pipeline_stages;
+
+            std::vector<Anvil::ImageBarrier> image_barriers;
+
+            BarrierData()
+                :dst_pipeline_stages(Anvil::PipelineStageFlagBits::NONE),
+                 src_pipeline_stages(Anvil::PipelineStageFlagBits::NONE)
+            {
+                /* Stub */
+            }
+        } BarrierData;
+
         typedef struct BufferSubRangeInfo
         {
             VkDeviceSize start_offset;
@@ -79,18 +94,15 @@ namespace OpenGL
 
         typedef struct CommandBufferSubmission
         {
-            GroupNode*    parent_group_node_ptr;
-            Anvil::Queue* queue_ptr; //< possibly null if this is a CPU-based submission.
+            GroupNode* parent_group_node_ptr;
 
             std::vector<Anvil::PrimaryCommandBuffer*> command_buffers_ptr;
             std::vector<Anvil::Semaphore*>            signal_semaphore_ptrs;
             std::vector<Anvil::PipelineStageFlags>    wait_dst_stage_masks;
             std::vector<Anvil::Semaphore*>            wait_semaphore_ptrs;
 
-            CommandBufferSubmission(GroupNode*    in_parent_group_node_ptr,
-                                    Anvil::Queue* in_queue_ptr)
-                :parent_group_node_ptr(in_parent_group_node_ptr),
-                 queue_ptr            (in_queue_ptr)
+            CommandBufferSubmission(GroupNode* in_parent_group_node_ptr)
+                :parent_group_node_ptr(in_parent_group_node_ptr)
             {
                 vkgl_assert(parent_group_node_ptr != nullptr);
             }
@@ -128,23 +140,61 @@ namespace OpenGL
         } GroupNodeConnectionInfo;
         typedef std::unique_ptr<GroupNodeConnectionInfo, std::function<void(GroupNodeConnectionInfo*)> > GroupNodeConnectionInfoUniquePtr;
 
+        typedef struct IntraGraphNodeConnectionInfo
+        {
+            uint32_t n_dst_graph_node;
+            uint32_t n_dst_graph_node_input;
+
+            uint32_t n_src_graph_node;
+            uint32_t n_src_graph_node_output;
+
+            IntraGraphNodeConnectionInfo()
+                :n_dst_graph_node       (UINT32_MAX),
+                 n_dst_graph_node_input (UINT32_MAX),
+                 n_src_graph_node       (UINT32_MAX),
+                 n_src_graph_node_output(UINT32_MAX)
+            {
+                /* Stub */
+            }
+
+            IntraGraphNodeConnectionInfo(const uint32_t& in_n_src_graph_node,
+                                         const uint32_t& in_n_src_graph_node_output,
+                                         const uint32_t& in_n_dst_graph_node,
+                                         const uint32_t& in_n_dst_graph_node_input)
+                :n_dst_graph_node       (in_n_dst_graph_node),
+                 n_dst_graph_node_input (in_n_dst_graph_node_input),
+                 n_src_graph_node       (in_n_src_graph_node),
+                 n_src_graph_node_output(in_n_src_graph_node_output)
+            {
+                vkgl_assert(n_dst_graph_node != n_src_graph_node);
+            }
+        } IntraGraphNodeConnectionInfo;
+
         typedef struct GroupNode
         {
             Anvil::QueueFamilyType queue_family;
+            Anvil::Queue*          queue_ptr;      //< possibly null if this is a CPU-based submission.
 
             std::vector<OpenGL::IVKFrameGraphNode*> graph_node_ptrs;
             std::vector<OpenGL::NodeIOUniquePtr>    input_ptrs;
             std::vector<OpenGL::NodeIOUniquePtr>    output_ptrs;
 
-            std::vector<GroupNodeConnectionInfoUniquePtr>              incoming_connections_ptr;
+            std::vector<GroupNodeConnectionInfoUniquePtr>              incoming_group_node_connections_ptr; //< TODO: this is somewhat duplicate to *src_dst_group_node_connections* used elsewhere in this header.
+                                                                                                            //<       the ways the two are used are tad different but ultimately serve similar purpose; any way we could merge them?
+            std::vector<IntraGraphNodeConnectionInfo>                  intra_graph_node_connections;
+
             std::unordered_map<const OpenGL::NodeIO*, OpenGL::NodeIO*> node_io_ptr_to_group_node_io_ptr_map;
             CommandBufferSubmission*                                   parent_submission_ptr;
             bool                                                       needs_post_submission_cpu_execution;
 
+            BarrierData              group_node_pre_barriers;
+            std::vector<BarrierData> intra_graph_node_pre_barriers;
+
             GroupNode()
                 :needs_post_submission_cpu_execution(false),
                  parent_submission_ptr              (nullptr),
-                 queue_family                       (Anvil::QueueFamilyType::UNDEFINED)
+                 queue_family                       (Anvil::QueueFamilyType::UNDEFINED),
+                 queue_ptr                          (nullptr)
             {
                 /* Stub */
             }
@@ -152,6 +202,7 @@ namespace OpenGL
             GroupNode(const Anvil::QueueFamilyType& in_queue_family)
                 :needs_post_submission_cpu_execution(false),
                  queue_family                       (in_queue_family),
+                 queue_ptr                          (nullptr),
                  parent_submission_ptr              (nullptr)
             {
                 /* Stub */
@@ -240,13 +291,14 @@ namespace OpenGL
                                                             Anvil::AccessFlags*               out_color_aspect_access_mask_ptr,
                                                             Anvil::AccessFlags*               out_ds_aspects_access_mask_ptr) const;
 
+        bool bake_barriers                 (const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr);
         bool coalesce_to_group_nodes       (const std::vector<VKFrameGraphNodeUniquePtr>&                                                     in_node_ptrs,
                                             std::vector<GroupNodeUniquePtr>*                                                                  out_group_nodes_ptr,
                                             std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection> >*       out_src_dst_group_node_connections_ptr);
         bool execute_cpu_prepass           (const std::vector<VKFrameGraphNodeUniquePtr>&                                                     in_node_ptrs);
         bool inject_swapchain_acquire_nodes(std::vector<VKFrameGraphNodeUniquePtr>&                                                           inout_node_ptrs);
         bool record_command_buffers        (const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr,
-                                            const std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection> >& in_src_dst_group_node_connections_ptr,
+                                            const std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection> >& in_src_dst_group_node_connections,
                                             std::vector<CommandBufferSubmissionUniquePtr>*                                                    out_cmd_buffer_submissions_ptr);
         bool submit_command_buffers        (const std::vector<CommandBufferSubmissionUniquePtr>&                                              in_cmd_buffer_submissions_ptr,
                                             Anvil::Fence*                                                                                     in_opt_wait_fence_ptr);
