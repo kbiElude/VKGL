@@ -410,6 +410,7 @@ namespace OpenGL
         Anvil::InstanceUniquePtr                                      m_instance_ptr;
         Anvil::MemoryAllocatorUniquePtr                               m_mem_allocator_ptr;
         OpenGL::VKSchedulerUniquePtr                                  m_scheduler_ptr;
+        OpenGL::VKSPIRVManagerUniquePtr                               m_spirv_manager_ptr;
         OpenGL::VKSwapchainManagerUniquePtr                           m_swapchain_manager_ptr;
         const VKGL::IWSIContext*                                      m_wsi_context_ptr;
     };

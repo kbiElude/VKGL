@@ -40,6 +40,7 @@ namespace OpenGL
     class  VKFormatManager;
     class  VKFrameGraph;
     class  VKScheduler;
+    class  VKSPIRVManager;
     class  VKSwapchainManager;
 
     typedef std::unique_ptr<GLBufferReference,       std::function<void(GLBufferReference*)> >       GLBufferReferenceUniquePtr;
@@ -54,6 +55,7 @@ namespace OpenGL
     typedef std::unique_ptr<VKBufferReference,       std::function<void(VKBufferReference*)> >       VKBufferReferenceUniquePtr;
     typedef std::unique_ptr<VKFrameGraph,            std::function<void(VKFrameGraph*)> >            VKFrameGraphUniquePtr;
     typedef std::unique_ptr<VKScheduler>                                                             VKSchedulerUniquePtr;
+    typedef std::unique_ptr<VKSPIRVManager>                                                          VKSPIRVManagerUniquePtr;
     typedef std::unique_ptr<VKSwapchainReference,    std::function<void(VKSwapchainReference*)> >    VKSwapchainReferenceUniquePtr;
 
     typedef struct PropertyData

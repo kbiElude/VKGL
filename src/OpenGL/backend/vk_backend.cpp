@@ -11,6 +11,7 @@
 #include "OpenGL/converters.h"
 #include "OpenGL/backend/vk_backend.h"
 #include "OpenGL/backend/vk_scheduler.h"
+#include "OpenGL/backend/vk_spirv_manager.h"
 #include "OpenGL/frontend/gl_buffer_manager.h"
 #include "OpenGL/frontend/gl_program_manager.h"
 #include "OpenGL/frontend/gl_shader_manager.h"
@@ -506,6 +507,15 @@ bool OpenGL::VKBackend::init()
     if (m_mem_allocator_ptr == nullptr)
     {
         vkgl_assert(m_mem_allocator_ptr != nullptr);
+
+        goto end;
+    }
+
+    m_spirv_manager_ptr = OpenGL::VKSPIRVManager::create();
+
+    if (m_spirv_manager_ptr == nullptr)
+    {
+        vkgl_assert(m_spirv_manager_ptr != nullptr);
 
         goto end;
     }
