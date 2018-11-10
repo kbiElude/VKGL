@@ -412,6 +412,7 @@ namespace OpenGL
         OpenGL::VKSchedulerUniquePtr                                  m_scheduler_ptr;
         OpenGL::VKSPIRVManagerUniquePtr                               m_spirv_manager_ptr;
         OpenGL::VKSwapchainManagerUniquePtr                           m_swapchain_manager_ptr;
+        OpenGL::ThreadPoolUniquePtr                                   m_thread_pool_ptr;
         const VKGL::IWSIContext*                                      m_wsi_context_ptr;
     };
 };

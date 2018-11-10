@@ -9,6 +9,7 @@
 #include "Common/macros.h"
 #include "OpenGL/types.h"
 #include "OpenGL/converters.h"
+#include "OpenGL/backend/thread_pool.h"
 #include "OpenGL/backend/vk_backend.h"
 #include "OpenGL/backend/vk_scheduler.h"
 #include "OpenGL/backend/vk_spirv_manager.h"
@@ -507,6 +508,15 @@ bool OpenGL::VKBackend::init()
     if (m_mem_allocator_ptr == nullptr)
     {
         vkgl_assert(m_mem_allocator_ptr != nullptr);
+
+        goto end;
+    }
+
+    m_thread_pool_ptr = OpenGL::ThreadPool::create();
+
+    if (m_thread_pool_ptr == nullptr)
+    {
+        vkgl_assert(m_thread_pool_ptr != nullptr);
 
         goto end;
     }
