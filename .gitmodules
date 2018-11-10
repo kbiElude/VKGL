@@ -7,3 +7,6 @@
 [submodule "deps/LearnOpenGL"]
 	path = deps/LearnOpenGL
 	url = https://github.com/JoeyDeVries/LearnOpenGL
+[submodule "deps/enkiTS"]
+	path = deps/enkiTS
+	url = git@github.com:dougbinks/enkiTS.git
