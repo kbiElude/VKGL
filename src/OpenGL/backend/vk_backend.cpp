@@ -1002,14 +1002,14 @@ void OpenGL::VKBackend::on_objects_created(const OpenGL::ObjectType& in_object_t
 
         case OpenGL::ObjectType::Program:
         {
-            vkgl_not_implemented();
+            /* This backend impl doesn't care */
 
             break;
         }
 
         case OpenGL::ObjectType::Shader:
         {
-            vkgl_not_implemented();
+            /* This backend impl doesn't care */
 
             break;
         }
@@ -1050,14 +1050,14 @@ void OpenGL::VKBackend::on_objects_destroyed(const OpenGL::ObjectType& in_object
 
         case OpenGL::ObjectType::Program:
         {
-            vkgl_not_implemented();
+            /* This backend impl doesn't care */
 
             break;
         }
 
         case OpenGL::ObjectType::Shader:
         {
-            vkgl_not_implemented();
+            /* This backend impl doesn't care */
 
             break;
         }

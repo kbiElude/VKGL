@@ -9,8 +9,8 @@ OpenGL::ThreadPool::Task::Task(std::function<void()> in_callback_func,
     :m_callback_func              (in_callback_func),
      m_enki_task_set_ptr(std::move(in_enki_task_set_ptr) )
 {
-    enkiAddTaskSetToPipe(in_enki_task_set_ptr->get_task_scheduler_ptr(),
-                         in_enki_task_set_ptr->get_enki_task_set_ptr (),
+    enkiAddTaskSetToPipe(m_enki_task_set_ptr->get_task_scheduler_ptr(),
+                         m_enki_task_set_ptr->get_enki_task_set_ptr (),
                          this,
                          1); /* setSize_ */
 }

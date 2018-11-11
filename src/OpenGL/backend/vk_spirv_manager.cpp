@@ -58,7 +58,6 @@ bool OpenGL::VKSPIRVManager::get_spirv_blob_id_for_glsl(const char*          in_
     {
         auto iterator = m_glsl_to_glsl_data_map.find(std::string(in_glsl_ptr) );
 
-        vkgl_assert(iterator != m_glsl_to_glsl_data_map.end() );
         if (iterator != m_glsl_to_glsl_data_map.end() )
         {
             *out_result_ptr = iterator->second->id;
