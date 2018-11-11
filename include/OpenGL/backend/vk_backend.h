@@ -143,6 +143,13 @@ namespace OpenGL
             return m_swapchain_manager_ptr.get();
         }
 
+        ThreadPool* get_thread_pool_ptr() const final
+        {
+            vkgl_assert(m_thread_pool_ptr != nullptr);
+
+            return m_thread_pool_ptr.get();
+        }
+
         /* IBackendCapabilities functions */
 
         void get_capability(const OpenGL::BackendCapability&  in_capability,

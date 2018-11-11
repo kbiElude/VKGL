@@ -521,7 +521,7 @@ bool OpenGL::VKBackend::init()
         goto end;
     }
 
-    m_spirv_manager_ptr = OpenGL::VKSPIRVManager::create();
+    m_spirv_manager_ptr = OpenGL::VKSPIRVManager::create(this);
 
     if (m_spirv_manager_ptr == nullptr)
     {

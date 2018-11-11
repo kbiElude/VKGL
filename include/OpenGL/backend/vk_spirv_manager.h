@@ -18,7 +18,7 @@ namespace OpenGL
     public:
         /* Public functions */
 
-        static VKSPIRVManagerUniquePtr create();
+        static VKSPIRVManagerUniquePtr create(IBackend* in_backend_ptr);
 
         ~VKSPIRVManager();
 
@@ -41,24 +41,28 @@ namespace OpenGL
             std::string          compilation_log;
             bool                 compilation_status;
             VKGL::FenceUniquePtr compile_task_fence_ptr;
+            std::string          glsl;
             SPIRVBlobID          id;
             Anvil::ShaderStage   shader_stage;
             std::vector<uint8_t> spirv_blob;
 
-            GLSLData()
-                :compilation_status(false),
-                 id                (UINT32_MAX),
-                 shader_stage      (Anvil::ShaderStage::UNKNOWN)
-            {
-                /* Stub */
-            }
+            GLSLData(const SPIRVBlobID&        in_id,
+                     const Anvil::ShaderStage& in_shader_stage,
+                     const std::string&        in_glsl);
+
+        private:
+            ANVIL_DISABLE_ASSIGNMENT_OPERATOR(GLSLData);
+            ANVIL_DISABLE_COPY_CONSTRUCTOR   (GLSLData);
         } GLSLData;
 
         typedef std::unique_ptr<GLSLData> GLSLDataUniquePtr;
 
         /* Private functions */
-        VKSPIRVManager();
+        VKSPIRVManager(IBackend* in_backend_ptr);
 
+        void compile_shader(GLSLData* in_glsl_data_ptr);
+
+        IBackend*                                          m_backend_ptr;
         std::unordered_map<std::string, GLSLDataUniquePtr> m_glsl_to_glsl_data_map;
         mutable VKGL::SharedMutex                          m_mutex;
         uint32_t                                           m_n_shaders_registered;

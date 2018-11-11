@@ -87,9 +87,8 @@ void OpenGL::ThreadPool::submit_task(std::function<void()> in_callback)
     );
     vkgl_assert(enki_task_set_ptr != nullptr);
 
+    /* NOTE: Task instance deletes itself upon completion */
     task_ptr = new Task(in_callback,
                         std::move(enki_task_set_ptr) );
     vkgl_assert(task_ptr != nullptr);
-
-
 }
