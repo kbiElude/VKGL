@@ -9,8 +9,12 @@ option(VKGL_INCLUDE_WGL    "Intercept WGL entrypoints"                ON)
 # DO NOT MODIFY BELOW THIS LINE
 configure_file("${VK_GL_SOURCE_DIR}/include/config.h.in" "${VK_GL_BINARY_DIR}/vkgl_config.h")
 
+set(ENKITS_BUILD_EXAMPLES OFF CACHE BOOL "No need to include enkITS example application projects..")
+
+
 add_subdirectory(deps/Anvil)
 add_subdirectory(deps/Detours_VKGL)
+add_subdirectory(deps/enkiTS)
 
 if (MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
@@ -178,7 +182,7 @@ add_library(VKGL SHARED ${CommonSources}
                         ${VKGLSources})
 
 target_link_libraries(Launcher Detours)
-target_link_libraries(VKGL     Anvil Detours)
+target_link_libraries(VKGL     Anvil Detours enkiTS)
 
 if (VKGL_INCLUDE_GDI32)
     add_dependencies     (VKGL GDI32)
