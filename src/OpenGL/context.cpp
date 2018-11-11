@@ -2727,7 +2727,7 @@ bool OpenGL::Context::init()
     }
 
     /* Set up shader manager */
-    m_gl_shader_manager_ptr = OpenGL::GLShaderManager::create();
+    m_gl_shader_manager_ptr = OpenGL::GLShaderManager::create(m_backend_gl_callbacks_ptr);
 
     if (m_gl_shader_manager_ptr == nullptr)
     {

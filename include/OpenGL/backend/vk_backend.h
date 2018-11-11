@@ -136,6 +136,13 @@ namespace OpenGL
             return m_mem_allocator_ptr.get();
         }
 
+        VKSPIRVManager* get_spirv_manager_ptr() const final
+        {
+            vkgl_assert(m_spirv_manager_ptr != nullptr);
+
+            return m_spirv_manager_ptr.get();
+        }
+
         VKSwapchainManager* get_swapchain_manager_ptr() const final
         {
             vkgl_assert(m_swapchain_manager_ptr != nullptr);

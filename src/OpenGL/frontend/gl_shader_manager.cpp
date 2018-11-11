@@ -8,11 +8,12 @@
 #include "OpenGL/frontend/gl_shader_manager.h"
 
 
-OpenGL::GLShaderManager::GLShaderManager()
-    :GLObjectManager(1,    /* in_first_valid_nondefault_id */
-                     true) /* in_expose_default_object     */
+OpenGL::GLShaderManager::GLShaderManager(IBackendGLCallbacks* in_backend_ptr)
+    :GLObjectManager(1,              /* in_first_valid_nondefault_id */
+                     true),          /* in_expose_default_object     */
+     m_backend_ptr  (in_backend_ptr)
 {
-    /*  Stub */
+    vkgl_assert(in_backend_ptr != nullptr);
 }
 
 OpenGL::GLShaderManager::~GLShaderManager()
@@ -39,11 +40,11 @@ void OpenGL::GLShaderManager::copy_internal_data_object(const void* in_src_ptr,
     *reinterpret_cast<Shader*>(in_dst_ptr) = *reinterpret_cast<const Shader*>(in_src_ptr);
 }
 
-OpenGL::GLShaderManagerUniquePtr OpenGL::GLShaderManager::create()
+OpenGL::GLShaderManagerUniquePtr OpenGL::GLShaderManager::create(IBackendGLCallbacks* in_backend_ptr)
 {
     OpenGL::GLShaderManagerUniquePtr result_ptr;
 
-    result_ptr.reset(new GLShaderManager() );
+    result_ptr.reset(new GLShaderManager(in_backend_ptr) );
 
     if (result_ptr == nullptr)
     {
@@ -107,10 +108,36 @@ bool OpenGL::GLShaderManager::get_shader_infolog(const GLuint&             in_id
 
     if (shader_ptr != nullptr)
     {
-        *out_result_ptr_ptr = (shader_ptr->infolog.length() > 0) ? &shader_ptr->infolog.at(0)
-                                                                 : null_string;
+        if (shader_ptr->spirv_blob_id == UINT32_MAX)
+        {
+            /* glCompileShader() has not been called for this shader object. */
+            *out_result_ptr_ptr = null_string;
+        }
+        else
+        {
+            m_backend_ptr->get_spirv_manager_ptr()->get_shader_compilation_status(shader_ptr->spirv_blob_id,
+                                                                                  nullptr, /* out_status_ptr */
+                                                                                  out_result_ptr_ptr);
+        }
 
         result = true;
+    }
+
+    return result;
+}
+
+bool OpenGL::GLShaderManager::get_shader_type(const GLuint&             in_id,
+                                              const OpenGL::TimeMarker* in_opt_time_marker_ptr,
+                                              OpenGL::ShaderType*       out_result_ptr) const
+{
+    bool       result     = false;
+    const auto shader_ptr = get_shader_ptr(in_id,
+                                           in_opt_time_marker_ptr);
+
+    if (shader_ptr != nullptr)
+    {
+        *out_result_ptr = shader_ptr->type;
+        result          = true;
     }
 
     return result;
@@ -148,10 +175,48 @@ bool OpenGL::GLShaderManager::get_shader_property(const GLuint&                 
 
     switch (in_pname)
     {
-        case OpenGL::ShaderProperty::Compile_Status:       src_data_type = OpenGL::GetSetArgumentType::Boolean;        src_data.boolean      = shader_ptr->successful_last_compile;                        break;
-        case OpenGL::ShaderProperty::Info_Log_Length:      src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;   src_data.unsigned_int = static_cast<uint32_t>(shader_ptr->infolog.length() + 1);    break;
-        case OpenGL::ShaderProperty::Shader_Source_Length: src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;   src_data.unsigned_int = static_cast<uint32_t>(shader_ptr->glsl.length   () + 1);    break;
-        case OpenGL::ShaderProperty::Shader_Type:          src_data_type = OpenGL::GetSetArgumentType::ShaderTypeVKGL; src_data.shader_type  = shader_ptr->type;                                           break;
+        case OpenGL::ShaderProperty::Compile_Status:
+        case OpenGL::ShaderProperty::Info_Log_Length:
+        {
+            src_data_type = (in_pname == OpenGL::ShaderProperty::Compile_Status) ? OpenGL::GetSetArgumentType::Boolean
+                                                                                 : OpenGL::GetSetArgumentType::Unsigned_Int;
+
+            if (shader_ptr->spirv_blob_id == UINT32_MAX)
+            {
+                /* glCompileShader() has not been invoked for this shader object */
+                if (in_pname == OpenGL::ShaderProperty::Compile_Status)
+                {
+                    src_data.boolean = false;
+                }
+                else
+                {
+                    src_data.unsigned_int = 1; /* terminator */
+                }
+            }
+            else
+            {
+                bool        compilation_status  = false;
+                const char* compilation_log_ptr = nullptr;
+
+                m_backend_ptr->get_spirv_manager_ptr()->get_shader_compilation_status(shader_ptr->spirv_blob_id,
+                                                                                     &compilation_status,
+                                                                                     &compilation_log_ptr);
+
+                if (in_pname == OpenGL::ShaderProperty::Compile_Status)
+                {
+                    src_data.boolean = compilation_status;
+                }
+                else
+                {
+                    src_data.unsigned_int = strlen(compilation_log_ptr) + 1; /* terminator */
+                }
+            }
+
+            break;
+        }
+
+        case OpenGL::ShaderProperty::Shader_Source_Length: src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;   src_data.unsigned_int = static_cast<uint32_t>(shader_ptr->glsl.length() + 1);  break;
+        case OpenGL::ShaderProperty::Shader_Type:          src_data_type = OpenGL::GetSetArgumentType::ShaderTypeVKGL; src_data.shader_type  = shader_ptr->type;                                      break;
 
         case OpenGL::ShaderProperty::Delete_Status:
         {
@@ -192,6 +257,24 @@ OpenGL::GLShaderManager::Shader* OpenGL::GLShaderManager::get_shader_ptr(const G
 {
     return reinterpret_cast<OpenGL::GLShaderManager::Shader*>(get_internal_object_props_ptr(in_id,
                                                                                             in_opt_time_marker_ptr) );
+}
+
+void OpenGL::GLShaderManager::set_shader_backend_spirv_blob_id(const GLuint&             in_id,
+                                                               const OpenGL::TimeMarker* in_opt_time_marker_ptr,
+                                                               OpenGL::SPIRVBlobID       in_spirv_blob_id)
+{
+    bool result     = false;
+    auto shader_ptr = get_shader_ptr(in_id,
+                                     nullptr /* in_opt_time_marker_ptr */);
+
+    if (shader_ptr != nullptr)
+    {
+        vkgl_assert(shader_ptr->spirv_blob_id == UINT32_MAX);
+
+        /* NOTE: This aciton is an update of INTERNAL state, hence no update notification propagation */
+        shader_ptr->spirv_blob_id = in_spirv_blob_id;
+        result                    = true;
+    }
 }
 
 bool OpenGL::GLShaderManager::set_shader_glsl(const GLuint&      in_id,

@@ -198,11 +198,6 @@ void OpenGL::VKScheduler::process_clear_command(OpenGL::ClearCommand* in_command
     backend_frame_graph_ptr->add_node(std::move(node_ptr) );
 }
 
-void OpenGL::VKScheduler::process_compile_shader_command(OpenGL::CompileShaderCommand* in_command_ptr)
-{
-    vkgl_not_implemented();
-}
-
 void OpenGL::VKScheduler::process_command(OpenGL::CommandBaseUniquePtr in_command_ptr)
 {
     switch (in_command_ptr->type)
@@ -210,7 +205,6 @@ void OpenGL::VKScheduler::process_command(OpenGL::CommandBaseUniquePtr in_comman
         case OpenGL::CommandType::BUFFER_DATA:                 process_buffer_data_command                (std::move(in_command_ptr) );                                                   break;
         case OpenGL::CommandType::BUFFER_SUB_DATA:             process_buffer_sub_data_command            (std::move(in_command_ptr) );                                                   break;
         case OpenGL::CommandType::CLEAR:                       process_clear_command                      (dynamic_cast<OpenGL::ClearCommand*>                  (in_command_ptr.get() )); break;
-        case OpenGL::CommandType::COMPILE_SHADER:              process_compile_shader_command             (dynamic_cast<OpenGL::CompileShaderCommand*>          (in_command_ptr.get() )); break;
         case OpenGL::CommandType::COMPRESSED_TEX_IMAGE_1D:     process_compressed_tex_image_1D_command    (dynamic_cast<OpenGL::CompressedTexImage1DCommand*>   (in_command_ptr.get() )); break;
         case OpenGL::CommandType::COMPRESSED_TEX_IMAGE_2D:     process_compressed_tex_image_2D_command    (dynamic_cast<OpenGL::CompressedTexImage2DCommand*>   (in_command_ptr.get() )); break;
         case OpenGL::CommandType::COMPRESSED_TEX_IMAGE_3D:     process_compressed_tex_image_3D_command    (dynamic_cast<OpenGL::CompressedTexImage3DCommand*>   (in_command_ptr.get() )); break;

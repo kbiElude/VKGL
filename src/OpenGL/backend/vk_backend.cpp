@@ -17,6 +17,7 @@
 #include "OpenGL/frontend/gl_program_manager.h"
 #include "OpenGL/frontend/gl_shader_manager.h"
 #include "OpenGL/frontend/gl_state_manager.h"
+#include "OpenGL/utils_enum.h"
 #include "WGL/context.h"
 #include <sstream>
 
@@ -146,18 +147,62 @@ void OpenGL::VKBackend::clear(const OpenGL::ClearBufferBits& in_buffers_to_clear
 
 void OpenGL::VKBackend::compile_shader(const GLuint& in_id)
 {
+    auto        frontend_shader_manager_ptr = m_frontend_ptr->get_shader_manager_ptr();
+    const char* shader_glsl                 = nullptr;
+    SPIRVBlobID spirv_blob_id               = UINT32_MAX;
+
     /* 1. Grab the shader reference. */
     auto shader_reference_ptr = m_frontend_ptr->get_shader_manager_ptr()->acquire_current_latest_snapshot_reference(in_id);
-
     vkgl_assert(shader_reference_ptr != nullptr);
 
-    /* 2. Spawn the command container .. */
-    OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::CompileShaderCommand(std::move(shader_reference_ptr) ),
-                                         std::default_delete<OpenGL::CommandBase>() );
+    /* 2. Retrieve GLSL associated with the shader and:
+     *
+     * a) Schedule compilation, if no GLSL->SPIR-V conversion has already been initiated.
+     * b) Assign corresponding SPIR-V blob ID to the frontend's shader object otherwise.
+     */
+    const auto time_marker = shader_reference_ptr->get_payload().time_marker;
 
-    vkgl_assert(cmd_ptr != nullptr);
+    if (!frontend_shader_manager_ptr->get_shader_glsl(in_id,
+                                                     &time_marker,
+                                                     &shader_glsl) )
+    {
+        vkgl_assert_fail();
 
-    m_scheduler_ptr->submit(std::move(cmd_ptr) );
+        goto end;
+    }
+
+    if (!m_spirv_manager_ptr->get_spirv_blob_id_for_glsl(shader_glsl,
+                                                        &spirv_blob_id) )
+    {
+        /* a) */
+        Anvil::ShaderStage shader_stage = Anvil::ShaderStage::UNKNOWN;
+        OpenGL::ShaderType shader_type  = OpenGL::ShaderType::Unknown;
+
+        if (!frontend_shader_manager_ptr->get_shader_type(in_id,
+                                                         &time_marker,
+                                                         &shader_type) )
+        {
+            vkgl_assert_fail();
+
+            goto end;
+        }
+
+        shader_stage = OpenGL::Utils::get_anvil_shader_stage_for_shader_type(shader_type);
+
+        spirv_blob_id = m_spirv_manager_ptr->register_shader(shader_stage,
+                                                             shader_glsl);
+    }
+    else
+    {
+        /* b) - nop */
+    }
+
+    frontend_shader_manager_ptr->set_shader_backend_spirv_blob_id(in_id,
+                                                                 &time_marker,
+                                                                  spirv_blob_id);
+
+end:
+    ;
 }
 
 void OpenGL::VKBackend::compressed_tex_image_1d(const GLuint&                 in_id,

@@ -7,6 +7,25 @@
 #include "Common/macros.h"
 #include "OpenGL/utils_enum.h"
 
+Anvil::ShaderStage OpenGL::Utils::get_anvil_shader_stage_for_shader_type(const OpenGL::ShaderType& in_shader_type)
+{
+    Anvil::ShaderStage result = Anvil::ShaderStage::UNKNOWN;
+
+    switch (in_shader_type)
+    {
+        case OpenGL::ShaderType::Fragment: result = Anvil::ShaderStage::FRAGMENT; break;
+        case OpenGL::ShaderType::Geometry: result = Anvil::ShaderStage::GEOMETRY; break;
+        case OpenGL::ShaderType::Vertex:   result = Anvil::ShaderStage::VERTEX;   break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 OpenGL::BlendEquation OpenGL::Utils::get_blend_equation_for_gl_enum(const GLenum& in_enum)
 {
     OpenGL::BlendEquation result = OpenGL::BlendEquation::Unknown;

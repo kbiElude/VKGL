@@ -20,6 +20,7 @@ namespace OpenGL
         virtual VKFormatManager*        get_format_manager_ptr   () const = 0;
         virtual VKFrameGraph*           get_frame_graph_ptr      () const = 0;
         virtual Anvil::MemoryAllocator* get_memory_allocator_ptr () const = 0;
+        virtual VKSPIRVManager*         get_spirv_manager_ptr    () const = 0;
         virtual VKSwapchainManager*     get_swapchain_manager_ptr() const = 0;
         virtual ThreadPool*             get_thread_pool_ptr      () const = 0;
     };
@@ -45,6 +46,8 @@ namespace OpenGL
         {
             /* Stub */
         }
+
+        virtual VKSPIRVManager* get_spirv_manager_ptr() const = 0;
 
         virtual void on_objects_created  (const OpenGL::ObjectType& in_object_type,
                                           const uint32_t&           in_n_ids,

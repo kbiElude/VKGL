@@ -36,7 +36,6 @@ namespace OpenGL
         void process_buffer_data_command                (OpenGL::CommandBaseUniquePtr            in_command_ptr);
         void process_buffer_sub_data_command            (OpenGL::CommandBaseUniquePtr            in_command_ptr);
         void process_clear_command                      (OpenGL::ClearCommand*                   in_command_ptr);
-        void process_compile_shader_command             (OpenGL::CompileShaderCommand*           in_command_ptr);
         void process_compressed_tex_image_1D_command    (OpenGL::CompressedTexImage1DCommand*    in_command_ptr);
         void process_compressed_tex_image_2D_command    (OpenGL::CompressedTexImage2DCommand*    in_command_ptr);
         void process_compressed_tex_image_3D_command    (OpenGL::CompressedTexImage3DCommand*    in_command_ptr);

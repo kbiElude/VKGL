@@ -17,7 +17,6 @@ namespace OpenGL
         BUFFER_DATA,
         BUFFER_SUB_DATA,
         CLEAR,
-        COMPILE_SHADER,
         COMPRESSED_TEX_IMAGE_1D,
         COMPRESSED_TEX_IMAGE_2D,
         COMPRESSED_TEX_IMAGE_3D,
@@ -150,19 +149,6 @@ namespace OpenGL
              context_state_reference_ptr(std::move(in_context_state_reference_ptr) )
         {
             /* Stub */
-        }
-    };
-
-    struct CompileShaderCommand : public CommandBase
-    {
-        OpenGL::GLShaderReferenceUniquePtr shader_reference_ptr;
-
-        CompileShaderCommand(OpenGL::GLShaderReferenceUniquePtr in_shader_reference_ptr)
-            :CommandBase         (CommandType::COMPILE_SHADER),
-             shader_reference_ptr(std::move(in_shader_reference_ptr) )
-        {
-            /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(shader_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 

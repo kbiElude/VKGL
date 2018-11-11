@@ -175,8 +175,9 @@ namespace OpenGL
         GLenum                 get_gl_enum_for_shader_property(const OpenGL::ShaderProperty& in_pname);
         OpenGL::ShaderProperty get_shader_property_for_gl_enum(const GLenum&                 in_enum);
 
-        GLenum             get_gl_enum_for_shader_type(const OpenGL::ShaderType& in_shader_type);
-        OpenGL::ShaderType get_shader_type_for_gl_enum(const GLenum&             in_enum);
+        Anvil::ShaderStage get_anvil_shader_stage_for_shader_type(const OpenGL::ShaderType& in_shader_type);
+        GLenum             get_gl_enum_for_shader_type           (const OpenGL::ShaderType& in_shader_type);
+        OpenGL::ShaderType get_shader_type_for_gl_enum           (const GLenum&             in_enum);
 
         GLenum                  get_gl_enum_for_stencil_function(const OpenGL::StencilFunction& in_stencil_function);
         OpenGL::StencilFunction get_stencil_function_for_gl_enum(const GLenum&                  in_enum);

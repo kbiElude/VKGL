@@ -5,6 +5,7 @@
 #ifndef VKGL_GL_SHADER_MANAGER_H
 #define VKGL_GL_SHADER_MANAGER_H
 
+#include "OpenGL/backend/vk_spirv_manager.h"
 #include "OpenGL/frontend/gl_object_manager.h"
 #include "OpenGL/types.h"
 
@@ -17,7 +18,7 @@ namespace OpenGL
     public:
         /* Public functions */
 
-        static GLShaderManagerUniquePtr create();
+        static GLShaderManagerUniquePtr create(IBackendGLCallbacks* in_backend_ptr);
 
         ~GLShaderManager();
 
@@ -27,12 +28,17 @@ namespace OpenGL
         bool get_shader_infolog(const GLuint&             in_id,
                                 const OpenGL::TimeMarker* in_opt_time_marker_ptr,
                                 const char**              out_result_ptr_ptr) const;
+        bool get_shader_type   (const GLuint&             in_id,
+                                const OpenGL::TimeMarker* in_opt_time_marker_ptr,
+                                OpenGL::ShaderType*       out_result_ptr) const;
         bool set_shader_glsl   (const GLuint&             in_id,
-                                const std::string&        in_glsl);
-        bool set_shader_infolog(const GLuint&             in_id,
                                 const std::string&        in_glsl);
         bool set_shader_type   (const GLuint&             in_id,
                                 const OpenGL::ShaderType& in_type);
+
+        void set_shader_backend_spirv_blob_id(const GLuint&             in_id,
+                                              const OpenGL::TimeMarker* in_opt_time_marker_ptr,
+                                              OpenGL::SPIRVBlobID       in_spirv_blob_id);
 
         bool get_shader_property(const GLuint&                     in_shader,
                                  const OpenGL::TimeMarker*         in_opt_time_marker_ptr,
@@ -54,20 +60,20 @@ namespace OpenGL
         typedef struct Shader
         {
             std::string        glsl;
-            std::string        infolog;
-            bool               successful_last_compile;
             OpenGL::ShaderType type;
+
+            OpenGL::SPIRVBlobID spirv_blob_id;
 
             Shader()
             {
-                successful_last_compile = false;
-                type                    = OpenGL::ShaderType::Unknown;
+                spirv_blob_id = UINT32_MAX;
+                type          = OpenGL::ShaderType::Unknown;
             }
         } Shader;
 
         /* Private functions */
 
-        GLShaderManager();
+        GLShaderManager(IBackendGLCallbacks* in_backend_ptr);
 
         const Shader* get_shader_ptr(const GLuint&             in_id,
                                      const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
@@ -75,6 +81,7 @@ namespace OpenGL
                                      const OpenGL::TimeMarker* in_opt_time_marker_ptr);
 
         /* Private variables */
+        IBackendGLCallbacks* m_backend_ptr;
     };
 }
 #endif /* VKGL_GL_SHADER_MANAGER_H */
