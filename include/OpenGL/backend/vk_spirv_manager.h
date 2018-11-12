@@ -5,6 +5,7 @@
 #ifndef VKGL_VK_SPIRV_MANAGER_H
 #define VKGL_VK_SPIRV_MANAGER_H
 
+#include "Anvil/deps/glslang/SPIRV/GlslangToSpv.h"
 #include "Common/fence.h"
 #include "Common/shared_mutex.h"
 #include "OpenGL/types.h"
@@ -18,7 +19,8 @@ namespace OpenGL
     public:
         /* Public functions */
 
-        static VKSPIRVManagerUniquePtr create(IBackend* in_backend_ptr);
+        static VKSPIRVManagerUniquePtr create(IBackend*                             in_backend_ptr,
+                                              const OpenGL::IContextObjectManagers* in_frontend_ptr);
 
         ~VKSPIRVManager();
 
@@ -31,23 +33,24 @@ namespace OpenGL
         bool get_spirv_blob_id_for_glsl   (const char*          in_glsl_ptr,
                                            OpenGL::SPIRVBlobID* out_result_ptr)                const;
 
-        SPIRVBlobID register_shader(const Anvil::ShaderStage& in_shader_stage,
+        SPIRVBlobID register_shader(const OpenGL::ShaderType& in_shader_type,
                                     const char*               in_glsl);
 
     private:
         /* Private type definitions */
         typedef struct GLSLData
         {
-            std::string          compilation_log;
-            bool                 compilation_status;
-            VKGL::FenceUniquePtr compile_task_fence_ptr;
-            std::string          glsl;
-            SPIRVBlobID          id;
-            Anvil::ShaderStage   shader_stage;
-            std::vector<uint8_t> spirv_blob;
+            std::string                       compilation_log;
+            bool                              compilation_status;
+            VKGL::FenceUniquePtr              compile_task_fence_ptr;
+            std::string                       glsl;
+            std::unique_ptr<glslang::TShader> glslang_shader_ptr;
+            SPIRVBlobID                       id;
+            std::vector<uint8_t>              spirv_blob;
+            OpenGL::ShaderType                type;
 
             GLSLData(const SPIRVBlobID&        in_id,
-                     const Anvil::ShaderStage& in_shader_stage,
+                     const OpenGL::ShaderType& in_shader_type,
                      const std::string&        in_glsl);
 
         private:
@@ -58,15 +61,22 @@ namespace OpenGL
         typedef std::unique_ptr<GLSLData> GLSLDataUniquePtr;
 
         /* Private functions */
-        VKSPIRVManager(IBackend* in_backend_ptr);
+        VKSPIRVManager(IBackend*                             in_backend_ptr,
+                       const OpenGL::IContextObjectManagers* in_frontend_ptr);
 
         void compile_shader(GLSLData* in_glsl_data_ptr);
 
+        bool init                  ();
+        bool init_glslang_resources();
+
         IBackend*                                          m_backend_ptr;
+        const OpenGL::IContextObjectManagers*              m_frontend_ptr;
         std::unordered_map<std::string, GLSLDataUniquePtr> m_glsl_to_glsl_data_map;
         mutable VKGL::SharedMutex                          m_mutex;
         uint32_t                                           m_n_shaders_registered;
         std::unordered_map<SPIRVBlobID, GLSLData*>         m_spirv_blob_id_to_glsl_data_map;
+
+        std::unique_ptr<struct TBuiltInResource> m_glslang_resources_ptr;
     };
 }
 

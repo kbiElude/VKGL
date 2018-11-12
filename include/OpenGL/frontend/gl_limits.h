@@ -151,6 +151,11 @@ namespace OpenGL
             return m_max_geometry_uniform_blocks;
         }
 
+        uint32_t get_max_geometry_uniform_components() const final
+        {
+            return m_max_geometry_uniform_components;
+        }
+
         uint32_t get_max_integer_samples() const final
         {
             return m_max_integer_samples;

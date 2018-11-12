@@ -175,7 +175,6 @@ void OpenGL::VKBackend::compile_shader(const GLuint& in_id)
                                                         &spirv_blob_id) )
     {
         /* a) */
-        Anvil::ShaderStage shader_stage = Anvil::ShaderStage::UNKNOWN;
         OpenGL::ShaderType shader_type  = OpenGL::ShaderType::Unknown;
 
         if (!frontend_shader_manager_ptr->get_shader_type(in_id,
@@ -187,9 +186,7 @@ void OpenGL::VKBackend::compile_shader(const GLuint& in_id)
             goto end;
         }
 
-        shader_stage = OpenGL::Utils::get_anvil_shader_stage_for_shader_type(shader_type);
-
-        spirv_blob_id = m_spirv_manager_ptr->register_shader(shader_stage,
+        spirv_blob_id = m_spirv_manager_ptr->register_shader(shader_type,
                                                              shader_glsl);
     }
     else
@@ -566,16 +563,7 @@ bool OpenGL::VKBackend::init()
         goto end;
     }
 
-    m_spirv_manager_ptr = OpenGL::VKSPIRVManager::create(this);
-
-    if (m_spirv_manager_ptr == nullptr)
-    {
-        vkgl_assert(m_spirv_manager_ptr != nullptr);
-
-        goto end;
-    }
-
-    /* NOTE: We postpone creation of frame graph and scheduler to set_frontend_callback(), since we need to be able to pass
+    /* NOTE: We postpone creation of SPIR-V manager, frame graph and scheduler to set_frontend_callback(), since we need to be able to pass
      *       a ptr to the frontend at scheduler creation time. However, in order to create the frontend, backend
      *       instance need to be specified.
      */
@@ -1134,6 +1122,17 @@ void OpenGL::VKBackend::set_frontend_callback(const OpenGL::IContextObjectManage
     if (m_frame_graph_ptr == nullptr)
     {
         vkgl_assert(m_frame_graph_ptr != nullptr);
+
+        goto end;
+    }
+
+    /* Continue with SPIR-V manager.. */
+    m_spirv_manager_ptr = OpenGL::VKSPIRVManager::create(this,
+                                                         m_frontend_ptr);
+
+    if (m_spirv_manager_ptr == nullptr)
+    {
+        vkgl_assert(m_spirv_manager_ptr != nullptr);
 
         goto end;
     }

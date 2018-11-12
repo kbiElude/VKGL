@@ -309,6 +309,7 @@ namespace OpenGL
         /* TODO: Replace with per-manager interfaces allowing to acquire references + retrieve object properties. */
         virtual OpenGL::GLBufferManager*       get_buffer_manager_ptr      () const = 0;
         virtual OpenGL::GLFramebufferManager*  get_framebuffer_manager_ptr () const = 0;
+        virtual OpenGL::GLLimits*              get_limits_ptr              () const = 0;
         virtual OpenGL::GLProgramManager*      get_program_manager_ptr     () const = 0;
         virtual OpenGL::GLRenderbufferManager* get_renderbuffer_manager_ptr() const = 0;
         virtual OpenGL::GLShaderManager*       get_shader_manager_ptr      () const = 0;
@@ -369,6 +370,7 @@ namespace OpenGL
         virtual uint32_t                                   get_max_geometry_texture_image_units             () const = 0;
         virtual uint32_t                                   get_max_geometry_total_output_components         () const = 0;
         virtual uint32_t                                   get_max_geometry_uniform_blocks                  () const = 0;
+        virtual uint32_t                                   get_max_geometry_uniform_components              () const = 0;
         virtual uint32_t                                   get_max_integer_samples                          () const = 0;
         virtual uint32_t                                   get_max_program_texel_offset                     () const = 0;
         virtual uint32_t                                   get_max_rectangle_texture_size                   () const = 0;
