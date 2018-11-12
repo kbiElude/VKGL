@@ -38,7 +38,6 @@ namespace OpenGL
         GET_BUFFER_SUB_DATA,
         GET_COMPRESSED_TEX_IMAGE,
         GET_TEXTURE_IMAGE,
-        LINK_PROGRAM,
         MAP_BUFFER,
         MULTI_DRAW_ARRAYS,
         MULTI_DRAW_ELEMENTS,
@@ -746,19 +745,6 @@ namespace OpenGL
         {
             /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
             vkgl_assert(texture_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
-        }
-    };
-
-    struct LinkProgramCommand : public CommandBase
-    {
-        OpenGL::GLProgramReferenceUniquePtr program_reference_ptr;
-
-        LinkProgramCommand(OpenGL::GLProgramReferenceUniquePtr in_program_reference_ptr)
-            :CommandBase          (CommandType::LINK_PROGRAM),
-             program_reference_ptr(std::move(in_program_reference_ptr) )
-        {
-            /* NOTE: Backend must not be fed references pointing to ToT snapshots (since it's out-of-sync with frontend) */
-            vkgl_assert(program_reference_ptr->get_payload().time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE);
         }
     };
 

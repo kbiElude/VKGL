@@ -891,18 +891,39 @@ bool OpenGL::VKBackend::init_capabilities()
 
 void OpenGL::VKBackend::link_program(const GLuint& in_program_id)
 {
+    auto        frontend_program_manager_ptr = m_frontend_ptr->get_program_manager_ptr();
+    SPIRVBlobID spirv_blob_id                = UINT32_MAX;
+
     /* 1. Grab the program reference. */
-    auto program_reference_ptr = m_frontend_ptr->get_program_manager_ptr()->acquire_current_latest_snapshot_reference(in_program_id);
+    auto program_reference_ptr = frontend_program_manager_ptr->acquire_current_latest_snapshot_reference(in_program_id);
 
     vkgl_assert(program_reference_ptr != nullptr);
 
-    /* 2. Spawn the command container .. */
-    OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::LinkProgramCommand(std::move(program_reference_ptr) ),
-                                         std::default_delete<OpenGL::CommandBase>() );
+    /* 2. Schedule linking for the program reference. Two cases here:
+     *
+     * a) Given program ID + timestamp is not recognized. Linking needs to be performed.
+     * b) Otherwise, the request is redundant.
+     */
+    const auto time_marker = program_reference_ptr->get_payload().time_marker;
 
-    vkgl_assert(cmd_ptr != nullptr);
+    if (!m_spirv_manager_ptr->get_spirv_blob_id_for_program_reference(in_program_id,
+                                                                      time_marker,
+                                                                     &spirv_blob_id) )
+    {
+        /* a) */
+        spirv_blob_id = m_spirv_manager_ptr->register_program(std::move(program_reference_ptr) );
+    }
+    else
+    {
+        /* b) - nop */
+    }
 
-    m_scheduler_ptr->submit(std::move(cmd_ptr) );
+    frontend_program_manager_ptr->set_program_backend_spirv_blob_id(in_program_id,
+                                                                   &time_marker,
+                                                                    spirv_blob_id);
+
+end:
+    ;
 }
 
 void* OpenGL::VKBackend::map_buffer(const GLuint&               in_id,

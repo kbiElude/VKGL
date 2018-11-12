@@ -107,6 +107,10 @@ namespace OpenGL
                                        const GLuint& in_uniform_block_index,
                                        const GLuint& in_uniform_block_binding);
 
+        void set_program_backend_spirv_blob_id(const GLuint&              in_program,
+                                               const OpenGL::TimeMarker*  in_opt_time_marker_ptr,
+                                               const OpenGL::SPIRVBlobID& in_spirv_blob_id);
+
     protected:
         /* Protected functions */
         std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr)     final;
@@ -285,12 +289,15 @@ namespace OpenGL
             bool link_status;
             bool validate_status;
 
+            OpenGL::SPIRVBlobID spirv_blob_id;
+
             Program()
                 :delete_status              (false),
                  gs_input_type              (OpenGL::GeometryInputType::Triangles),
                  gs_output_type             (OpenGL::GeometryOutputType::Triangle_Strip),
                  link_status                (false),
                  n_max_gs_vertices_generated(0),
+                 spirv_blob_id              (UINT32_MAX),
                  tf_buffer_mode             (OpenGL::TransformFeedbackBufferMode::Interleaved_Attribs),
                  tf_varying_max_length      (0),
                  validate_status            (false)

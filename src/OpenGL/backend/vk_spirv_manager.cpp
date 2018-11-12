@@ -6,10 +6,24 @@
 #include "OpenGL/backend/thread_pool.h"
 #include "OpenGL/backend/vk_spirv_manager.h"
 #include "OpenGL/frontend/gl_limits.h"
+#include "OpenGL/frontend/gl_program_manager.h"
+#include "OpenGL/frontend/gl_shader_manager.h"
 
-OpenGL::VKSPIRVManager::GLSLData::GLSLData(const SPIRVBlobID&        in_id,
-                                           const OpenGL::ShaderType& in_shader_type,
-                                           const std::string&        in_glsl)
+OpenGL::VKSPIRVManager::ProgramData::ProgramData(const SPIRVBlobID&                  in_id,
+                                                 const std::vector<ShaderData*>&     in_shader_ptrs,
+                                                 OpenGL::GLProgramReferenceUniquePtr in_program_reference_ptr)
+    :id                   (in_id),
+     link_status          (false),
+     program_reference_ptr(std::move(in_program_reference_ptr) ),
+     shader_ptrs          (in_shader_ptrs)
+{
+    link_task_fence_ptr.reset(new VKGL::Fence() );
+    vkgl_assert(link_task_fence_ptr != nullptr);
+}
+
+OpenGL::VKSPIRVManager::ShaderData::ShaderData(const SPIRVBlobID&        in_id,
+                                               const OpenGL::ShaderType& in_shader_type,
+                                               const std::string&        in_glsl)
     :compilation_status(false),
      glsl              (in_glsl),
      id                (in_id),
@@ -23,9 +37,9 @@ OpenGL::VKSPIRVManager::GLSLData::GLSLData(const SPIRVBlobID&        in_id,
 
 OpenGL::VKSPIRVManager::VKSPIRVManager(IBackend*                             in_backend_ptr,
                                        const OpenGL::IContextObjectManagers* in_frontend_ptr)
-    :m_backend_ptr         (in_backend_ptr),
-     m_frontend_ptr        (in_frontend_ptr),
-     m_n_shaders_registered(0)
+    :m_backend_ptr          (in_backend_ptr),
+     m_frontend_ptr         (in_frontend_ptr),
+     m_n_entities_registered(0)
 {
     vkgl_assert(in_backend_ptr != nullptr);
 
@@ -37,15 +51,15 @@ OpenGL::VKSPIRVManager::~VKSPIRVManager()
     glslang::FinalizeProcess();
 }
 
-void OpenGL::VKSPIRVManager::compile_shader(GLSLData* in_glsl_data_ptr)
+void OpenGL::VKSPIRVManager::compile_shader(ShaderData* in_shader_data_ptr)
 {
     /* NOTE: This function is called back from one of the backend thread pool's threads */
     std::unique_ptr<glslang::TShader> glslang_shader_ptr;
-    const char*                       glsl_code_ptr        = in_glsl_data_ptr->glsl.c_str();
-    const auto                        glslang_shader_stage = (in_glsl_data_ptr->type == OpenGL::ShaderType::Fragment) ? EShLanguage::EShLangFragment
-                                                           : (in_glsl_data_ptr->type == OpenGL::ShaderType::Geometry) ? EShLanguage::EShLangGeometry
-                                                           : (in_glsl_data_ptr->type == OpenGL::ShaderType::Vertex)   ? EShLanguage::EShLangVertex
-                                                                                                                      : EShLanguage::EShLangCount;
+    const char*                       glsl_code_ptr        = in_shader_data_ptr->glsl.c_str();
+    const auto                        glslang_shader_stage = (in_shader_data_ptr->type == OpenGL::ShaderType::Fragment) ? EShLanguage::EShLangFragment
+                                                           : (in_shader_data_ptr->type == OpenGL::ShaderType::Geometry) ? EShLanguage::EShLangGeometry
+                                                           : (in_shader_data_ptr->type == OpenGL::ShaderType::Vertex)   ? EShLanguage::EShLangVertex
+                                                                                                                        : EShLanguage::EShLangCount;
 
     vkgl_assert(glslang_shader_stage != EShLanguage::EShLangCount);
 
@@ -58,13 +72,13 @@ void OpenGL::VKSPIRVManager::compile_shader(GLSLData* in_glsl_data_ptr)
     glslang_shader_ptr->setAutoMapBindings (true); /* NOTE: We're going to modify these later on by ourselves anyway */
     glslang_shader_ptr->setAutoMapLocations(true); /* NOTE: We're going to modify these later on by ourselves anyway */
 
-    in_glsl_data_ptr->compilation_status = glslang_shader_ptr->parse(m_glslang_resources_ptr.get(),
-                                                                     110,   /* defaultVersion    */
-                                                                     false, /* forwardCompatible */
-                                                                     static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules) );
-    in_glsl_data_ptr->compilation_log    = glslang_shader_ptr->getInfoLog();
+    in_shader_data_ptr->compilation_status = glslang_shader_ptr->parse(m_glslang_resources_ptr.get(),
+                                                                       110,   /* defaultVersion    */
+                                                                       false, /* forwardCompatible */
+                                                                       static_cast<EShMessages>(EShMsgDefault | EShMsgSpvRules | EShMsgVulkanRules) );
+    in_shader_data_ptr->compilation_log    = glslang_shader_ptr->getInfoLog();
 
-    if (in_glsl_data_ptr->compilation_status)
+    if (in_shader_data_ptr->compilation_status)
     {
         const auto            intermediate_ptr = glslang_shader_ptr->getIntermediate();
         std::vector<uint32_t> result_spirv_blob;
@@ -78,17 +92,17 @@ void OpenGL::VKSPIRVManager::compile_shader(GLSLData* in_glsl_data_ptr)
         }
         else
         {
-            in_glsl_data_ptr->spirv_blob.resize(result_spirv_blob.size() * sizeof(uint32_t) );
+            in_shader_data_ptr->spirv_blob.resize(result_spirv_blob.size() * sizeof(uint32_t) );
 
-            memcpy(&in_glsl_data_ptr->spirv_blob.at(0),
+            memcpy(&in_shader_data_ptr->spirv_blob.at(0),
                    &result_spirv_blob.at(0),
-                   in_glsl_data_ptr->spirv_blob.size() );
+                    in_shader_data_ptr->spirv_blob.size() );
         }
     }
 
-    in_glsl_data_ptr->glslang_shader_ptr = std::move(glslang_shader_ptr);
+    in_shader_data_ptr->glslang_shader_ptr = std::move(glslang_shader_ptr);
 
-    in_glsl_data_ptr->compile_task_fence_ptr->signal();
+    in_shader_data_ptr->compile_task_fence_ptr->signal();
 }
 
 OpenGL::VKSPIRVManagerUniquePtr OpenGL::VKSPIRVManager::create(IBackend*                             in_backend_ptr,
@@ -111,6 +125,32 @@ OpenGL::VKSPIRVManagerUniquePtr OpenGL::VKSPIRVManager::create(IBackend*        
     return result_ptr;
 }
 
+bool OpenGL::VKSPIRVManager::get_program_link_status(const SPIRVBlobID& in_spirv_blob_id,
+                                                     bool*              out_status_ptr,
+                                                     const char**       out_link_log_ptr) const
+{
+    bool result = false;
+
+    m_mutex.lock_shared();
+    {
+        auto iterator = m_spirv_blob_id_to_program_data_map.find(in_spirv_blob_id);
+
+        if (iterator != m_spirv_blob_id_to_program_data_map.end() )
+        {
+            vkgl_assert(iterator->second->link_task_fence_ptr != nullptr);
+
+            iterator->second->link_task_fence_ptr->wait();
+
+            result            = true;
+            *out_status_ptr   = iterator->second->link_status;
+            *out_link_log_ptr = iterator->second->link_log.c_str();
+        }
+    }
+    m_mutex.unlock_shared();
+
+    return result;
+}
+
 bool OpenGL::VKSPIRVManager::get_spirv_blob_id_for_glsl(const char*          in_glsl_ptr,
                                                         OpenGL::SPIRVBlobID* out_result_ptr) const
 {
@@ -118,9 +158,30 @@ bool OpenGL::VKSPIRVManager::get_spirv_blob_id_for_glsl(const char*          in_
 
     m_mutex.lock_shared();
     {
-        auto iterator = m_glsl_to_glsl_data_map.find(std::string(in_glsl_ptr) );
+        auto iterator = m_glsl_to_shader_data_map.find(std::string(in_glsl_ptr) );
 
-        if (iterator != m_glsl_to_glsl_data_map.end() )
+        if (iterator != m_glsl_to_shader_data_map.end() )
+        {
+            *out_result_ptr = iterator->second->id;
+            result          = true;
+        }
+    }
+    m_mutex.unlock_shared();
+
+    return result;
+}
+
+bool OpenGL::VKSPIRVManager::get_spirv_blob_id_for_program_reference(const GLuint&             in_program_id,
+                                                                     const OpenGL::TimeMarker& in_time_marker,
+                                                                     OpenGL::SPIRVBlobID*      out_result_ptr) const
+{
+    bool result = false;
+
+    m_mutex.lock_shared();
+    {
+        auto iterator = m_program_reference_to_program_data_map.find(std::pair<GLuint, OpenGL::TimeMarker>(in_program_id, in_time_marker) );
+
+        if (iterator != m_program_reference_to_program_data_map.end() )
         {
             *out_result_ptr = iterator->second->id;
             result          = true;
@@ -139,9 +200,9 @@ bool OpenGL::VKSPIRVManager::get_shader_compilation_status(const SPIRVBlobID& in
 
     m_mutex.lock_shared();
     {
-        auto iterator = m_spirv_blob_id_to_glsl_data_map.find(in_spirv_blob_id);
+        auto iterator = m_spirv_blob_id_to_shader_data_map.find(in_spirv_blob_id);
 
-        if (iterator != m_spirv_blob_id_to_glsl_data_map.end() )
+        if (iterator != m_spirv_blob_id_to_shader_data_map.end() )
         {
             vkgl_assert(iterator->second->compile_task_fence_ptr != nullptr);
 
@@ -165,9 +226,9 @@ bool OpenGL::VKSPIRVManager::get_spirv_blob(const SPIRVBlobID& in_spirv_blob_id,
 
     m_mutex.lock_shared();
     {
-        auto iterator = m_spirv_blob_id_to_glsl_data_map.find(in_spirv_blob_id);
+        auto iterator = m_spirv_blob_id_to_shader_data_map.find(in_spirv_blob_id);
 
-        if (iterator != m_spirv_blob_id_to_glsl_data_map.end() )
+        if (iterator != m_spirv_blob_id_to_shader_data_map.end() )
         {
             vkgl_assert(iterator->second->compile_task_fence_ptr != nullptr);
 
@@ -317,6 +378,98 @@ end:
     return result;
 }
 
+void OpenGL::VKSPIRVManager::link_program(ProgramData* in_program_data_ptr)
+{
+    /* TODO */
+    vkgl_not_implemented();
+}
+
+OpenGL::SPIRVBlobID OpenGL::VKSPIRVManager::register_program(OpenGL::GLProgramReferenceUniquePtr in_program_reference_ptr)
+{
+    OpenGL::SPIRVBlobID result                       = UINT32_MAX;
+    auto                program_frontend_manager_ptr = m_frontend_ptr->get_program_manager_ptr();
+    auto                shader_frontend_manager_ptr  = m_frontend_ptr->get_shader_manager_ptr ();
+    auto                thread_pool_ptr              = m_backend_ptr->get_thread_pool_ptr     ();
+
+    const auto          program_id                   = in_program_reference_ptr->get_payload().id;
+    const auto          program_timestamp            = in_program_reference_ptr->get_payload().time_marker;
+
+    m_mutex.lock_unique();
+    {
+        ProgramDataUniquePtr     program_data_ptr;
+        std::vector<ShaderData*> shader_data_vec;
+
+        /* 1. Obtain ptrs to ShaderData structures for all shaders attached to the program */
+        {
+            const auto attached_shader_reference_vec_ptr = program_frontend_manager_ptr->get_attached_shaders(program_id,
+                                                                                                             &program_timestamp);
+
+            vkgl_assert(attached_shader_reference_vec_ptr         != nullptr);
+            vkgl_assert(attached_shader_reference_vec_ptr->size() >  0);
+
+            for (const auto& current_shader_reference_ptr : *attached_shader_reference_vec_ptr)
+            {
+                const char* shader_glsl      = nullptr;
+                const auto  shader_id        = current_shader_reference_ptr->get_payload().id;
+                const auto  shader_timestamp = current_shader_reference_ptr->get_payload().time_marker;
+
+                decltype(m_glsl_to_shader_data_map)::const_iterator shader_data_iterator;
+
+                if (!shader_frontend_manager_ptr->get_shader_glsl(shader_id,
+                                                                 &shader_timestamp,
+                                                                 &shader_glsl) )
+                {
+                    vkgl_assert_fail();
+                }
+                else
+                {
+                    vkgl_assert(shader_glsl != nullptr);
+                }
+
+                shader_data_iterator = m_glsl_to_shader_data_map.find(std::string(shader_glsl) );
+                vkgl_assert(shader_data_iterator != m_glsl_to_shader_data_map.end() );
+
+                shader_data_vec.push_back(shader_data_iterator->second.get() );
+            }
+        }
+
+        /* 2. Spawn a new entity to hold shader data */
+        {
+            SPIRVBlobID new_blob_id = static_cast<SPIRVBlobID>(++m_n_entities_registered);
+
+            vkgl_assert(m_spirv_blob_id_to_program_data_map.find(new_blob_id) == m_spirv_blob_id_to_program_data_map.end() );
+
+            program_data_ptr.reset(new ProgramData(new_blob_id,
+                                                   shader_data_vec,
+                                                   std::move(in_program_reference_ptr) )
+            );
+            vkgl_assert(program_data_ptr != nullptr);
+
+            m_program_reference_to_program_data_map[std::pair<GLuint, OpenGL::TimeMarker>(program_id, program_timestamp)] = program_data_ptr.get();
+            m_spirv_blob_id_to_program_data_map    [new_blob_id]                                                          = std::move(program_data_ptr);
+        }
+
+        /* 3. Wait until all shaders are compiled before submitting a link task to the thread pool.
+         *
+         * NOTE: This works because this function is always called from app's thread.
+         * TODO: Do we need to implicitly submit compile shader tasks for shaders, for which glCompileShader() has not been invoked?
+         */
+        for (auto& current_shader_data_ptr : shader_data_vec)
+        {
+            current_shader_data_ptr->compile_task_fence_ptr->wait();
+        }
+
+        /* 4. Submit a new task to the thread pool, which we're going to use to actually perform the linking. */
+        thread_pool_ptr->submit_task(std::bind(&OpenGL::VKSPIRVManager::link_program,
+                                               this,
+                                               program_data_ptr.get() )
+        );
+    }
+    m_mutex.unlock_unique();
+
+    return result;
+}
+
 OpenGL::SPIRVBlobID OpenGL::VKSPIRVManager::register_shader(const OpenGL::ShaderType& in_shader_type,
                                                             const char*               in_glsl)
 {
@@ -325,32 +478,32 @@ OpenGL::SPIRVBlobID OpenGL::VKSPIRVManager::register_shader(const OpenGL::Shader
 
     m_mutex.lock_unique();
     {
-        GLSLData* glsl_data_raw_ptr = nullptr;
+        ShaderData* shader_data_raw_ptr = nullptr;
 
-        vkgl_assert(m_glsl_to_glsl_data_map.find(in_glsl) == m_glsl_to_glsl_data_map.end() );
+        vkgl_assert(m_glsl_to_shader_data_map.find(in_glsl) == m_glsl_to_shader_data_map.end() );
 
         /* 1. Spawn a new entity to hold shader data */
         {
-            GLSLDataUniquePtr glsl_data_ptr;
-            SPIRVBlobID       new_blob_id    = static_cast<SPIRVBlobID>(++m_n_shaders_registered);
+            SPIRVBlobID         new_blob_id    = static_cast<SPIRVBlobID>(++m_n_entities_registered);
+            ShaderDataUniquePtr shader_data_ptr;
 
-            vkgl_assert(m_spirv_blob_id_to_glsl_data_map.find(new_blob_id) == m_spirv_blob_id_to_glsl_data_map.end() );
+            vkgl_assert(m_spirv_blob_id_to_shader_data_map.find(new_blob_id) == m_spirv_blob_id_to_shader_data_map.end() );
 
-            glsl_data_ptr.reset(new GLSLData(new_blob_id,
-                                             in_shader_type,
-                                             in_glsl)
+            shader_data_ptr.reset(new ShaderData(new_blob_id,
+                                                 in_shader_type,
+                                                 in_glsl)
             );
-            vkgl_assert(glsl_data_ptr != nullptr);
+            vkgl_assert(shader_data_ptr != nullptr);
 
-            glsl_data_raw_ptr                             = glsl_data_ptr.get();
-            m_spirv_blob_id_to_glsl_data_map[new_blob_id] = glsl_data_raw_ptr;
-            m_glsl_to_glsl_data_map         [in_glsl]     = std::move(glsl_data_ptr);
+            shader_data_raw_ptr                             = shader_data_ptr.get();
+            m_spirv_blob_id_to_shader_data_map[new_blob_id] = shader_data_raw_ptr;
+            m_glsl_to_shader_data_map         [in_glsl]     = std::move(shader_data_ptr);
         }
 
         /* 2. Submit a new task to the thread pool, which we're going to use to actually perform the GLSL->SPIRV "conversion". */
         thread_pool_ptr->submit_task(std::bind(&OpenGL::VKSPIRVManager::compile_shader,
                                                this,
-                                               glsl_data_raw_ptr)
+                                               shader_data_raw_ptr)
         );
     }
     m_mutex.unlock_unique();

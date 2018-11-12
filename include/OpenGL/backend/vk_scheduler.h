@@ -57,7 +57,6 @@ namespace OpenGL
         void process_get_buffer_sub_data_command        (OpenGL::GetBufferSubDataCommand*        in_command_ptr);
         void process_get_compressed_tex_image_command   (OpenGL::GetCompressedTexImageCommand*   in_command_ptr);
         void process_get_texture_image_command          (OpenGL::GetTextureImageCommand*         in_command_ptr);
-        void process_link_program_command               (OpenGL::LinkProgramCommand*             in_command_ptr);
         void process_map_buffer_command                 (OpenGL::MapBufferCommand*               in_command_ptr);
         void process_multi_draw_arrays_command          (OpenGL::MultiDrawArraysCommand*         in_command_ptr);
         void process_multi_draw_elements_command        (OpenGL::MultiDrawElementsCommand*       in_command_ptr);

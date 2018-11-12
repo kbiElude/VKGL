@@ -60,6 +60,8 @@ namespace OpenGL
     typedef std::unique_ptr<VKSPIRVManager>                                                          VKSPIRVManagerUniquePtr;
     typedef std::unique_ptr<VKSwapchainReference,    std::function<void(VKSwapchainReference*)> >    VKSwapchainReferenceUniquePtr;
 
+    typedef uint32_t SPIRVBlobID;
+
     typedef struct PropertyData
     {
         const void*                data_ptr;

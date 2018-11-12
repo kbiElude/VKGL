@@ -127,6 +127,8 @@ OpenGL::GLProgramManager::Program::Program(const OpenGL::GLProgramManager::Progr
     delete_status   = in_program.delete_status;
     link_status     = in_program.link_status;
     validate_status = in_program.validate_status;
+
+    spirv_blob_id = in_program.spirv_blob_id;
 }
 
 OpenGL::GLProgramManager::Program& OpenGL::GLProgramManager::Program::operator=(const OpenGL::GLProgramManager::Program& in_program)
@@ -180,6 +182,8 @@ OpenGL::GLProgramManager::Program& OpenGL::GLProgramManager::Program::operator=(
     delete_status   = in_program.delete_status;
     link_status     = in_program.link_status;
     validate_status = in_program.validate_status;
+
+    spirv_blob_id = in_program.spirv_blob_id;
 
     return *this;
 }
@@ -1172,6 +1176,27 @@ end:
     return result;
 }
 
+void OpenGL::GLProgramManager::set_program_backend_spirv_blob_id(const GLuint&              in_program,
+                                                                 const OpenGL::TimeMarker*  in_opt_time_marker_ptr,
+                                                                 const OpenGL::SPIRVBlobID& in_spirv_blob_id)
+{
+    auto program_ptr = get_program_ptr(in_program,
+                                       in_opt_time_marker_ptr);
+
+    if (program_ptr == nullptr)
+    {
+        vkgl_assert(program_ptr != nullptr);
+
+        goto end;
+    }
+
+    /* NOTE: No need for a snapshot bump here because SPIR-V blob ID is an INTERNAL state. */
+    vkgl_assert(program_ptr->spirv_blob_id == UINT32_MAX);
+    program_ptr->spirv_blob_id = in_spirv_blob_id;
+
+end:
+    ;
+}
 
 void OpenGL::GLProgramManager::set_uniform_block_binding(const GLuint& in_program,
                                                          const GLuint& in_uniform_block_index,

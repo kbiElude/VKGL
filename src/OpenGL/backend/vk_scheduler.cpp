@@ -226,7 +226,6 @@ void OpenGL::VKScheduler::process_command(OpenGL::CommandBaseUniquePtr in_comman
         case OpenGL::CommandType::GET_BUFFER_SUB_DATA:         process_get_buffer_sub_data_command        (dynamic_cast<OpenGL::GetBufferSubDataCommand*>       (in_command_ptr.get() )); break;
         case OpenGL::CommandType::GET_COMPRESSED_TEX_IMAGE:    process_get_compressed_tex_image_command   (dynamic_cast<OpenGL::GetCompressedTexImageCommand*>  (in_command_ptr.get() )); break;
         case OpenGL::CommandType::GET_TEXTURE_IMAGE:           process_get_texture_image_command          (dynamic_cast<OpenGL::GetTextureImageCommand*>        (in_command_ptr.get() )); break;
-        case OpenGL::CommandType::LINK_PROGRAM:                process_link_program_command               (dynamic_cast<OpenGL::LinkProgramCommand*>            (in_command_ptr.get() )); break;
         case OpenGL::CommandType::MAP_BUFFER:                  process_map_buffer_command                 (dynamic_cast<OpenGL::MapBufferCommand*>              (in_command_ptr.get() )); break;
         case OpenGL::CommandType::MULTI_DRAW_ARRAYS:           process_multi_draw_arrays_command          (dynamic_cast<OpenGL::MultiDrawArraysCommand*>        (in_command_ptr.get() )); break;
         case OpenGL::CommandType::MULTI_DRAW_ELEMENTS:         process_multi_draw_elements_command        (dynamic_cast<OpenGL::MultiDrawElementsCommand*>      (in_command_ptr.get() )); break;
@@ -356,11 +355,6 @@ void OpenGL::VKScheduler::process_get_compressed_tex_image_command(OpenGL::GetCo
 }
 
 void OpenGL::VKScheduler::process_get_texture_image_command(OpenGL::GetTextureImageCommand* in_command_ptr)
-{
-    vkgl_not_implemented();
-}
-
-void OpenGL::VKScheduler::process_link_program_command(OpenGL::LinkProgramCommand* in_command_ptr)
 {
     vkgl_not_implemented();
 }
