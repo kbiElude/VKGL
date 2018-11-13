@@ -72,7 +72,7 @@ namespace OpenGL
             bool                     link_status;
             VKGL::FenceUniquePtr     link_task_fence_ptr;
             std::vector<ShaderData*> shader_ptrs;
-            std::vector<uint8_t>     spirv_blob;
+            std::vector<uint8_t>     spirv_blobs[static_cast<uint32_t>(OpenGL::ShaderType::Count)];
 
             /* Temporary object stored until linking finishes and then released. It is used in order to ensure
              * frontend does not release corresponding descriptor until we're done doing things on the backend's end.

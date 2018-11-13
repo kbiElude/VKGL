@@ -26,33 +26,6 @@ static const OpenGL::BufferTarget g_nonindexed_buffer_targets[] =
     OpenGL::BufferTarget::Uniform_Buffer,
 };
 
-OpenGL::ActiveAttributeState::ActiveAttributeState()
-{
-    size = 0;
-    type = VariableType::Unknown;
-}
-
-OpenGL::ActiveUniformBlock::ActiveUniformBlock()
-{
-    binding                       = UINT32_MAX;
-    data_size                     = UINT32_MAX;
-    referenced_by_fragment_shader = false;
-    referenced_by_geometry_shader = false;
-    referenced_by_vertex_shader   = false;
-}
-
-OpenGL::ActiveUniformState::ActiveUniformState()
-{
-    is_row_major          = false;
-    location              = UINT32_MAX;
-    size                  = 0;
-    type                  = VariableType::Unknown;
-    uniform_array_stride  = UINT32_MAX;
-    uniform_block_index   = -1;
-    uniform_block_offset  = UINT32_MAX;
-    uniform_matrix_stride = UINT32_MAX;
-}
-
 OpenGL::BufferState::BufferState()
 {
     access           = OpenGL::BufferAccess::Read_Write;
@@ -503,23 +476,6 @@ OpenGL::IndexedBufferBinding& OpenGL::IndexedBufferBinding::operator=(const Open
     return *this;
 }
 
-OpenGL::ProgramState::ProgramState(const uint32_t& in_n_max_indexed_uniform_buffer_bindings)
-    :uniform_buffer_binding_indexed(in_n_max_indexed_uniform_buffer_bindings)
-{
-    active_attribute_max_length           = 0;
-    active_uniform_block_max_length       = 0;
-    active_uniform_max_length             = 0;
-    delete_status                         = false;
-    link_status                           = false;
-    n_geometry_vertices_out               = 0;
-    n_transform_feedback_varyings         = 0;
-    geometry_input_type                   = OpenGL::GeometryInputType::Unknown;
-    geometry_output_type                  = OpenGL::GeometryOutputType::Unknown;
-    transform_feedback_buffer_mode        = OpenGL::TransformFeedbackBufferMode::Unknown;
-    transform_feedback_varying_max_length = 0;
-    validate_status                       = false;
-}
-
 OpenGL::RangedBufferBinding::RangedBufferBinding()
 {
     buffer_id    = 0;
@@ -693,4 +649,68 @@ bool OpenGL::VertexAttributeArrayState::operator==(const VertexAttributeArraySta
     }
 
     return result;
+}
+
+OpenGL::PostLinkData::PostLinkData()
+    :active_attribute_max_length         (0),
+     active_uniform_block_max_name_length(0),
+     active_uniform_max_length           (0)
+{
+    /* Stub */
+}
+
+OpenGL::PostLinkData::PostLinkData(const OpenGL::PostLinkData& in_data)
+{
+    active_attribute_name_to_location_map = in_data.active_attribute_name_to_location_map;
+    active_attributes                     = in_data.active_attributes;
+    active_uniform_blocks                 = in_data.active_uniform_blocks;
+    active_uniforms                       = in_data.active_uniforms;
+    frag_data_locations                   = in_data.frag_data_locations;
+    index_to_ub_and_uniform_index_pair    = in_data.index_to_ub_and_uniform_index_pair;
+    link_log                              = in_data.link_log;
+
+    active_attribute_max_length          = in_data.active_attribute_max_length;
+    active_uniform_block_max_name_length = in_data.active_uniform_block_max_name_length;
+    active_uniform_max_length            = in_data.active_uniform_max_length;
+
+    init_ptr_valued_maps();
+}
+
+OpenGL::PostLinkData& OpenGL::PostLinkData::operator=(const OpenGL::PostLinkData& in_data)
+{
+    active_attribute_name_to_location_map = in_data.active_attribute_name_to_location_map;
+    active_attributes                     = in_data.active_attributes;
+    active_uniform_blocks                 = in_data.active_uniform_blocks;
+    active_uniforms                       = in_data.active_uniforms;
+    frag_data_locations                   = in_data.frag_data_locations;
+    index_to_ub_and_uniform_index_pair    = in_data.index_to_ub_and_uniform_index_pair;
+    link_log                              = in_data.link_log;
+
+    active_attribute_max_length          = in_data.active_attribute_max_length;
+    active_uniform_block_max_name_length = in_data.active_uniform_block_max_name_length;
+    active_uniform_max_length            = in_data.active_uniform_max_length;
+
+    init_ptr_valued_maps();
+
+    return *this;
+}
+
+void OpenGL::PostLinkData::init_ptr_valued_maps()
+{
+    active_uniform_block_by_name_map.clear();
+    active_uniform_by_name_map.clear      ();
+
+    for (const auto& current_ub : active_uniform_blocks)
+    {
+        vkgl_assert(active_uniform_block_by_name_map.find(current_ub.name) == active_uniform_block_by_name_map.end() );
+
+        active_uniform_block_by_name_map[current_ub.name] = &current_ub;
+    }
+
+    for (const auto& current_uniform : active_uniforms)
+    {
+        vkgl_assert(active_uniform_by_name_map.find(current_uniform.name) == active_uniform_by_name_map.end() );
+
+        active_uniform_by_name_map[current_uniform.name] = &current_uniform;
+    }
 }

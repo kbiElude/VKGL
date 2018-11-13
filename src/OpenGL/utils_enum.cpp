@@ -4542,6 +4542,14 @@ OpenGL::RenderbufferTarget OpenGL::Utils::get_renderbuffer_target_for_gl_enum(co
     return OpenGL::RenderbufferTarget::Renderbuffer;
 }
 
+EShLanguage OpenGL::Utils::get_sh_language_for_opengl_shader_type(const OpenGL::ShaderType& in_type)
+{
+    return (in_type == OpenGL::ShaderType::Fragment) ? EShLanguage::EShLangFragment
+         : (in_type == OpenGL::ShaderType::Geometry) ? EShLanguage::EShLangGeometry
+         : (in_type == OpenGL::ShaderType::Vertex)   ? EShLanguage::EShLangVertex
+                                                     : EShLanguage::EShLangCount;
+}
+
 OpenGL::ShaderProperty OpenGL::Utils::get_shader_property_for_gl_enum(const GLenum& in_enum)
 {
     OpenGL::ShaderProperty result = OpenGL::ShaderProperty::Unknown;

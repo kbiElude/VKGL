@@ -5,12 +5,15 @@
 #ifndef VKGL_UTILS_ENUM_H
 #define VKGL_UTILS_ENUM_H
 
+#include "Anvil/deps/glslang/glslang/Public/ShaderLang.h"
 #include "OpenGL/types.h"
 
 namespace OpenGL
 {
     namespace Utils
     {
+        EShLanguage get_sh_language_for_opengl_shader_type(const OpenGL::ShaderType& in_type);
+
         OpenGL::BlendEquation get_blend_equation_for_gl_enum(const GLenum&                in_enum);
         GLenum                get_gl_enum_for_blend_equation(const OpenGL::BlendEquation& in_blend_equation);
 

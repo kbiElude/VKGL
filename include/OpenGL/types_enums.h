@@ -1079,7 +1079,8 @@ namespace OpenGL
         Geometry,
         Vertex,
 
-        Unknown
+        Unknown,
+        Count = Unknown
     };
 
     enum class ProvokingVertexConvention

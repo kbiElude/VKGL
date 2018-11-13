@@ -4,90 +4,10 @@
  */
 #include "Common/macros.h"
 #include "OpenGL/converters.h"
+#include "OpenGL/backend/vk_spirv_manager.h"
 #include "OpenGL/frontend/gl_program_manager.h"
 #include "OpenGL/frontend/gl_reference.h"
 #include <algorithm>
-
-#if 0
-std::unordered_map<std::string, uint32_t>                       active_attribute_name_to_location_map;
-std::vector<ActiveAttributeProperties>                          active_attributes;
-std::unordered_map<std::string, const ActiveUniformBlock*>      active_uniform_block_by_name_map;
-std::vector<ActiveUniformBlock>                                 active_uniform_blocks;
-std::unordered_map<std::string, const ActiveUniformProperties*> active_uniform_by_name_map;
-std::vector<ActiveUniformProperties>                            active_uniforms;
-FragDataLocationMap                                             frag_data_locations;
-std::unordered_map<uint32_t, UniformBlockAndUniformIndexPair>   index_to_ub_and_uniform_index_pair;
-std::string                                                     link_info_log;
-
-uint32_t active_attribute_max_length;
-uint32_t active_uniform_block_max_name_length;
-uint32_t active_uniform_max_length;
-#endif
-
-
-OpenGL::GLProgramManager::PostLinkData::PostLinkData()
-    :active_attribute_max_length         (0),
-     active_uniform_block_max_name_length(0),
-     active_uniform_max_length           (0)
-{
-    /* Stub */
-}
-
-OpenGL::GLProgramManager::PostLinkData::PostLinkData(const OpenGL::GLProgramManager::PostLinkData& in_data)
-{
-    active_attribute_name_to_location_map = in_data.active_attribute_name_to_location_map;
-    active_attributes                     = in_data.active_attributes;
-    active_uniform_blocks                 = in_data.active_uniform_blocks;
-    active_uniforms                       = in_data.active_uniforms;
-    frag_data_locations                   = in_data.frag_data_locations;
-    index_to_ub_and_uniform_index_pair    = in_data.index_to_ub_and_uniform_index_pair;
-    link_info_log                         = in_data.link_info_log;
-
-    active_attribute_max_length          = in_data.active_attribute_max_length;
-    active_uniform_block_max_name_length = in_data.active_uniform_block_max_name_length;
-    active_uniform_max_length            = in_data.active_uniform_max_length;
-
-    init_ptr_valued_maps();
-}
-
-OpenGL::GLProgramManager::PostLinkData& OpenGL::GLProgramManager::PostLinkData::operator=(const OpenGL::GLProgramManager::PostLinkData& in_data)
-{
-    active_attribute_name_to_location_map = in_data.active_attribute_name_to_location_map;
-    active_attributes                     = in_data.active_attributes;
-    active_uniform_blocks                 = in_data.active_uniform_blocks;
-    active_uniforms                       = in_data.active_uniforms;
-    frag_data_locations                   = in_data.frag_data_locations;
-    index_to_ub_and_uniform_index_pair    = in_data.index_to_ub_and_uniform_index_pair;
-    link_info_log                         = in_data.link_info_log;
-
-    active_attribute_max_length          = in_data.active_attribute_max_length;
-    active_uniform_block_max_name_length = in_data.active_uniform_block_max_name_length;
-    active_uniform_max_length            = in_data.active_uniform_max_length;
-
-    init_ptr_valued_maps();
-
-    return *this;
-}
-
-void OpenGL::GLProgramManager::PostLinkData::init_ptr_valued_maps()
-{
-    active_uniform_block_by_name_map.clear();
-    active_uniform_by_name_map.clear      ();
-
-    for (const auto& current_ub : active_uniform_blocks)
-    {
-        vkgl_assert(active_uniform_block_by_name_map.find(current_ub.name) == active_uniform_block_by_name_map.end() );
-
-        active_uniform_block_by_name_map[current_ub.name] = &current_ub;
-    }
-
-    for (const auto& current_uniform : active_uniforms)
-    {
-        vkgl_assert(active_uniform_by_name_map.find(current_uniform.name) == active_uniform_by_name_map.end() );
-
-        active_uniform_by_name_map[current_uniform.name] = &current_uniform;
-    }
-}
 
 OpenGL::GLProgramManager::Program::Program(const OpenGL::GLProgramManager::Program& in_program)
 {
@@ -112,7 +32,6 @@ OpenGL::GLProgramManager::Program::Program(const OpenGL::GLProgramManager::Progr
     /* Rest of the stuff is trivial. */
     cached_attribute_location_bindings = in_program.cached_attribute_location_bindings;
     cached_frag_data_locations         = in_program.cached_frag_data_locations;
-    infolog                            = in_program.infolog;
 
     gs_input_type               = in_program.gs_input_type;
     gs_output_type              = in_program.gs_output_type;
@@ -125,7 +44,6 @@ OpenGL::GLProgramManager::Program::Program(const OpenGL::GLProgramManager::Progr
     ub_index_to_ub_binding = in_program.ub_index_to_ub_binding;
 
     delete_status   = in_program.delete_status;
-    link_status     = in_program.link_status;
     validate_status = in_program.validate_status;
 
     spirv_blob_id = in_program.spirv_blob_id;
@@ -167,7 +85,6 @@ OpenGL::GLProgramManager::Program& OpenGL::GLProgramManager::Program::operator=(
     /* Rest of the stuff is trivial. */
     cached_attribute_location_bindings = in_program.cached_attribute_location_bindings;
     cached_frag_data_locations         = in_program.cached_frag_data_locations;
-    infolog                            = in_program.infolog;
 
     gs_input_type               = in_program.gs_input_type;
     gs_output_type              = in_program.gs_output_type;
@@ -180,7 +97,6 @@ OpenGL::GLProgramManager::Program& OpenGL::GLProgramManager::Program::operator=(
     ub_index_to_ub_binding = in_program.ub_index_to_ub_binding;
 
     delete_status   = in_program.delete_status;
-    link_status     = in_program.link_status;
     validate_status = in_program.validate_status;
 
     spirv_blob_id = in_program.spirv_blob_id;
@@ -188,9 +104,28 @@ OpenGL::GLProgramManager::Program& OpenGL::GLProgramManager::Program::operator=(
     return *this;
 }
 
-OpenGL::GLProgramManager::GLProgramManager()
-    :GLObjectManager(1,    /* in_first_valid_nondefault_id */
-                     true) /* in_expose_default_object     */
+const OpenGL::PostLinkData* OpenGL::GLProgramManager::Program::get_post_link_data(IBackendGLCallbacks* in_backend_ptr) const
+{
+    if (spirv_blob_id      != UINT32_MAX &&
+        post_link_data_ptr == nullptr)
+    {
+        /* Program is being linked in one of the worker threads. Block until the process finishes and we are assigned post-link struct instance */
+        auto spirv_manager_ptr = in_backend_ptr->get_spirv_manager_ptr();
+
+        spirv_manager_ptr->get_program_link_status(spirv_blob_id,
+                                                   nullptr,  /* out_status_ptr   */
+                                                   nullptr); /* out_link_log_ptr */
+
+        vkgl_assert(post_link_data_ptr != nullptr);
+    }
+
+    return post_link_data_ptr.get();
+}
+
+OpenGL::GLProgramManager::GLProgramManager(IBackendGLCallbacks* in_backend_ptr)
+    :GLObjectManager(1,              /* in_first_valid_nondefault_id */
+                     true),          /* in_expose_default_object     */
+     m_backend_ptr  (in_backend_ptr)
 {
     /*  Stub */
 }
@@ -297,11 +232,11 @@ void OpenGL::GLProgramManager::copy_internal_data_object(const void* in_src_ptr,
     *reinterpret_cast<Program*>(in_dst_ptr) = *reinterpret_cast<const Program*>(in_src_ptr);
 }
 
-OpenGL::GLProgramManagerUniquePtr OpenGL::GLProgramManager::create()
+OpenGL::GLProgramManagerUniquePtr OpenGL::GLProgramManager::create(IBackendGLCallbacks* in_backend_ptr)
 {
     OpenGL::GLProgramManagerUniquePtr result_ptr;
 
-    result_ptr.reset(new GLProgramManager() );
+    result_ptr.reset(new GLProgramManager(in_backend_ptr) );
 
     if (result_ptr == nullptr)
     {
@@ -378,10 +313,11 @@ bool OpenGL::GLProgramManager::get_active_attribute(const GLuint&             in
                                                     uint32_t*                 out_opt_size_ptr,
                                                     VariableType*             out_opt_variable_ptr) const
 {
-    ActiveAttributeProperties* attribute_props_ptr = nullptr;
-    auto                       program_ptr         = get_program_ptr(in_program,
-                                                                     in_opt_time_marker_ptr);
-    bool                       result              = false;
+    const ActiveAttributeProperties* attribute_props_ptr = nullptr;
+    const PostLinkData*              post_link_data_ptr  = nullptr;
+    auto                             program_ptr         = get_program_ptr(in_program,
+                                                                           in_opt_time_marker_ptr);
+    bool                             result              = false;
 
     if (program_ptr == nullptr)
     {
@@ -390,21 +326,21 @@ bool OpenGL::GLProgramManager::get_active_attribute(const GLuint&             in
         goto end;
     }
 
-    if (program_ptr->post_link_data_ptr == nullptr)
+    post_link_data_ptr = program_ptr->get_post_link_data(m_backend_ptr);
+
+    if (post_link_data_ptr == nullptr)
     {
-        vkgl_assert(program_ptr->post_link_data_ptr != nullptr);
+        goto end;
+    }
+
+    if (post_link_data_ptr->active_attributes.size() < in_index)
+    {
+        vkgl_assert(post_link_data_ptr->active_attributes.size() >= in_index);
 
         goto end;
     }
 
-    if (program_ptr->post_link_data_ptr->active_attributes.size() < in_index)
-    {
-        vkgl_assert(program_ptr->post_link_data_ptr->active_attributes.size() >= in_index);
-
-        goto end;
-    }
-
-    attribute_props_ptr = &program_ptr->post_link_data_ptr->active_attributes.at(in_index);
+    attribute_props_ptr = &post_link_data_ptr->active_attributes.at(in_index);
 
     if (out_opt_name_ptr_ptr != nullptr)
     {
@@ -432,6 +368,7 @@ bool OpenGL::GLProgramManager::get_active_attribute_location(const GLuint&      
                                                              GLint*                    out_result_ptr) const
 {
     decltype(PostLinkData::active_attribute_name_to_location_map)::const_iterator attribute_iterator;
+    const PostLinkData*                                                           post_link_data_ptr = nullptr;
     auto                                                                          program_ptr        = get_program_ptr(in_program,
                                                                                                                        in_opt_time_marker_ptr);
     bool                                                                          result             = false;
@@ -443,18 +380,18 @@ bool OpenGL::GLProgramManager::get_active_attribute_location(const GLuint&      
         goto end;
     }
 
-    if (program_ptr->post_link_data_ptr == nullptr)
-    {
-        vkgl_assert(program_ptr->post_link_data_ptr != nullptr);
+    post_link_data_ptr = program_ptr->get_post_link_data(m_backend_ptr);
 
+    if (post_link_data_ptr == nullptr)
+    {
         goto end;
     }
 
-    attribute_iterator = program_ptr->post_link_data_ptr->active_attribute_name_to_location_map.find(in_name);
+    attribute_iterator = post_link_data_ptr->active_attribute_name_to_location_map.find(in_name);
 
-    if (attribute_iterator == program_ptr->post_link_data_ptr->active_attribute_name_to_location_map.end() )
+    if (attribute_iterator == post_link_data_ptr->active_attribute_name_to_location_map.end() )
     {
-        vkgl_assert(attribute_iterator != program_ptr->post_link_data_ptr->active_attribute_name_to_location_map.end() );
+        vkgl_assert(attribute_iterator != post_link_data_ptr->active_attribute_name_to_location_map.end() );
 
         goto end;
     }
@@ -473,10 +410,11 @@ bool OpenGL::GLProgramManager::get_active_uniform(const GLuint&             in_p
                                                   uint32_t*                 out_opt_size_ptr,
                                                   VariableType*             out_opt_variable_ptr) const
 {
-    auto                     program_ptr       = get_program_ptr(in_program,
-                                                                 in_opt_time_marker_ptr);
-    bool                     result            = false;
-    ActiveUniformProperties* uniform_props_ptr = nullptr;
+    const PostLinkData*            post_link_data_ptr  = nullptr;
+    auto                           program_ptr         = get_program_ptr(in_program,
+                                                                         in_opt_time_marker_ptr);
+    bool                           result              = false;
+    const ActiveUniformProperties* uniform_props_ptr   = nullptr;
 
     if (program_ptr == nullptr)
     {
@@ -485,21 +423,21 @@ bool OpenGL::GLProgramManager::get_active_uniform(const GLuint&             in_p
         goto end;
     }
 
-    if (program_ptr->post_link_data_ptr == nullptr)
+    post_link_data_ptr = program_ptr->get_post_link_data(m_backend_ptr);
+
+    if (post_link_data_ptr == nullptr)
     {
-        vkgl_assert(program_ptr->post_link_data_ptr != nullptr);
+        goto end;
+    }
+
+    if (post_link_data_ptr->active_uniforms.size() < in_index)
+    {
+        vkgl_assert(post_link_data_ptr->active_uniforms.size() >= in_index);
 
         goto end;
     }
 
-    if (program_ptr->post_link_data_ptr->active_uniforms.size() < in_index)
-    {
-        vkgl_assert(program_ptr->post_link_data_ptr->active_uniforms.size() >= in_index);
-
-        goto end;
-    }
-
-    uniform_props_ptr = &program_ptr->post_link_data_ptr->active_uniforms.at(in_index);
+    uniform_props_ptr = &post_link_data_ptr->active_uniforms.at(in_index);
 
     if (out_opt_name_ptr_ptr != nullptr)
     {
@@ -526,9 +464,10 @@ bool OpenGL::GLProgramManager::get_active_uniform_block_name(const GLuint&      
                                                              const GLuint&             in_index,
                                                              const char**              out_opt_name_ptr_ptr) const
 {
-    auto program_ptr = get_program_ptr(in_program,
-                                       in_opt_time_marker_ptr);
-    bool result      = false;
+    const PostLinkData* post_link_data_ptr = nullptr;
+    auto                program_ptr        = get_program_ptr(in_program,
+                                                             in_opt_time_marker_ptr);
+    bool                result             = false;
 
     if (program_ptr == nullptr)
     {
@@ -537,23 +476,23 @@ bool OpenGL::GLProgramManager::get_active_uniform_block_name(const GLuint&      
         goto end;
     }
 
-    if (program_ptr->post_link_data_ptr == nullptr)
-    {
-        vkgl_assert(program_ptr->post_link_data_ptr != nullptr);
+    post_link_data_ptr = program_ptr->get_post_link_data(m_backend_ptr);
 
+    if (post_link_data_ptr == nullptr)
+    {
         goto end;
     }
 
-    if (program_ptr->post_link_data_ptr->active_uniform_blocks.size() < in_index)
+    if (post_link_data_ptr->active_uniform_blocks.size() < in_index)
     {
-        vkgl_assert(program_ptr->post_link_data_ptr->active_uniform_blocks.size() >= in_index);
+        vkgl_assert(post_link_data_ptr->active_uniform_blocks.size() >= in_index);
 
         goto end;
     }
 
     if (out_opt_name_ptr_ptr != nullptr)
     {
-        *out_opt_name_ptr_ptr = program_ptr->post_link_data_ptr->active_uniform_blocks.at(in_index).name.c_str();
+        *out_opt_name_ptr_ptr = post_link_data_ptr->active_uniform_blocks.at(in_index).name.c_str();
     }
 
     result = true;
@@ -568,12 +507,13 @@ bool OpenGL::GLProgramManager::get_active_uniform_block_property(const GLuint&  
                                                                  const OpenGL::GetSetArgumentType&   in_params_type,
                                                                  void*                               out_params_ptr) const
 {
-    auto                program_ptr   = get_program_ptr(in_program,
-                                                        in_opt_time_marker_ptr);
-    bool                result        = false;
-    const void*         src_data_ptr  = nullptr;
-    auto                src_data_type = OpenGL::GetSetArgumentType::Unknown;
-    ActiveUniformBlock* ub_ptr        = nullptr;
+    const PostLinkData*       post_link_data_ptr = nullptr;
+    auto                      program_ptr        = get_program_ptr(in_program,
+                                                                   in_opt_time_marker_ptr);
+    bool                      result             = false;
+    const void*               src_data_ptr       = nullptr;
+    auto                      src_data_type      = OpenGL::GetSetArgumentType::Unknown;
+    const ActiveUniformBlock* ub_ptr             = nullptr;
 
     union
     {
@@ -587,21 +527,21 @@ bool OpenGL::GLProgramManager::get_active_uniform_block_property(const GLuint&  
         goto end;
     }
 
-    if (program_ptr->post_link_data_ptr == nullptr)
+    post_link_data_ptr = program_ptr->get_post_link_data(m_backend_ptr);
+
+    if (post_link_data_ptr == nullptr)
     {
-        vkgl_assert(program_ptr->post_link_data_ptr != nullptr);
+        goto end;
+    }
+
+    if (post_link_data_ptr->active_uniform_blocks.size() < in_uniform_block_index)
+    {
+        vkgl_assert(post_link_data_ptr->active_uniform_blocks.size() >= in_uniform_block_index);
 
         goto end;
     }
 
-    if (program_ptr->post_link_data_ptr->active_uniform_blocks.size() < in_uniform_block_index)
-    {
-        vkgl_assert(program_ptr->post_link_data_ptr->active_uniform_blocks.size() >= in_uniform_block_index);
-
-        goto end;
-    }
-
-    ub_ptr = &program_ptr->post_link_data_ptr->active_uniform_blocks.at(in_uniform_block_index);
+    ub_ptr = &post_link_data_ptr->active_uniform_blocks.at(in_uniform_block_index);
 
     switch (in_pname)
     {
@@ -672,10 +612,11 @@ bool OpenGL::GLProgramManager::get_active_uniform_by_name(const GLuint&         
                                                           const char*               in_name_ptr,
                                                           GLint*                    out_opt_location_ptr) const
 {
-    auto                                                         program_ptr      = get_program_ptr(in_program,
-                                                                                                    in_opt_time_marker_ptr);
-    bool                                                         result           = false;
-    decltype(PostLinkData::active_uniform_by_name_map)::iterator uniform_iterator;
+    const PostLinkData*                                                post_link_data_ptr = nullptr;
+    auto                                                               program_ptr        = get_program_ptr(in_program,
+                                                                                                            in_opt_time_marker_ptr);
+    bool                                                               result             = false;
+    decltype(PostLinkData::active_uniform_by_name_map)::const_iterator uniform_iterator;
 
     if (program_ptr == nullptr)
     {
@@ -684,18 +625,18 @@ bool OpenGL::GLProgramManager::get_active_uniform_by_name(const GLuint&         
         goto end;
     }
 
-    if (program_ptr->post_link_data_ptr == nullptr)
-    {
-        vkgl_assert(program_ptr->post_link_data_ptr != nullptr);
+    post_link_data_ptr = program_ptr->get_post_link_data(m_backend_ptr);
 
+    if (post_link_data_ptr == nullptr)
+    {
         goto end;
     }
 
-    uniform_iterator = program_ptr->post_link_data_ptr->active_uniform_by_name_map.find(in_name_ptr);
+    uniform_iterator = post_link_data_ptr->active_uniform_by_name_map.find(in_name_ptr);
 
-    if (uniform_iterator == program_ptr->post_link_data_ptr->active_uniform_by_name_map.end() )
+    if (uniform_iterator == post_link_data_ptr->active_uniform_by_name_map.end() )
     {
-        vkgl_assert(uniform_iterator != program_ptr->post_link_data_ptr->active_uniform_by_name_map.end() )
+        vkgl_assert(uniform_iterator != post_link_data_ptr->active_uniform_by_name_map.end() )
 
         goto end;
     }
@@ -716,10 +657,11 @@ bool OpenGL::GLProgramManager::get_active_uniform_indices(const GLuint&         
                                                           const char* const*        in_uniform_names_ptr_ptr,
                                                           GLuint*                   out_uniform_indices_ptr) const
 {
-    auto                                                         program_ptr      = get_program_ptr(in_program,
-                                                                                                    in_opt_time_marker_ptr);
-    bool                                                         result           = false;
-    decltype(PostLinkData::active_uniform_by_name_map)::iterator uniform_iterator;
+    const PostLinkData*                                                post_link_data_ptr = nullptr;
+    auto                                                               program_ptr        = get_program_ptr(in_program,
+                                                                                                            in_opt_time_marker_ptr);
+    bool                                                               result             = false;
+    decltype(PostLinkData::active_uniform_by_name_map)::const_iterator uniform_iterator;
 
     if (program_ptr == nullptr)
     {
@@ -728,10 +670,10 @@ bool OpenGL::GLProgramManager::get_active_uniform_indices(const GLuint&         
         goto end;
     }
 
-    if (program_ptr->post_link_data_ptr == nullptr)
-    {
-        vkgl_assert(program_ptr->post_link_data_ptr != nullptr);
+    post_link_data_ptr = program_ptr->get_post_link_data(m_backend_ptr);
 
+    if (post_link_data_ptr == nullptr)
+    {
         goto end;
     }
 
@@ -741,9 +683,9 @@ bool OpenGL::GLProgramManager::get_active_uniform_indices(const GLuint&         
     {
         GLuint result_index = GL_INVALID_INDEX;
 
-        uniform_iterator = program_ptr->post_link_data_ptr->active_uniform_by_name_map.find(in_uniform_names_ptr_ptr[n_uniform]);
+        uniform_iterator = post_link_data_ptr->active_uniform_by_name_map.find(in_uniform_names_ptr_ptr[n_uniform]);
 
-        if (uniform_iterator != program_ptr->post_link_data_ptr->active_uniform_by_name_map.end() )
+        if (uniform_iterator != post_link_data_ptr->active_uniform_by_name_map.end() )
         {
             result_index = uniform_iterator->second->index;
         }
@@ -763,11 +705,12 @@ bool OpenGL::GLProgramManager::get_active_uniforms_property(const GLuint&       
                                                             const OpenGL::UniformProperty& in_pname,
                                                             GLint*                         out_params_ptr) const
 {
-    auto                       program_ptr   = get_program_ptr(in_program,
-                                                               in_opt_time_marker_ptr);
-    bool                       result        = false;
-    const void*                src_data_ptr  = nullptr;
-    OpenGL::GetSetArgumentType src_data_type = OpenGL::GetSetArgumentType::Unknown;
+    const PostLinkData*        post_link_data_ptr = nullptr;
+    auto                       program_ptr        = get_program_ptr(in_program,
+                                                                    in_opt_time_marker_ptr);
+    bool                       result             = false;
+    const void*                src_data_ptr       = nullptr;
+    OpenGL::GetSetArgumentType src_data_type      = OpenGL::GetSetArgumentType::Unknown;
 
     union
     {
@@ -781,10 +724,10 @@ bool OpenGL::GLProgramManager::get_active_uniforms_property(const GLuint&       
         goto end;
     }
 
-    if (program_ptr->post_link_data_ptr == nullptr)
-    {
-        vkgl_assert(program_ptr->post_link_data_ptr != nullptr);
+    post_link_data_ptr = program_ptr->get_post_link_data(m_backend_ptr);
 
+    if (post_link_data_ptr == nullptr)
+    {
         goto end;
     }
 
@@ -795,14 +738,14 @@ bool OpenGL::GLProgramManager::get_active_uniforms_property(const GLuint&       
         const auto                     uniform_index = in_uniform_indices_ptr[n_uniform];
         const ActiveUniformProperties* uniform_props_ptr = nullptr;
 
-        if (program_ptr->post_link_data_ptr->active_uniforms.size() <= uniform_index)
+        if (post_link_data_ptr->active_uniforms.size() <= uniform_index)
         {
-            vkgl_assert(program_ptr->post_link_data_ptr->active_uniforms.size() > uniform_index);
+            vkgl_assert(post_link_data_ptr->active_uniforms.size() > uniform_index);
 
             goto end;
         }
 
-        uniform_props_ptr = &program_ptr->post_link_data_ptr->active_uniforms.at(uniform_index);
+        uniform_props_ptr = &post_link_data_ptr->active_uniforms.at(uniform_index);
 
         switch (in_pname)
         {
@@ -850,9 +793,10 @@ bool OpenGL::GLProgramManager::get_frag_data_location(const GLuint&             
                                                       GLint*                    out_result_ptr) const
 {
     decltype(PostLinkData::frag_data_locations)::const_iterator iterator;
-    auto                                                        program_ptr = get_program_ptr(in_program,
-                                                                                              in_opt_time_marker_ptr);
-    bool                                                        result      = false;
+    const PostLinkData*                                         post_link_data_ptr = nullptr;
+    auto                                                        program_ptr        = get_program_ptr(in_program,
+                                                                                                     in_opt_time_marker_ptr);
+    bool                                                        result             = false;
 
     if (program_ptr == nullptr)
     {
@@ -861,18 +805,18 @@ bool OpenGL::GLProgramManager::get_frag_data_location(const GLuint&             
         goto end;
     }
 
-    if (program_ptr->post_link_data_ptr == nullptr)
-    {
-        vkgl_assert(program_ptr->post_link_data_ptr != nullptr);
+    post_link_data_ptr = program_ptr->get_post_link_data(m_backend_ptr);
 
+    if (post_link_data_ptr == nullptr)
+    {
         goto end;
     }
 
-    iterator = program_ptr->post_link_data_ptr->frag_data_locations.find(in_name_ptr);
+    iterator = post_link_data_ptr->frag_data_locations.find(in_name_ptr);
 
-    if (iterator == program_ptr->post_link_data_ptr->frag_data_locations.end() )
+    if (iterator == post_link_data_ptr->frag_data_locations.end() )
     {
-        vkgl_assert(iterator != program_ptr->post_link_data_ptr->frag_data_locations.end() );
+        vkgl_assert(iterator != post_link_data_ptr->frag_data_locations.end() );
 
         goto end;
     }
@@ -887,9 +831,10 @@ bool OpenGL::GLProgramManager::get_program_info_log(const GLuint&             in
                                                     const OpenGL::TimeMarker* in_opt_time_marker_ptr,
                                                     const char**              out_result_ptr) const
 {
-    auto program_ptr = get_program_ptr(in_program,
-                                       in_opt_time_marker_ptr);
-    bool result      = false;
+    const PostLinkData* post_link_data_ptr = nullptr;
+    auto                program_ptr        = get_program_ptr(in_program,
+                                                             in_opt_time_marker_ptr);
+    bool                result             = false;
 
     if (program_ptr == nullptr)
     {
@@ -898,15 +843,10 @@ bool OpenGL::GLProgramManager::get_program_info_log(const GLuint&             in
         goto end;
     }
 
-    if (program_ptr->post_link_data_ptr == nullptr)
-    {
-        vkgl_assert(program_ptr->post_link_data_ptr != nullptr);
+    post_link_data_ptr = program_ptr->get_post_link_data(m_backend_ptr);
 
-        goto end;
-    }
-
-    *out_result_ptr = (program_ptr->post_link_data_ptr->link_info_log.size() > 0) ? &program_ptr->post_link_data_ptr->link_info_log.at(0)
-                                                                                  : "";
+    *out_result_ptr = (post_link_data_ptr != nullptr && post_link_data_ptr->link_log.size() > 0) ? &post_link_data_ptr->link_log.at(0)
+                                                                                                 : "";
 
     result = true;
 end:
@@ -920,11 +860,12 @@ bool OpenGL::GLProgramManager::get_program_property(const GLuint&               
                                                     const uint32_t&                   in_n_params_components,
                                                     void*                             out_params_ptr) const
 {
-    auto                       program_ptr   = get_program_ptr(in_program,
-                                                               in_opt_time_marker_ptr);
-    bool                       result        = false;
-    const void*                src_data_ptr  = nullptr;
-    OpenGL::GetSetArgumentType src_data_type = OpenGL::GetSetArgumentType::Unknown;
+    const PostLinkData*        post_link_data_ptr = nullptr;
+    auto                       program_ptr        = get_program_ptr(in_program,
+                                                                    in_opt_time_marker_ptr);
+    bool                       result             = false;
+    const void*                src_data_ptr       = nullptr;
+    OpenGL::GetSetArgumentType src_data_type      = OpenGL::GetSetArgumentType::Unknown;
 
     union
     {
@@ -938,23 +879,25 @@ bool OpenGL::GLProgramManager::get_program_property(const GLuint&               
         goto end;
     }
 
+    /* NOTE: post-link data ptr will be null if linking has not been initiated! */
+    post_link_data_ptr = program_ptr->get_post_link_data(m_backend_ptr);
+
     switch (in_pname)
     {
-        case OpenGL::ProgramProperty::Delete_Status:                         src_data_ptr = &program_ptr->delete_status;                        src_data_type = OpenGL::GetSetArgumentType::Boolean;                         break;
-        case OpenGL::ProgramProperty::Geometry_Input_Type:                   src_data_ptr = &program_ptr->gs_input_type;                        src_data_type = OpenGL::GetSetArgumentType::GeometryInputTypeVKGL;           break;
-        case OpenGL::ProgramProperty::Geometry_Output_Type:                  src_data_ptr = &program_ptr->gs_output_type;                       src_data_type = OpenGL::GetSetArgumentType::GeometryOutputTypeVKGL;          break;
-        case OpenGL::ProgramProperty::Geometry_Vertices_Out:                 src_data_ptr = &program_ptr->n_max_gs_vertices_generated;          src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;                    break;
-        case OpenGL::ProgramProperty::Link_Status:                           src_data_ptr = &program_ptr->link_status;                          src_data_type = OpenGL::GetSetArgumentType::Boolean;                         break;
-        case OpenGL::ProgramProperty::Transform_Feedback_Buffer_Mode:        src_data_ptr = &program_ptr->tf_buffer_mode;                       src_data_type = OpenGL::GetSetArgumentType::TransformFeedbackBufferModeVKGL; break;
-        case OpenGL::ProgramProperty::Transform_Feedback_Varying_Max_Length: src_data_ptr = &program_ptr->tf_varying_max_length;                src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;                    break;
-        case OpenGL::ProgramProperty::Validate_Status:                       src_data_ptr = &program_ptr->validate_status;                      src_data_type = OpenGL::GetSetArgumentType::Boolean;                         break;
+        case OpenGL::ProgramProperty::Delete_Status:                         src_data_ptr = &program_ptr->delete_status;               src_data_type = OpenGL::GetSetArgumentType::Boolean;                         break;
+        case OpenGL::ProgramProperty::Geometry_Input_Type:                   src_data_ptr = &program_ptr->gs_input_type;               src_data_type = OpenGL::GetSetArgumentType::GeometryInputTypeVKGL;           break;
+        case OpenGL::ProgramProperty::Geometry_Output_Type:                  src_data_ptr = &program_ptr->gs_output_type;              src_data_type = OpenGL::GetSetArgumentType::GeometryOutputTypeVKGL;          break;
+        case OpenGL::ProgramProperty::Geometry_Vertices_Out:                 src_data_ptr = &program_ptr->n_max_gs_vertices_generated; src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;                    break;
+        case OpenGL::ProgramProperty::Transform_Feedback_Buffer_Mode:        src_data_ptr = &program_ptr->tf_buffer_mode;              src_data_type = OpenGL::GetSetArgumentType::TransformFeedbackBufferModeVKGL; break;
+        case OpenGL::ProgramProperty::Transform_Feedback_Varying_Max_Length: src_data_ptr = &program_ptr->tf_varying_max_length;       src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;                    break;
+        case OpenGL::ProgramProperty::Validate_Status:                       src_data_ptr = &program_ptr->validate_status;             src_data_type = OpenGL::GetSetArgumentType::Boolean;                         break;
 
         case OpenGL::ProgramProperty::Active_Attribute_Max_Length:
         {
             helper_data.uint32 = 0;
 
-            src_data_ptr  = (program_ptr->post_link_data_ptr != nullptr) ? &program_ptr->post_link_data_ptr->active_attribute_max_length
-                                                                         : &helper_data.uint32;
+            src_data_ptr  = (post_link_data_ptr != nullptr) ? &post_link_data_ptr->active_attribute_max_length
+                                                            : &helper_data.uint32;
             src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;
 
             break;
@@ -962,8 +905,8 @@ bool OpenGL::GLProgramManager::get_program_property(const GLuint&               
 
         case OpenGL::ProgramProperty::Active_Attributes:
         {
-            helper_data.uint32 = (program_ptr->post_link_data_ptr != nullptr) ? static_cast<uint32_t>(program_ptr->post_link_data_ptr->active_attributes.size() )
-                                                                              : 0;
+            helper_data.uint32 = (post_link_data_ptr != nullptr) ? static_cast<uint32_t>(post_link_data_ptr->active_attributes.size() )
+                                                                 : 0;
 
             src_data_ptr  = &helper_data.uint32;
             src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;
@@ -973,8 +916,8 @@ bool OpenGL::GLProgramManager::get_program_property(const GLuint&               
 
         case OpenGL::ProgramProperty::Active_Uniform_Block_Max_Name_Length:
         {
-            helper_data.uint32 = (program_ptr->post_link_data_ptr != nullptr) ? program_ptr->post_link_data_ptr->active_uniform_block_max_name_length
-                                                                              : 0;
+            helper_data.uint32 = (post_link_data_ptr != nullptr) ? post_link_data_ptr->active_uniform_block_max_name_length
+                                                                 : 0;
 
             src_data_ptr  = &helper_data.uint32;
             src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;
@@ -984,8 +927,8 @@ bool OpenGL::GLProgramManager::get_program_property(const GLuint&               
 
         case OpenGL::ProgramProperty::Active_Uniform_Blocks:
         {
-            helper_data.uint32 = (program_ptr->post_link_data_ptr != nullptr) ? static_cast<uint32_t>(program_ptr->post_link_data_ptr->active_uniform_blocks.size() )
-                                                                              : 0;
+            helper_data.uint32 = (post_link_data_ptr != nullptr) ? static_cast<uint32_t>(post_link_data_ptr->active_uniform_blocks.size() )
+                                                                 : 0;
 
             src_data_ptr  = &helper_data.uint32;
             src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;
@@ -995,8 +938,8 @@ bool OpenGL::GLProgramManager::get_program_property(const GLuint&               
 
         case OpenGL::ProgramProperty::Active_Uniform_Max_Length:
         {
-            helper_data.uint32 = (program_ptr->post_link_data_ptr != nullptr) ? program_ptr->post_link_data_ptr->active_uniform_max_length
-                                                                              : 0;
+            helper_data.uint32 = (post_link_data_ptr != nullptr) ? post_link_data_ptr->active_uniform_max_length
+                                                                 : 0;
 
             src_data_ptr  = &helper_data.uint32;
             src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;
@@ -1006,8 +949,8 @@ bool OpenGL::GLProgramManager::get_program_property(const GLuint&               
 
         case OpenGL::ProgramProperty::Active_Uniforms:
         {
-            helper_data.uint32 = (program_ptr->post_link_data_ptr != nullptr) ? static_cast<uint32_t>(program_ptr->post_link_data_ptr->active_uniforms.size() )
-                                                                              : 0;
+            helper_data.uint32 = (post_link_data_ptr != nullptr) ? static_cast<uint32_t>(post_link_data_ptr->active_uniforms.size() )
+                                                                 : 0;
 
             src_data_ptr  = &helper_data.uint32;
             src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;
@@ -1027,8 +970,8 @@ bool OpenGL::GLProgramManager::get_program_property(const GLuint&               
 
         case OpenGL::ProgramProperty::Info_Log_Length:
         {
-            helper_data.uint32 = (program_ptr->infolog.size() != 0) ? program_ptr->infolog.length() + 1 /* terminator */
-                                                                    : 0;
+            helper_data.uint32 = (post_link_data_ptr != nullptr) ? static_cast<uint32_t>(post_link_data_ptr->link_log.length() + 1 /* terminator */)
+                                                                 : 0;
 
             src_data_ptr  = (helper_data.uint32 > 1) ? &helper_data.uint32
                                                      : nullptr;
@@ -1037,10 +980,31 @@ bool OpenGL::GLProgramManager::get_program_property(const GLuint&               
             break;
         }
 
+        case OpenGL::ProgramProperty::Link_Status:
+        {
+            helper_data.uint32 = false;
+
+            if (program_ptr->spirv_blob_id != UINT32_MAX)
+            {
+                bool link_status = false;
+
+                m_backend_ptr->get_spirv_manager_ptr()->get_program_link_status(program_ptr->spirv_blob_id,
+                                                                               &link_status,
+                                                                                nullptr); /* out_link_log_ptr */
+
+                helper_data.uint32 = static_cast<uint32_t>(link_status);
+            }
+
+            src_data_ptr  = &helper_data.uint32;
+            src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;
+
+            break;
+        }
+
         case OpenGL::ProgramProperty::Transform_Feedback_Varyings:
         {
-            helper_data.uint32 = (program_ptr->post_link_data_ptr != nullptr) ? static_cast<uint32_t>(program_ptr->tf_varyings.size() )
-                                                                              : 0;
+            helper_data.uint32 = (post_link_data_ptr != nullptr) ? static_cast<uint32_t>(program_ptr->tf_varyings.size() )
+                                                                 : 0;
 
             src_data_ptr  = &helper_data.uint32;
             src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;
@@ -1081,9 +1045,10 @@ bool OpenGL::GLProgramManager::get_uniform_block_index(const GLuint&            
                                                        uint32_t*                 out_result_ptr) const
 {
     decltype(PostLinkData::active_uniform_block_by_name_map)::const_iterator iterator;
-    auto                                                                     program_ptr = get_program_ptr(in_program,
-                                                                                                           in_opt_time_marker_ptr);
-    bool                                                                     result      = false;
+    const PostLinkData*                                                      post_link_data_ptr = nullptr;
+    auto                                                                     program_ptr        = get_program_ptr(in_program,
+                                                                                                                  in_opt_time_marker_ptr);
+    bool                                                                     result             = false;
 
     if (program_ptr == nullptr)
     {
@@ -1092,18 +1057,18 @@ bool OpenGL::GLProgramManager::get_uniform_block_index(const GLuint&            
         goto end;
     }
 
-    if (program_ptr->post_link_data_ptr == nullptr)
-    {
-        vkgl_assert(program_ptr->post_link_data_ptr != nullptr);
+    post_link_data_ptr = program_ptr->get_post_link_data(m_backend_ptr);
 
+    if (post_link_data_ptr == nullptr)
+    {
         goto end;
     }
 
-    iterator = program_ptr->post_link_data_ptr->active_uniform_block_by_name_map.find(in_uniform_block_name);
+    iterator = post_link_data_ptr->active_uniform_block_by_name_map.find(in_uniform_block_name);
 
-    if (iterator == program_ptr->post_link_data_ptr->active_uniform_block_by_name_map.end() )
+    if (iterator == post_link_data_ptr->active_uniform_block_by_name_map.end() )
     {
-        vkgl_assert(iterator != program_ptr->post_link_data_ptr->active_uniform_block_by_name_map.end() );
+        vkgl_assert(iterator != post_link_data_ptr->active_uniform_block_by_name_map.end() );
 
         goto end;
     }
@@ -1141,9 +1106,10 @@ bool OpenGL::GLProgramManager::map_global_uniform_index_to_uniform_and_ub_indice
                                                                                   GLuint*                   out_uniform_index_ptr) const
 {
     decltype(PostLinkData::index_to_ub_and_uniform_index_pair)::const_iterator iterator;
-    auto                                                                       program_ptr = get_program_ptr(in_program,
-                                                                                                             in_opt_time_marker_ptr);
-    bool                                                                       result      = false;
+    const PostLinkData*                                                        post_link_data_ptr = nullptr;
+    auto                                                                       program_ptr        = get_program_ptr(in_program,
+                                                                                                                    in_opt_time_marker_ptr);
+    bool                                                                       result             = false;
 
     if (program_ptr == nullptr)
     {
@@ -1152,18 +1118,18 @@ bool OpenGL::GLProgramManager::map_global_uniform_index_to_uniform_and_ub_indice
         goto end;
     }
 
-    if (program_ptr->post_link_data_ptr == nullptr)
-    {
-        vkgl_assert(program_ptr->post_link_data_ptr != nullptr);
+    post_link_data_ptr = program_ptr->get_post_link_data(m_backend_ptr);
 
+    if (post_link_data_ptr == nullptr)
+    {
         goto end;
     }
 
-    iterator = program_ptr->post_link_data_ptr->index_to_ub_and_uniform_index_pair.find(in_global_uniform_index);
+    iterator = post_link_data_ptr->index_to_ub_and_uniform_index_pair.find(in_global_uniform_index);
 
-    if (iterator == program_ptr->post_link_data_ptr->index_to_ub_and_uniform_index_pair.end() )
+    if (iterator == post_link_data_ptr->index_to_ub_and_uniform_index_pair.end() )
     {
-        vkgl_assert(iterator != program_ptr->post_link_data_ptr->index_to_ub_and_uniform_index_pair.end() );
+        vkgl_assert(iterator != post_link_data_ptr->index_to_ub_and_uniform_index_pair.end() );
 
         goto end;
     }
@@ -1193,6 +1159,30 @@ void OpenGL::GLProgramManager::set_program_backend_spirv_blob_id(const GLuint&  
     /* NOTE: No need for a snapshot bump here because SPIR-V blob ID is an INTERNAL state. */
     vkgl_assert(program_ptr->spirv_blob_id == UINT32_MAX);
     program_ptr->spirv_blob_id = in_spirv_blob_id;
+
+end:
+    ;
+}
+
+void OpenGL::GLProgramManager::set_program_post_link_data_ptr(const GLuint&                 in_program,
+                                                              const OpenGL::TimeMarker*     in_opt_time_marker_ptr,
+                                                              OpenGL::PostLinkDataUniquePtr in_post_link_data_ptr)
+{
+    auto program_ptr = get_program_ptr(in_program,
+                                       in_opt_time_marker_ptr);
+
+    if (program_ptr == nullptr)
+    {
+        vkgl_assert(program_ptr != nullptr);
+
+        goto end;
+    }
+
+    /* NOTE: No need for a snapshot bump here because post-link data is an INTERNAL state. */
+    vkgl_assert(program_ptr->spirv_blob_id != UINT32_MAX);
+    vkgl_assert(in_post_link_data_ptr      != nullptr);
+
+    program_ptr->set_post_link_data(std::move(in_post_link_data_ptr) );
 
 end:
     ;

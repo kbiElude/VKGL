@@ -2737,7 +2737,7 @@ bool OpenGL::Context::init()
     }
 
     /* Set up program manager */
-    m_gl_program_manager_ptr = OpenGL::GLProgramManager::create();
+    m_gl_program_manager_ptr = OpenGL::GLProgramManager::create(m_backend_gl_callbacks_ptr);
 
     if (m_gl_program_manager_ptr == nullptr)
     {

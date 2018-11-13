@@ -911,16 +911,12 @@ void OpenGL::VKBackend::link_program(const GLuint& in_program_id)
                                                                      &spirv_blob_id) )
     {
         /* a) */
-        spirv_blob_id = m_spirv_manager_ptr->register_program(std::move(program_reference_ptr) );
+        m_spirv_manager_ptr->register_program(std::move(program_reference_ptr) );
     }
     else
     {
         /* b) - nop */
     }
-
-    frontend_program_manager_ptr->set_program_backend_spirv_blob_id(in_program_id,
-                                                                   &time_marker,
-                                                                    spirv_blob_id);
 
 end:
     ;

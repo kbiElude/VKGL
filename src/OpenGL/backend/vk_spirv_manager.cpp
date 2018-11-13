@@ -8,6 +8,7 @@
 #include "OpenGL/frontend/gl_limits.h"
 #include "OpenGL/frontend/gl_program_manager.h"
 #include "OpenGL/frontend/gl_shader_manager.h"
+#include "OpenGL/utils_enum.h"
 
 OpenGL::VKSPIRVManager::ProgramData::ProgramData(const SPIRVBlobID&                  in_id,
                                                  const std::vector<ShaderData*>&     in_shader_ptrs,
@@ -56,10 +57,7 @@ void OpenGL::VKSPIRVManager::compile_shader(ShaderData* in_shader_data_ptr)
     /* NOTE: This function is called back from one of the backend thread pool's threads */
     std::unique_ptr<glslang::TShader> glslang_shader_ptr;
     const char*                       glsl_code_ptr        = in_shader_data_ptr->glsl.c_str();
-    const auto                        glslang_shader_stage = (in_shader_data_ptr->type == OpenGL::ShaderType::Fragment) ? EShLanguage::EShLangFragment
-                                                           : (in_shader_data_ptr->type == OpenGL::ShaderType::Geometry) ? EShLanguage::EShLangGeometry
-                                                           : (in_shader_data_ptr->type == OpenGL::ShaderType::Vertex)   ? EShLanguage::EShLangVertex
-                                                                                                                        : EShLanguage::EShLangCount;
+    const auto                        glslang_shader_stage = OpenGL::Utils::get_sh_language_for_opengl_shader_type(in_shader_data_ptr->type);
 
     vkgl_assert(glslang_shader_stage != EShLanguage::EShLangCount);
 
@@ -380,8 +378,58 @@ end:
 
 void OpenGL::VKSPIRVManager::link_program(ProgramData* in_program_data_ptr)
 {
-    /* TODO */
-    vkgl_not_implemented();
+    /* NOTE: This function is called back from one of the backend thread pool's threads */
+    std::unique_ptr<glslang::TProgram> glslang_program_ptr;
+
+    glslang_program_ptr.reset(new glslang::TProgram() );
+    vkgl_assert(glslang_program_ptr!= nullptr);
+
+    for (const auto& current_shader_data_ptr : in_program_data_ptr->shader_ptrs)
+    {
+        glslang_program_ptr->addShader(current_shader_data_ptr->glslang_shader_ptr.get() );
+    }
+
+    /* Link the program and cache result SPIR-V blobs.. */
+    in_program_data_ptr->link_status = glslang_program_ptr->link      (EShMsgDefault);
+    in_program_data_ptr->link_log    = glslang_program_ptr->getInfoLog();
+
+    if (in_program_data_ptr->link_status)
+    {
+        for (const auto& current_shader_data_ptr : in_program_data_ptr->shader_ptrs)
+        {
+            const auto            shader_type           = current_shader_data_ptr->type;
+            const auto            intermediate_ptr      = glslang_program_ptr->getIntermediate(OpenGL::Utils::get_sh_language_for_opengl_shader_type(shader_type) );
+            std::vector<uint8_t>& result_spirv_blob_u8  = in_program_data_ptr->spirv_blobs[static_cast<uint32_t>(shader_type)];
+            std::vector<uint32_t> result_spirv_blob_u32;
+
+            glslang::GlslangToSpv(*intermediate_ptr,
+                                  result_spirv_blob_u32);
+
+            if (result_spirv_blob_u32.size() == 0)
+            {
+                vkgl_assert_fail();
+            }
+            else
+            {
+                result_spirv_blob_u8.resize(result_spirv_blob_u32.size() * sizeof(uint32_t) );
+
+                memcpy(&result_spirv_blob_u8.at(0),
+                       &result_spirv_blob_u32.at(0),
+                        result_spirv_blob_u8.size() );
+            }
+        }
+    }
+
+    /* Create, fill and associate post-link data struct with the GL program */
+    {
+        vkgl_not_implemented(); // todo
+    }
+
+    /* All done, signal the fence we're done */
+    in_program_data_ptr->link_task_fence_ptr->signal();
+
+    /* NOTE: We do NOT cache the TProgram instance. It's not going to be needed afterwards */
+    in_program_data_ptr->program_reference_ptr.reset();
 }
 
 OpenGL::SPIRVBlobID OpenGL::VKSPIRVManager::register_program(OpenGL::GLProgramReferenceUniquePtr in_program_reference_ptr)
@@ -397,6 +445,7 @@ OpenGL::SPIRVBlobID OpenGL::VKSPIRVManager::register_program(OpenGL::GLProgramRe
     m_mutex.lock_unique();
     {
         ProgramDataUniquePtr     program_data_ptr;
+        ProgramData*             program_data_raw_ptr = nullptr;
         std::vector<ShaderData*> shader_data_vec;
 
         /* 1. Obtain ptrs to ShaderData structures for all shaders attached to the program */
@@ -445,8 +494,13 @@ OpenGL::SPIRVBlobID OpenGL::VKSPIRVManager::register_program(OpenGL::GLProgramRe
             );
             vkgl_assert(program_data_ptr != nullptr);
 
-            m_program_reference_to_program_data_map[std::pair<GLuint, OpenGL::TimeMarker>(program_id, program_timestamp)] = program_data_ptr.get();
+            program_data_raw_ptr                                                                                          = program_data_ptr.get();
+            m_program_reference_to_program_data_map[std::pair<GLuint, OpenGL::TimeMarker>(program_id, program_timestamp)] = program_data_raw_ptr;
             m_spirv_blob_id_to_program_data_map    [new_blob_id]                                                          = std::move(program_data_ptr);
+
+            program_frontend_manager_ptr->set_program_backend_spirv_blob_id(program_id,
+                                                                           &program_timestamp,
+                                                                            new_blob_id);
         }
 
         /* 3. Wait until all shaders are compiled before submitting a link task to the thread pool.
@@ -462,7 +516,7 @@ OpenGL::SPIRVBlobID OpenGL::VKSPIRVManager::register_program(OpenGL::GLProgramRe
         /* 4. Submit a new task to the thread pool, which we're going to use to actually perform the linking. */
         thread_pool_ptr->submit_task(std::bind(&OpenGL::VKSPIRVManager::link_program,
                                                this,
-                                               program_data_ptr.get() )
+                                               program_data_raw_ptr)
         );
     }
     m_mutex.unlock_unique();
