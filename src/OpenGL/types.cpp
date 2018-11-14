@@ -654,7 +654,10 @@ bool OpenGL::VertexAttributeArrayState::operator==(const VertexAttributeArraySta
 OpenGL::PostLinkData::PostLinkData()
     :active_attribute_max_length         (0),
      active_uniform_block_max_name_length(0),
-     active_uniform_max_length           (0)
+     active_uniform_max_length           (0),
+     gs_input_type                       (OpenGL::GeometryInputType::Unknown),
+     gs_output_type                      (OpenGL::GeometryOutputType::Unknown),
+     n_max_gs_vertices_generated         (0)
 {
     /* Stub */
 }
@@ -673,6 +676,10 @@ OpenGL::PostLinkData::PostLinkData(const OpenGL::PostLinkData& in_data)
     active_uniform_block_max_name_length = in_data.active_uniform_block_max_name_length;
     active_uniform_max_length            = in_data.active_uniform_max_length;
 
+    gs_input_type               = in_data.gs_input_type;
+    gs_output_type              = in_data.gs_output_type;
+    n_max_gs_vertices_generated = in_data.n_max_gs_vertices_generated;
+
     init_ptr_valued_maps();
 }
 
@@ -689,6 +696,10 @@ OpenGL::PostLinkData& OpenGL::PostLinkData::operator=(const OpenGL::PostLinkData
     active_attribute_max_length          = in_data.active_attribute_max_length;
     active_uniform_block_max_name_length = in_data.active_uniform_block_max_name_length;
     active_uniform_max_length            = in_data.active_uniform_max_length;
+
+    gs_input_type               = in_data.gs_input_type;
+    gs_output_type              = in_data.gs_output_type;
+    n_max_gs_vertices_generated = in_data.n_max_gs_vertices_generated;
 
     init_ptr_valued_maps();
 

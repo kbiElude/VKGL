@@ -755,6 +755,7 @@ namespace OpenGL
 
     typedef std::unique_ptr<ContextState> ContextStateUniquePtr;
 
+    typedef std::unordered_map<std::string, uint32_t> AttributeLocationBindingMap;
     typedef std::unordered_map<std::string, uint32_t> FragDataLocationMap;
 
     typedef struct ActiveAttributeProperties
@@ -890,6 +891,10 @@ namespace OpenGL
         uint32_t active_attribute_max_length;
         uint32_t active_uniform_block_max_name_length;
         uint32_t active_uniform_max_length;
+
+        OpenGL::GeometryInputType  gs_input_type;
+        OpenGL::GeometryOutputType gs_output_type;
+        uint32_t                   n_max_gs_vertices_generated;
 
         PostLinkData();
         PostLinkData(const PostLinkData& in_data);

@@ -33,10 +33,6 @@ OpenGL::GLProgramManager::Program::Program(const OpenGL::GLProgramManager::Progr
     cached_attribute_location_bindings = in_program.cached_attribute_location_bindings;
     cached_frag_data_locations         = in_program.cached_frag_data_locations;
 
-    gs_input_type               = in_program.gs_input_type;
-    gs_output_type              = in_program.gs_output_type;
-    n_max_gs_vertices_generated = in_program.n_max_gs_vertices_generated;
-
     tf_buffer_mode        = in_program.tf_buffer_mode;
     tf_varyings           = in_program.tf_varyings;
     tf_varying_max_length = in_program.tf_varying_max_length;
@@ -85,10 +81,6 @@ OpenGL::GLProgramManager::Program& OpenGL::GLProgramManager::Program::operator=(
     /* Rest of the stuff is trivial. */
     cached_attribute_location_bindings = in_program.cached_attribute_location_bindings;
     cached_frag_data_locations         = in_program.cached_frag_data_locations;
-
-    gs_input_type               = in_program.gs_input_type;
-    gs_output_type              = in_program.gs_output_type;
-    n_max_gs_vertices_generated = in_program.n_max_gs_vertices_generated;
 
     tf_buffer_mode        = in_program.tf_buffer_mode;
     tf_varyings           = in_program.tf_varyings;
@@ -853,6 +845,32 @@ end:
     return result;
 }
 
+bool OpenGL::GLProgramManager::get_program_link_time_properties(const GLuint&                                  in_program,
+                                                                const OpenGL::TimeMarker*                      in_opt_time_marker_ptr,
+                                                                const AttributeLocationBindingMap**            out_attribute_location_bindings_ptr_ptr,
+                                                                const FragDataLocationMap**                    out_frag_data_locations_ptr_ptr,
+                                                                const std::unordered_map<uint32_t, uint32_t>** out_ub_index_to_ub_binding_map_ptr_ptr) const
+{
+    auto program_ptr = get_program_ptr(in_program,
+                                       in_opt_time_marker_ptr);
+    bool result      = false;
+
+    if (program_ptr == nullptr)
+    {
+        vkgl_assert(program_ptr != nullptr);
+
+        goto end;
+    }
+
+    *out_attribute_location_bindings_ptr_ptr = &program_ptr->cached_attribute_location_bindings;
+    *out_frag_data_locations_ptr_ptr         = &program_ptr->cached_frag_data_locations;
+    *out_ub_index_to_ub_binding_map_ptr_ptr  = &program_ptr->ub_index_to_ub_binding;
+
+    result = true;
+end:
+    return result;
+}
+
 bool OpenGL::GLProgramManager::get_program_property(const GLuint&                     in_program,
                                                     const OpenGL::TimeMarker*         in_opt_time_marker_ptr,
                                                     const OpenGL::ProgramProperty&    in_pname,
@@ -884,13 +902,13 @@ bool OpenGL::GLProgramManager::get_program_property(const GLuint&               
 
     switch (in_pname)
     {
-        case OpenGL::ProgramProperty::Delete_Status:                         src_data_ptr = &program_ptr->delete_status;               src_data_type = OpenGL::GetSetArgumentType::Boolean;                         break;
-        case OpenGL::ProgramProperty::Geometry_Input_Type:                   src_data_ptr = &program_ptr->gs_input_type;               src_data_type = OpenGL::GetSetArgumentType::GeometryInputTypeVKGL;           break;
-        case OpenGL::ProgramProperty::Geometry_Output_Type:                  src_data_ptr = &program_ptr->gs_output_type;              src_data_type = OpenGL::GetSetArgumentType::GeometryOutputTypeVKGL;          break;
-        case OpenGL::ProgramProperty::Geometry_Vertices_Out:                 src_data_ptr = &program_ptr->n_max_gs_vertices_generated; src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;                    break;
-        case OpenGL::ProgramProperty::Transform_Feedback_Buffer_Mode:        src_data_ptr = &program_ptr->tf_buffer_mode;              src_data_type = OpenGL::GetSetArgumentType::TransformFeedbackBufferModeVKGL; break;
-        case OpenGL::ProgramProperty::Transform_Feedback_Varying_Max_Length: src_data_ptr = &program_ptr->tf_varying_max_length;       src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;                    break;
-        case OpenGL::ProgramProperty::Validate_Status:                       src_data_ptr = &program_ptr->validate_status;             src_data_type = OpenGL::GetSetArgumentType::Boolean;                         break;
+        case OpenGL::ProgramProperty::Delete_Status:                         src_data_ptr = &program_ptr->delete_status;                      src_data_type = OpenGL::GetSetArgumentType::Boolean;                         break;
+        case OpenGL::ProgramProperty::Geometry_Input_Type:                   src_data_ptr = &post_link_data_ptr->gs_input_type;               src_data_type = OpenGL::GetSetArgumentType::GeometryInputTypeVKGL;           break;
+        case OpenGL::ProgramProperty::Geometry_Output_Type:                  src_data_ptr = &post_link_data_ptr->gs_output_type;              src_data_type = OpenGL::GetSetArgumentType::GeometryOutputTypeVKGL;          break;
+        case OpenGL::ProgramProperty::Geometry_Vertices_Out:                 src_data_ptr = &post_link_data_ptr->n_max_gs_vertices_generated; src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;                    break;
+        case OpenGL::ProgramProperty::Transform_Feedback_Buffer_Mode:        src_data_ptr = &program_ptr->tf_buffer_mode;                     src_data_type = OpenGL::GetSetArgumentType::TransformFeedbackBufferModeVKGL; break;
+        case OpenGL::ProgramProperty::Transform_Feedback_Varying_Max_Length: src_data_ptr = &program_ptr->tf_varying_max_length;              src_data_type = OpenGL::GetSetArgumentType::Unsigned_Int;                    break;
+        case OpenGL::ProgramProperty::Validate_Status:                       src_data_ptr = &program_ptr->validate_status;                    src_data_type = OpenGL::GetSetArgumentType::Boolean;                         break;
 
         case OpenGL::ProgramProperty::Active_Attribute_Max_Length:
         {

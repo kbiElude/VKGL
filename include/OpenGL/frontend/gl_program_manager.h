@@ -114,6 +114,12 @@ namespace OpenGL
                                                const OpenGL::TimeMarker*  in_opt_time_marker_ptr,
                                                PostLinkDataUniquePtr      in_post_link_data_ptr);
 
+        bool get_program_link_time_properties(const GLuint&                                  in_program,
+                                              const OpenGL::TimeMarker*                      in_opt_time_marker_ptr,
+                                              const AttributeLocationBindingMap**            out_attribute_location_bindings_ptr_ptr,
+                                              const FragDataLocationMap**                    out_frag_data_locations_ptr_ptr,
+                                              const std::unordered_map<uint32_t, uint32_t>** out_ub_index_to_ub_binding_map_ptr_ptr) const;
+
     protected:
         /* Protected functions */
         std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr)     final;
@@ -124,17 +130,11 @@ namespace OpenGL
     private:
         /* Private type definitions */
 
-        typedef std::unordered_map<std::string, uint32_t> AttributeLocationBindingMap;
-
         typedef struct Program
         {
             std::vector<GLShaderReferenceUniquePtr> attached_shaders;
             AttributeLocationBindingMap             cached_attribute_location_bindings; //< Locations to force for specific generic vertex attributes.
             FragDataLocationMap                     cached_frag_data_locations;         //< Bindings to force for specific fragment color outputs.
-
-            OpenGL::GeometryInputType  gs_input_type;               //< GL_GEOMETRY_INPUT_TYPE
-            OpenGL::GeometryOutputType gs_output_type;              //< GL_GEOMETRY_OUTPUT_TYPE
-            uint32_t                   n_max_gs_vertices_generated; //< GL_GEOMETRY_VERTICES_OUT
 
             OpenGL::TransformFeedbackBufferMode   tf_buffer_mode;              //< GL_TRANSFORM_FEEDBACK_BUFFER_MODE
             std::vector<std::string>              tf_varyings;
@@ -157,14 +157,11 @@ namespace OpenGL
             }
 
             Program()
-                :delete_status              (false),
-                 gs_input_type              (OpenGL::GeometryInputType::Triangles),
-                 gs_output_type             (OpenGL::GeometryOutputType::Triangle_Strip),
-                 n_max_gs_vertices_generated(0),
-                 spirv_blob_id              (UINT32_MAX),
-                 tf_buffer_mode             (OpenGL::TransformFeedbackBufferMode::Interleaved_Attribs),
-                 tf_varying_max_length      (0),
-                 validate_status            (true) /* TODO */
+                :delete_status        (false),
+                 spirv_blob_id        (UINT32_MAX),
+                 tf_buffer_mode       (OpenGL::TransformFeedbackBufferMode::Interleaved_Attribs),
+                 tf_varying_max_length(0),
+                 validate_status      (true) /* TODO */
             {
                 /* Stub */
             }

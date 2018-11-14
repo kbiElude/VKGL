@@ -97,6 +97,11 @@ namespace OpenGL
         void compile_shader(ShaderData*  in_shader_data_ptr);
         void link_program  (ProgramData* in_program_data_ptr);
 
+        PostLinkDataUniquePtr      create_post_link_data                       (const glslang::TProgram*        in_program_data_ptr) const;
+        OpenGL::GeometryInputType  get_geometry_input_type_for_layout_geometry (const glslang::TLayoutGeometry& in_layout_geometry)  const;
+        OpenGL::GeometryOutputType get_geometry_output_type_for_layout_geometry(const glslang::TLayoutGeometry& in_layout_geometry)  const;
+        OpenGL::VariableType       get_variable_type_for_glslang_type          (const glslang::TType&           in_type)             const;
+
         bool init                  ();
         bool init_glslang_resources();
 

@@ -3,6 +3,7 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Anvil/include/wrappers/device.h"
+#include "Anvil/deps/glslang/glslang/MachineIndependent/localintermediate.h"
 #include "OpenGL/backend/thread_pool.h"
 #include "OpenGL/backend/vk_spirv_manager.h"
 #include "OpenGL/frontend/gl_limits.h"
@@ -121,6 +122,131 @@ OpenGL::VKSPIRVManagerUniquePtr OpenGL::VKSPIRVManager::create(IBackend*        
 
     vkgl_assert(result_ptr != nullptr);
     return result_ptr;
+}
+
+OpenGL::PostLinkDataUniquePtr OpenGL::VKSPIRVManager::create_post_link_data(const glslang::TProgram* in_program_data_ptr) const
+{
+    const auto                    n_live_attributes = in_program_data_ptr->getNumLiveAttributes      ();
+    const auto                    n_live_ubs        = in_program_data_ptr->getNumLiveUniformBlocks   ();
+    const auto                    n_live_uniforms   = in_program_data_ptr->getNumLiveUniformVariables();
+    OpenGL::PostLinkDataUniquePtr result_ptr;
+
+    result_ptr.reset(new OpenGL::PostLinkData() );
+    vkgl_assert(result_ptr != nullptr);
+
+    /* Miscellaneous stuff */
+    {
+        auto gs_intermediate_ptr = in_program_data_ptr->getIntermediate(EShLanguage::EShLangGeometry);
+
+        if (gs_intermediate_ptr != nullptr)
+        {
+            result_ptr->gs_input_type               = get_geometry_input_type_for_layout_geometry (gs_intermediate_ptr->getInputPrimitive () );
+            result_ptr->gs_output_type              = get_geometry_output_type_for_layout_geometry(gs_intermediate_ptr->getOutputPrimitive() );
+            result_ptr->n_max_gs_vertices_generated = gs_intermediate_ptr->getVertices            ();
+        }
+    }
+
+    /* Active attribs */
+    result_ptr->active_attributes.reserve(n_live_attributes);
+    result_ptr->active_attributes.clear  ();
+
+    result_ptr->active_attribute_max_length = 0;
+    result_ptr->active_attribute_name_to_location_map.clear();
+
+    for (auto  n_live_attribute = 0;
+               n_live_attribute < n_live_attributes;
+             ++n_live_attribute)
+    {
+        const auto                        live_attribute_name_ptr = in_program_data_ptr->getAttributeName (n_live_attribute);
+        const auto                        live_attribute_type_ptr = in_program_data_ptr->getAttributeTType(n_live_attribute);
+        OpenGL::ActiveAttributeProperties live_attribute_props;
+
+        live_attribute_props.location = live_attribute_type_ptr->getQualifier().layoutLocation;
+        live_attribute_props.name     = live_attribute_name_ptr;
+        live_attribute_props.size     = (live_attribute_type_ptr->getArraySizes() != nullptr) ? live_attribute_type_ptr->getOuterArraySize()
+                                                                                              : 1;
+        live_attribute_props.type     = get_variable_type_for_glslang_type(*live_attribute_type_ptr);
+
+        result_ptr->active_attribute_max_length = std::max(result_ptr->active_attribute_max_length,
+                                                           live_attribute_props.name.length() + 1);
+
+        vkgl_assert(result_ptr->active_attribute_name_to_location_map.find(live_attribute_props.name) == result_ptr->active_attribute_name_to_location_map.end() );
+        result_ptr->active_attribute_name_to_location_map[live_attribute_props.name] = live_attribute_props.location;
+
+        result_ptr->active_attributes.push_back(live_attribute_props);
+    }
+
+    /* Unsupported stuff: */
+    vkgl_assert(n_live_ubs      == 0); /* TODO */
+    vkgl_assert(n_live_uniforms == 0); /* TODO */
+
+    return result_ptr;
+}
+
+OpenGL::GeometryInputType OpenGL::VKSPIRVManager::get_geometry_input_type_for_layout_geometry(const glslang::TLayoutGeometry& in_layout_geometry) const
+{
+    OpenGL::GeometryInputType result = OpenGL::GeometryInputType::Unknown;
+
+    switch (in_layout_geometry)
+    {
+        case glslang::TLayoutGeometry::ElgNone:                                                                        break;
+        case glslang::TLayoutGeometry::ElgLines:              result = OpenGL::GeometryInputType::Lines;               break;
+        case glslang::TLayoutGeometry::ElgLinesAdjacency:     result = OpenGL::GeometryInputType::Lines_Adjacency;     break;
+        case glslang::TLayoutGeometry::ElgPoints:             result = OpenGL::GeometryInputType::Points;              break;
+        case glslang::TLayoutGeometry::ElgTriangles:          result = OpenGL::GeometryInputType::Triangles;           break;
+        case glslang::TLayoutGeometry::ElgTrianglesAdjacency: result = OpenGL::GeometryInputType::Triangles_Adjacency; break;
+
+        case glslang::TLayoutGeometry::ElgIsolines:
+        case glslang::TLayoutGeometry::ElgLineStrip:
+        case glslang::TLayoutGeometry::ElgQuads:
+        case glslang::TLayoutGeometry::ElgTriangleStrip:
+        {
+            /* ?! */
+            vkgl_assert_fail();
+
+            break;
+        }
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+OpenGL::GeometryOutputType OpenGL::VKSPIRVManager::get_geometry_output_type_for_layout_geometry(const glslang::TLayoutGeometry& in_layout_geometry) const
+{
+    OpenGL::GeometryOutputType result = OpenGL::GeometryOutputType::Unknown;
+
+    switch (in_layout_geometry)
+    {
+        case glslang::TLayoutGeometry::ElgNone:                                                               break;
+        case glslang::TLayoutGeometry::ElgLineStrip:     result = OpenGL::GeometryOutputType::Line_Strip;     break;
+        case glslang::TLayoutGeometry::ElgPoints:        result = OpenGL::GeometryOutputType::Points;         break;
+        case glslang::TLayoutGeometry::ElgTriangleStrip: result = OpenGL::GeometryOutputType::Triangle_Strip; break;
+
+        case glslang::TLayoutGeometry::ElgIsolines:
+        case glslang::TLayoutGeometry::ElgLines:
+        case glslang::TLayoutGeometry::ElgLinesAdjacency:
+        case glslang::TLayoutGeometry::ElgQuads:
+        case glslang::TLayoutGeometry::ElgTriangles:
+        case glslang::TLayoutGeometry::ElgTrianglesAdjacency:
+        {
+            /* ?! */
+            vkgl_assert_fail();
+
+            break;
+        }
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
 }
 
 bool OpenGL::VKSPIRVManager::get_program_link_status(const SPIRVBlobID& in_spirv_blob_id,
@@ -242,6 +368,127 @@ bool OpenGL::VKSPIRVManager::get_spirv_blob(const SPIRVBlobID& in_spirv_blob_id,
         }
     }
     m_mutex.unlock_shared();
+
+    return result;
+}
+
+OpenGL::VariableType OpenGL::VKSPIRVManager::get_variable_type_for_glslang_type(const glslang::TType& in_type) const
+{
+    OpenGL::VariableType result = OpenGL::VariableType::Unknown;
+
+    switch (in_type.getBasicType() )
+    {
+        case glslang::TBasicType::EbtAtomicUint:
+        case glslang::TBasicType::EbtDouble:
+        case glslang::TBasicType::EbtFloat16:
+        case glslang::TBasicType::EbtInt8:
+        case glslang::TBasicType::EbtInt16:
+        case glslang::TBasicType::EbtInt64:
+        case glslang::TBasicType::EbtUint8:
+        case glslang::TBasicType::EbtUint16:
+        case glslang::TBasicType::EbtUint64:
+        case glslang::TBasicType::EbtVoid:
+        {
+            /* Computer says no */
+            vkgl_assert_fail();
+
+            break;
+        }
+
+        case glslang::TBasicType::EbtBool:
+        {
+            switch (in_type.getVectorSize() )
+            {
+                case 1: result = OpenGL::VariableType::Bool;  break;
+                case 2: result = OpenGL::VariableType::Bvec2; break;
+                case 3: result = OpenGL::VariableType::Bvec3; break;
+                case 4: result = OpenGL::VariableType::Bvec4; break;
+
+                default:
+                {
+                    vkgl_assert_fail();
+                }
+            }
+
+            break;
+        }
+
+        case glslang::TBasicType::EbtFloat:
+        {
+            switch (in_type.getVectorSize() )
+            {
+                case 1: result = OpenGL::VariableType::Float; break;
+                case 2: result = OpenGL::VariableType::Vec2;  break;
+                case 3: result = OpenGL::VariableType::Vec3;  break;
+                case 4: result = OpenGL::VariableType::Vec4;  break;
+
+                default:
+                {
+                    vkgl_assert_fail();
+                }
+            }
+
+            break;
+        }
+
+        case glslang::TBasicType::EbtInt:
+        {
+            switch (in_type.getVectorSize() )
+            {
+                case 1: result = OpenGL::VariableType::Int;  break;
+                case 2: result = OpenGL::VariableType::Ivec2; break;
+                case 3: result = OpenGL::VariableType::Ivec3; break;
+                case 4: result = OpenGL::VariableType::Ivec4; break;
+
+                default:
+                {
+                    vkgl_assert_fail();
+                }
+            }
+
+            break;
+        }
+
+        case glslang::TBasicType::EbtSampler:
+        {
+            /* TODO */
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        case glslang::TBasicType::EbtUint:
+        {
+            switch (in_type.getVectorSize() )
+            {
+                case 1: result = OpenGL::VariableType::Uint;  break;
+                case 2: result = OpenGL::VariableType::Uvec2; break;
+                case 3: result = OpenGL::VariableType::Uvec3; break;
+                case 4: result = OpenGL::VariableType::Uvec4; break;
+
+                default:
+                {
+                    vkgl_assert_fail();
+                }
+            }
+
+            break;
+        }
+
+        case glslang::TBasicType::EbtBlock:
+        case glslang::TBasicType::EbtStruct:
+        {
+            /* todo */
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
 
     return result;
 }
@@ -379,7 +626,10 @@ end:
 void OpenGL::VKSPIRVManager::link_program(ProgramData* in_program_data_ptr)
 {
     /* NOTE: This function is called back from one of the backend thread pool's threads */
+    auto                               frontend_program_manager_ptr = m_frontend_ptr->get_program_manager_ptr();
     std::unique_ptr<glslang::TProgram> glslang_program_ptr;
+    const auto                         program_id                   = in_program_data_ptr->program_reference_ptr->get_payload().id;
+    const auto                         program_time_marker          = in_program_data_ptr->program_reference_ptr->get_payload().time_marker;
 
     glslang_program_ptr.reset(new glslang::TProgram() );
     vkgl_assert(glslang_program_ptr!= nullptr);
@@ -389,9 +639,34 @@ void OpenGL::VKSPIRVManager::link_program(ProgramData* in_program_data_ptr)
         glslang_program_ptr->addShader(current_shader_data_ptr->glslang_shader_ptr.get() );
     }
 
+    /* NOTE: We do not support predefined bindings & locations specified via GL API calls just yet. */
+    {
+        const OpenGL::AttributeLocationBindingMap*    attribute_location_bindings_ptr  = nullptr;
+        const OpenGL::FragDataLocationMap*            frag_data_location_mappings_ptr  = nullptr;
+        const std::unordered_map<uint32_t, uint32_t>* ub_index_to_binding_mappings_ptr = nullptr;
+
+        if (!frontend_program_manager_ptr->get_program_link_time_properties(program_id,
+                                                                           &program_time_marker,
+                                                                           &attribute_location_bindings_ptr,
+                                                                           &frag_data_location_mappings_ptr,
+                                                                           &ub_index_to_binding_mappings_ptr) )
+        {
+            vkgl_assert_fail();
+        }
+
+        vkgl_assert(attribute_location_bindings_ptr->size () == 0); /* TODO */
+        vkgl_assert(frag_data_location_mappings_ptr->size () == 0); /* TODO */
+        vkgl_assert(ub_index_to_binding_mappings_ptr->size() == 0); /* TODO */
+    }
+
     /* Link the program and cache result SPIR-V blobs.. */
     in_program_data_ptr->link_status = glslang_program_ptr->link      (EShMsgDefault);
     in_program_data_ptr->link_log    = glslang_program_ptr->getInfoLog();
+
+    if (!glslang_program_ptr->buildReflection() )
+    {
+        vkgl_assert_fail();
+    }
 
     if (in_program_data_ptr->link_status)
     {
@@ -422,7 +697,12 @@ void OpenGL::VKSPIRVManager::link_program(ProgramData* in_program_data_ptr)
 
     /* Create, fill and associate post-link data struct with the GL program */
     {
-        vkgl_not_implemented(); // todo
+        auto post_link_data_ptr = create_post_link_data(glslang_program_ptr.get() );
+        vkgl_assert(post_link_data_ptr != nullptr);
+
+        frontend_program_manager_ptr->set_program_post_link_data_ptr(program_id,
+                                                                    &program_time_marker,
+                                                                     std::move(post_link_data_ptr) );
     }
 
     /* All done, signal the fence we're done */
