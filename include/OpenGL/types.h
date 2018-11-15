@@ -40,6 +40,7 @@ namespace OpenGL
     class  VKBufferManager;
     class  VKFormatManager;
     class  VKFrameGraph;
+    class  VKRenderpassManager;
     class  VKScheduler;
     class  VKSPIRVManager;
     class  VKSwapchainManager;
@@ -56,6 +57,7 @@ namespace OpenGL
     typedef std::unique_ptr<VKBackend>                                                               VKBackendUniquePtr;
     typedef std::unique_ptr<VKBufferReference,       std::function<void(VKBufferReference*)> >       VKBufferReferenceUniquePtr;
     typedef std::unique_ptr<VKFrameGraph,            std::function<void(VKFrameGraph*)> >            VKFrameGraphUniquePtr;
+    typedef std::unique_ptr<VKRenderpassManager>                                                     VKRenderpassManagerUniquePtr;
     typedef std::unique_ptr<VKScheduler>                                                             VKSchedulerUniquePtr;
     typedef std::unique_ptr<VKSPIRVManager>                                                          VKSPIRVManagerUniquePtr;
     typedef std::unique_ptr<VKSwapchainReference,    std::function<void(VKSwapchainReference*)> >    VKSwapchainReferenceUniquePtr;

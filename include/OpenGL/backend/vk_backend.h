@@ -423,6 +423,7 @@ namespace OpenGL
         const IContextObjectManagers*                                 m_frontend_ptr;
         Anvil::InstanceUniquePtr                                      m_instance_ptr;
         Anvil::MemoryAllocatorUniquePtr                               m_mem_allocator_ptr;
+        OpenGL::VKRenderpassManagerUniquePtr                          m_renderpass_manager_ptr;
         OpenGL::VKSchedulerUniquePtr                                  m_scheduler_ptr;
         OpenGL::VKSPIRVManagerUniquePtr                               m_spirv_manager_ptr;
         OpenGL::VKSwapchainManagerUniquePtr                           m_swapchain_manager_ptr;
