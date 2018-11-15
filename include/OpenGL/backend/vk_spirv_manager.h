@@ -37,9 +37,10 @@ namespace OpenGL
                                                      const OpenGL::TimeMarker& in_time_marker,
                                                      OpenGL::SPIRVBlobID*      out_result_ptr) const;
 
-        SPIRVBlobID register_program(OpenGL::GLProgramReferenceUniquePtr in_program_reference_ptr);
-        SPIRVBlobID register_shader (const OpenGL::ShaderType&           in_shader_type,
-                                     const char*                         in_glsl);
+        SPIRVBlobID register_program  (OpenGL::GLProgramReferenceUniquePtr in_program_reference_ptr);
+        SPIRVBlobID register_shader   (const OpenGL::ShaderType&           in_shader_type,
+                                       const char*                         in_glsl);
+        void        unregister_program(const GLuint&                       in_id);
 
     private:
         /* Private type definitions */
@@ -71,6 +72,7 @@ namespace OpenGL
             std::string              link_log;
             bool                     link_status;
             VKGL::FenceUniquePtr     link_task_fence_ptr;
+            GLuint                   program_id;
             std::vector<ShaderData*> shader_ptrs;
             std::vector<uint8_t>     spirv_blobs[static_cast<uint32_t>(OpenGL::ShaderType::Count)];
 

@@ -1028,7 +1028,7 @@ void OpenGL::VKBackend::on_objects_created(const OpenGL::ObjectType& in_object_t
 
         case OpenGL::ObjectType::Vertex_Array_Object:
         {
-            vkgl_not_implemented();
+            /* This backend impl doesn't care */
 
             break;
         }
@@ -1055,7 +1055,12 @@ void OpenGL::VKBackend::on_objects_destroyed(const OpenGL::ObjectType& in_object
 
         case OpenGL::ObjectType::Program:
         {
-            /* This backend impl doesn't care */
+            for (uint32_t n_id = 0;
+                          n_id < in_n_ids;
+                        ++n_id)
+            {
+                m_spirv_manager_ptr->unregister_program(in_ids_ptr[n_id]);
+            }
 
             break;
         }
@@ -1076,7 +1081,7 @@ void OpenGL::VKBackend::on_objects_destroyed(const OpenGL::ObjectType& in_object
 
         case OpenGL::ObjectType::Vertex_Array_Object:
         {
-            vkgl_not_implemented();
+            /* This backend impl doesn't care */
 
             break;
         }

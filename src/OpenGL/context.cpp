@@ -1289,7 +1289,7 @@ void OpenGL::Context::delete_shader(const GLuint& in_id)
     m_gl_shader_manager_ptr->delete_ids(1, /* in_n_ids */
                                        &in_id);
 
-    m_backend_gl_callbacks_ptr->on_objects_destroyed(OpenGL::ObjectType::Buffer,
+    m_backend_gl_callbacks_ptr->on_objects_destroyed(OpenGL::ObjectType::Shader,
                                                      1, /* in_n_ids */
                                                     &in_id);
 }

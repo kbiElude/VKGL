@@ -21,6 +21,8 @@ OpenGL::VKSPIRVManager::ProgramData::ProgramData(const SPIRVBlobID&             
 {
     link_task_fence_ptr.reset(new VKGL::Fence() );
     vkgl_assert(link_task_fence_ptr != nullptr);
+
+    program_id = program_reference_ptr->get_payload().id;
 }
 
 OpenGL::VKSPIRVManager::ShaderData::ShaderData(const SPIRVBlobID&        in_id,
@@ -845,3 +847,38 @@ OpenGL::SPIRVBlobID OpenGL::VKSPIRVManager::register_shader(const OpenGL::Shader
     return result;
 }
 
+void OpenGL::VKSPIRVManager::unregister_program(const GLuint& in_id)
+{
+    m_mutex.lock_unique();
+    {
+        std::vector<std::pair<GLuint, OpenGL::TimeMarker> > relevant_program_reference_map_keys;
+        std::vector<SPIRVBlobID>                            relevant_spirv_blob_ids;
+
+        for (const auto& current_program_reference_map_item : m_program_reference_to_program_data_map)
+        {
+            if (current_program_reference_map_item.first.first == in_id)
+            {
+                relevant_program_reference_map_keys.push_back(current_program_reference_map_item.first);
+            }
+        }
+
+        for (const auto& current_spirv_blob_map_item : m_spirv_blob_id_to_program_data_map)
+        {
+            if (current_spirv_blob_map_item.second->program_id == in_id)
+            {
+                relevant_spirv_blob_ids.push_back(current_spirv_blob_map_item.first);
+            }
+        }
+
+        for (const auto& current_program_reference_map_key : relevant_program_reference_map_keys)
+        {
+            m_program_reference_to_program_data_map.erase(current_program_reference_map_key);
+        }
+
+        for (const auto& current_spirv_blob_id : relevant_spirv_blob_ids)
+        {
+            m_spirv_blob_id_to_program_data_map.erase(current_spirv_blob_id);
+        }
+    }
+    m_mutex.unlock_unique();
+}
