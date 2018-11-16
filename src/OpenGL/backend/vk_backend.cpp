@@ -928,9 +928,6 @@ void OpenGL::VKBackend::link_program(const GLuint& in_program_id)
     {
         /* b) - nop */
     }
-
-end:
-    ;
 }
 
 void* OpenGL::VKBackend::map_buffer(const GLuint&               in_id,
