@@ -419,6 +419,7 @@ namespace OpenGL
         std::unordered_map<OpenGL::BackendCapability, CapabilityData> m_capabilities;
         Anvil::BaseDeviceUniquePtr                                    m_device_ptr;
         OpenGL::VKFormatManagerUniquePtr                              m_format_manager_ptr;
+        OpenGL::VKFramebufferManagerUniquePtr                         m_framebuffer_manager_ptr;
         OpenGL::VKFrameGraphUniquePtr                                 m_frame_graph_ptr;
         const IContextObjectManagers*                                 m_frontend_ptr;
         Anvil::InstanceUniquePtr                                      m_instance_ptr;

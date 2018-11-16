@@ -11,6 +11,7 @@
 #include "OpenGL/converters.h"
 #include "OpenGL/backend/thread_pool.h"
 #include "OpenGL/backend/vk_backend.h"
+#include "OpenGL/backend/vk_framebuffer_manager.h"
 #include "OpenGL/backend/vk_renderpass_manager.h"
 #include "OpenGL/backend/vk_scheduler.h"
 #include "OpenGL/backend/vk_spirv_manager.h"
@@ -55,11 +56,12 @@ OpenGL::VKBackend::~VKBackend()
     m_frame_graph_ptr.reset();
 
     /* It should be safe to destroy remaining objects at this point */
-    m_buffer_manager_ptr.reset    ();
-    m_format_manager_ptr.reset    ();
-    m_mem_allocator_ptr.reset     ();
-    m_renderpass_manager_ptr.reset();
-    m_swapchain_manager_ptr.reset ();
+    m_buffer_manager_ptr.reset     ();
+    m_format_manager_ptr.reset     ();
+    m_framebuffer_manager_ptr.reset();
+    m_mem_allocator_ptr.reset      ();
+    m_renderpass_manager_ptr.reset ();
+    m_swapchain_manager_ptr.reset  ();
 
     m_device_ptr.reset  ();
     m_instance_ptr.reset();
@@ -523,6 +525,15 @@ bool OpenGL::VKBackend::init()
     if (m_buffer_manager_ptr == nullptr)
     {
         vkgl_assert(m_buffer_manager_ptr != nullptr);
+
+        goto end;
+    }
+
+    m_framebuffer_manager_ptr = OpenGL::VKFramebufferManager::create(this);
+
+    if (m_framebuffer_manager_ptr == nullptr)
+    {
+        vkgl_assert(m_framebuffer_manager_ptr != nullptr);
 
         goto end;
     }
