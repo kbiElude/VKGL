@@ -19,15 +19,15 @@ namespace OpenGL
 
         ~VKRenderpassManager();
 
-        Anvil::RenderPass* get_render_pass(Anvil::RenderPassCreateInfoUniquePtr in_rp_create_info_ptr);
+        Anvil::RenderPass* get_render_pass (Anvil::RenderPassCreateInfoUniquePtr in_rp_create_info_ptr);
+
+        static uint64_t get_rp_hash     (const Anvil::RenderPassCreateInfo* in_rp_create_info_ptr);
+        static bool     is_rp_compatible(const Anvil::RenderPassCreateInfo* in_rp1_create_info_ptr,
+                                         const Anvil::RenderPassCreateInfo* in_rp2_create_info_ptr);
 
     private:
         /* Private functions */
         VKRenderpassManager(IBackend* in_backend_ptr);
-
-        uint64_t get_rp_hash     (const Anvil::RenderPassCreateInfo* in_rp_create_info_ptr) const;
-        bool     is_rp_compatible(const Anvil::RenderPassCreateInfo* in_rp1_create_info_ptr,
-                                  const Anvil::RenderPassCreateInfo* in_rp2_create_info_ptr) const;
 
         /* Private variables */
         IBackend* const m_backend_ptr;

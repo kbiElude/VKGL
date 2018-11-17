@@ -74,7 +74,7 @@ Anvil::RenderPass* OpenGL::VKRenderpassManager::get_render_pass(Anvil::RenderPas
     return result_ptr;
 }
 
-uint64_t OpenGL::VKRenderpassManager::get_rp_hash(const Anvil::RenderPassCreateInfo* in_rp_create_info_ptr) const
+uint64_t OpenGL::VKRenderpassManager::get_rp_hash(const Anvil::RenderPassCreateInfo* in_rp_create_info_ptr)
 {
     /* NOTE: When calculating a hash for the renderpass, we intentionally exclude all information which is irrelevant
      *       in light of renderpass compatibility rules. By doing so, we implicitly introduce support for RP reuse */
@@ -250,7 +250,7 @@ uint64_t OpenGL::VKRenderpassManager::get_rp_hash(const Anvil::RenderPassCreateI
 }
 
 bool OpenGL::VKRenderpassManager::is_rp_compatible(const Anvil::RenderPassCreateInfo* in_rp1_create_info_ptr,
-                                                   const Anvil::RenderPassCreateInfo* in_rp2_create_info_ptr) const
+                                                   const Anvil::RenderPassCreateInfo* in_rp2_create_info_ptr)
 {
     const uint32_t n_rp_attachments = in_rp1_create_info_ptr->get_n_attachments ();
     const uint32_t n_rp_deps        = in_rp1_create_info_ptr->get_n_dependencies();
