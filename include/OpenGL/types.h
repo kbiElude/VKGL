@@ -41,6 +41,7 @@ namespace OpenGL
     class  VKFormatManager;
     class  VKFramebufferManager;
     class  VKFrameGraph;
+    class  VKGFXPipelineManager;
     class  VKRenderpassManager;
     class  VKScheduler;
     class  VKSPIRVManager;
@@ -59,6 +60,7 @@ namespace OpenGL
     typedef std::unique_ptr<VKBufferReference,       std::function<void(VKBufferReference*)> >       VKBufferReferenceUniquePtr;
     typedef std::unique_ptr<VKFramebufferManager>                                                    VKFramebufferManagerUniquePtr;
     typedef std::unique_ptr<VKFrameGraph,            std::function<void(VKFrameGraph*)> >            VKFrameGraphUniquePtr;
+    typedef std::unique_ptr<VKGFXPipelineManager>                                                    VKGFXPipelineManagerUniquePtr;
     typedef std::unique_ptr<VKRenderpassManager>                                                     VKRenderpassManagerUniquePtr;
     typedef std::unique_ptr<VKScheduler>                                                             VKSchedulerUniquePtr;
     typedef std::unique_ptr<VKSPIRVManager>                                                          VKSPIRVManagerUniquePtr;
