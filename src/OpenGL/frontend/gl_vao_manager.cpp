@@ -251,6 +251,28 @@ OpenGL::GLVAOManager::VAO* OpenGL::GLVAOManager::get_vao_ptr(const GLuint&      
                                                                                       in_opt_time_marker_ptr) );
 }
 
+bool OpenGL::GLVAOManager::get_vao_state_ptr(const GLuint&                          in_vao_id,
+                                             const OpenGL::TimeMarker*              in_opt_time_marker_ptr,
+                                             const OpenGL::VertexArrayObjectState** out_vao_state_ptr_ptr) const
+{
+    std::unique_lock<std::mutex> lock         (m_mutex);
+    bool                         result       (false);
+    auto                         vao_props_ptr(get_vao_ptr(in_vao_id,
+                                                           in_opt_time_marker_ptr) );
+
+    if (vao_props_ptr == nullptr)
+    {
+        vkgl_assert(vao_props_ptr != nullptr);
+
+        goto end;
+    }
+
+    *out_vao_state_ptr_ptr = vao_props_ptr->vao_ptr.get();
+    result                 = true;
+end:
+    return result;
+}
+
 bool OpenGL::GLVAOManager::set_element_array_buffer_binding(const GLuint& in_vao_id,
                                                             const GLuint& in_new_buffer_binding)
 {

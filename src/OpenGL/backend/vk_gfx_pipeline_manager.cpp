@@ -190,19 +190,28 @@ Anvil::GraphicsPipelineCreateInfoUniquePtr OpenGL::VKGFXPipelineManager::GFXPipe
 
         in_spirv_manager_ptr->get_shader_module_ptr(spirv_blob_id,
                                                     OpenGL::ShaderType::Fragment,
-                                                   &fs_sm_ptr,
-                                                   &fs_sm_entrypoint_name);
+                                                   &fs_sm_ptr);
         in_spirv_manager_ptr->get_shader_module_ptr(spirv_blob_id,
                                                     OpenGL::ShaderType::Geometry,
-                                                   &gs_sm_ptr,
-                                                   &gs_sm_entrypoint_name);
+                                                   &gs_sm_ptr);
         in_spirv_manager_ptr->get_shader_module_ptr(spirv_blob_id,
                                                     OpenGL::ShaderType::Vertex,
-                                                   &vs_sm_ptr,
-                                                   &vs_sm_entrypoint_name);
+                                                   &vs_sm_ptr);
 
         vkgl_assert(fs_sm_ptr != nullptr &&
                     vs_sm_ptr != nullptr);
+
+        fs_sm_entrypoint_name = fs_sm_ptr->get_fs_entrypoint_name().c_str();
+        vs_sm_entrypoint_name = vs_sm_ptr->get_vs_entrypoint_name().c_str();
+
+        vkgl_assert(fs_sm_entrypoint_name != nullptr);
+        vkgl_assert(vs_sm_entrypoint_name != nullptr);
+
+        if (gs_sm_ptr != nullptr)
+        {
+            gs_sm_entrypoint_name = gs_sm_ptr->get_gs_entrypoint_name().c_str();
+            vkgl_assert(gs_sm_entrypoint_name != nullptr);
+        }
 
         result_ptr = Anvil::GraphicsPipelineCreateInfo::create(Anvil::PipelineCreateFlagBits::NONE,
                                                                rp_ptr,

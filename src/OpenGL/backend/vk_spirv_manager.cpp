@@ -354,6 +354,33 @@ bool OpenGL::VKSPIRVManager::get_shader_compilation_status(const SPIRVBlobID& in
     return result;
 }
 
+bool OpenGL::VKSPIRVManager::get_shader_module_ptr(const SPIRVBlobID&        in_spirv_blob_id,
+                                                   const OpenGL::ShaderType& in_shader_type,
+                                                   Anvil::ShaderModule**     out_result_ptr_ptr) const
+{
+    bool result = false;
+
+    m_mutex.lock_shared();
+    {
+        auto iterator = m_spirv_blob_id_to_program_data_map.find(in_spirv_blob_id);
+
+        if (iterator != m_spirv_blob_id_to_program_data_map.end() )
+        {
+            vkgl_assert(iterator->second->link_task_fence_ptr != nullptr);
+
+            iterator->second->link_task_fence_ptr->wait();
+
+            result              = true;
+            *out_result_ptr_ptr = iterator->second->shader_module_ptrs[static_cast<uint32_t>(in_shader_type)].get();
+
+            vkgl_assert(*out_result_ptr_ptr != nullptr);
+        }
+    }
+    m_mutex.unlock_shared();
+
+    return result;
+}
+
 bool OpenGL::VKSPIRVManager::get_spirv_blob(const SPIRVBlobID& in_spirv_blob_id,
                                             const uint8_t**    out_spirv_blob_ptr,
                                             uint32_t*          out_spirv_blob_size_bytes_ptr) const

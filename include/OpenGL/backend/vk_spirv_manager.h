@@ -31,8 +31,7 @@ namespace OpenGL
 
         bool get_shader_module_ptr                  (const SPIRVBlobID&        in_spirv_blob_id,
                                                      const OpenGL::ShaderType& in_shader_type,
-                                                     Anvil::ShaderModule**     out_result_ptr_ptr,
-                                                     const char**              out_result_entrypoint_name_ptr_ptr) const;
+                                                     Anvil::ShaderModule**     out_result_ptr_ptr) const;
         bool get_spirv_blob                         (const SPIRVBlobID&        in_spirv_blob_id,
                                                      const uint8_t**           out_spirv_blob_ptr,
                                                      uint32_t*                 out_spirv_blob_size_bytes_ptr) const;
