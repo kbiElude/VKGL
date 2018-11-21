@@ -7,6 +7,7 @@
 #include "OpenGL/backend/vk_scheduler.h"
 #include "OpenGL/backend/nodes/vk_buffer_data_node.h"
 #include "OpenGL/backend/nodes/vk_clear_node.h"
+#include "OpenGL/backend/nodes/vk_draw_node.h"
 #include "OpenGL/backend/nodes/vk_present_swapchain_image_node.h"
 #include "OpenGL/frontend/gl_buffer_manager.h"
 #include "Common/fence.h"
@@ -217,7 +218,7 @@ void OpenGL::VKScheduler::process_command(OpenGL::CommandBaseUniquePtr in_comman
         case OpenGL::CommandType::COPY_TEX_SUB_IMAGE_1D:       process_copy_tex_sub_image_1D_command      (dynamic_cast<OpenGL::CopyTexSubImage1DCommand*>      (in_command_ptr.get() )); break;
         case OpenGL::CommandType::COPY_TEX_SUB_IMAGE_2D:       process_copy_tex_sub_image_2D_command      (dynamic_cast<OpenGL::CopyTexSubImage2DCommand*>      (in_command_ptr.get() )); break;
         case OpenGL::CommandType::COPY_TEX_SUB_IMAGE_3D:       process_copy_tex_sub_image_3D_command      (dynamic_cast<OpenGL::CopyTexSubImage3DCommand*>      (in_command_ptr.get() )); break;
-        case OpenGL::CommandType::DRAW_ARRAYS:                 process_draw_arrays_command                (dynamic_cast<OpenGL::DrawArraysCommand*>             (in_command_ptr.get() )); break;
+        case OpenGL::CommandType::DRAW_ARRAYS:                 process_draw_arrays_command                (std::move(in_command_ptr) );                                                   break;
         case OpenGL::CommandType::DRAW_ELEMENTS:               process_draw_elements_command              (dynamic_cast<OpenGL::DrawElementsCommand*>           (in_command_ptr.get() )); break;
         case OpenGL::CommandType::DRAW_RANGE_ELEMENTS:         process_draw_range_elements_command        (dynamic_cast<OpenGL::DrawRangeElementsCommand*>      (in_command_ptr.get() )); break;
         case OpenGL::CommandType::FINISH:                      process_finish_command                     (dynamic_cast<OpenGL::FinishCommand*>                 (in_command_ptr.get() )); break;
@@ -312,9 +313,29 @@ void OpenGL::VKScheduler::process_copy_tex_sub_image_3D_command(OpenGL::CopyTexS
     vkgl_not_implemented();
 }
 
-void OpenGL::VKScheduler::process_draw_arrays_command(OpenGL::DrawArraysCommand* in_command_ptr)
+void OpenGL::VKScheduler::process_draw_arrays_command(OpenGL::CommandBaseUniquePtr in_command_ptr)
 {
-    vkgl_not_implemented();
+    auto                              backend_frame_graph_ptr = m_backend_ptr->get_frame_graph_ptr      ();
+    OpenGL::DrawArraysCommand*        command_ptr             = dynamic_cast<OpenGL::DrawArraysCommand*>(in_command_ptr.get() );
+    OpenGL::VKFrameGraphNodeUniquePtr node_ptr;
+
+    vkgl_assert(command_ptr != nullptr);
+
+    /* 1. Spawn the node */
+    {
+        auto backend_swapchain_manager_ptr   = m_backend_ptr->get_swapchain_manager_ptr        ();
+        auto backend_swapchain_reference_ptr = backend_swapchain_manager_ptr->acquire_swapchain(backend_swapchain_manager_ptr->get_tot_time_marker() );
+
+        node_ptr = OpenGL::VKNodes::Draw::create_arrays(m_frontend_ptr,
+                                                        m_backend_ptr,
+                                                        std::move(command_ptr->state_reference_ptr),
+                                                        command_ptr->first,
+                                                        command_ptr->count,
+                                                        command_ptr->mode);
+    }
+
+    /* 2. Submit the node to frame graph manager. */
+    backend_frame_graph_ptr->add_node(std::move(node_ptr) );
 }
 
 void OpenGL::VKScheduler::process_draw_elements_command(OpenGL::DrawElementsCommand* in_command_ptr)

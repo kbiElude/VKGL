@@ -3189,6 +3189,32 @@ OpenGL::MipmapGenerationTextureTarget OpenGL::Utils::get_mipmap_generation_textu
     return result;
 }
 
+uint32_t OpenGL::Utils::get_n_bytes_for_vertex_attribute_array_type(const OpenGL::VertexAttributeArrayType& in_type)
+{
+    uint32_t result = 0;
+
+    switch (in_type)
+    {
+        case OpenGL::VertexAttributeArrayType::Byte:           result = sizeof(uint8_t);  break;
+        case OpenGL::VertexAttributeArrayType::Double:         result = sizeof(double);   break;
+        case OpenGL::VertexAttributeArrayType::Float:          result = sizeof(float);    break;
+        case OpenGL::VertexAttributeArrayType::Int:            result = sizeof(int32_t);  break;
+        case OpenGL::VertexAttributeArrayType::Short:          result = sizeof(int16_t);  break;
+        case OpenGL::VertexAttributeArrayType::Unsigned_Byte:  result = sizeof(uint8_t);  break;
+        case OpenGL::VertexAttributeArrayType::Unsigned_Int:   result = sizeof(uint32_t); break;
+        case OpenGL::VertexAttributeArrayType::Unsigned_Short: result = sizeof(uint16_t); break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+end:
+    vkgl_assert(result != 0);
+    return result;
+}
+
 uint32_t OpenGL::Utils::get_n_dimensions_for_texture_target(const OpenGL::TextureTarget& in_texture_target)
 {
     uint32_t result = 0;

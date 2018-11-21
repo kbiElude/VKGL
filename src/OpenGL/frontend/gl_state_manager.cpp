@@ -102,10 +102,10 @@ void OpenGL::GLStateManager::disable(const OpenGL::Capability& in_capability)
     {
         case OpenGL::Capability::Blend:
         {
-            if (state_ptr->is_blend_enabled_for_draw_buffers != 0)
+            if (state_ptr->is_blend_enabled)
             {
-                state_ptr->is_blend_enabled_for_draw_buffers = 0;
-                modified                                     = true;
+                state_ptr->is_blend_enabled = false;
+                modified                    = true;
             }
 
             break;
@@ -352,10 +352,10 @@ void OpenGL::GLStateManager::enable(const OpenGL::Capability& in_capability)
     {
         case OpenGL::Capability::Blend:
         {
-            if (state_ptr->is_blend_enabled_for_draw_buffers != ~0)
+            if (!state_ptr->is_blend_enabled)
             {
-                state_ptr->is_blend_enabled_for_draw_buffers = ~0;
-                modified                                     = true;
+                state_ptr->is_blend_enabled = true;
+                modified                    = true;
             }
 
             break;
@@ -814,7 +814,7 @@ void OpenGL::GLStateManager::init_prop_maps()
     m_context_prop_map =
     {
         {OpenGL::ContextProperty::Active_Texture,                             {OpenGL::GetSetArgumentType::Int,                           1, offsetof(OpenGL::ContextState, active_texture_unit)}  },
-        {OpenGL::ContextProperty::Blend,                                      {OpenGL::GetSetArgumentType::BooleanFromInt32_Bit0,         1, offsetof(OpenGL::ContextState, is_blend_enabled_for_draw_buffers)} },
+        {OpenGL::ContextProperty::Blend,                                      {OpenGL::GetSetArgumentType::Boolean,                       1, offsetof(OpenGL::ContextState, is_blend_enabled)} },
         {OpenGL::ContextProperty::Blend_Color,                                {OpenGL::GetSetArgumentType::Float,                         4, offsetof(OpenGL::ContextState, blend_color)} },
         {OpenGL::ContextProperty::Blend_Dst_Alpha,                            {OpenGL::GetSetArgumentType::BlendFunctionVKGL,             1, offsetof(OpenGL::ContextState, blend_func_dst_alpha)} },
         {OpenGL::ContextProperty::Blend_Dst_RGB,                              {OpenGL::GetSetArgumentType::BlendFunctionVKGL,             1, offsetof(OpenGL::ContextState, blend_func_dst_rgb)} },
@@ -1674,27 +1674,27 @@ bool OpenGL::GLStateManager::is_enabled(const OpenGL::Capability& in_capability)
 
     switch (in_capability)
     {
-        case OpenGL::Capability::Blend:                     result = (state_ptr->is_blend_enabled_for_draw_buffers & (1 << 0) ); break;
-        case OpenGL::Capability::Color_Logic_Op:            result = state_ptr->is_color_logic_op_enabled;                       break;
-        case OpenGL::Capability::Cull_Face:                 result = state_ptr->is_cull_face_enabled;                            break;
-        case OpenGL::Capability::Depth_Clamp:               result = state_ptr->is_depth_clamp_enabled;                          break;
-        case OpenGL::Capability::Depth_Test:                result = state_ptr->is_depth_test_enabled;                           break;
-        case OpenGL::Capability::Dither:                    result = state_ptr->is_dither_enabled;                               break;
-        case OpenGL::Capability::Framebuffer_SRGB:          result = state_ptr->is_framebuffer_srgb_enabled;                     break;
-        case OpenGL::Capability::Line_Smooth:               result = state_ptr->is_line_smooth_enabled;                          break;
-        case OpenGL::Capability::Multisample:               result = state_ptr->is_multisample_enabled;                          break;
-        case OpenGL::Capability::Polygon_Offset_Fill:       result = state_ptr->is_polygon_offset_fill_enabled;                  break;
-        case OpenGL::Capability::Polygon_Offset_Line:       result = state_ptr->is_polygon_offset_line_enabled;                  break;
-        case OpenGL::Capability::Polygon_Offset_Point:      result = state_ptr->is_polygon_offset_point_enabled;                 break;
-        case OpenGL::Capability::Polygon_Smooth:            result = state_ptr->is_polygon_smooth_enabled;                       break;
-        case OpenGL::Capability::Primitive_Restart:         result = state_ptr->is_primitive_restart_enabled;                    break;
-        case OpenGL::Capability::Program_Point_Size:        result = state_ptr->is_program_point_size_enabled;                   break;
-        case OpenGL::Capability::Sample_Alpha_To_Coverage:  result = state_ptr->is_sample_alpha_to_coverage_enabled;             break;
-        case OpenGL::Capability::Sample_Alpha_To_One:       result = state_ptr->is_sample_alpha_to_one_enabled;                  break;
-        case OpenGL::Capability::Sample_Coverage:           result = state_ptr->is_sample_coverage_enabled;                      break;
-        case OpenGL::Capability::Scissor_Test:              result = state_ptr->is_scissor_test_enabled;                         break;
-        case OpenGL::Capability::Stencil_Test:              result = state_ptr->is_stencil_test_enabled;                         break;
-        case OpenGL::Capability::Texture_Cube_Map_Seamless: result = state_ptr->is_texture_cube_map_seamless_enabled;            break;
+        case OpenGL::Capability::Blend:                     result = state_ptr->is_blend_enabled;                     break;
+        case OpenGL::Capability::Color_Logic_Op:            result = state_ptr->is_color_logic_op_enabled;            break;
+        case OpenGL::Capability::Cull_Face:                 result = state_ptr->is_cull_face_enabled;                 break;
+        case OpenGL::Capability::Depth_Clamp:               result = state_ptr->is_depth_clamp_enabled;               break;
+        case OpenGL::Capability::Depth_Test:                result = state_ptr->is_depth_test_enabled;                break;
+        case OpenGL::Capability::Dither:                    result = state_ptr->is_dither_enabled;                    break;
+        case OpenGL::Capability::Framebuffer_SRGB:          result = state_ptr->is_framebuffer_srgb_enabled;          break;
+        case OpenGL::Capability::Line_Smooth:               result = state_ptr->is_line_smooth_enabled;               break;
+        case OpenGL::Capability::Multisample:               result = state_ptr->is_multisample_enabled;               break;
+        case OpenGL::Capability::Polygon_Offset_Fill:       result = state_ptr->is_polygon_offset_fill_enabled;       break;
+        case OpenGL::Capability::Polygon_Offset_Line:       result = state_ptr->is_polygon_offset_line_enabled;       break;
+        case OpenGL::Capability::Polygon_Offset_Point:      result = state_ptr->is_polygon_offset_point_enabled;      break;
+        case OpenGL::Capability::Polygon_Smooth:            result = state_ptr->is_polygon_smooth_enabled;            break;
+        case OpenGL::Capability::Primitive_Restart:         result = state_ptr->is_primitive_restart_enabled;         break;
+        case OpenGL::Capability::Program_Point_Size:        result = state_ptr->is_program_point_size_enabled;        break;
+        case OpenGL::Capability::Sample_Alpha_To_Coverage:  result = state_ptr->is_sample_alpha_to_coverage_enabled;  break;
+        case OpenGL::Capability::Sample_Alpha_To_One:       result = state_ptr->is_sample_alpha_to_one_enabled;       break;
+        case OpenGL::Capability::Sample_Coverage:           result = state_ptr->is_sample_coverage_enabled;           break;
+        case OpenGL::Capability::Scissor_Test:              result = state_ptr->is_scissor_test_enabled;              break;
+        case OpenGL::Capability::Stencil_Test:              result = state_ptr->is_stencil_test_enabled;              break;
+        case OpenGL::Capability::Texture_Cube_Map_Seamless: result = state_ptr->is_texture_cube_map_seamless_enabled; break;
 
         default:
         {

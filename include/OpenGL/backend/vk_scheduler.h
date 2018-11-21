@@ -48,7 +48,7 @@ namespace OpenGL
         void process_copy_tex_sub_image_1D_command      (OpenGL::CopyTexSubImage1DCommand*       in_command_ptr);
         void process_copy_tex_sub_image_2D_command      (OpenGL::CopyTexSubImage2DCommand*       in_command_ptr);
         void process_copy_tex_sub_image_3D_command      (OpenGL::CopyTexSubImage3DCommand*       in_command_ptr);
-        void process_draw_arrays_command                (OpenGL::DrawArraysCommand*              in_command_ptr);
+        void process_draw_arrays_command                (OpenGL::CommandBaseUniquePtr            in_command_ptr);
         void process_draw_elements_command              (OpenGL::DrawElementsCommand*            in_command_ptr);
         void process_draw_range_elements_command        (OpenGL::DrawRangeElementsCommand*       in_command_ptr);
         void process_finish_command                     (OpenGL::FinishCommand*                  in_command_ptr);

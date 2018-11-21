@@ -3,6 +3,7 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Anvil/include/wrappers/device.h"
+#include "Anvil/include/wrappers/shader_module.h"
 #include "Anvil/deps/glslang/glslang/MachineIndependent/localintermediate.h"
 #include "OpenGL/backend/thread_pool.h"
 #include "OpenGL/backend/vk_spirv_manager.h"
@@ -31,6 +32,7 @@ OpenGL::VKSPIRVManager::ShaderData::ShaderData(const SPIRVBlobID&        in_id,
     :compilation_status(false),
      glsl              (in_glsl),
      id                (in_id),
+     sm_entrypoint_name(nullptr),
      type              (in_shader_type)
 {
     vkgl_assert(in_shader_type != OpenGL::ShaderType::Unknown);
@@ -58,11 +60,17 @@ OpenGL::VKSPIRVManager::~VKSPIRVManager()
 void OpenGL::VKSPIRVManager::compile_shader(ShaderData* in_shader_data_ptr)
 {
     /* NOTE: This function is called back from one of the backend thread pool's threads */
-    std::unique_ptr<glslang::TShader> glslang_shader_ptr;
     const char*                       glsl_code_ptr        = in_shader_data_ptr->glsl.c_str();
+    std::unique_ptr<glslang::TShader> glslang_shader_ptr;
     const auto                        glslang_shader_stage = OpenGL::Utils::get_sh_language_for_opengl_shader_type(in_shader_data_ptr->type);
+    const char*                       sm_entrypoint_name   = (in_shader_data_ptr->type == OpenGL::ShaderType::Fragment) ? "main_fs"
+                                                           : (in_shader_data_ptr->type == OpenGL::ShaderType::Geometry) ? "main_gs"
+                                                                                                                        : "main_vs";
 
-    vkgl_assert(glslang_shader_stage != EShLanguage::EShLangCount);
+    vkgl_assert(in_shader_data_ptr->type == OpenGL::ShaderType::Fragment ||
+                in_shader_data_ptr->type == OpenGL::ShaderType::Geometry ||
+                in_shader_data_ptr->type == OpenGL::ShaderType::Vertex);
+    vkgl_assert(glslang_shader_stage     != EShLanguage::EShLangCount);
 
     glslang_shader_ptr.reset(new glslang::TShader(glslang_shader_stage) );
     vkgl_assert(glslang_shader_ptr != nullptr);
@@ -70,8 +78,9 @@ void OpenGL::VKSPIRVManager::compile_shader(ShaderData* in_shader_data_ptr)
     glslang_shader_ptr->setStrings(&glsl_code_ptr,
                                    1); /* in_n */
 
-    glslang_shader_ptr->setAutoMapBindings (true); /* NOTE: We're going to modify these later on by ourselves anyway */
-    glslang_shader_ptr->setAutoMapLocations(true); /* NOTE: We're going to modify these later on by ourselves anyway */
+    glslang_shader_ptr->setAutoMapBindings (true); /* TODO: Need to use app-specified data here */
+    glslang_shader_ptr->setAutoMapLocations(true); /* TODO: Need to use app-specified data here */
+    glslang_shader_ptr->setEntryPoint      (sm_entrypoint_name);
 
     in_shader_data_ptr->compilation_status = glslang_shader_ptr->parse(m_glslang_resources_ptr.get(),
                                                                        110,   /* defaultVersion    */
@@ -102,6 +111,7 @@ void OpenGL::VKSPIRVManager::compile_shader(ShaderData* in_shader_data_ptr)
     }
 
     in_shader_data_ptr->glslang_shader_ptr = std::move(glslang_shader_ptr);
+    in_shader_data_ptr->sm_entrypoint_name = sm_entrypoint_name;
 
     in_shader_data_ptr->compile_task_fence_ptr->signal();
 }
@@ -694,6 +704,21 @@ void OpenGL::VKSPIRVManager::link_program(ProgramData* in_program_data_ptr)
                        &result_spirv_blob_u32.at(0),
                         result_spirv_blob_u8.size() );
             }
+
+            vkgl_assert(shader_type == ShaderType::Fragment ||
+                        shader_type == ShaderType::Geometry ||
+                        shader_type == ShaderType::Vertex);
+
+            in_program_data_ptr->shader_module_ptrs[static_cast<uint32_t>(current_shader_data_ptr->type)] = Anvil::ShaderModule::create_from_spirv_blob(m_backend_ptr->get_device_ptr(),
+                                                                                                                                                       &result_spirv_blob_u32.at(0),
+                                                                                                                                                        static_cast<uint32_t>(result_spirv_blob_u32.size() ),
+                                                                                                                                                        "",  /* in_opt_cs_entrypoint_name */
+                                                                                                                                                        (shader_type == ShaderType::Fragment) ? current_shader_data_ptr->sm_entrypoint_name : "",
+                                                                                                                                                        (shader_type == ShaderType::Geometry) ? current_shader_data_ptr->sm_entrypoint_name : "",
+                                                                                                                                                        "",  /* in_opt_tc_entrypoint_name */
+                                                                                                                                                        "",  /* in_opt_te_entrypoint_name */
+                                                                                                                                                        (shader_type == ShaderType::Vertex) ? current_shader_data_ptr->sm_entrypoint_name : "");
+            vkgl_assert(in_program_data_ptr->shader_module_ptrs[static_cast<uint32_t>(current_shader_data_ptr->type)] != nullptr);
         }
     }
 

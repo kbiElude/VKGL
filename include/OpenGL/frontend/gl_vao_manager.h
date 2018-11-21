@@ -34,6 +34,10 @@ namespace OpenGL
                               const OpenGL::GetSetArgumentType&     in_dst_type,
                               void*                                 out_result_ptr) const;
 
+        bool get_vao_state_ptr(const GLuint&                          in_vao_id,
+                               const OpenGL::TimeMarker*              in_opt_time_marker_ptr,
+                               const OpenGL::VertexArrayObjectState** out_vao_state_ptr_ptr) const;
+
         bool set_element_array_buffer_binding(const GLuint&                    in_vao_id,
                                               const GLuint&                    in_new_buffer_binding);
         bool set_vaa_state                   (const GLuint&                    in_vao_id,

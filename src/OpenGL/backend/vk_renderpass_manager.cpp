@@ -30,7 +30,7 @@ OpenGL::VKRenderpassManagerUniquePtr OpenGL::VKRenderpassManager::create(IBacken
 Anvil::RenderPass* OpenGL::VKRenderpassManager::get_render_pass(Anvil::RenderPassCreateInfoUniquePtr in_rp_create_info_ptr)
 {
     Anvil::RenderPass* result_ptr = nullptr;
-    const uint64_t     rp_hash    = get_rp_hash(in_rp_create_info_ptr.get() );
+    const auto         rp_hash    = get_rp_hash(in_rp_create_info_ptr.get() );
 
     m_rw_mutex.lock_shared();
     {
@@ -74,7 +74,7 @@ Anvil::RenderPass* OpenGL::VKRenderpassManager::get_render_pass(Anvil::RenderPas
     return result_ptr;
 }
 
-uint64_t OpenGL::VKRenderpassManager::get_rp_hash(const Anvil::RenderPassCreateInfo* in_rp_create_info_ptr)
+OpenGL::RenderPassHash OpenGL::VKRenderpassManager::get_rp_hash(const Anvil::RenderPassCreateInfo* in_rp_create_info_ptr)
 {
     /* NOTE: When calculating a hash for the renderpass, we intentionally exclude all information which is irrelevant
      *       in light of renderpass compatibility rules. By doing so, we implicitly introduce support for RP reuse */

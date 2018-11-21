@@ -249,9 +249,11 @@ namespace OpenGL
         GLenum               get_gl_enum_for_wait_sync_bits(const OpenGL::WaitSyncBits& in_bits);
 
         GLenum               get_gl_enum_for_variable_type(const VariableType& in_type);
+        uint32_t             get_n_bytes_for_variable_type(const VariableType& in_type);
         OpenGL::VariableType get_variable_type_for_gl_enum(const GLenum&       in_enum);
 
         GLenum                           get_gl_enum_for_vertex_attribute_array_type(const OpenGL::VertexAttributeArrayType& in_type);
+        uint32_t                         get_n_bytes_for_vertex_attribute_array_type(const OpenGL::VertexAttributeArrayType& in_type);
         OpenGL::VertexAttributeArrayType get_vertex_attribute_array_type_for_gl_enum(const GLenum&                           in_enum);
 
         GLenum                                 get_gl_enum_for_vertex_attribute_pointer_property(const OpenGL::VertexAttributePointerProperty& in_pname);

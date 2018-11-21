@@ -680,7 +680,7 @@ namespace OpenGL
         OpenGL::BlendFunction blend_func_src_alpha;
         OpenGL::BlendFunction blend_func_src_rgb;
         OpenGL::DepthFunction depth_function;
-        uint32_t              is_blend_enabled_for_draw_buffers; /* n-th bit corresponds to n-th draw buffer */
+        bool                  is_blend_enabled;
         bool                  is_color_logic_op_enabled;
         bool                  is_depth_test_enabled;
         bool                  is_dither_enabled;

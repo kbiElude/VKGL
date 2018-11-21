@@ -28,6 +28,11 @@ namespace OpenGL
         bool get_shader_compilation_status          (const SPIRVBlobID&        in_spirv_blob_id,
                                                      bool*                     out_status_ptr,
                                                      const char**              out_compilation_log_ptr) const;
+
+        bool get_shader_module_ptr                  (const SPIRVBlobID&        in_spirv_blob_id,
+                                                     const OpenGL::ShaderType& in_shader_type,
+                                                     Anvil::ShaderModule**     out_result_ptr_ptr,
+                                                     const char**              out_result_entrypoint_name_ptr_ptr) const;
         bool get_spirv_blob                         (const SPIRVBlobID&        in_spirv_blob_id,
                                                      const uint8_t**           out_spirv_blob_ptr,
                                                      uint32_t*                 out_spirv_blob_size_bytes_ptr) const;
@@ -52,6 +57,7 @@ namespace OpenGL
             std::string                       glsl;
             std::unique_ptr<glslang::TShader> glslang_shader_ptr;
             SPIRVBlobID                       id;
+            const char*                       sm_entrypoint_name;
             std::vector<uint8_t>              spirv_blob;
             OpenGL::ShaderType                type;
 
@@ -68,13 +74,14 @@ namespace OpenGL
 
         typedef struct ProgramData
         {
-            SPIRVBlobID              id;
-            std::string              link_log;
-            bool                     link_status;
-            VKGL::FenceUniquePtr     link_task_fence_ptr;
-            GLuint                   program_id;
-            std::vector<ShaderData*> shader_ptrs;
-            std::vector<uint8_t>     spirv_blobs[static_cast<uint32_t>(OpenGL::ShaderType::Count)];
+            SPIRVBlobID                  id;
+            std::string                  link_log;
+            bool                         link_status;
+            VKGL::FenceUniquePtr         link_task_fence_ptr;
+            GLuint                       program_id;
+            Anvil::ShaderModuleUniquePtr shader_module_ptrs[static_cast<uint32_t>(OpenGL::ShaderType::Count)];
+            std::vector<ShaderData*>     shader_ptrs;
+            std::vector<uint8_t>         spirv_blobs[static_cast<uint32_t>(OpenGL::ShaderType::Count)];
 
             /* Temporary object stored until linking finishes and then released. It is used in order to ensure
              * frontend does not release corresponding descriptor until we're done doing things on the backend's end.

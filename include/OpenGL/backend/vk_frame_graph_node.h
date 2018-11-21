@@ -177,6 +177,7 @@ namespace OpenGL
         Acquire_Swapchain_Image,
         Buffer_Data,
         Clear,
+        Draw,
         Present_Swapchain_Image,
 
         Unknown
@@ -226,7 +227,7 @@ namespace OpenGL
                                                                      //<
                                                                      //< If false, all necessary sync is performed automatically by the scheduler, using node info exposed by nodes.
         virtual bool supports_primary_command_buffers  () const = 0;
-        virtual bool supports_renderpasses             () const = 0;
+        virtual bool supports_renderpasses             () const = 0; // TODO: Rename to requires_renderpasses().
         virtual bool supports_secondary_command_buffers() const = 0;
     };
 
