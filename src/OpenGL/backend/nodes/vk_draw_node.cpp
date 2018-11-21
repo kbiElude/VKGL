@@ -80,6 +80,11 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
             VKBufferReferenceUniquePtr backend_buffer_reference_ptr;
             const auto&                frontend_buffer_reference_ptr = current_vaa.buffer_binding_ptr;
 
+            if (frontend_buffer_reference_ptr == nullptr)
+            {
+                continue;
+            }
+
             backend_buffer_reference_ptr = backend_buffer_manager_ptr->acquire_object(frontend_buffer_reference_ptr->get_payload().id,
                                                                                       frontend_buffer_reference_ptr->get_payload().object_creation_time,
                                                                                       frontend_buffer_reference_ptr->get_payload().time_marker);
@@ -125,7 +130,7 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
                     {
                         /* TODO: We should NOT be using ToT time marker here! */
                         m_owned_swapchain_reference_ptr = backend_swapchain_manager_ptr->acquire_swapchain(backend_swapchain_manager_ptr->get_tot_time_marker() );
-                        vkgl_assert(m_owned_swapchain_reference_ptr == nullptr);
+                        vkgl_assert(m_owned_swapchain_reference_ptr != nullptr);
                     }
 
                     uses_swapchain = true;
