@@ -43,6 +43,12 @@ namespace OpenGL
                 return m_info_ptr.get();
             }
 
+            RenderpassSupportScope get_renderpass_support_scope() const final
+            {
+                /* TODO: We do not support leaking clear ops into renderpasses YET. Yes, this is suboptimal. */
+                return RenderpassSupportScope::Not_Supported;
+            }
+
             void get_supported_queue_families(uint32_t*                          out_n_queue_fams_ptr,
                                               const Anvil::QueueFamilyFlagBits** out_queue_fams_ptr_ptr) const final;
 
@@ -77,11 +83,6 @@ namespace OpenGL
             }
 
             bool supports_primary_command_buffers() const final
-            {
-                return true;
-            }
-
-            bool supports_renderpasses() const final
             {
                 return true;
             }

@@ -183,6 +183,18 @@ namespace OpenGL
         Unknown
     };
 
+    enum class RenderpassSupportScope
+    {
+        /* Commands recorded by the node must be recorded outside a renderpass. */
+        Not_Supported,
+
+        /* Commands recorded by the node may be recorded both inside a RP's subpass and outside a renderpass. */
+        Supported,
+
+        /* Commands recorded by the node must only be recorded inside a renderpass' subpass. */
+        Required
+    };
+
     struct VKFrameGraphNodeInfo
     {
         std::vector<NodeIO> inputs;
@@ -203,6 +215,8 @@ namespace OpenGL
         virtual void execute_cpu_side(IVKFrameGraphNodeCallback* in_callback_ptr) = 0; //< called from within a random worker thread, make no assumptions. only invoked if requires_cpu_side_execution() returns true.
 
         virtual const VKFrameGraphNodeInfo* get_info_ptr() const = 0; //< contents may be altered by do_cpu_prepass() invocations.
+
+        virtual RenderpassSupportScope get_renderpass_support_scope() const = 0;
 
         virtual void get_supported_queue_families(uint32_t*                          out_n_queue_fams_ptr,
                                                   const Anvil::QueueFamilyFlagBits** out_queue_fams_ptr_ptr) const = 0; //< return in preferred order
@@ -227,7 +241,6 @@ namespace OpenGL
                                                                      //<
                                                                      //< If false, all necessary sync is performed automatically by the scheduler, using node info exposed by nodes.
         virtual bool supports_primary_command_buffers  () const = 0;
-        virtual bool supports_renderpasses             () const = 0; // TODO: Rename to requires_renderpasses().
         virtual bool supports_secondary_command_buffers() const = 0;
     };
 

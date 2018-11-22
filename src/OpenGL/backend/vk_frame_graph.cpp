@@ -369,11 +369,11 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
         const bool                        current_node_requires_cpu_side_execution    = current_node_ptr->requires_cpu_side_execution  ();
         const bool                        current_node_requires_gpu_side_execution    = current_node_ptr->requires_gpu_side_execution  ();
         const bool                        current_node_requires_manual_wait_sem_sync  = current_node_ptr->requires_manual_wait_sem_sync();
+        const auto                        current_node_rp_support_scope               = (current_node_requires_gpu_side_execution) ? current_node_ptr->get_renderpass_support_scope()
+                                                                                                                                   : OpenGL::RenderpassSupportScope::Not_Supported;
         const bool                        current_node_supports_1st_level_cmd_buffers = (current_node_requires_gpu_side_execution) ? current_node_ptr->supports_primary_command_buffers()
                                                                                                                                    : false;
         const bool                        current_node_supports_2nd_level_cmd_buffers = (current_node_requires_gpu_side_execution) ? current_node_ptr->supports_secondary_command_buffers()
-                                                                                                                                   : false;
-        const bool                        current_node_supports_renderpasses          = (current_node_requires_gpu_side_execution) ? current_node_ptr->supports_renderpasses()
                                                                                                                                    : false;
         const Anvil::QueueFamilyFlagBits* current_node_accepted_queue_fams_ptr        = nullptr;
         uint32_t                          current_node_n_accepted_queue_fams          = 0;

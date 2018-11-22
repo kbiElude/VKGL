@@ -365,8 +365,8 @@ bool OpenGL::VKNodes::BufferData::requires_gpu_side_execution() const
     return m_data_ptr != nullptr;
 }
 
-bool OpenGL::VKNodes::BufferData::supports_renderpasses() const
+OpenGL::RenderpassSupportScope OpenGL::VKNodes::BufferData::get_renderpass_support_scope() const
 {
-    /* Buffer->buffer copy ops are NOT supported for renderpass usage. */
-    return !(m_data_ptr != nullptr);
+    return (m_data_ptr == nullptr) ? OpenGL::RenderpassSupportScope::Supported      //< No commands will be recorded in this case.
+                                   : OpenGL::RenderpassSupportScope::Not_Supported; //< Buffer->buffer copy ops are NOT supported for renderpass usage.
 }

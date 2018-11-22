@@ -37,6 +37,11 @@ namespace OpenGL
                 return m_info_ptr.get();
             }
 
+            RenderpassSupportScope get_renderpass_support_scope() const final
+            {
+                return RenderpassSupportScope::Not_Supported;
+            }
+
             void get_supported_queue_families(uint32_t*                          out_n_queue_fams_ptr,
                                               const Anvil::QueueFamilyFlagBits** out_queue_fams_ptr_ptr) const final
             {
@@ -84,14 +89,6 @@ namespace OpenGL
             }
 
             bool supports_primary_command_buffers() const final
-            {
-                /* Should never be called. */
-                vkgl_assert_fail();
-
-                return false;
-            }
-
-            bool supports_renderpasses() const final
             {
                 /* Should never be called. */
                 vkgl_assert_fail();
