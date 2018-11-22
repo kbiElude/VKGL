@@ -425,7 +425,8 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
                                                             std::default_delete<GroupNode>() );
             }
 
-            current_group_node_ptr.reset(new GroupNode(Anvil::QueueFamilyType::UNDEFINED) );
+            current_group_node_ptr.reset(new GroupNode(Anvil::QueueFamilyType::UNDEFINED,
+                                                       false /* in_uses_renderpass */ ) );
             vkgl_assert(current_group_node_ptr != nullptr);
 
             vkgl_assert( current_node_requires_cpu_side_execution);
@@ -492,13 +493,32 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
             current_group_node_ptr->queue_family = required_queue_family_type;
         }
         else
-        if (current_group_node_ptr->queue_family != required_queue_family_type)
         {
-            /* Push out currently processed node and spawn a new one. */
-            out_group_nodes_ptr->push_back(std::move(current_group_node_ptr) );
+            const bool queue_fam_mismatch = (current_group_node_ptr->queue_family != required_queue_family_type);
 
-            current_group_node_ptr.reset(new GroupNode(required_queue_family_type) );
-            vkgl_assert(current_group_node_ptr != nullptr);
+            /* We also need to move to a new node IF node (N-1) uses renderpasses AND node (N) cannot support them.
+             * Or the other way around, ie. node (N-1) cannot support renderpasses and node (N) requires them. */
+            const bool rp_support_mismatch = (( current_group_node_ptr->uses_renderpass && (current_node_rp_support_scope == RenderpassSupportScope::Not_Supported)) ||
+                                              (!current_group_node_ptr->uses_renderpass && (current_node_rp_support_scope != RenderpassSupportScope::Not_Supported) ));
+
+            vkgl_assert(current_node_rp_support_scope == RenderpassSupportScope::Not_Supported || //< rp_support_mismatch logic above breaks if new enums are introduced
+                        current_node_rp_support_scope == RenderpassSupportScope::Required      ||
+                        current_node_rp_support_scope == RenderpassSupportScope::Supported);
+
+            /* Move to a new group node if necessary */
+            const auto need_new_group_node = queue_fam_mismatch || rp_support_mismatch;
+
+            if (need_new_group_node)
+            {
+                /* Push out currently processed node and spawn a new one. */
+                const bool uses_renderpass = (current_node_rp_support_scope == RenderpassSupportScope::Required); //< stay away from RPs unless necessary.
+
+                out_group_nodes_ptr->push_back(std::move(current_group_node_ptr) );
+
+                current_group_node_ptr.reset(new GroupNode(required_queue_family_type,
+                                                           uses_renderpass) );
+                vkgl_assert(current_group_node_ptr != nullptr);
+            }
         }
 
         /* This group node can accomodate the new input node. Put it in and merge input node's IOs.. */

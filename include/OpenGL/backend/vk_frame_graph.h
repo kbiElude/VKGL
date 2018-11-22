@@ -175,6 +175,8 @@ namespace OpenGL
             Anvil::QueueFamilyType queue_family;
             Anvil::Queue*          queue_ptr;      //< possibly null if this is a CPU-based submission.
 
+            bool uses_renderpass; //< only valid for UNIVERSAL queue families.
+
             std::vector<OpenGL::IVKFrameGraphNode*> graph_node_ptrs;
             std::vector<OpenGL::NodeIOUniquePtr>    input_ptrs;
             std::vector<OpenGL::NodeIOUniquePtr>    output_ptrs;
@@ -194,18 +196,22 @@ namespace OpenGL
                 :needs_post_submission_cpu_execution(false),
                  parent_submission_ptr              (nullptr),
                  queue_family                       (Anvil::QueueFamilyType::UNDEFINED),
-                 queue_ptr                          (nullptr)
+                 queue_ptr                          (nullptr),
+                 uses_renderpass                    (false)
             {
                 /* Stub */
             }
 
-            GroupNode(const Anvil::QueueFamilyType& in_queue_family)
+            GroupNode(const Anvil::QueueFamilyType& in_queue_family,
+                      const bool&                   in_uses_renderpass)
                 :needs_post_submission_cpu_execution(false),
                  queue_family                       (in_queue_family),
                  queue_ptr                          (nullptr),
-                 parent_submission_ptr              (nullptr)
+                 parent_submission_ptr              (nullptr),
+                 uses_renderpass                    (in_uses_renderpass)
             {
-                /* Stub */
+                vkgl_assert((!in_uses_renderpass) ||
+                            ( in_uses_renderpass && in_queue_family == Anvil::QueueFamilyType::UNIVERSAL) );
             }
 
             ~GroupNode();
