@@ -109,6 +109,7 @@ namespace OpenGL
 
             std::vector<OpenGL::VKBufferReferenceUniquePtr> m_owned_buffer_reference_ptrs;
             OpenGL::VKSwapchainReferenceUniquePtr           m_owned_swapchain_reference_ptr;
+            Anvil::PipelineID                               m_pipeline_id;
 
             struct Args
             {

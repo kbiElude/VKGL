@@ -13,7 +13,7 @@
 #include "OpenGL/frontend/gl_vao_manager.h"
 
 
-OpenGL::VKGFXPipelineManager::GFXPipelineProps::GLState::GLState()
+OpenGL::VKGFXPipelineManager::GLState::GLState()
     :is_blend_enabled                    (false),
      is_color_logic_op_enabled           (false),
      is_cull_face_enabled                (false),
@@ -89,7 +89,7 @@ OpenGL::VKGFXPipelineManager::GFXPipelineProps::GLState::GLState()
     /* Stub */
 }
 
-OpenGL::VKGFXPipelineManager::GFXPipelineProps::GLState::GLState(const OpenGL::ContextState* in_context_state_ptr)
+OpenGL::VKGFXPipelineManager::GLState::GLState(const OpenGL::ContextState* in_context_state_ptr)
     :program_reference_payload(in_context_state_ptr->program_reference_ptr->get_payload() ),
      vao_reference_payload    (in_context_state_ptr->vao_reference_ptr->get_payload    () ),
 
@@ -487,7 +487,7 @@ Anvil::Format OpenGL::VKGFXPipelineManager::GFXPipelineProps::get_format_for_vaa
     return result;
 }
 
-OpenGL::VKGFXPipelineManager::GFXPipelineProps::GLStateHash OpenGL::VKGFXPipelineManager::GFXPipelineProps::GLState::get_hash() const
+OpenGL::VKGFXPipelineManager::GLStateHash OpenGL::VKGFXPipelineManager::GLState::get_hash() const
 {
     uint64_t hash_contributions[6] = {0, 0, 0, 0, 0, 0};
 
@@ -571,112 +571,42 @@ OpenGL::VKGFXPipelineManager::GFXPipelineProps::GLStateHash OpenGL::VKGFXPipelin
            hash_contributions[5];
 }
 
-OpenGL::VKGFXPipelineManager::GFXPipelineProps::GFXPipelineProps(const Anvil::BaseDevice*    in_device_ptr,
-                                                                 const OpenGL::ContextState* in_context_state_ptr,
-                                                                 const Anvil::RenderPass*    in_rp_ptr)
-    :device_ptr(in_device_ptr),
-     gl_state  (in_context_state_ptr),
-     rp_ptr    (in_rp_ptr)
+OpenGL::VKGFXPipelineManager::GFXPipelineProps::GFXPipelineProps(IBackend*                       in_backend_ptr,
+                                                                 const IContextObjectManagers*   in_frontend_ptr,
+                                                                 const OpenGL::ContextState*     in_context_state_ptr,
+                                                                 const Anvil::PrimitiveTopology& in_primitive_topology,
+                                                                 const Anvil::RenderPass*        in_rp_ptr,
+                                                                 const Anvil::SubPassID&         in_subpass_id)
+    :device_ptr(in_backend_ptr->get_device_ptr() )
 {
-    /* Stub */
+    auto gfx_pipeline_create_info_ptr = create_create_info_ptr(in_frontend_ptr->get_vao_manager_ptr (),
+                                                               in_backend_ptr->get_spirv_manager_ptr(),
+                                                               in_primitive_topology,
+                                                               in_subpass_id);
+
+    vkgl_assert(gfx_pipeline_create_info_ptr != nullptr);
+
+    if (!device_ptr->get_graphics_pipeline_manager()->add_pipeline(std::move(gfx_pipeline_create_info_ptr),
+                                                                  &pipeline_id) )
+    {
+        vkgl_assert_fail();
+    }
+
+    vkgl_assert(pipeline_id != UINT32_MAX);
 }
 
 OpenGL::VKGFXPipelineManager::GFXPipelineProps::~GFXPipelineProps()
 {
-    for (const auto& current_pipeline_data : subpass_id_to_pipeline_data_map)
+    if (!device_ptr->get_graphics_pipeline_manager()->delete_pipeline(pipeline_id) )
     {
-        for (const auto& current_pipeline_item : current_pipeline_data.second)
-        {
-            if (!device_ptr->get_graphics_pipeline_manager()->delete_pipeline(current_pipeline_item.pipeline_id) )
-            {
-                vkgl_assert_fail();
-            }
-        }
+        vkgl_assert_fail();
     }
 }
 
-Anvil::PipelineID OpenGL::VKGFXPipelineManager::GFXPipelineProps::get_pipeline_id(const Anvil::PrimitiveTopology&       in_primitive_topology,
-                                                                                  const Anvil::SubPassID&               in_subpass_id,
-                                                                                  const OpenGL::IBackend*               in_backend_ptr,
-                                                                                  const OpenGL::IContextObjectManagers* in_frontend_ptr)
-{
-    Anvil::PipelineID pipeline_id  = UINT32_MAX;
-
-    for (uint32_t n_iteration = 0;
-                  n_iteration < 2 && (pipeline_id == UINT32_MAX); /* RO access, RW access */
-                ++n_iteration)
-    {
-        if (n_iteration == 0)
-        {
-            rw_mutex.lock_shared();
-        }
-        else
-        {
-            rw_mutex.lock_unique();
-        }
-        {
-            auto map_iterator = subpass_id_to_pipeline_data_map.find(in_subpass_id);
-
-            if (map_iterator != subpass_id_to_pipeline_data_map.end() )
-            {
-                auto vec_iterator = std::find_if(map_iterator->second.begin(),
-                                                 map_iterator->second.end  (),
-                                                 [=](const PipelineData& in_pipeline_data)
-                                                 {
-                                                     bool result = (in_pipeline_data.primitive_topology == in_primitive_topology);
-
-                                                     return result;
-                                                 });
-
-                if (vec_iterator != map_iterator->second.end() )
-                {
-                    pipeline_id = vec_iterator->pipeline_id;
-
-                    vkgl_assert(pipeline_id != UINT32_MAX);
-                }
-            }
-
-            if (pipeline_id == UINT32_MAX &&
-                n_iteration == 1)
-            {
-                auto device_ptr                   = in_backend_ptr->get_device_ptr();
-                auto gfx_pipeline_create_info_ptr = create_create_info_ptr        (in_frontend_ptr->get_vao_manager_ptr (),
-                                                                                   in_backend_ptr->get_spirv_manager_ptr(),
-                                                                                   in_primitive_topology,
-                                                                                   in_subpass_id);
-
-                vkgl_assert(gfx_pipeline_create_info_ptr != nullptr);
-
-                if (!device_ptr->get_graphics_pipeline_manager()->add_pipeline(std::move(gfx_pipeline_create_info_ptr),
-                                                                              &pipeline_id) )
-                {
-                    vkgl_assert_fail();
-                }
-
-                vkgl_assert(pipeline_id != UINT32_MAX);
-
-                subpass_id_to_pipeline_data_map[in_subpass_id].push_back(
-                    PipelineData(pipeline_id,
-                                 in_primitive_topology)
-                );
-            }
-        }
-        if (n_iteration == 0)
-        {
-            rw_mutex.unlock_shared();
-        }
-        else
-        {
-            rw_mutex.unlock_unique();
-        }
-    }
-
-    vkgl_assert(pipeline_id != UINT32_MAX);
-    return pipeline_id;
-}
-
-OpenGL::VKGFXPipelineManager::VKGFXPipelineManager(IBackend* in_backend_ptr)
-    :m_backend_ptr(in_backend_ptr)
+OpenGL::VKGFXPipelineManager::VKGFXPipelineManager(IBackend*                     in_backend_ptr,
+                                                   const IContextObjectManagers* in_frontend_ptr)
+    :m_backend_ptr (in_backend_ptr),
+     m_frontend_ptr(in_frontend_ptr)
 {
     /* Stub */
 }
@@ -686,12 +616,94 @@ OpenGL::VKGFXPipelineManager::~VKGFXPipelineManager()
     /* Stub */
 }
 
-OpenGL::VKGFXPipelineManagerUniquePtr OpenGL::VKGFXPipelineManager::create(IBackend* in_backend_ptr)
+OpenGL::VKGFXPipelineManagerUniquePtr OpenGL::VKGFXPipelineManager::create(IBackend*                     in_backend_ptr,
+                                                                           const IContextObjectManagers* in_frontend_ptr)
 {
     OpenGL::VKGFXPipelineManagerUniquePtr result_ptr;
 
-    result_ptr.reset(new VKGFXPipelineManager(in_backend_ptr) );
+    result_ptr.reset(new VKGFXPipelineManager(in_backend_ptr,
+                                              in_frontend_ptr) );
+
     vkgl_assert(result_ptr != nullptr);
 
     return result_ptr;
+}
+
+OpenGL::GFXPipelineID OpenGL::VKGFXPipelineManager::get_pipeline_id(const OpenGL::ContextState*     in_context_state_ptr,
+                                                                    const Anvil::PrimitiveTopology& in_primitive_topology,
+                                                                    const Anvil::RenderPass*        in_rp_ptr,
+                                                                    const Anvil::SubPassID&         in_subpass_id)
+{
+    const auto            gl_state      = GLState          (in_context_state_ptr);
+    const auto            gl_state_hash = gl_state.get_hash();
+    OpenGL::GFXPipelineID result        = UINT32_MAX;
+    const auto            rp_hash       = OpenGL::VKRenderpassManager::get_rp_hash(in_rp_ptr->get_render_pass_create_info() );
+
+    for (uint32_t n_iteration = 0;
+                  n_iteration < 2; /* ro access, rw access */
+                ++n_iteration)
+    {
+        if (n_iteration == 0)
+        {
+            m_rw_mutex.lock_shared();
+        }
+        else
+        {
+            m_rw_mutex.lock_unique();
+        }
+        {
+            auto gl_state_hash_iterator = m_gfx_pipeline_props_map.find(gl_state_hash);
+
+            if (gl_state_hash_iterator != m_gfx_pipeline_props_map.end() )
+            {
+                auto rp_hash_iterator = gl_state_hash_iterator->second.find(rp_hash);
+
+                if (rp_hash_iterator                                                           != gl_state_hash_iterator->second.end() &&
+                    rp_hash_iterator->second.at(static_cast<uint32_t>(in_primitive_topology) ) != nullptr)
+                {
+                    const auto& pipeline_props = *rp_hash_iterator->second.at(static_cast<uint32_t>(in_primitive_topology) );
+
+                    vkgl_assert(VKRenderpassManager::is_rp_compatible(pipeline_props.get_rp_ptr()->get_render_pass_create_info(),
+                                                                      in_rp_ptr->get_render_pass_create_info                  () ));
+
+                    result = rp_hash_iterator->second.at(static_cast<uint32_t>(in_primitive_topology) )->get_pipeline_id();
+                    vkgl_assert(result != UINT32_MAX);
+                }
+
+                break;
+            }
+
+            if (result      == UINT32_MAX &&
+                n_iteration == 1)
+            {
+                GFXPipelinePropsUniquePtr new_pipeline_props_ptr;
+
+                new_pipeline_props_ptr.reset(
+                    new GFXPipelineProps(m_backend_ptr,
+                                         m_frontend_ptr,
+                                         in_context_state_ptr,
+                                         in_primitive_topology,
+                                         in_rp_ptr,
+                                         in_subpass_id)
+                );
+                vkgl_assert(new_pipeline_props_ptr != nullptr);
+
+                result = new_pipeline_props_ptr->get_pipeline_id();
+                vkgl_assert(result != UINT32_MAX);
+
+                m_gfx_pipeline_props_map[gl_state_hash][rp_hash][static_cast<uint32_t>(in_primitive_topology)] = std::move(new_pipeline_props_ptr);
+            }
+        }
+        if (n_iteration == 0)
+        {
+            m_rw_mutex.unlock_shared();
+        }
+        else
+        {
+            m_rw_mutex.unlock_unique();
+        }
+    }
+
+    vkgl_assert(result != UINT32_MAX);
+    return result;
 }

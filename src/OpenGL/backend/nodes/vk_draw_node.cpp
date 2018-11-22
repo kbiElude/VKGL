@@ -5,6 +5,7 @@
 #include "Anvil/include/wrappers/swapchain.h"
 #include "OpenGL/backend/nodes/vk_draw_node.h"
 #include "OpenGL/backend/vk_buffer_manager.h"
+#include "OpenGL/backend/vk_gfx_pipeline_manager.h"
 #include "OpenGL/frontend/gl_framebuffer_manager.h"
 #include "OpenGL/frontend/gl_state_manager.h"
 #include "OpenGL/frontend/gl_vao_manager.h"
@@ -16,7 +17,8 @@ OpenGL::VKNodes::Draw::Draw(const IContextObjectManagers*            in_frontend
                             OpenGL::GLContextStateReferenceUniquePtr in_frontend_context_state_reference_ptr)
     :m_backend_ptr                         (in_backend_ptr),
      m_frontend_context_state_reference_ptr(std::move(in_frontend_context_state_reference_ptr) ),
-     m_frontend_ptr                        (in_frontend_ptr)
+     m_frontend_ptr                        (in_frontend_ptr),
+     m_pipeline_id                         (UINT32_MAX)
 {
     m_info_ptr.reset(new OpenGL::VKFrameGraphNodeInfo() );
     vkgl_assert(m_info_ptr != nullptr);
@@ -55,12 +57,13 @@ OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::Draw::create_arrays(const ICo
 
 void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callback_ptr)
 {
-    const auto acquired_swapchain_image_index = in_callback_ptr->get_acquired_swapchain_image_index();
-    auto       backend_buffer_manager_ptr     = m_backend_ptr->get_buffer_manager_ptr              ();
-    auto       backend_swapchain_manager_ptr  = m_backend_ptr->get_swapchain_manager_ptr           ();
-    const auto context_state_ptr              = m_frontend_ptr->get_state_manager_ptr              ()->get_state(m_frontend_context_state_reference_ptr->get_payload().time_marker);
-    auto       frontend_fb_manager_ptr        = m_frontend_ptr->get_framebuffer_manager_ptr        ();
-    auto       frontend_vao_manager_ptr       = m_frontend_ptr->get_vao_manager_ptr                ();
+    const auto acquired_swapchain_image_index   = in_callback_ptr->get_acquired_swapchain_image_index();
+    auto       backend_buffer_manager_ptr       = m_backend_ptr->get_buffer_manager_ptr              ();
+    auto       backend_gfx_pipeline_manager_ptr = m_backend_ptr->get_gfx_pipeline_manager_ptr        ();
+    auto       backend_swapchain_manager_ptr    = m_backend_ptr->get_swapchain_manager_ptr           ();
+    const auto context_state_ptr                = m_frontend_ptr->get_state_manager_ptr              ()->get_state(m_frontend_context_state_reference_ptr->get_payload().time_marker);
+    auto       frontend_fb_manager_ptr          = m_frontend_ptr->get_framebuffer_manager_ptr        ();
+    auto       frontend_vao_manager_ptr         = m_frontend_ptr->get_vao_manager_ptr                ();
 
     vkgl_assert(context_state_ptr != nullptr);
 
@@ -210,9 +213,15 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
     /* TODO: Buffer support, texture support .. */
 
     /* 3. Fetch the GFX pipeline instance we're going to use for the draw call. */
-    {
+    #if 0
+        m_pipeline_id = backend_gfx_pipeline_manager_ptr->get_pipeline_id(context_state_ptr,
+                                                                          m_args.mode,
+                                                                          rp_ptr,
+                                                                          subpass_id);
+    #else
+        /* TODO: Next stop - adding the concept of renderpasses to the frame graph.. */
         vkgl_not_implemented();
-    }
+    #endif
 
     /* TODO: Descriptor sets .. */
 }

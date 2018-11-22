@@ -540,15 +540,6 @@ bool OpenGL::VKBackend::init()
         goto end;
     }
 
-    m_gfx_pipeline_manager_ptr = OpenGL::VKGFXPipelineManager::create(this);
-
-    if (m_gfx_pipeline_manager_ptr == nullptr)
-    {
-        vkgl_assert(m_gfx_pipeline_manager_ptr != nullptr);
-
-        goto end;
-    }
-
     m_renderpass_manager_ptr = OpenGL::VKRenderpassManager::create(this);
 
     if (m_renderpass_manager_ptr == nullptr)
@@ -1178,7 +1169,17 @@ void OpenGL::VKBackend::set_frontend_callback(const OpenGL::IContextObjectManage
         goto end;
     }
 
-    /* Continue with SPIR-V manager.. */
+    /* Continue with other managers.. */
+    m_gfx_pipeline_manager_ptr = OpenGL::VKGFXPipelineManager::create(this,
+                                                                      m_frontend_ptr);
+
+    if (m_gfx_pipeline_manager_ptr == nullptr)
+    {
+        vkgl_assert(m_gfx_pipeline_manager_ptr != nullptr);
+
+        goto end;
+    }
+
     m_spirv_manager_ptr = OpenGL::VKSPIRVManager::create(this,
                                                          m_frontend_ptr);
 

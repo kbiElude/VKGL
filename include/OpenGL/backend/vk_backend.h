@@ -129,6 +129,13 @@ namespace OpenGL
             return m_frame_graph_ptr.get();
         }
 
+        VKGFXPipelineManager* get_gfx_pipeline_manager_ptr() const final
+        {
+            vkgl_assert(m_gfx_pipeline_manager_ptr != nullptr);
+
+            return m_gfx_pipeline_manager_ptr.get();
+        }
+
         Anvil::MemoryAllocator* get_memory_allocator_ptr() const final
         {
             vkgl_assert(m_mem_allocator_ptr != nullptr);
