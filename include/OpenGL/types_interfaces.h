@@ -21,6 +21,7 @@ namespace OpenGL
         virtual VKFrameGraph*           get_frame_graph_ptr         () const = 0;
         virtual VKGFXPipelineManager*   get_gfx_pipeline_manager_ptr() const = 0;
         virtual Anvil::MemoryAllocator* get_memory_allocator_ptr    () const = 0;
+        virtual VKRenderpassManager*    get_renderpass_manager_ptr  () const = 0;
         virtual VKSPIRVManager*         get_spirv_manager_ptr       () const = 0;
         virtual VKSwapchainManager*     get_swapchain_manager_ptr   () const = 0;
         virtual ThreadPool*             get_thread_pool_ptr         () const = 0;

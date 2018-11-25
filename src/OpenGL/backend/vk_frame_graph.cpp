@@ -3,6 +3,7 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Anvil/include/misc/fence_create_info.h"
+#include "Anvil/include/misc/render_pass_create_info.h"
 #include "Anvil/include/misc/semaphore_create_info.h"
 #include "Anvil/include/wrappers/command_buffer.h"
 #include "Anvil/include/wrappers/command_pool.h"
@@ -12,6 +13,7 @@
 #include "Anvil/include/wrappers/semaphore.h"
 #include "Anvil/include/wrappers/swapchain.h"
 #include "OpenGL/backend/nodes/vk_acquire_swapchain_image_node.h"
+#include "OpenGL/backend/vk_renderpass_manager.h"
 #include "OpenGL/backend/vk_swapchain_manager.h"
 
 #ifdef max
@@ -351,6 +353,383 @@ end:
     return result;
 }
 
+bool OpenGL::VKFrameGraph::bake_renderpasses(const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr,
+                                             const std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection> >* in_src_dst_group_node_connections_ptr)
+{
+    bool result         = false;
+    auto rp_manager_ptr = m_backend_ptr->get_renderpass_manager_ptr();
+
+    typedef struct DependencyData
+    {
+        Anvil::AccessFlags        dst_access_mask;
+        Anvil::PipelineStageFlags dst_pipeline_stages;
+        Anvil::AccessFlags        src_access_mask;
+        Anvil::PipelineStageFlags src_pipeline_stages;
+
+        DependencyData()
+            :dst_access_mask    (Anvil::AccessFlagBits::NONE),
+             dst_pipeline_stages(Anvil::PipelineStageFlagBits::NONE),
+             src_access_mask    (Anvil::AccessFlagBits::NONE),
+             src_pipeline_stages(Anvil::PipelineStageFlagBits::NONE)
+        {
+            /* Stub */
+        }
+
+        DependencyData& operator|=(const DependencyData& in_data)
+        {
+            dst_access_mask     |= in_data.dst_access_mask;
+            dst_pipeline_stages |= in_data.dst_pipeline_stages;
+            src_access_mask     |= in_data.src_access_mask;
+            src_pipeline_stages |= in_data.src_pipeline_stages;
+
+            return *this;
+        }
+    } DependencyData;
+
+    for (uint32_t n_current_group_node = 0;
+                  n_current_group_node < static_cast<uint32_t>(in_group_nodes_ptr.size() );
+                ++n_current_group_node)
+    {
+        auto&                                current_group_node_ptr(in_group_nodes_ptr.at(n_current_group_node) );
+        Anvil::RenderPassCreateInfoUniquePtr rp_create_info_ptr    (new Anvil::RenderPassCreateInfo(m_backend_ptr->get_device_ptr() ));
+
+        if (!current_group_node_ptr->uses_renderpass)
+        {
+            continue;
+        }
+
+        /* Each group node is allotted a unique RP. RP manager handles potential RP reuse across group nodes.
+         *
+         * 1. Any output used by the group node = RP attachment.
+         * 2. Each regular node contained within the group node is assigned a unique subpass.
+         * 3. Each regular node's image output is associated with a RP attachment by means of a subpass attachment. Image layouts need to be deduced
+         *    using context state assocaited with the node.
+         * 4. Any intra-graph node dependency needs to be translated to subpass dependencies.
+         * 5. Any pipeline stage+access mask dependencies defined for graph node inputs may need to be translated to external->subpass dependencies.
+         * 6. Any pipeline stage+access mask dependencies defined for graph node outputs may need to be translated to subpass->external dependencies.
+         * 7. TODO: (Not a concern for GL 3.2) Any feedback loops require self-subpass dependencies.
+         */
+
+        /* 1) */
+        for (const auto& current_output_ptr : current_group_node_ptr->output_ptrs)
+        {
+            switch (current_output_ptr->type)
+            {
+                case OpenGL::NodeIOType::Buffer:
+                {
+                    /* Not a texture - get out. */
+                    continue;
+                }
+
+                case OpenGL::NodeIOType::Image:
+                {
+                    vkgl_not_implemented();
+
+                    continue;
+                }
+
+                case OpenGL::NodeIOType::Swapchain_Image:
+                {
+                    vkgl_not_implemented();
+
+                    continue;
+                }
+
+                default:
+                {
+                    vkgl_assert_fail();
+
+                    continue;
+                }
+            }
+        }
+
+        /* 2) and 3) */
+        for (uint32_t n_graph_node = 0;
+                      n_graph_node < static_cast<uint32_t>(current_group_node_ptr->graph_node_ptrs.size() );
+                    ++n_graph_node)
+        {
+            /* Create the subpass. */
+            const auto&      current_graph_node_ptr      = current_group_node_ptr->graph_node_ptrs.at(n_graph_node);
+            const auto       current_graph_node_info_ptr = current_graph_node_ptr->get_info_ptr      ();
+            Anvil::SubPassID subpass_id                  = UINT32_MAX;
+
+            vkgl_assert(current_graph_node_ptr->get_renderpass_support_scope() == OpenGL::RenderpassSupportScope::Required  ||
+                        current_graph_node_ptr->get_renderpass_support_scope() == OpenGL::RenderpassSupportScope::Supported);
+
+            if (!rp_create_info_ptr->add_subpass(&subpass_id) )
+            {
+                vkgl_assert_fail();
+
+                goto end;
+            }
+
+            vkgl_assert(subpass_id == n_graph_node);
+
+            /* Traverse node outputs. For image attachments, add a corresponding subpass attachment */
+            for (const auto& current_output : current_graph_node_info_ptr->outputs)
+            {
+                switch (current_output.type)
+                {
+                    case OpenGL::NodeIOType::Buffer:
+                    {
+                        /* Not a texture - get out. */
+                        continue;
+                    }
+
+                    case OpenGL::NodeIOType::Image:
+                    {
+                        vkgl_not_implemented();
+
+                        continue;
+                    }
+
+                    case OpenGL::NodeIOType::Swapchain_Image:
+                    {
+                        vkgl_not_implemented();
+
+                        continue;
+                    }
+
+                    default:
+                    {
+                        vkgl_assert_fail();
+
+                        continue;
+                    }
+                }
+            }
+        }
+
+        /* 4)
+         *
+         * NOTE: We first ORify properties of intra-graph node connections defined for each graph node, before using the coalesced information
+         *       to add subpass connections. The reason is VK 1.0 spec does not appear to define if it is legal to define multiple subpass dependencies
+         *       for the same <src subpass, dst subpass> pair and - if so - how such redefinitions should be interpreted.
+         */
+        {
+            std::map<std::pair<Anvil::SubPassID, Anvil::SubPassID>, DependencyData> subpass_pair_to_dep_map;
+
+            for (const auto& current_connection : current_group_node_ptr->intra_graph_node_connections)
+            {
+                const auto&            dst_graph_node_ptr    = current_group_node_ptr->graph_node_ptrs.at   (current_connection.n_dst_graph_node);
+                const auto&            dst_graph_node_input  = dst_graph_node_ptr->get_info_ptr()->inputs.at(current_connection.n_dst_graph_node_input);
+                const Anvil::SubPassID dst_subpass_id        = static_cast<Anvil::SubPassID>(current_connection.n_dst_graph_node);
+                DependencyData         new_dep;
+                const auto&            src_graph_node_ptr    = current_group_node_ptr->graph_node_ptrs.at   (current_connection.n_src_graph_node);
+                const auto&            src_graph_node_output = dst_graph_node_ptr->get_info_ptr()->inputs.at(current_connection.n_src_graph_node_output);
+                const Anvil::SubPassID src_subpass_id        = static_cast<Anvil::SubPassID>(current_connection.n_src_graph_node);
+
+                vkgl_assert(src_graph_node_output.type == dst_graph_node_input.type);
+
+                switch (src_graph_node_output.type)
+                {
+                    case OpenGL::NodeIOType::Buffer:
+                    {
+                        /* Not a texture - get out. */
+                        continue;
+                    }
+
+                    case OpenGL::NodeIOType::Image:
+                    {
+                        vkgl_not_implemented();
+
+                        continue;
+                    }
+
+                    case OpenGL::NodeIOType::Swapchain_Image:
+                    {
+                        new_dep.dst_access_mask     = dst_graph_node_input.swapchain_image_props.access;
+                        new_dep.dst_pipeline_stages = dst_graph_node_input.swapchain_image_props.pipeline_stages;
+                        new_dep.src_access_mask     = src_graph_node_output.swapchain_image_props.access;
+                        new_dep.src_pipeline_stages = src_graph_node_output.swapchain_image_props.pipeline_stages;
+
+                        break;
+                    }
+
+                    default:
+                    {
+                        vkgl_assert_fail();
+
+                        continue;
+                    }
+                }
+
+                subpass_pair_to_dep_map[std::pair<Anvil::SubPassID, Anvil::SubPassID>(src_subpass_id, dst_subpass_id)] |= new_dep;
+            }
+
+            for (const auto& current_dep_data : subpass_pair_to_dep_map)
+            {
+                const auto& dst_subpass_id   = current_dep_data.first.second;
+                const auto& src_subpass_id   = current_dep_data.first.first;
+                const auto& subpass_dep_data = current_dep_data.second;
+
+                /* Note: GL 3.2 does not support by-region dependencies */
+                rp_create_info_ptr->add_subpass_to_subpass_dependency(src_subpass_id,
+                                                                      dst_subpass_id,
+                                                                      subpass_dep_data.src_pipeline_stages,
+                                                                      subpass_dep_data.dst_pipeline_stages,
+                                                                      subpass_dep_data.src_access_mask,
+                                                                      subpass_dep_data.dst_access_mask,
+                                                                      Anvil::DependencyFlagBits::NONE);
+            }
+        }
+
+        /* 5) and 6)
+         *
+         * Same OR rules as above apply.
+         */
+        {
+            std::map<Anvil::SubPassID, DependencyData> external_to_subpass_deps;
+            std::map<Anvil::SubPassID, DependencyData> subpass_to_external_deps;
+
+            /* external->subpass deps. */
+            for (const auto& current_connection_data_ptr : current_group_node_ptr->incoming_group_node_connections_ptr)
+            {
+                const OpenGL::NodeIO* dst_group_node_io_ptr = nullptr;
+                DependencyData        new_input_dep;
+                const auto&           src_group_node_io_ptr = current_connection_data_ptr->src_group_node_io_ptr;
+                const auto&           src_group_node_ptr    = current_connection_data_ptr->src_group_node_ptr;
+
+                if (current_connection_data_ptr->n_dst_group_node != n_current_group_node)
+                {
+                    continue;
+                }
+
+                dst_group_node_io_ptr = current_group_node_ptr->input_ptrs.at(current_connection_data_ptr->n_dst_group_node_input).get();
+
+                vkgl_assert(dst_group_node_io_ptr       != nullptr);
+                vkgl_assert(dst_group_node_io_ptr->type == src_group_node_io_ptr->type);
+                vkgl_assert(src_group_node_io_ptr       != nullptr);
+                vkgl_assert(src_group_node_ptr          != nullptr);
+
+                switch (dst_group_node_io_ptr->type)
+                {
+                    case OpenGL::NodeIOType::Buffer:
+                    {
+                        /* Not a texture - get out. */
+                        continue;
+                    }
+
+                    case OpenGL::NodeIOType::Image:
+                    {
+                        vkgl_not_implemented();
+
+                        continue;
+                    }
+
+                    case OpenGL::NodeIOType::Swapchain_Image:
+                    {
+                        new_input_dep.dst_access_mask     = dst_group_node_io_ptr->swapchain_image_props.access;
+                        new_input_dep.dst_pipeline_stages = dst_group_node_io_ptr->swapchain_image_props.pipeline_stages;
+                        new_input_dep.src_access_mask     = src_group_node_io_ptr->swapchain_image_props.access;
+                        new_input_dep.src_pipeline_stages = src_group_node_io_ptr->swapchain_image_props.pipeline_stages;
+
+                        break;
+                    }
+
+                    default:
+                    {
+                        vkgl_assert_fail();
+
+                        continue;
+                    }
+                }
+
+                /* Exclude access flags which are assumed by default for renderpasses */
+                new_input_dep.dst_access_mask     &= ~(Anvil::AccessFlagBits::INPUT_ATTACHMENT_READ_BIT           |
+                                                       Anvil::AccessFlagBits::COLOR_ATTACHMENT_READ_BIT           |
+                                                       Anvil::AccessFlagBits::COLOR_ATTACHMENT_WRITE_BIT          |
+                                                       Anvil::AccessFlagBits::DEPTH_STENCIL_ATTACHMENT_READ_BIT   |
+                                                       Anvil::AccessFlagBits::DEPTH_STENCIL_ATTACHMENT_WRITE_BIT);
+                new_input_dep.dst_pipeline_stages &= ~(Anvil::PipelineStageFlagBits::COLOR_ATTACHMENT_OUTPUT_BIT |
+                                                       Anvil::PipelineStageFlagBits::EARLY_FRAGMENT_TESTS_BIT    |
+                                                       Anvil::PipelineStageFlagBits::LATE_FRAGMENT_TESTS_BIT);
+
+                if (new_input_dep.dst_access_mask != Anvil::AccessFlagBits::NONE)
+                {
+                    /* Cache the new dep *if* non-zero dst access flags exist . */
+                    vkgl_assert(new_input_dep.dst_pipeline_stages != Anvil::PipelineStageFlagBits::NONE);
+
+                    external_to_subpass_deps[n_current_group_node] |= new_input_dep;
+                }
+            }
+
+            /* subpass->external deps */
+            for (const auto& current_connection_data : *in_src_dst_group_node_connections_ptr)
+            {
+                const auto& dst_group_node_data_items_vec = current_connection_data.second;
+                const auto& src_group_node_ptr            = current_connection_data.first;
+
+                if (src_group_node_ptr != current_group_node_ptr.get() )
+                {
+                    continue;
+                }
+
+                for (const auto& current_connection_data : dst_group_node_data_items_vec)
+                {
+                    DependencyData new_dep;
+
+                    new_dep.dst_access_mask     = current_connection_data.dst_access_flags;
+                    new_dep.dst_pipeline_stages = current_connection_data.dst_pipeline_stages;
+                    new_dep.src_access_mask     = current_connection_data.src_access_flags;
+                    new_dep.src_pipeline_stages = current_connection_data.src_pipeline_stages;
+
+                    /* Exclude bits assumed by default by VK */
+                    new_dep.src_access_mask     &= ~(Anvil::AccessFlagBits::INPUT_ATTACHMENT_READ_BIT           |
+                                                     Anvil::AccessFlagBits::COLOR_ATTACHMENT_READ_BIT           |
+                                                     Anvil::AccessFlagBits::COLOR_ATTACHMENT_WRITE_BIT          |
+                                                     Anvil::AccessFlagBits::DEPTH_STENCIL_ATTACHMENT_READ_BIT   |
+                                                     Anvil::AccessFlagBits::DEPTH_STENCIL_ATTACHMENT_WRITE_BIT);
+                    new_dep.src_pipeline_stages &= ~(Anvil::PipelineStageFlagBits::COLOR_ATTACHMENT_OUTPUT_BIT  |
+                                                     Anvil::PipelineStageFlagBits::EARLY_FRAGMENT_TESTS_BIT     |
+                                                     Anvil::PipelineStageFlagBits::LATE_FRAGMENT_TESTS_BIT);
+
+                    if (new_dep.src_access_mask != Anvil::AccessFlagBits::NONE)
+                    {
+                        /* TODO: There is no way at the moment to determine which graph node the output is originating from. This
+                         *       is a problem since we need to specify source subpass for the dependency.
+                         *
+                         * This will need some refurbishing to get to work. Marking as TODO for now.
+                         */
+                        vkgl_not_implemented();
+                    }
+                }
+            }
+
+            /* Add the deps to RP */
+            for (const auto& current_ets_dep : external_to_subpass_deps)
+            {
+                rp_create_info_ptr->add_external_to_subpass_dependency(current_ets_dep.first, /* in_destination_subpass_id */
+                                                                       current_ets_dep.second.src_pipeline_stages,
+                                                                       current_ets_dep.second.dst_pipeline_stages,
+                                                                       current_ets_dep.second.src_access_mask,
+                                                                       current_ets_dep.second.dst_access_mask,
+                                                                       Anvil::DependencyFlagBits::NONE);
+            }
+
+            for (const auto& current_ste_dep : subpass_to_external_deps)
+            {
+                rp_create_info_ptr->add_subpass_to_external_dependency(current_ste_dep.first, /* in_source_subpass_id */
+                                                                       current_ste_dep.second.src_pipeline_stages,
+                                                                       current_ste_dep.second.dst_pipeline_stages,
+                                                                       current_ste_dep.second.src_access_mask,
+                                                                       current_ste_dep.second.dst_access_mask,
+                                                                       Anvil::DependencyFlagBits::NONE);
+            }
+        }
+
+        /* 7) irrelevant as GL 3.2 does not support by-region dependencies */
+
+        /* Create the renderpass and associate it with the group node. */
+        current_group_node_ptr->renderpass_ptr = rp_manager_ptr->get_render_pass(std::move(rp_create_info_ptr));
+        vkgl_assert(current_group_node_ptr->renderpass_ptr != nullptr);
+    }
+    result = true;
+end:
+    return result;
+}
+
 bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGraphNodeUniquePtr>&                                                in_node_ptrs,
                                                    std::vector<GroupNodeUniquePtr>*                                                             out_group_nodes_ptr,
                                                    std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection > >* out_src_dst_group_node_connections_ptr)
@@ -426,7 +805,7 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
             }
 
             current_group_node_ptr.reset(new GroupNode(Anvil::QueueFamilyType::UNDEFINED,
-                                                       false /* in_uses_renderpass */ ) );
+                                                       false /* in_uses_renderpass */) );
             vkgl_assert(current_group_node_ptr != nullptr);
 
             vkgl_assert( current_node_requires_cpu_side_execution);
@@ -593,13 +972,13 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
                                 /* Object reuse - add a connection */
                                 auto dst_group_node_ptr    = current_group_node_ptr.get();
                                 auto src_group_node_ptr    = object_ptr_map_iterator->second.group_node_ptr;
+                                auto src_group_node_io_ptr = object_ptr_map_iterator->second.group_node_output_ptr;
                                 auto new_connection_ptr    = GroupNodeConnectionInfoUniquePtr(nullptr,
                                                                                               std::default_delete<GroupNodeConnectionInfo>() );
 
                                 {
                                     auto new_connection_ptr    = GroupNodeConnectionInfoUniquePtr(nullptr,
                                                                                                   std::default_delete<GroupNodeConnectionInfo>() );
-                                    auto src_group_node_io_ptr = object_ptr_map_iterator->second.group_node_output_ptr;
 
                                     new_connection_ptr.reset(
                                         new GroupNodeConnectionInfo(src_group_node_ptr,
@@ -621,7 +1000,10 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
                                     {
                                         (*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].push_back(
                                             GroupNodeToGroupNodeSquashedConnection(current_group_node_input_ptr->buffer_props.pipeline_stages,
-                                                                                   dst_group_node_ptr)
+                                                                                   current_group_node_input_ptr->buffer_props.access,
+                                                                                   dst_group_node_ptr,
+                                                                                   src_group_node_io_ptr->buffer_props.pipeline_stages,
+                                                                                   src_group_node_io_ptr->buffer_props.access)
                                         );
                                     }
                                     else
@@ -642,11 +1024,11 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
                                 auto dst_group_node_ptr    = current_group_node_ptr.get();
                                 auto dst_group_node_io_ptr = dst_group_node_ptr->input_ptrs.at(n_dst_group_node_input).get();
                                 auto src_group_node_ptr    = last_swapchain_output_data.group_node_ptr;
+                                auto src_group_node_io_ptr = last_swapchain_output_data.group_node_output_ptr;
 
                                 {
                                     auto new_connection_ptr    = GroupNodeConnectionInfoUniquePtr(nullptr,
                                                                                                   std::default_delete<GroupNodeConnectionInfo>() );
-                                    auto src_group_node_io_ptr = last_swapchain_output_data.group_node_output_ptr;
 
                                     new_connection_ptr.reset(
                                         new GroupNodeConnectionInfo(src_group_node_ptr,
@@ -668,7 +1050,10 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
                                     {
                                         (*out_src_dst_group_node_connections_ptr)[src_group_node_ptr].push_back(
                                             GroupNodeToGroupNodeSquashedConnection(dst_group_node_io_ptr->swapchain_image_props.pipeline_stages,
-                                                                                   dst_group_node_ptr)
+                                                                                   dst_group_node_io_ptr->swapchain_image_props.access,
+                                                                                   dst_group_node_ptr,
+                                                                                   src_group_node_io_ptr->swapchain_image_props.pipeline_stages,
+                                                                                   src_group_node_io_ptr->swapchain_image_props.access)
                                         );
                                     }
                                     else
@@ -1027,7 +1412,16 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
         goto end;
     }
 
-    /* 4. Record command buffers for group nodes. */
+    /* 4. Bake renderpasses for any group nodes that need them. */
+    if (!bake_renderpasses(group_node_ptrs,
+                          &group_node_connections) )
+    {
+        vkgl_assert_fail();
+
+        goto end;
+    }
+
+    /* 5. Record command buffers for group nodes. */
     if (!record_command_buffers(group_node_ptrs,
                                 group_node_connections,
                                &command_buffer_submissions) )
@@ -1037,7 +1431,7 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
         goto end;
     }
 
-    /* 4. Schedule command buffer submissions. */
+    /* 6. Schedule command buffer submissions. */
     if (in_block_until_finished)
     {
         auto fence_create_info_ptr = Anvil::FenceCreateInfo::create(device_ptr,
@@ -1055,7 +1449,7 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
         goto end;
     }
 
-    /* 5. If this was requested, wait for the GPU-side operations to finish before leaving. */
+    /* 7. If this was requested, wait for the GPU-side operations to finish before leaving. */
     if (wait_fence_ptr != nullptr)
     {
         VkResult result_vk = Anvil::Vulkan::vkWaitForFences(device_ptr->get_device_vk(),

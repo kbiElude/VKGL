@@ -175,7 +175,8 @@ namespace OpenGL
             Anvil::QueueFamilyType queue_family;
             Anvil::Queue*          queue_ptr;      //< possibly null if this is a CPU-based submission.
 
-            bool uses_renderpass; //< only valid for UNIVERSAL queue families.
+            Anvil::RenderPass* renderpass_ptr;  //< only valid if uses_renderpass is true.
+            bool               uses_renderpass; //< only valid for UNIVERSAL queue families.
 
             std::vector<OpenGL::IVKFrameGraphNode*> graph_node_ptrs;
             std::vector<OpenGL::NodeIOUniquePtr>    input_ptrs;
@@ -197,6 +198,7 @@ namespace OpenGL
                  parent_submission_ptr              (nullptr),
                  queue_family                       (Anvil::QueueFamilyType::UNDEFINED),
                  queue_ptr                          (nullptr),
+                 renderpass_ptr                     (nullptr),
                  uses_renderpass                    (false)
             {
                 /* Stub */
@@ -208,6 +210,7 @@ namespace OpenGL
                  queue_family                       (in_queue_family),
                  queue_ptr                          (nullptr),
                  parent_submission_ptr              (nullptr),
+                 renderpass_ptr                     (nullptr),
                  uses_renderpass                    (in_uses_renderpass)
             {
                 vkgl_assert((!in_uses_renderpass) ||
@@ -223,20 +226,33 @@ namespace OpenGL
 
         typedef struct GroupNodeToGroupNodeSquashedConnection
         {
+            Anvil::AccessFlags        dst_access_flags;
             const GroupNode*          dst_node_ptr;
             Anvil::PipelineStageFlags dst_pipeline_stages;
+            Anvil::AccessFlags        src_access_flags;
+            Anvil::PipelineStageFlags src_pipeline_stages;
 
             GroupNodeToGroupNodeSquashedConnection()
-                :dst_node_ptr       (nullptr),
-                 dst_pipeline_stages(Anvil::PipelineStageFlagBits::NONE)
+                :dst_access_flags   (Anvil::AccessFlagBits::NONE),
+                 dst_node_ptr       (nullptr),
+                 dst_pipeline_stages(Anvil::PipelineStageFlagBits::NONE),
+                 src_access_flags   (Anvil::AccessFlagBits::NONE),
+                 src_pipeline_stages(Anvil::PipelineStageFlagBits::NONE)
+
             {
                 /* Stub */
             }
 
             GroupNodeToGroupNodeSquashedConnection(const Anvil::PipelineStageFlags& in_dst_pipeline_stages,
-                                                   const GroupNode*                 in_dst_node_ptr)
-                :dst_node_ptr       (in_dst_node_ptr),
-                 dst_pipeline_stages(in_dst_pipeline_stages)
+                                                   const Anvil::AccessFlags&        in_dst_access_flags,
+                                                   const GroupNode*                 in_dst_node_ptr,
+                                                   const Anvil::PipelineStageFlags& in_src_pipeline_stages,
+                                                   const Anvil::AccessFlags&        in_src_access_flags)
+                :dst_access_flags   (in_dst_access_flags),
+                 dst_node_ptr       (in_dst_node_ptr),
+                 dst_pipeline_stages(in_dst_pipeline_stages),
+                 src_access_flags   (in_src_access_flags),
+                 src_pipeline_stages(in_src_pipeline_stages)
             {
                 vkgl_assert(dst_node_ptr != nullptr);
             }
@@ -298,6 +314,8 @@ namespace OpenGL
                                                             Anvil::AccessFlags*               out_ds_aspects_access_mask_ptr) const;
 
         bool bake_barriers                 (const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr);
+        bool bake_renderpasses             (const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr,
+                                            const std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection> >* in_src_dst_group_node_connections_ptr);
         bool coalesce_to_group_nodes       (const std::vector<VKFrameGraphNodeUniquePtr>&                                                     in_node_ptrs,
                                             std::vector<GroupNodeUniquePtr>*                                                                  out_group_nodes_ptr,
                                             std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection> >*       out_src_dst_group_node_connections_ptr);

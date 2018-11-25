@@ -17,8 +17,7 @@ OpenGL::VKNodes::Draw::Draw(const IContextObjectManagers*            in_frontend
                             OpenGL::GLContextStateReferenceUniquePtr in_frontend_context_state_reference_ptr)
     :m_backend_ptr                         (in_backend_ptr),
      m_frontend_context_state_reference_ptr(std::move(in_frontend_context_state_reference_ptr) ),
-     m_frontend_ptr                        (in_frontend_ptr),
-     m_pipeline_id                         (UINT32_MAX)
+     m_frontend_ptr                        (in_frontend_ptr)
 {
     m_info_ptr.reset(new OpenGL::VKFrameGraphNodeInfo() );
     vkgl_assert(m_info_ptr != nullptr);
@@ -212,17 +211,6 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
 
     /* TODO: Buffer support, texture support .. */
 
-    /* 3. Fetch the GFX pipeline instance we're going to use for the draw call. */
-    #if 0
-        m_pipeline_id = backend_gfx_pipeline_manager_ptr->get_pipeline_id(context_state_ptr,
-                                                                          m_args.mode,
-                                                                          rp_ptr,
-                                                                          subpass_id);
-    #else
-        /* TODO: Next stop - adding the concept of renderpasses to the frame graph.. */
-        vkgl_not_implemented();
-    #endif
-
     /* TODO: Descriptor sets .. */
 }
 
@@ -230,4 +218,16 @@ void OpenGL::VKNodes::Draw::record_commands(Anvil::CommandBufferBase*  in_cmd_bu
                                             const bool&                in_inside_renderpass,
                                             IVKFrameGraphNodeCallback* in_graph_callback_ptr) const
 {
+    /* Fetch the GFX pipeline instance we're going to use for the draw call. */
+    vkgl_assert(in_inside_renderpass);
+
+    #if 0
+        const auto pipeline_id = backend_gfx_pipeline_manager_ptr->get_pipeline_id(context_state_ptr,
+                                                                                   m_args.mode,
+                                                                                   rp_ptr,
+                                                                                   subpass_id);
+    #else
+        /* TODO: Next stop - adding the concept of renderpasses to the frame graph.. */
+        vkgl_not_implemented();
+    #endif
 }
