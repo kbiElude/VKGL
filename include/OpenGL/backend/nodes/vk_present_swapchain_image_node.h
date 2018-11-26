@@ -32,6 +32,14 @@ namespace OpenGL
 
             void execute_cpu_side(IVKFrameGraphNodeCallback*) final;
 
+            const OpenGL::ContextState* get_gl_context_state() const final
+            {
+                /* Should never be called */
+                vkgl_assert_fail();
+
+                return nullptr;
+            }
+
             const VKFrameGraphNodeInfo* get_info_ptr() const final
             {
                 return m_info_ptr.get();

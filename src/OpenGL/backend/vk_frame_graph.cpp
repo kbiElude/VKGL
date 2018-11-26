@@ -3,6 +3,7 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Anvil/include/misc/fence_create_info.h"
+#include "Anvil/include/misc/image_create_info.h"
 #include "Anvil/include/misc/render_pass_create_info.h"
 #include "Anvil/include/misc/semaphore_create_info.h"
 #include "Anvil/include/wrappers/command_buffer.h"
@@ -205,7 +206,7 @@ bool OpenGL::VKFrameGraph::bake_barriers(const std::vector<GroupNodeUniquePtr>& 
                 {
                     vkgl_not_implemented();
 
-                    break;
+                    continue;
                 }
 
                 case OpenGL::NodeIOType::Image:
@@ -356,8 +357,9 @@ end:
 bool OpenGL::VKFrameGraph::bake_renderpasses(const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr,
                                              const std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection> >* in_src_dst_group_node_connections_ptr)
 {
-    bool result         = false;
-    auto rp_manager_ptr = m_backend_ptr->get_renderpass_manager_ptr();
+    bool result                = false;
+    auto rp_manager_ptr        = m_backend_ptr->get_renderpass_manager_ptr();
+    auto swapchain_manager_ptr = m_backend_ptr->get_swapchain_manager_ptr ();
 
     typedef struct DependencyData
     {
@@ -390,8 +392,10 @@ bool OpenGL::VKFrameGraph::bake_renderpasses(const std::vector<GroupNodeUniquePt
                   n_current_group_node < static_cast<uint32_t>(in_group_nodes_ptr.size() );
                 ++n_current_group_node)
     {
-        auto&                                current_group_node_ptr(in_group_nodes_ptr.at(n_current_group_node) );
-        Anvil::RenderPassCreateInfoUniquePtr rp_create_info_ptr    (new Anvil::RenderPassCreateInfo(m_backend_ptr->get_device_ptr() ));
+        auto&                                current_group_node_ptr          (in_group_nodes_ptr.at(n_current_group_node) );
+        Anvil::RenderPassCreateInfoUniquePtr rp_create_info_ptr              (new Anvil::RenderPassCreateInfo(m_backend_ptr->get_device_ptr() ));
+        Anvil::RenderPassAttachmentID        rp_swapchain_color_attachment_id(UINT32_MAX);
+        Anvil::RenderPassAttachmentID        rp_swapchain_ds_attachment_id   (UINT32_MAX);
 
         if (!current_group_node_ptr->uses_renderpass)
         {
@@ -408,9 +412,43 @@ bool OpenGL::VKFrameGraph::bake_renderpasses(const std::vector<GroupNodeUniquePt
          * 5. Any pipeline stage+access mask dependencies defined for graph node inputs may need to be translated to external->subpass dependencies.
          * 6. Any pipeline stage+access mask dependencies defined for graph node outputs may need to be translated to subpass->external dependencies.
          * 7. TODO: (Not a concern for GL 3.2) Any feedback loops require self-subpass dependencies.
+         *
+         * TODO: Aliasing support. Need an actual use case to verify implementation.
          */
 
         /* 1) */
+        Anvil::ImageLayout initial_swapchain_color_layout            = Anvil::ImageLayout::UNKNOWN;
+        Anvil::ImageLayout initial_swapchain_ds_layout               = Anvil::ImageLayout::UNKNOWN;
+        bool               is_swapchain_color_aspect_input_defined   = false;
+        bool               is_swapchain_depth_aspect_input_defined   = false;
+        bool               is_swapchain_stencil_aspect_input_defined = false;
+
+        for (const auto& current_input_ptr : current_group_node_ptr->input_ptrs)
+        {
+            if (current_input_ptr->type != OpenGL::NodeIOType::Swapchain_Image)
+            {
+                continue;
+            }
+
+            vkgl_assert(current_input_ptr->swapchain_image_props.aspects_touched != Anvil::ImageAspectFlagBits::NONE);
+
+            if ((current_input_ptr->swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::COLOR_BIT) != 0)
+            {
+                is_swapchain_color_aspect_input_defined  = true;
+                initial_swapchain_color_layout           = current_input_ptr->swapchain_image_props.color_image_layout; 
+            }
+
+            if (((current_input_ptr->swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::DEPTH_BIT)   != 0) ||
+                ((current_input_ptr->swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::STENCIL_BIT) != 0))
+            {
+                vkgl_assert(initial_swapchain_ds_layout == Anvil::ImageLayout::UNKNOWN); //< todo? likely to fire if both depth and stencil aspects are touched.
+
+                is_swapchain_depth_aspect_input_defined   |= ((current_input_ptr->swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::DEPTH_BIT)   != 0);
+                is_swapchain_stencil_aspect_input_defined |= ((current_input_ptr->swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::STENCIL_BIT) != 0);
+                initial_swapchain_ds_layout                = current_input_ptr->swapchain_image_props.ds_image_layout;
+            }
+        }
+
         for (const auto& current_output_ptr : current_group_node_ptr->output_ptrs)
         {
             switch (current_output_ptr->type)
@@ -430,7 +468,52 @@ bool OpenGL::VKFrameGraph::bake_renderpasses(const std::vector<GroupNodeUniquePt
 
                 case OpenGL::NodeIOType::Swapchain_Image:
                 {
-                    vkgl_not_implemented();
+                    const auto& swapchain_payload           = current_output_ptr->swapchain_reference_ptr->get_payload();
+                    auto        color_image_create_info_ptr = swapchain_payload.swapchain_ptr->get_image              (0 /* in_n_swapchain_image */)->get_create_info_ptr();
+                    auto        ds_image_ptr                = swapchain_manager_ptr->get_ds_image                     (swapchain_payload.time_marker,
+                                                                                                                       0 /* in_n_swapchain_image */);
+                    auto        ds_image_create_info_ptr    = (ds_image_ptr != nullptr) ? (ds_image_ptr->get_create_info_ptr() )
+                                                                                        : nullptr;
+
+                    vkgl_assert(color_image_create_info_ptr      != nullptr);
+                    vkgl_assert(rp_swapchain_color_attachment_id == UINT32_MAX);
+                    vkgl_assert(rp_swapchain_ds_attachment_id    == UINT32_MAX);
+
+                    const bool is_swapchain_color_aspect_output_defined   = (current_output_ptr->swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::COLOR_BIT)   != 0;
+                    const bool is_swapchain_depth_aspect_output_defined   = (current_output_ptr->swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::DEPTH_BIT)   != 0;
+                    const bool is_swapchain_stencil_aspect_output_defined = (current_output_ptr->swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::STENCIL_BIT) != 0;
+
+                    rp_create_info_ptr->add_color_attachment(color_image_create_info_ptr->get_format      (),
+                                                             color_image_create_info_ptr->get_sample_count(),
+                                                             (is_swapchain_color_aspect_input_defined)  ? Anvil::AttachmentLoadOp::LOAD
+                                                                                                        : Anvil::AttachmentLoadOp::DONT_CARE,
+                                                             (is_swapchain_color_aspect_output_defined) ? Anvil::AttachmentStoreOp::STORE
+                                                                                                        : Anvil::AttachmentStoreOp::DONT_CARE,
+                                                             initial_swapchain_color_layout,
+                                                             current_output_ptr->swapchain_image_props.color_image_layout,
+                                                             false, /* in_may_alias */
+                                                            &rp_swapchain_color_attachment_id);
+
+                    if (is_swapchain_depth_aspect_input_defined    ||
+                        is_swapchain_depth_aspect_output_defined   ||
+                        is_swapchain_stencil_aspect_input_defined  ||
+                        is_swapchain_stencil_aspect_output_defined)
+                    {
+                        rp_create_info_ptr->add_depth_stencil_attachment(ds_image_create_info_ptr->get_format      (),
+                                                                         ds_image_create_info_ptr->get_sample_count(),
+                                                                         (is_swapchain_depth_aspect_input_defined)    ? Anvil::AttachmentLoadOp::LOAD
+                                                                                                                      : Anvil::AttachmentLoadOp::DONT_CARE,
+                                                                         (is_swapchain_depth_aspect_output_defined)   ? Anvil::AttachmentStoreOp::STORE
+                                                                                                                      : Anvil::AttachmentStoreOp::DONT_CARE,
+                                                                         (is_swapchain_stencil_aspect_input_defined)  ? Anvil::AttachmentLoadOp::LOAD
+                                                                                                                      : Anvil::AttachmentLoadOp::DONT_CARE,
+                                                                         (is_swapchain_stencil_aspect_output_defined) ? Anvil::AttachmentStoreOp::STORE
+                                                                                                                      : Anvil::AttachmentStoreOp::DONT_CARE,
+                                                                         initial_swapchain_ds_layout,
+                                                                         current_output_ptr->swapchain_image_props.ds_image_layout,
+                                                                         false, /* in_may_alias */
+                                                                        &rp_swapchain_ds_attachment_id);
+                    }
 
                     continue;
                 }
@@ -486,7 +569,29 @@ bool OpenGL::VKFrameGraph::bake_renderpasses(const std::vector<GroupNodeUniquePt
 
                     case OpenGL::NodeIOType::Swapchain_Image:
                     {
-                        vkgl_not_implemented();
+                        if ((current_output.swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::COLOR_BIT) != 0)
+                        {
+                            vkgl_assert(current_output.swapchain_image_props.color_image_layout != Anvil::ImageLayout::UNDEFINED &&
+                                        current_output.swapchain_image_props.color_image_layout != Anvil::ImageLayout::UNKNOWN);
+                            vkgl_assert(current_output.swapchain_image_props.fs_output_location != UINT32_MAX);
+
+                            rp_create_info_ptr->add_subpass_color_attachment(subpass_id,
+                                                                             current_output.swapchain_image_props.color_image_layout,
+                                                                             rp_swapchain_color_attachment_id,
+                                                                             current_output.swapchain_image_props.fs_output_location,
+                                                                             nullptr); /* in_opt_attachment_resolve_id_ptr */
+                        }
+
+                        if ((current_output.swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::DEPTH_BIT)   != 0 ||
+                            (current_output.swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::STENCIL_BIT) != 0)
+                        {
+                            vkgl_assert(current_output.swapchain_image_props.ds_image_layout != Anvil::ImageLayout::UNDEFINED &&
+                                        current_output.swapchain_image_props.ds_image_layout != Anvil::ImageLayout::UNKNOWN);
+
+                            rp_create_info_ptr->add_subpass_depth_stencil_attachment(subpass_id,
+                                                                                     current_output.swapchain_image_props.ds_image_layout,
+                                                                                     rp_swapchain_ds_attachment_id);
+                        }
 
                         continue;
                     }
@@ -1018,7 +1123,8 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
 
                         case OpenGL::NodeIOType::Swapchain_Image:
                         {
-                            if (last_swapchain_output_data.group_node_ptr != current_group_node_ptr.get() )
+                            if (last_swapchain_output_data.group_node_ptr != nullptr                      &&
+                                last_swapchain_output_data.group_node_ptr != current_group_node_ptr.get() )
                             {
                                 /* Object reuse - add a connection */
                                 auto dst_group_node_ptr    = current_group_node_ptr.get();
@@ -1163,14 +1269,14 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
                     {
                         vkgl_not_implemented();
 
-                        goto end;
+                        continue;
                     }
 
                     case OpenGL::NodeIOType::Image:
                     {
                         vkgl_not_implemented();
 
-                        goto end;
+                        continue;
                     }
 
                     case OpenGL::NodeIOType::Swapchain_Image:
@@ -1213,7 +1319,7 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
                     {
                         vkgl_not_implemented();
 
-                        goto end;
+                        continue;
                     }
 
                     case OpenGL::NodeIOType::Image:

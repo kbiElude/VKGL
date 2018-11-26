@@ -81,10 +81,15 @@ namespace OpenGL
         {
             Anvil::AccessFlags        access;
             Anvil::ImageAspectFlags   aspects_touched;    //< may be COLOR, COLOR | DS or DS. Indicates which aspects are going to be used by the IO.
+            uint32_t                  fs_output_location;
             Anvil::PipelineStageFlags pipeline_stages;
 
-            Anvil::ImageLayout        color_image_layout; //< for inputs:  layout the image must be in prior node execution;
-                                                          //< for outputs: layout the image is in after node finishes executing.
+            //< for inputs:  layout the image must be put into prior node execution;
+            //< for outputs: layout the image is in when node finishes executing.
+            //<
+            //< NOTE: Layouts must match for inputs & outputs referring to the same underlying physical image subresource! This restriction
+            //<       may be lifted in the future if necessary.
+            Anvil::ImageLayout        color_image_layout;
             Anvil::ImageLayout        ds_image_layout;
 
             SwapchainImageProps()
@@ -93,6 +98,7 @@ namespace OpenGL
                 aspects_touched    = Anvil::ImageAspectFlagBits::NONE;
                 color_image_layout = Anvil::ImageLayout::UNKNOWN;
                 ds_image_layout    = Anvil::ImageLayout::UNKNOWN;
+                fs_output_location = UINT32_MAX;
                 pipeline_stages    = Anvil::PipelineStageFlagBits::NONE;
             }
 
@@ -100,11 +106,13 @@ namespace OpenGL
                                 const Anvil::ImageLayout&        in_color_image_layout,
                                 const Anvil::ImageLayout&        in_ds_image_layout,
                                 const Anvil::PipelineStageFlags& in_pipeline_stages,
-                                const Anvil::AccessFlags&        in_access)
+                                const Anvil::AccessFlags&        in_access,
+                                const uint32_t&                  in_fs_output_location)
                 :access            (in_access),
                  aspects_touched   (in_aspects_touched),
                  color_image_layout(in_color_image_layout),
                  ds_image_layout   (in_ds_image_layout),
+                 fs_output_location(in_fs_output_location),
                  pipeline_stages   (in_pipeline_stages)
             {
                 /* Stub */
@@ -155,12 +163,14 @@ namespace OpenGL
                         const Anvil::ImageLayout&        in_color_image_layout,
                         const Anvil::ImageLayout&        in_ds_image_layout,
                         const Anvil::PipelineStageFlags& in_pipeline_stages,
-                        const Anvil::AccessFlags&        in_access)
+                        const Anvil::AccessFlags&        in_access,
+                        const uint32_t&                  in_fs_output_location)
             :swapchain_image_props  (in_aspect,
                                      in_color_image_layout,
                                      in_ds_image_layout,
                                      in_pipeline_stages,
-                                     in_access),
+                                     in_access,
+                                     in_fs_output_location),
              swapchain_reference_ptr(in_vk_swapchain_reference_ptr),
              type                   (NodeIOType::Swapchain_Image)
         {
@@ -213,6 +223,13 @@ namespace OpenGL
         virtual void do_cpu_prepass(IVKFrameGraphNodeCallback* in_callback_ptr) = 0; //< see requires_cpu_prepass(). called from within a random worker thread, make no assumptions.
 
         virtual void execute_cpu_side(IVKFrameGraphNodeCallback* in_callback_ptr) = 0; //< called from within a random worker thread, make no assumptions. only invoked if requires_cpu_side_execution() returns true.
+
+        /* Returns GL context state associated with the node.
+         *
+         * This function will only be called for nodes which report renderpass support, as some of the state information
+         * is required to create Vulkan-side GFX pipelines, renderpasses, etc.
+         */
+        virtual const OpenGL::ContextState* get_gl_context_state() const = 0;
 
         virtual const VKFrameGraphNodeInfo* get_info_ptr() const = 0; //< contents may be altered by do_cpu_prepass() invocations.
 

@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
 project (VK_GL)
 
-option(VKGL_DUMP_API_CALLS "Dump API calls to text files (debugging)" ON)
+option(VKGL_DUMP_API_CALLS "Dump API calls to text files (debugging)" OFF)
 option(VKGL_INCLUDE_GDI32  "Intercept GDI32 entrypoints"              ON)
 option(VKGL_INCLUDE_OPENGL "Intercept OpenGL entrypoints"             ON)
 option(VKGL_INCLUDE_WGL    "Intercept WGL entrypoints"                ON)

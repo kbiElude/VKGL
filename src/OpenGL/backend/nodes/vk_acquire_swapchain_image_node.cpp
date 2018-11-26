@@ -86,7 +86,8 @@ void OpenGL::VKNodes::AcquireSwapchainImage::do_cpu_prepass(IVKFrameGraphNodeCal
                                                    Anvil::ImageLayout::UNDEFINED,
                                                    Anvil::PipelineStageFlagBits::ALL_COMMANDS_BIT,
                                                    Anvil::AccessFlagBits::COLOR_ATTACHMENT_READ_BIT | Anvil::AccessFlagBits::COLOR_ATTACHMENT_WRITE_BIT |
-                                                   Anvil::AccessFlagBits::TRANSFER_READ_BIT         | Anvil::AccessFlagBits::TRANSFER_WRITE_BIT);
+                                                   Anvil::AccessFlagBits::TRANSFER_READ_BIT         | Anvil::AccessFlagBits::TRANSFER_WRITE_BIT,
+                                                   UINT32_MAX); //< in_fs_output_location - don't care
 
         m_info_ptr->outputs.at(0).opt_post_sync_semaphore_ptr = m_frame_acquire_sem_ptr.get();
 

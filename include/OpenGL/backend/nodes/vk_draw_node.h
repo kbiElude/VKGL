@@ -35,6 +35,13 @@ namespace OpenGL
                 vkgl_assert_fail();
             }
 
+            const OpenGL::ContextState* get_gl_context_state() const final
+            {
+                vkgl_assert(m_frontend_context_state_ptr != nullptr);
+
+                return m_frontend_context_state_ptr;
+            }
+
             const VKFrameGraphNodeInfo* get_info_ptr() const final
             {
                 return m_info_ptr.get();
@@ -105,6 +112,7 @@ namespace OpenGL
             /* Private variables */
             IBackend*                                m_backend_ptr;
             const IContextObjectManagers*            m_frontend_ptr;
+            const OpenGL::ContextState*              m_frontend_context_state_ptr;
             OpenGL::GLContextStateReferenceUniquePtr m_frontend_context_state_reference_ptr;
             VKFrameGraphNodeInfoUniquePtr            m_info_ptr;
 

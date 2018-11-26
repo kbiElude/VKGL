@@ -29,8 +29,9 @@ OpenGL::VKRenderpassManagerUniquePtr OpenGL::VKRenderpassManager::create(IBacken
 
 Anvil::RenderPass* OpenGL::VKRenderpassManager::get_render_pass(Anvil::RenderPassCreateInfoUniquePtr in_rp_create_info_ptr)
 {
-    Anvil::RenderPass* result_ptr = nullptr;
-    const auto         rp_hash    = get_rp_hash(in_rp_create_info_ptr.get() );
+    auto               in_rp_create_info_raw_ptr = in_rp_create_info_ptr.get();
+    Anvil::RenderPass* result_ptr                = nullptr;
+    const auto         rp_hash                   = get_rp_hash(in_rp_create_info_raw_ptr);
 
     m_rw_mutex.lock_shared();
     {
@@ -60,7 +61,9 @@ Anvil::RenderPass* OpenGL::VKRenderpassManager::get_render_pass(Anvil::RenderPas
 
                 vkgl_assert(rp_ptr != nullptr);
 
+                result_ptr                    = rp_ptr.get();
                 m_renderpass_ptr_map[rp_hash] = rp_ptr.get();
+
                 m_renderpass_ptrs.push_back(std::move(rp_ptr) );
             }
         }
@@ -69,7 +72,7 @@ Anvil::RenderPass* OpenGL::VKRenderpassManager::get_render_pass(Anvil::RenderPas
 
     vkgl_assert(result_ptr                                                  != nullptr);
     vkgl_assert(is_rp_compatible(result_ptr->get_render_pass_create_info(),
-                                 in_rp_create_info_ptr.get() ) );
+                                 in_rp_create_info_raw_ptr) );
 
     return result_ptr;
 }
@@ -225,13 +228,14 @@ OpenGL::RenderPassHash OpenGL::VKRenderpassManager::get_rp_hash(const Anvil::Ren
             {
                 /* NOTE: Layouts are irrelevant for RP compatibility, ignore. */
                 Anvil::ImageAspectFlags       aspects_accessed = Anvil::ImageAspectFlagBits::NONE;
+                Anvil::ImageLayout            dummy_layout     = Anvil::ImageLayout::UNKNOWN;
                 Anvil::RenderPassAttachmentID rp_attachment_id = UINT32_MAX;
 
                 if (!in_rp_create_info_ptr->get_subpass_attachment_properties(n_rp_subpass,
                                                                               current_subpass_attachment_type,
                                                                               n_subpass_attachment,
                                                                              &rp_attachment_id,
-                                                                              nullptr,   /* out_layout_ptr */
+                                                                             &dummy_layout,
                                                                              &aspects_accessed) )
                 {
                     vkgl_assert_fail();
@@ -460,22 +464,23 @@ bool OpenGL::VKRenderpassManager::is_rp_compatible(const Anvil::RenderPassCreate
                         ++n_subpass_attachment)
             {
                 /* NOTE: Layouts are irrelevant for RP compatibility, ignore. */
+                Anvil::ImageLayout            dummy_layout         = Anvil::ImageLayout::UNKNOWN;
                 Anvil::ImageAspectFlags       rp1_aspects_accessed = Anvil::ImageAspectFlagBits::NONE;
-                Anvil::RenderPassAttachmentID rp1_attachment_id = UINT32_MAX;
+                Anvil::RenderPassAttachmentID rp1_attachment_id    = UINT32_MAX;
                 Anvil::ImageAspectFlags       rp2_aspects_accessed = Anvil::ImageAspectFlagBits::NONE;
-                Anvil::RenderPassAttachmentID rp2_attachment_id = UINT32_MAX;
+                Anvil::RenderPassAttachmentID rp2_attachment_id    = UINT32_MAX;
 
                 if (!in_rp1_create_info_ptr->get_subpass_attachment_properties(n_rp_subpass,
                                                                                current_subpass_attachment_type,
                                                                                n_subpass_attachment,
                                                                               &rp1_attachment_id,
-                                                                               nullptr,   /* out_layout_ptr */
+                                                                              &dummy_layout,
                                                                               &rp1_aspects_accessed) ||
                     !in_rp2_create_info_ptr->get_subpass_attachment_properties(n_rp_subpass,
                                                                                current_subpass_attachment_type,
                                                                                n_subpass_attachment,
                                                                               &rp2_attachment_id,
-                                                                               nullptr,   /* out_layout_ptr */
+                                                                              &dummy_layout,
                                                                               &rp2_aspects_accessed) )
                 {
                     vkgl_assert_fail();

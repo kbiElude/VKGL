@@ -21,6 +21,9 @@ OpenGL::VKNodes::Draw::Draw(const IContextObjectManagers*            in_frontend
 {
     m_info_ptr.reset(new OpenGL::VKFrameGraphNodeInfo() );
     vkgl_assert(m_info_ptr != nullptr);
+
+    m_frontend_context_state_ptr = m_frontend_ptr->get_state_manager_ptr()->get_state(m_frontend_context_state_reference_ptr->get_payload().time_marker);
+    vkgl_assert(m_frontend_context_state_ptr != nullptr);
 }
 
 OpenGL::VKNodes::Draw::~Draw()
@@ -60,11 +63,10 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
     auto       backend_buffer_manager_ptr       = m_backend_ptr->get_buffer_manager_ptr              ();
     auto       backend_gfx_pipeline_manager_ptr = m_backend_ptr->get_gfx_pipeline_manager_ptr        ();
     auto       backend_swapchain_manager_ptr    = m_backend_ptr->get_swapchain_manager_ptr           ();
-    const auto context_state_ptr                = m_frontend_ptr->get_state_manager_ptr              ()->get_state(m_frontend_context_state_reference_ptr->get_payload().time_marker);
     auto       frontend_fb_manager_ptr          = m_frontend_ptr->get_framebuffer_manager_ptr        ();
     auto       frontend_vao_manager_ptr         = m_frontend_ptr->get_vao_manager_ptr                ();
 
-    vkgl_assert(context_state_ptr != nullptr);
+    vkgl_assert(m_frontend_context_state_ptr != nullptr);
 
     /* Initialize the info structure:
      *
@@ -72,8 +74,8 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
     {
         const OpenGL::VertexArrayObjectState* vao_state_ptr = nullptr;
 
-        frontend_vao_manager_ptr->get_vao_state_ptr(context_state_ptr->vao_reference_ptr->get_payload().id,
-                                                   &context_state_ptr->vao_reference_ptr->get_payload().time_marker,
+        frontend_vao_manager_ptr->get_vao_state_ptr(m_frontend_context_state_ptr->vao_reference_ptr->get_payload().id,
+                                                   &m_frontend_context_state_ptr->vao_reference_ptr->get_payload().time_marker,
                                                    &vao_state_ptr);
         vkgl_assert(vao_state_ptr != nullptr);
 
@@ -108,15 +110,19 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
      *    if they need to be read back from prior to being modified (ie. blending is on, etc.)
      */
     {
-        auto fb_state_ptr   = frontend_fb_manager_ptr->get_framebuffer_state(context_state_ptr->draw_framebuffer_reference_ptr->get_payload().id,
-                                                                            &context_state_ptr->draw_framebuffer_reference_ptr->get_payload().time_marker);
-        bool uses_swapchain = false;
+        auto           fb_state_ptr              = frontend_fb_manager_ptr->get_framebuffer_state(m_frontend_context_state_ptr->draw_framebuffer_reference_ptr->get_payload().id,
+                                                                                                 &m_frontend_context_state_ptr->draw_framebuffer_reference_ptr->get_payload().time_marker);
+        const uint32_t n_draw_buffers            = static_cast<uint32_t>(fb_state_ptr->draw_buffer_per_color_output.size() );
+        uint32_t       swapchain_output_location = UINT32_MAX;
 
         vkgl_assert(fb_state_ptr != nullptr);
 
-
-        for (const auto& current_draw_buffer : fb_state_ptr->draw_buffer_per_color_output)
+        for (uint32_t n_draw_buffer = 0;
+                      n_draw_buffer < n_draw_buffers;
+                    ++n_draw_buffer)
         {
+            const auto& current_draw_buffer = fb_state_ptr->draw_buffer_per_color_output.at(n_draw_buffer);
+
             if (current_draw_buffer == OpenGL::DrawBuffer::None)
             {
                 continue;
@@ -135,8 +141,7 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
                         vkgl_assert(m_owned_swapchain_reference_ptr != nullptr);
                     }
 
-                    uses_swapchain = true;
-
+                    swapchain_output_location = n_draw_buffer;
                     break;
                 }
 
@@ -163,18 +168,18 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
             }
         }
 
-        if (uses_swapchain)
+        if (swapchain_output_location != UINT32_MAX)
         {
-            const bool uses_color_reads    = (context_state_ptr->is_blend_enabled              ||
-                                              context_state_ptr->is_color_logic_op_enabled);
-            const bool uses_color_writes   = ((context_state_ptr->color_writemask_for_draw_buffers) != 0);
-            const bool uses_depth_reads    = (context_state_ptr->is_depth_test_enabled);
-            const bool uses_depth_writes   = (context_state_ptr->is_depth_test_enabled         &&
-                                              context_state_ptr->depth_writemask);
-            const bool uses_stencil_reads  = (context_state_ptr->is_stencil_test_enabled);
-            const bool uses_stencil_writes = (context_state_ptr->is_stencil_test_enabled       &&
-                                              (context_state_ptr->stencil_writemask_back  != 0 ||
-                                               context_state_ptr->stencil_writemask_front != 0));
+            const bool uses_color_reads    =  (m_frontend_context_state_ptr->is_blend_enabled              ||
+                                               m_frontend_context_state_ptr->is_color_logic_op_enabled);
+            const bool uses_color_writes   = ((m_frontend_context_state_ptr->color_writemask_for_draw_buffers) != 0);
+            const bool uses_depth_reads    =  (m_frontend_context_state_ptr->is_depth_test_enabled);
+            const bool uses_depth_writes   =  (m_frontend_context_state_ptr->is_depth_test_enabled         &&
+                                               m_frontend_context_state_ptr->depth_writemask);
+            const bool uses_stencil_reads  =  (m_frontend_context_state_ptr->is_stencil_test_enabled);
+            const bool uses_stencil_writes =  (m_frontend_context_state_ptr->is_stencil_test_enabled       &&
+                                              (m_frontend_context_state_ptr->stencil_writemask_back  != 0 ||
+                                               m_frontend_context_state_ptr->stencil_writemask_front != 0));
 
             const auto ds_layout = ( uses_depth_writes &&  uses_stencil_writes) ? Anvil::ImageLayout::DEPTH_STENCIL_ATTACHMENT_OPTIMAL
                                  : ( uses_depth_writes && !uses_stencil_writes) ? Anvil::ImageLayout::DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL
@@ -186,10 +191,10 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
                                                                ((uses_depth_writes  || uses_stencil_writes) ? Anvil::PipelineStageFlagBits::EARLY_FRAGMENT_TESTS_BIT | Anvil::PipelineStageFlagBits::LATE_FRAGMENT_TESTS_BIT
                                                                                                             : Anvil::PipelineStageFlagBits::NONE);
             const auto                      access_mask      = ((uses_color_reads)                          ? Anvil::AccessFlagBits::COLOR_ATTACHMENT_READ_BIT          : Anvil::AccessFlagBits::NONE)      |
-                                                                                                             (Anvil::AccessFlagBits::COLOR_ATTACHMENT_WRITE_BIT)                                            |
+                                                               ((uses_color_writes)                         ? Anvil::AccessFlagBits::COLOR_ATTACHMENT_WRITE_BIT         : Anvil::AccessFlagBits::NONE)      |
                                                                ((uses_depth_reads   || uses_stencil_reads)  ? Anvil::AccessFlagBits::DEPTH_STENCIL_ATTACHMENT_READ_BIT  : Anvil::AccessFlagBits::NONE)      |
                                                                ((uses_depth_writes  || uses_stencil_writes) ? Anvil::AccessFlagBits::DEPTH_STENCIL_ATTACHMENT_WRITE_BIT : Anvil::AccessFlagBits::NONE);
-            const Anvil::ImageAspectFlags   aspects_accessed = ((uses_color_reads)                          ? Anvil::ImageAspectFlagBits::COLOR_BIT                     : Anvil::ImageAspectFlagBits::NONE) |
+            const Anvil::ImageAspectFlags   aspects_accessed = ((uses_color_reads   || uses_color_writes)   ? Anvil::ImageAspectFlagBits::COLOR_BIT                     : Anvil::ImageAspectFlagBits::NONE) |
                                                                ((uses_depth_reads   || uses_depth_writes)   ? Anvil::ImageAspectFlagBits::DEPTH_BIT                     : Anvil::ImageAspectFlagBits::NONE) |
                                                                ((uses_stencil_reads || uses_stencil_writes) ? Anvil::ImageAspectFlagBits::STENCIL_BIT                   : Anvil::ImageAspectFlagBits::NONE);
 
@@ -198,7 +203,8 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
                                               Anvil::ImageLayout::COLOR_ATTACHMENT_OPTIMAL, /* in_color_image_layout */
                                               ds_layout,
                                               pipeline_stages,
-                                              access_mask);
+                                              access_mask,
+                                              swapchain_output_location);
 
             m_info_ptr->inputs.push_back(new_node_io);
 

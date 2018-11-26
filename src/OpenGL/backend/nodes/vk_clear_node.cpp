@@ -129,7 +129,8 @@ void OpenGL::VKNodes::Clear::init_info()
                                                       Anvil::ImageLayout::TRANSFER_DST_OPTIMAL,
                                                       Anvil::ImageLayout::UNKNOWN,
                                                       Anvil::PipelineStageFlagBits::TRANSFER_BIT,
-                                                      Anvil::AccessFlagBits::TRANSFER_WRITE_BIT);
+                                                      Anvil::AccessFlagBits::TRANSFER_WRITE_BIT,
+                                                      UINT32_MAX); //< in_fs_output_location - irrelevant
 
                     m_info_ptr->inputs.push_back(new_node_io);
 
@@ -174,7 +175,8 @@ void OpenGL::VKNodes::Clear::init_info()
                                               Anvil::ImageLayout::UNKNOWN,
                                               Anvil::ImageLayout::TRANSFER_DST_OPTIMAL,
                                               Anvil::PipelineStageFlagBits::TRANSFER_BIT,
-                                              Anvil::AccessFlagBits::TRANSFER_WRITE_BIT);
+                                              Anvil::AccessFlagBits::TRANSFER_WRITE_BIT,
+                                              UINT32_MAX); //< in_fs_output_location - irrelevant
         }
         else
         {
@@ -192,7 +194,8 @@ void OpenGL::VKNodes::Clear::init_info()
                                               Anvil::ImageLayout::UNKNOWN,
                                               Anvil::ImageLayout::TRANSFER_DST_OPTIMAL,
                                               Anvil::PipelineStageFlagBits::TRANSFER_BIT,
-                                              Anvil::AccessFlagBits::TRANSFER_WRITE_BIT);
+                                              Anvil::AccessFlagBits::TRANSFER_WRITE_BIT,
+                                              UINT32_MAX); //< in_fs_output_location - irrelevant
         }
         else
         {

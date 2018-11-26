@@ -33,7 +33,8 @@ OpenGL::VKNodes::PresentSwapchainImage::PresentSwapchainImage(const IContextObje
                                               Anvil::ImageLayout::PRESENT_SRC_KHR,
                                               Anvil::ImageLayout::UNKNOWN,                      //< don't care
                                               Anvil::PipelineStageFlagBits::BOTTOM_OF_PIPE_BIT,
-                                              Anvil::AccessFlagBits::NONE);
+                                              Anvil::AccessFlagBits::NONE,
+                                              UINT32_MAX);                                      //< in_fs_output_location - don't care
 }
 
 OpenGL::VKNodes::PresentSwapchainImage::~PresentSwapchainImage()
