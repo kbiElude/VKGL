@@ -20,7 +20,7 @@ namespace OpenGL
                                             const uint32_t&                       in_width,
                                             const uint32_t&                       in_height,
                                             const uint32_t&                       in_n_layers,
-                                            const Anvil::RenderPass*              in_rp_ptr);
+                                            Anvil::RenderPass*                    in_rp_ptr);
 
         ~VKFramebufferManager();
 

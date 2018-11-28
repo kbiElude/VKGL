@@ -187,7 +187,7 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
                                  : ( uses_depth_reads  ||  uses_stencil_reads)  ? Anvil::ImageLayout::DEPTH_STENCIL_READ_ONLY_OPTIMAL
                                                                                 : Anvil::ImageLayout::UNKNOWN;
 
-            const Anvil::PipelineStageFlags pipeline_stages  = (Anvil::PipelineStageFlagBits::COLOR_ATTACHMENT_OUTPUT_BIT)                                                                 |
+            const Anvil::PipelineStageFlags pipeline_stages  = (Anvil::PipelineStageFlagBits::COLOR_ATTACHMENT_OUTPUT_BIT)                                                                                                   |
                                                                ((uses_depth_writes  || uses_stencil_writes) ? Anvil::PipelineStageFlagBits::EARLY_FRAGMENT_TESTS_BIT | Anvil::PipelineStageFlagBits::LATE_FRAGMENT_TESTS_BIT
                                                                                                             : Anvil::PipelineStageFlagBits::NONE);
             const auto                      access_mask      = ((uses_color_reads)                          ? Anvil::AccessFlagBits::COLOR_ATTACHMENT_READ_BIT          : Anvil::AccessFlagBits::NONE)      |
@@ -224,16 +224,14 @@ void OpenGL::VKNodes::Draw::record_commands(Anvil::CommandBufferBase*  in_cmd_bu
                                             const bool&                in_inside_renderpass,
                                             IVKFrameGraphNodeCallback* in_graph_callback_ptr) const
 {
+    Anvil::PipelineID pipeline_id = UINT32_MAX;
+
     /* Fetch the GFX pipeline instance we're going to use for the draw call. */
     vkgl_assert(in_inside_renderpass);
 
-    #if 0
-        const auto pipeline_id = backend_gfx_pipeline_manager_ptr->get_pipeline_id(context_state_ptr,
-                                                                                   m_args.mode,
-                                                                                   rp_ptr,
-                                                                                   subpass_id);
-    #else
-        /* TODO: Next stop - adding the concept of renderpasses to the frame graph.. */
-        vkgl_not_implemented();
-    #endif
+    pipeline_id = in_graph_callback_ptr->get_pipeline_id(m_args.mode);
+    vkgl_assert(pipeline_id != UINT32_MAX);
+
+    /* TODO */
+    vkgl_not_implemented();
 }

@@ -175,8 +175,11 @@ namespace OpenGL
             Anvil::QueueFamilyType queue_family;
             Anvil::Queue*          queue_ptr;      //< possibly null if this is a CPU-based submission.
 
-            Anvil::RenderPass* renderpass_ptr;  //< only valid if uses_renderpass is true.
-            bool               uses_renderpass; //< only valid for UNIVERSAL queue families.
+            uint32_t            framebuffer_n_layers; //< only valid if uses_renderpass is true.
+            Anvil::Framebuffer* framebuffer_ptr;      //< only valid if uses_renderpass is true.
+            uint32_t            framebuffer_size[2];  //< only valid if uses_renderpass is true.
+            Anvil::RenderPass*  renderpass_ptr;       //< only valid if uses_renderpass is true.
+            bool                uses_renderpass;      //< only valid for UNIVERSAL queue families.
 
             std::vector<OpenGL::IVKFrameGraphNode*> graph_node_ptrs;
             std::vector<OpenGL::NodeIOUniquePtr>    input_ptrs;
@@ -194,19 +197,24 @@ namespace OpenGL
             std::vector<BarrierData> intra_graph_node_pre_barriers;
 
             GroupNode()
-                :needs_post_submission_cpu_execution(false),
+                :framebuffer_n_layers               (0),
+                 framebuffer_ptr                    (nullptr),
+                 needs_post_submission_cpu_execution(false),
                  parent_submission_ptr              (nullptr),
                  queue_family                       (Anvil::QueueFamilyType::UNDEFINED),
                  queue_ptr                          (nullptr),
                  renderpass_ptr                     (nullptr),
                  uses_renderpass                    (false)
             {
-                /* Stub */
+                framebuffer_size[0] = 0;
+                framebuffer_size[1] = 0;
             }
 
             GroupNode(const Anvil::QueueFamilyType& in_queue_family,
                       const bool&                   in_uses_renderpass)
-                :needs_post_submission_cpu_execution(false),
+                :framebuffer_n_layers               (0),
+                 framebuffer_ptr                    (nullptr),
+                 needs_post_submission_cpu_execution(false),
                  queue_family                       (in_queue_family),
                  queue_ptr                          (nullptr),
                  parent_submission_ptr              (nullptr),
@@ -215,6 +223,9 @@ namespace OpenGL
             {
                 vkgl_assert((!in_uses_renderpass) ||
                             ( in_uses_renderpass && in_queue_family == Anvil::QueueFamilyType::UNIVERSAL) );
+
+                framebuffer_size[0] = 0;
+                framebuffer_size[1] = 0;
             }
 
             ~GroupNode();
@@ -289,10 +300,11 @@ namespace OpenGL
         typedef std::unique_ptr<QueueRing> QueueRingUniquePtr;
 
         /* IVKFrameGraphNodeCallback functions */
-        uint32_t          get_acquired_swapchain_image_index()                             const final;
-        Anvil::Semaphore* get_swapchain_image_acquired_sem  ()                             const final;
-        void              set_acquired_swapchain_image_index(const uint32_t&   in_index)         final;
-        void              set_swapchain_image_acquired_sem  (Anvil::Semaphore* in_sem_ptr)       final;
+        uint32_t          get_acquired_swapchain_image_index()                                              const final;
+        Anvil::PipelineID get_pipeline_id                   (const OpenGL::DrawCallMode& in_draw_call_mode)       final;
+        Anvil::Semaphore* get_swapchain_image_acquired_sem  ()                                              const final;
+        void              set_acquired_swapchain_image_index(const uint32_t&   in_index)                          final;
+        void              set_swapchain_image_acquired_sem  (Anvil::Semaphore* in_sem_ptr)                        final;
 
         bool get_wait_sems(uint32_t*                         out_n_wait_sems_ptr,
                            Anvil::Semaphore***               out_wait_sems_ptr_ptr_ptr,
@@ -314,6 +326,7 @@ namespace OpenGL
                                                             Anvil::AccessFlags*               out_ds_aspects_access_mask_ptr) const;
 
         bool bake_barriers                 (const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr);
+        bool bake_framebuffers             (const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr);
         bool bake_renderpasses             (const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr,
                                             const std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection> >* in_src_dst_group_node_connections_ptr);
         bool coalesce_to_group_nodes       (const std::vector<VKFrameGraphNodeUniquePtr>&                                                     in_node_ptrs,
@@ -335,6 +348,9 @@ namespace OpenGL
 
         /* Private variables */
         uint32_t                               m_acquired_swapchain_image_index;
+        OpenGL::IVKFrameGraphNode*             m_active_graph_node_ptr;
+        GroupNode*                             m_active_group_node_ptr;
+        Anvil::SubPassID                       m_active_subpass_id;
         Anvil::Semaphore*                      m_swapchain_acquire_sem_ptr;
 
         const OpenGL::IBackend*                m_backend_ptr;

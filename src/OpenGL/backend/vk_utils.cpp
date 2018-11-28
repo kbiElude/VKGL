@@ -141,6 +141,41 @@ Anvil::PolygonMode OpenGL::VKUtils::get_anvil_polygon_mode_for_polygon_mode(cons
     return result;
 }
 
+Anvil::PrimitiveTopology OpenGL::VKUtils::get_anvil_primitive_topology_for_draw_call_mode(const OpenGL::DrawCallMode& in_draw_call_mode)
+{
+    Anvil::PrimitiveTopology result = Anvil::PrimitiveTopology::UNKNOWN;
+
+    switch (in_draw_call_mode)
+    {
+        case OpenGL::DrawCallMode::Lines:                    result = Anvil::PrimitiveTopology::LINE_LIST;                     break;
+        case OpenGL::DrawCallMode::Lines_Adjacency:          result = Anvil::PrimitiveTopology::LINE_LIST_WITH_ADJACENCY;      break;
+        case OpenGL::DrawCallMode::Line_Strip:               result = Anvil::PrimitiveTopology::LINE_STRIP;                    break;
+        case OpenGL::DrawCallMode::Line_Strip_Adjacency:     result = Anvil::PrimitiveTopology::LINE_STRIP_WITH_ADJACENCY;     break;
+        case OpenGL::DrawCallMode::Patches:                  result = Anvil::PrimitiveTopology::PATCH_LIST;                    break;
+        case OpenGL::DrawCallMode::Points:                   result = Anvil::PrimitiveTopology::POINT_LIST;                    break;
+        case OpenGL::DrawCallMode::Triangle_Fan:             result = Anvil::PrimitiveTopology::TRIANGLE_FAN;                  break;
+        case OpenGL::DrawCallMode::Triangle_Strip:           result = Anvil::PrimitiveTopology::TRIANGLE_STRIP;                break;
+        case OpenGL::DrawCallMode::Triangle_Strip_Adjacency: result = Anvil::PrimitiveTopology::TRIANGLE_STRIP_WITH_ADJACENCY; break;
+        case OpenGL::DrawCallMode::Triangles:                result = Anvil::PrimitiveTopology::TRIANGLE_LIST;                 break;
+        case OpenGL::DrawCallMode::Triangles_Adjacency:      result = Anvil::PrimitiveTopology::TRIANGLE_LIST_WITH_ADJACENCY;  break;
+
+        case OpenGL::DrawCallMode::Line_Loop:
+        {
+            /* Not available in Vulkan. This will require some coding muscles to get to work. Deferring. */
+            vkgl_not_implemented();
+
+            break;
+        }
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 Anvil::StencilOp OpenGL::VKUtils::get_anvil_stencil_op_for_stencil_operation(const OpenGL::StencilOperation& in_stencil_op)
 {
     Anvil::StencilOp result = Anvil::StencilOp::UNKNOWN;

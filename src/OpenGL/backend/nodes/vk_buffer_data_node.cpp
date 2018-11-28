@@ -342,15 +342,13 @@ void OpenGL::VKNodes::BufferData::record_commands(Anvil::CommandBufferBase*  in_
                                                   const bool&                in_inside_renderpass,
                                                   IVKFrameGraphNodeCallback* in_graph_callback_ptr) const
 {
-    auto command_ptr = dynamic_cast<const OpenGL::BufferDataCommand*>(in_cmd_buffer_ptr);
-
     if (m_staging_buffer_ptr != nullptr)
     {
         auto              backend_buffer_ptr = m_info_ptr->inputs.at(0).buffer_reference_ptr->get_payload().buffer_ptr;
         Anvil::BufferCopy copy_region;
 
         copy_region.dst_offset = 0;
-        copy_region.size       = command_ptr->size;
+        copy_region.size       = m_staging_buffer_ptr->get_create_info_ptr()->get_size();
         copy_region.src_offset = 0;
 
         in_cmd_buffer_ptr->record_copy_buffer(m_staging_buffer_ptr.get(),

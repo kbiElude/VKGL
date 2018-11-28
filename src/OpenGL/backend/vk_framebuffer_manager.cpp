@@ -33,7 +33,7 @@ Anvil::Framebuffer* OpenGL::VKFramebufferManager::get_framebuffer(const std::vec
                                                                   const uint32_t&                       in_width,
                                                                   const uint32_t&                       in_height,
                                                                   const uint32_t&                       in_n_layers,
-                                                                  const Anvil::RenderPass*              in_rp_ptr)
+                                                                  Anvil::RenderPass*                     in_rp_ptr)
 {
     const auto          fb_hash    = get_framebuffer_hash(static_cast<uint32_t>(in_attachments_ptr.size() ),
                                                           in_width,
@@ -96,6 +96,9 @@ Anvil::Framebuffer* OpenGL::VKFramebufferManager::get_framebuffer(const std::vec
                 result_fb_ptr = Anvil::Framebuffer::create(std::move(fb_create_info_ptr) );
                 result_ptr    = result_fb_ptr.get();
                 vkgl_assert(result_fb_ptr != nullptr);
+
+                /* Make sure to bake an actual Vulkan framebuffer for the RP which has been specified */
+                result_fb_ptr->get_framebuffer(in_rp_ptr);
 
                 result_fb_data_ptr.reset(new FramebufferData(in_rp_ptr) );
                 vkgl_assert(result_fb_data_ptr != nullptr);

@@ -427,6 +427,18 @@ Anvil::Image* OpenGL::VKSwapchainManager::get_ds_image(const OpenGL::TimeMarker&
     return internal_data_iterator->second->ds_image_ptrs.at(in_n_swapchain_image).get();
 }
 
+Anvil::ImageView* OpenGL::VKSwapchainManager::get_ds_image_view(const OpenGL::TimeMarker& in_time_marker,
+                                                                const uint32_t&           in_n_swapchain_image)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+
+    auto internal_data_iterator = m_time_marker_to_internal_swapchain_data_map.find(in_time_marker);
+    vkgl_assert(internal_data_iterator != m_time_marker_to_internal_swapchain_data_map.end() );
+
+    vkgl_assert(internal_data_iterator->second->ds_image_view_ptrs.size() > in_n_swapchain_image);
+    return internal_data_iterator->second->ds_image_view_ptrs.at(in_n_swapchain_image).get();
+}
+
 Anvil::PresentModeKHR OpenGL::VKSwapchainManager::get_present_mode_for_swapchain_props(const SwapchainPropsSnapshot*  in_swapchain_props_ptr,
                                                                                        const Anvil::RenderingSurface* in_surface_ptr) const
 {

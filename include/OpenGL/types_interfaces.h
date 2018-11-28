@@ -19,6 +19,7 @@ namespace OpenGL
         virtual Anvil::BaseDevice*      get_device_ptr              () const = 0;
         virtual VKFormatManager*        get_format_manager_ptr      () const = 0;
         virtual VKFrameGraph*           get_frame_graph_ptr         () const = 0;
+        virtual VKFramebufferManager*   get_framebuffer_manager_ptr () const = 0;
         virtual VKGFXPipelineManager*   get_gfx_pipeline_manager_ptr() const = 0;
         virtual Anvil::MemoryAllocator* get_memory_allocator_ptr    () const = 0;
         virtual VKRenderpassManager*    get_renderpass_manager_ptr  () const = 0;
@@ -461,6 +462,9 @@ namespace OpenGL
 
         virtual uint32_t          get_acquired_swapchain_image_index() const = 0;
         virtual Anvil::Semaphore* get_swapchain_image_acquired_sem  () const = 0;
+
+        /* Only callable from within Node::record_commands(), if @param inside_renderpass is true. */
+        virtual Anvil::PipelineID get_pipeline_id(const OpenGL::DrawCallMode& in_draw_call_mode) = 0;
 
         //< Provides a list of wait semaphores the node must wait on before proceeding with work.
         //<

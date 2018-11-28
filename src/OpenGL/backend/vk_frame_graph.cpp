@@ -3,9 +3,11 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Anvil/include/misc/fence_create_info.h"
+#include "Anvil/include/misc/framebuffer_create_info.h"
 #include "Anvil/include/misc/image_create_info.h"
 #include "Anvil/include/misc/render_pass_create_info.h"
 #include "Anvil/include/misc/semaphore_create_info.h"
+#include "Anvil/include/misc/swapchain_create_info.h"
 #include "Anvil/include/wrappers/command_buffer.h"
 #include "Anvil/include/wrappers/command_pool.h"
 #include "Anvil/include/wrappers/device.h"
@@ -14,8 +16,11 @@
 #include "Anvil/include/wrappers/semaphore.h"
 #include "Anvil/include/wrappers/swapchain.h"
 #include "OpenGL/backend/nodes/vk_acquire_swapchain_image_node.h"
+#include "OpenGL/backend/vk_framebuffer_manager.h"
+#include "OpenGL/backend/vk_gfx_pipeline_manager.h"
 #include "OpenGL/backend/vk_renderpass_manager.h"
 #include "OpenGL/backend/vk_swapchain_manager.h"
+#include "OpenGL/backend/vk_utils.h"
 
 #ifdef max
     #undef max
@@ -97,7 +102,10 @@ end:
 
 OpenGL::VKFrameGraph::VKFrameGraph(const OpenGL::IContextObjectManagers* in_frontend_ptr,
                                    const OpenGL::IBackend*               in_backend_ptr)
-    :m_acquired_swapchain_image_index(UINT32_MAX),
+    :m_active_graph_node_ptr         (nullptr),
+     m_active_group_node_ptr         (nullptr),
+     m_active_subpass_id             (UINT32_MAX),
+     m_acquired_swapchain_image_index(UINT32_MAX),
      m_backend_ptr                   (in_backend_ptr),
      m_frontend_ptr                  (in_frontend_ptr),
      m_swapchain_acquire_sem_ptr     (nullptr)
@@ -347,6 +355,95 @@ bool OpenGL::VKFrameGraph::bake_barriers(const std::vector<GroupNodeUniquePtr>& 
         {
             current_group_node_ptr->queue_family = Anvil::QueueFamilyType::UNIVERSAL;
         }
+    }
+
+    result = true;
+end:
+    return result;
+}
+
+bool OpenGL::VKFrameGraph::bake_framebuffers(const std::vector<GroupNodeUniquePtr>& in_group_nodes_ptr)
+{
+    auto                           backend_fb_manager_ptr        = m_backend_ptr->get_framebuffer_manager_ptr();
+    auto                           backend_swapchain_manager_ptr = m_backend_ptr->get_swapchain_manager_ptr  ();
+    auto                           device_ptr                    = m_backend_ptr->get_device_ptr             ();
+    std::vector<Anvil::ImageView*> fb_image_view_ptrs_vec;
+    bool                           result                        = false;
+
+    vkgl_assert(m_acquired_swapchain_image_index != UINT32_MAX);
+
+    for (auto& current_group_node_ptr : in_group_nodes_ptr)
+    {
+        Anvil::Framebuffer* fb_ptr = nullptr;
+
+        if (!current_group_node_ptr->uses_renderpass)
+        {
+            continue;
+        }
+
+        fb_image_view_ptrs_vec.clear();
+
+        for (const auto& current_output_ptr : current_group_node_ptr->output_ptrs)
+        {
+            switch (current_output_ptr->type)
+            {
+                case OpenGL::NodeIOType::Buffer:
+                {
+                    /* Don't care */
+                    continue;
+                }
+
+                case OpenGL::NodeIOType::Image:
+                {
+                    vkgl_not_implemented();
+
+                    continue;
+                }
+
+                case OpenGL::NodeIOType::Swapchain_Image:
+                {
+                    const auto& swapchain_payload              = current_output_ptr->swapchain_reference_ptr->get_payload();
+                    auto        swapchain_color_image_view_ptr = swapchain_payload.swapchain_ptr->get_image_view(m_acquired_swapchain_image_index);
+
+                    vkgl_assert(swapchain_color_image_view_ptr != nullptr);
+
+                    fb_image_view_ptrs_vec.push_back(swapchain_color_image_view_ptr);
+
+                    if ((current_output_ptr->swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::DEPTH_BIT)   != 0 ||
+                        (current_output_ptr->swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::STENCIL_BIT) != 0)
+                    {
+                        auto swapchain_ds_image_view_ptr = backend_swapchain_manager_ptr->get_ds_image_view(swapchain_payload.time_marker,
+                                                                                                            m_acquired_swapchain_image_index);
+                        vkgl_assert(swapchain_ds_image_view_ptr != nullptr);
+
+                        fb_image_view_ptrs_vec.push_back(swapchain_ds_image_view_ptr);
+                    }
+
+                    break;
+                }
+
+                default:
+                {
+                    vkgl_assert_fail();
+
+                    continue;
+                }
+            }
+        }
+
+        vkgl_assert(current_group_node_ptr->framebuffer_n_layers != 0);
+        vkgl_assert(current_group_node_ptr->framebuffer_size[0]  != 0);
+        vkgl_assert(current_group_node_ptr->framebuffer_size[1]  != 0);
+        vkgl_assert(current_group_node_ptr->renderpass_ptr       != nullptr);
+
+        fb_ptr = backend_fb_manager_ptr->get_framebuffer(fb_image_view_ptrs_vec,
+                                                         current_group_node_ptr->framebuffer_size[0], /* in_width  */
+                                                         current_group_node_ptr->framebuffer_size[1], /* in_height */
+                                                         current_group_node_ptr->framebuffer_n_layers,
+                                                         current_group_node_ptr->renderpass_ptr);
+        vkgl_assert(fb_ptr != nullptr);
+
+        current_group_node_ptr->framebuffer_ptr = fb_ptr;
     }
 
     result = true;
@@ -1350,6 +1447,59 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
         }
     }
 
+    /* For each group node that uses renderpasses, go through image outputs and calculate intersection of their
+     * extents. We're going to cache this info and use it for render area later on.
+     */
+    for (auto& current_group_node_ptr : *out_group_nodes_ptr)
+    {
+        if (!current_group_node_ptr->uses_renderpass)
+        {
+            continue;
+        }
+
+        for (const auto& current_output_ptr : current_group_node_ptr->output_ptrs)
+        {
+            switch (current_output_ptr->type)
+            {
+                case OpenGL::NodeIOType::Buffer:
+                {
+                    /* Irrelevant */
+                    continue;
+                }
+
+                case OpenGL::NodeIOType::Image:
+                {
+                    vkgl_not_implemented();
+
+                    continue;
+                }
+
+                case OpenGL::NodeIOType::Swapchain_Image:
+                {
+                    auto image_create_info_ptr = current_output_ptr->swapchain_reference_ptr->get_payload().swapchain_ptr->get_image(0 /* in_n_swapchain_image */)->get_create_info_ptr();
+
+                    if (current_group_node_ptr->framebuffer_size[0] == 0)
+                    {
+                        current_group_node_ptr->framebuffer_n_layers = UINT32_MAX;
+                        current_group_node_ptr->framebuffer_size[0]  = UINT32_MAX;
+                        current_group_node_ptr->framebuffer_size[1]  = UINT32_MAX;
+                    }
+
+                    current_group_node_ptr->framebuffer_size[0]  = std::min(current_group_node_ptr->framebuffer_size[0],  image_create_info_ptr->get_base_mip_width () );
+                    current_group_node_ptr->framebuffer_size[1]  = std::min(current_group_node_ptr->framebuffer_size[1],  image_create_info_ptr->get_base_mip_height() );
+                    current_group_node_ptr->framebuffer_n_layers = std::min(current_group_node_ptr->framebuffer_n_layers, image_create_info_ptr->get_n_layers       () );
+
+                    break;
+                }
+
+                default:
+                {
+                    vkgl_assert_fail();
+                }
+            }
+        }
+    }
+
     result = true;
 end:
     return result;
@@ -1527,7 +1677,15 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
         goto end;
     }
 
-    /* 5. Record command buffers for group nodes. */
+    /* 5. Ditto for framebuffers. */
+    if (!bake_framebuffers(group_node_ptrs) )
+    {
+        vkgl_assert_fail();
+
+        goto end;
+    }
+
+    /* 6. Record command buffers for group nodes. */
     if (!record_command_buffers(group_node_ptrs,
                                 group_node_connections,
                                &command_buffer_submissions) )
@@ -1537,7 +1695,7 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
         goto end;
     }
 
-    /* 6. Schedule command buffer submissions. */
+    /* 7. Schedule command buffer submissions. */
     if (in_block_until_finished)
     {
         auto fence_create_info_ptr = Anvil::FenceCreateInfo::create(device_ptr,
@@ -1555,7 +1713,7 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
         goto end;
     }
 
-    /* 7. If this was requested, wait for the GPU-side operations to finish before leaving. */
+    /* 8. If this was requested, wait for the GPU-side operations to finish before leaving. */
     if (wait_fence_ptr != nullptr)
     {
         VkResult result_vk = Anvil::Vulkan::vkWaitForFences(device_ptr->get_device_vk(),
@@ -1591,6 +1749,27 @@ uint32_t OpenGL::VKFrameGraph::get_acquired_swapchain_image_index() const
     vkgl_assert(m_acquired_swapchain_image_index != UINT32_MAX);
 
     return m_acquired_swapchain_image_index;
+}
+
+Anvil::PipelineID OpenGL::VKFrameGraph::get_pipeline_id(const OpenGL::DrawCallMode& in_draw_call_mode)
+{
+    auto                        backend_gfx_pipeline_manager_ptr = m_backend_ptr->get_gfx_pipeline_manager_ptr();
+    const OpenGL::ContextState* node_context_state_ptr           = nullptr;
+    Anvil::PipelineID           result_id                        = UINT32_MAX;
+
+    vkgl_assert(m_active_graph_node_ptr != nullptr);
+
+    node_context_state_ptr = m_active_graph_node_ptr->get_gl_context_state();
+    vkgl_assert(node_context_state_ptr != nullptr);
+
+    result_id = backend_gfx_pipeline_manager_ptr->get_pipeline_id(node_context_state_ptr,
+                                                                  OpenGL::VKUtils::get_anvil_primitive_topology_for_draw_call_mode(in_draw_call_mode),
+                                                                  m_active_group_node_ptr->renderpass_ptr,
+                                                                  m_active_subpass_id);
+
+end:
+    vkgl_assert(result_id != UINT32_MAX);
+    return result_id;
 }
 
 Anvil::Semaphore* OpenGL::VKFrameGraph::get_swapchain_image_acquired_sem() const
@@ -1907,6 +2086,8 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
         CommandBufferSubmissionUniquePtr     current_submission_ptr = CommandBufferSubmissionUniquePtr(nullptr,
                                                                                                        std::default_delete<CommandBufferSubmission>() );
 
+        m_active_group_node_ptr = current_group_node_ptr.get();
+
         /* 1. Create a new cmd buffer submission */
         {
             current_submission_ptr.reset(new CommandBufferSubmission(current_group_node_ptr.get() ));
@@ -1999,21 +2180,52 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
          */
         vkgl_assert(current_group_node_ptr->graph_node_ptrs.size() > 0);
 
-        /* 4a. Inject pre-barriers (acquire barriers, image layout transitions) as necessary */
+        if (!current_group_node_ptr->uses_renderpass)
         {
-            cmd_buffer_ptr->record_pipeline_barrier(current_group_node_ptr->group_node_pre_barriers.src_pipeline_stages,
-                                                    current_group_node_ptr->group_node_pre_barriers.dst_pipeline_stages,
-                                                    Anvil::DependencyFlagBits::NONE,
-                                                    0,       /* in_memory_barrier_count        - TODO */
-                                                    nullptr, /* in_memory_barriers_ptr         - TODO */
-                                                    0,       /* in_buffer_memory_barrier_count - TODO */
-                                                    nullptr, /* in_buffer_memory_barriers_ptr  - TODO */
-                                                    static_cast<uint32_t>(current_group_node_ptr->group_node_pre_barriers.image_barriers.size() ),
-                                                    (current_group_node_ptr->group_node_pre_barriers.image_barriers.size() > 0) ? &current_group_node_ptr->group_node_pre_barriers.image_barriers.at(0)
-                                                                                                                                : nullptr);
+            /* 4a. Inject pre-barriers (acquire barriers, image layout transitions) as necessary */
+            if (current_group_node_ptr->group_node_pre_barriers.src_pipeline_stages != Anvil::PipelineStageFlagBits::NONE ||
+                current_group_node_ptr->group_node_pre_barriers.dst_pipeline_stages != Anvil::PipelineStageFlagBits::NONE)
+            {
+                cmd_buffer_ptr->record_pipeline_barrier(current_group_node_ptr->group_node_pre_barriers.src_pipeline_stages,
+                                                        current_group_node_ptr->group_node_pre_barriers.dst_pipeline_stages,
+                                                        Anvil::DependencyFlagBits::NONE,
+                                                        0,       /* in_memory_barrier_count        - TODO */
+                                                        nullptr, /* in_memory_barriers_ptr         - TODO */
+                                                        0,       /* in_buffer_memory_barrier_count - TODO */
+                                                        nullptr, /* in_buffer_memory_barriers_ptr  - TODO */
+                                                        static_cast<uint32_t>(current_group_node_ptr->group_node_pre_barriers.image_barriers.size() ),
+                                                        (current_group_node_ptr->group_node_pre_barriers.image_barriers.size() > 0) ? &current_group_node_ptr->group_node_pre_barriers.image_barriers.at(0)
+                                                                                                                                    : nullptr);
+            }
+        }
+        else
+        {
+            /* TODO: Only buffer memory and general memory barriers are needed here.
+             *
+             * Image barriers should've been included in renderpass definition
+             */
         }
 
-        /* 4b. Record node-specific commands */
+        /* 4b. Kick off a renderpass if one is used by sub-nodes */
+        if (current_group_node_ptr->uses_renderpass)
+        {
+            /* TODO: Render area should be an intersection of per-node scissor boxes for all nodes, rounded to a mul of renderarea granularity. */
+            VkRect2D render_area;
+
+            render_area.extent.height = current_group_node_ptr->framebuffer_size[1];
+            render_area.extent.width  = current_group_node_ptr->framebuffer_size[0];
+            render_area.offset.x      = 0;
+            render_area.offset.y      = 0;
+
+            cmd_buffer_ptr->record_begin_render_pass(0,       /* TODO - in_n_clear_values   */
+                                                     nullptr, /* TODO - in_clear_value_ptrs */
+                                                     current_group_node_ptr->framebuffer_ptr,
+                                                     render_area,
+                                                     current_group_node_ptr->renderpass_ptr,
+                                                     Anvil::SubpassContents::INLINE);
+        }
+
+        /* 4c. Record node-specific commands */
         {
             for (uint32_t n_current_node = 0;
                           n_current_node < static_cast<uint32_t>(current_group_node_ptr->graph_node_ptrs.size() );
@@ -2021,6 +2233,9 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
             {
                 const auto& current_node_pre_barriers = current_group_node_ptr->intra_graph_node_pre_barriers.at(n_current_node);
                 const auto& current_node_ptr          = current_group_node_ptr->graph_node_ptrs.at              (n_current_node);
+
+                m_active_graph_node_ptr = current_node_ptr;
+                m_active_subpass_id     = static_cast<Anvil::SubPassID>(n_current_node);
 
                 if (current_node_pre_barriers.image_barriers.size() > 0)
                 {
@@ -2054,7 +2269,22 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
                     /* NOTE: Actual execution is done at submission time */
                     current_group_node_ptr->needs_post_submission_cpu_execution = true;
                 }
+
+                /* If there's an active renderpass, move to the next subpass, unless this is the last graph node. */
+                if (current_group_node_ptr->uses_renderpass                                                                         &&
+                    n_current_node + 1                      != static_cast<uint32_t>(current_group_node_ptr->graph_node_ptrs.size() ))
+                {
+                    cmd_buffer_ptr->record_next_subpass(Anvil::SubpassContents::INLINE);
+                }
+
+                m_active_graph_node_ptr = nullptr;
             }
+        }
+
+        /* 4d. Close the renderpass at the end of the group node */
+        if (current_group_node_ptr->uses_renderpass)
+        {
+            cmd_buffer_ptr->record_end_render_pass();
         }
 
         /* 5. Stash the submission and move on. */
@@ -2076,6 +2306,8 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
         out_cmd_buffer_submissions_ptr->push_back(
             std::move(current_submission_ptr)
         );
+
+        m_active_group_node_ptr = nullptr;
     }
 
     /* 6. Determine wait and signal semaphores that need to be used for the submission */
