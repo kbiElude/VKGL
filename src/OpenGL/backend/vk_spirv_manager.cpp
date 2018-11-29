@@ -4,13 +4,19 @@
  */
 #include "Anvil/include/wrappers/device.h"
 #include "Anvil/include/wrappers/shader_module.h"
-#include "Anvil/deps/glslang/glslang/MachineIndependent/localintermediate.h"
 #include "OpenGL/backend/thread_pool.h"
 #include "OpenGL/backend/vk_spirv_manager.h"
 #include "OpenGL/frontend/gl_limits.h"
 #include "OpenGL/frontend/gl_program_manager.h"
 #include "OpenGL/frontend/gl_shader_manager.h"
 #include "OpenGL/utils_enum.h"
+
+#ifdef max
+    #undef max
+#endif
+
+#include "Anvil/deps/glslang/glslang/MachineIndependent/localintermediate.h"
+
 
 OpenGL::VKSPIRVManager::ProgramData::ProgramData(const SPIRVBlobID&                  in_id,
                                                  const std::vector<ShaderData*>&     in_shader_ptrs,

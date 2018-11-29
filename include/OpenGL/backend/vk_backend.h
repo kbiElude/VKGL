@@ -431,8 +431,8 @@ namespace OpenGL
         bool init_anvil       ();
         bool init_capabilities();
 
-        VkBool32 on_debug_callback_received(VkDebugReportFlagsEXT in_message_flags,
-                                            const char*           in_message) const;
+        VkBool32 on_debug_callback_received(Anvil::DebugMessageSeverityFlags in_severity,
+                                            const char*                      in_message_ptr) const;
 
         /* Private variables */
 

@@ -601,7 +601,7 @@ bool OpenGL::VKBackend::init_anvil()
                                              std::bind(&OpenGL::VKBackend::on_debug_callback_received,
                                                        this,
                                                        std::placeholders::_1,
-                                                       std::placeholders::_4),
+                                                       std::placeholders::_2),
 #else
                                              Anvil::DebugCallbackFunction(),
 #endif
@@ -961,19 +961,19 @@ void OpenGL::VKBackend::multi_draw_elements(const OpenGL::DrawCallMode&      in_
     vkgl_not_implemented();
 }
 
-VkBool32 OpenGL::VKBackend::on_debug_callback_received(VkDebugReportFlagsEXT in_message_flags,
-                                                       const char*           in_message) const
+VkBool32 OpenGL::VKBackend::on_debug_callback_received(Anvil::DebugMessageSeverityFlags in_severity,
+                                                       const char*                      in_message_ptr) const
 {
     VkBool32 result = VK_SUCCESS;
 
-    if ((in_message_flags & VK_DEBUG_REPORT_ERROR_BIT_EXT) != 0)
+    if ((in_severity & Anvil::DebugMessageSeverityFlagBits::ERROR_BIT) != 0)
     {
         #if defined(_WIN32)
         {
             std::stringstream error_sstream;
 
             error_sstream << "[VALIDATION ERROR]: "
-                          << in_message;
+                          << in_message_ptr;
 
             ::OutputDebugStringA(error_sstream.str().c_str() );
         }

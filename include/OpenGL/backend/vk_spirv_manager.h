@@ -5,6 +5,14 @@
 #ifndef VKGL_VK_SPIRV_MANAGER_H
 #define VKGL_VK_SPIRV_MANAGER_H
 
+#ifdef max
+    #undef max
+#endif
+
+#ifdef min
+    #undef min
+#endif
+
 #include "Anvil/deps/glslang/SPIRV/GlslangToSpv.h"
 #include "Common/fence.h"
 #include "Common/shared_mutex.h"
