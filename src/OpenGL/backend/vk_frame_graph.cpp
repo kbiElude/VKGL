@@ -2257,8 +2257,8 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
                 if (current_node_ptr->requires_gpu_side_execution() )
                 {
                     current_node_ptr->record_commands(cmd_buffer_ptr.get(),
-                                                      false, /* in_inside_renderpass - TODO */
-                                                      this   /* in_graph_callback_ptr       */);
+                                                      current_group_node_ptr->uses_renderpass,
+                                                      this   /* in_graph_callback_ptr */);
                 }
                 else
                 if (current_node_ptr->requires_cpu_side_execution() )

@@ -522,15 +522,6 @@ bool OpenGL::VKBackend::init()
     }
 
     /* Init various object managers .. */
-    m_buffer_manager_ptr = OpenGL::VKBufferManager::create();
-
-    if (m_buffer_manager_ptr == nullptr)
-    {
-        vkgl_assert(m_buffer_manager_ptr != nullptr);
-
-        goto end;
-    }
-
     m_framebuffer_manager_ptr = OpenGL::VKFramebufferManager::create(this);
 
     if (m_framebuffer_manager_ptr == nullptr)
@@ -1170,6 +1161,16 @@ void OpenGL::VKBackend::set_frontend_callback(const OpenGL::IContextObjectManage
     }
 
     /* Continue with other managers.. */
+    m_buffer_manager_ptr = OpenGL::VKBufferManager::create(m_frontend_ptr,
+                                                           this);
+
+    if (m_buffer_manager_ptr == nullptr)
+    {
+        vkgl_assert(m_buffer_manager_ptr != nullptr);
+
+        goto end;
+    }
+
     m_gfx_pipeline_manager_ptr = OpenGL::VKGFXPipelineManager::create(this,
                                                                       m_frontend_ptr);
 

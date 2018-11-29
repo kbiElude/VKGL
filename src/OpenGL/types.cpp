@@ -29,6 +29,7 @@ static const OpenGL::BufferTarget g_nonindexed_buffer_targets[] =
 OpenGL::BufferState::BufferState()
 {
     access           = OpenGL::BufferAccess::Read_Write;
+    map_pointer      = nullptr;
     map_size         = 0;
     map_start_offset = 0;
     mapped           = false;

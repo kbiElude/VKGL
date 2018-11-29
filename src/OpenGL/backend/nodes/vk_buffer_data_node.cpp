@@ -70,36 +70,6 @@ OpenGL::VKNodes::BufferData::~BufferData()
      /* Stub */
 }
 
-bool OpenGL::VKNodes::BufferData::can_buffer_handle_frontend_reqs(const Anvil::Buffer*        in_buffer_ptr,
-                                                                  const uint32_t&             in_n_buffer_targets,
-                                                                  const OpenGL::BufferTarget* in_buffer_targets_ptr,
-                                                                  const size_t&               in_size) const
-{
-    const auto buffer_create_info_ptr = in_buffer_ptr->get_create_info_ptr                   ();
-    const auto required_usage_flags   = OpenGL::VKUtils::get_buffer_usage_flags_for_gl_buffer(in_n_buffer_targets,
-                                                                                              in_buffer_targets_ptr);
-    bool       result                 = true;
-
-    if ((buffer_create_info_ptr->get_usage_flags() & required_usage_flags) != required_usage_flags)
-    {
-        /* Specified buffer's usage flags are a subset of what's required. */
-        result = false;
-
-        goto end;
-    }
-
-    if (buffer_create_info_ptr->get_size() < in_size)
-    {
-        /* Too little space available .. */
-        result = false;
-
-        goto end;
-    }
-
-end:
-    return result;
-}
-
 bool OpenGL::VKNodes::BufferData::can_memory_block_handle_frontend_reqs(const Anvil::MemoryBlock*   in_mem_block_ptr,
                                                                         const size_t&               in_size,
                                                                         const OpenGL::BufferUsage&  in_buffer_usage) const
@@ -186,42 +156,7 @@ void OpenGL::VKNodes::BufferData::do_cpu_prepass(IVKFrameGraphNodeCallback*)
                                                              &frontend_buffer_used_buffer_targets_ptr);
     }
 
-    /* 2. Do we need a new VK buffer instance? */
-    {
-        bool need_new_backend_buffer = true;
-
-        if (backend_buffer_ptr != nullptr)
-        {
-            need_new_backend_buffer = !can_buffer_handle_frontend_reqs(backend_buffer_ptr,
-                                                                       frontend_buffer_n_used_buffer_targets,
-                                                                       frontend_buffer_used_buffer_targets_ptr,
-                                                                       frontend_buffer_size);
-        }
-
-        if (need_new_backend_buffer)
-        {
-            Anvil::BufferUniquePtr new_buffer_ptr;
-
-            {
-                auto buffer_create_info_ptr = get_buffer_create_info_for_gl_buffer(frontend_buffer_n_used_buffer_targets,
-                                                                                   frontend_buffer_used_buffer_targets_ptr,
-                                                                                   frontend_buffer_size);
-
-                vkgl_assert(buffer_create_info_ptr != nullptr);
-
-                new_buffer_ptr = Anvil::Buffer::create(std::move(buffer_create_info_ptr) );
-                vkgl_assert(new_buffer_ptr != nullptr);
-            }
-
-            backend_buffer_ptr = new_buffer_ptr.get();
-
-            m_backend_ptr->get_buffer_manager_ptr()->set_tot_buffer_object(frontend_buffer_id,
-                                                                           frontend_buffer_creation_time,
-                                                                           std::move(new_buffer_ptr) );
-        }
-    }
-
-    /* 3. Do we need a new VK mem block instance? */
+    /* 2. Do we need a new VK mem block instance? */
     {
         auto backend_mem_block_ptr      = backend_buffer_ptr->get_memory_block(0);
         bool need_new_backend_mem_block = true;
@@ -246,7 +181,7 @@ void OpenGL::VKNodes::BufferData::do_cpu_prepass(IVKFrameGraphNodeCallback*)
         }
     }
 
-    /* 4. Create a staging buffer, bind memory to it, move the user-specified data there.
+    /* 3. Create a staging buffer, bind memory to it, move the user-specified data there.
      *
      * TODO: Backend should host a pool of staging buffers to reuse. We should not be re-creating these buffers here
      *       all the time.
@@ -303,25 +238,6 @@ void OpenGL::VKNodes::BufferData::do_cpu_prepass(IVKFrameGraphNodeCallback*)
             vkgl_assert_fail();
         }
     }
-}
-
-Anvil::BufferCreateInfoUniquePtr OpenGL::VKNodes::BufferData::get_buffer_create_info_for_gl_buffer(const uint32_t&             in_n_buffer_targets,
-                                                                                                   const OpenGL::BufferTarget* in_buffer_targets_ptr,
-                                                                                                   const size_t&               in_size) const
-{
-    Anvil::BufferCreateInfoUniquePtr result_ptr;
-    const auto                       usage_flags_vk = OpenGL::VKUtils::get_buffer_usage_flags_for_gl_buffer(in_n_buffer_targets,
-                                                                                                            in_buffer_targets_ptr);
-
-    result_ptr = Anvil::BufferCreateInfo::create_no_alloc(m_backend_ptr->get_device_ptr(),
-                                                          in_size,
-                                                          Anvil::QueueFamilyFlagBits::COMPUTE_BIT | Anvil::QueueFamilyFlagBits::DMA_BIT | Anvil::QueueFamilyFlagBits::GRAPHICS_BIT,
-                                                          Anvil::SharingMode::EXCLUSIVE,
-                                                          Anvil::BufferCreateFlagBits::NONE,
-                                                          usage_flags_vk);
-
-    vkgl_assert(result_ptr != nullptr);
-    return result_ptr;
 }
 
 void OpenGL::VKNodes::BufferData::get_supported_queue_families(uint32_t*                          out_n_queue_fams_ptr,

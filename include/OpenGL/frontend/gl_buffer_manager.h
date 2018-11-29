@@ -32,12 +32,15 @@ namespace OpenGL
                                                            uint32_t*                    out_n_result_targets_ptr,
                                                            const OpenGL::BufferTarget** out_result_targets_ptr_ptr) const;
 
-        void get_buffer_property(const GLuint&                     in_id,
-                                 const OpenGL::TimeMarker*         in_opt_time_marker_ptr,
-                                 const OpenGL::BufferProperty&     in_pname,
-                                 const OpenGL::GetSetArgumentType& in_arg_type,
-                                 const uint32_t&                   in_n_args,
-                                 void*                             out_result_ptr) const;
+        void get_buffer_property (const GLuint&                     in_id,
+                                  const OpenGL::TimeMarker*         in_opt_time_marker_ptr,
+                                  const OpenGL::BufferProperty&     in_pname,
+                                  const OpenGL::GetSetArgumentType& in_arg_type,
+                                  const uint32_t&                   in_n_args,
+                                  void*                             out_result_ptr) const;
+        bool get_buffer_state_ptr(const GLuint&                     in_id,
+                                  const OpenGL::TimeMarker*         in_opt_time_marker_ptr,
+                                  const OpenGL::BufferState**       out_state_ptr) const;
 
         void on_buffer_bound_to_buffer_target(const GLuint&               in_id,
                                               const OpenGL::BufferTarget& in_target);
@@ -59,26 +62,9 @@ namespace OpenGL
 
         typedef struct Buffer
         {
+            BufferState state;
 
-            // OpenGL::BufferAccessFlags access_flags; TODO
-            std::vector<OpenGL::BufferTarget> buffer_targets_used;
-            int64_t                           map_offset;
-            void*                             map_pointer;
-            int64_t                           map_size;
-            int64_t                           size;
-            OpenGL::BufferUsage               usage;
-
-            Buffer()
-            {
-                /* As per table 2.7 from GL 3.2 core spec */
-                // access_flags = 0;
-                map_pointer  = nullptr;
-                map_offset   = 0;
-                map_size     = 0;
-                size         = 0;
-                usage        = OpenGL::BufferUsage::Static_Draw;
-            }
-
+            Buffer()                        = default;
             Buffer(const Buffer& in_buffer) = default;
         } Buffer;
 

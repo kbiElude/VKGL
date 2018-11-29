@@ -577,7 +577,8 @@ OpenGL::VKGFXPipelineManager::GFXPipelineProps::GFXPipelineProps(IBackend*      
                                                                  const Anvil::PrimitiveTopology& in_primitive_topology,
                                                                  const Anvil::RenderPass*        in_rp_ptr,
                                                                  const Anvil::SubPassID&         in_subpass_id)
-    :device_ptr(in_backend_ptr->get_device_ptr() )
+    :device_ptr(in_backend_ptr->get_device_ptr() ),
+     gl_state  (in_context_state_ptr)
 {
     auto gfx_pipeline_create_info_ptr = create_create_info_ptr(in_frontend_ptr->get_vao_manager_ptr (),
                                                                in_backend_ptr->get_spirv_manager_ptr(),

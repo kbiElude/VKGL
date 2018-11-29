@@ -86,7 +86,7 @@ void* OpenGL::GLBufferManager::get_buffer_map_pointer(const GLuint&             
     vkgl_assert(buffer_ptr != nullptr);
     if (buffer_ptr != nullptr)
     {
-        result_ptr = buffer_ptr->map_pointer;
+        result_ptr = buffer_ptr->state.map_pointer;
     }
 
     return result_ptr;
@@ -116,7 +116,7 @@ size_t OpenGL::GLBufferManager::get_buffer_size(const GLuint&             in_id,
     vkgl_assert(buffer_ptr != nullptr);
     if (buffer_ptr != nullptr)
     {
-        result = static_cast<size_t>(buffer_ptr->size);
+        result = static_cast<size_t>(buffer_ptr->state.size);
     }
 
     return result;
@@ -132,6 +132,24 @@ void OpenGL::GLBufferManager::get_buffer_property(const GLuint&                 
     vkgl_not_implemented();
 }
 
+bool OpenGL::GLBufferManager::get_buffer_state_ptr(const GLuint&                     in_id,
+                                                   const OpenGL::TimeMarker*         in_opt_time_marker_ptr,
+                                                   const OpenGL::BufferState**       out_state_ptr) const
+{
+    auto buffer_ptr = get_buffer_ptr(in_id,
+                                     in_opt_time_marker_ptr);
+    bool result     = false;
+
+    vkgl_assert(buffer_ptr != nullptr);
+    if (buffer_ptr != nullptr)
+    {
+        *out_state_ptr = &buffer_ptr->state;
+        result         = true;
+    }
+
+    return result;
+}
+
 OpenGL::BufferUsage OpenGL::GLBufferManager::get_buffer_usage(const GLuint&             in_id,
                                                               const OpenGL::TimeMarker* in_opt_time_marker_ptr) const
 {
@@ -142,7 +160,7 @@ OpenGL::BufferUsage OpenGL::GLBufferManager::get_buffer_usage(const GLuint&     
     vkgl_assert(buffer_ptr != nullptr);
     if (buffer_ptr != nullptr)
     {
-        result = buffer_ptr->usage;
+        result = buffer_ptr->state.usage;
     }
 
     return result;
@@ -160,10 +178,10 @@ bool OpenGL::GLBufferManager::get_buffer_used_buffer_targets(const GLuint&      
     vkgl_assert(buffer_ptr != nullptr);
     if (buffer_ptr != nullptr)
     {
-        const uint32_t n_buffer_targets_used = static_cast<uint32_t>(buffer_ptr->buffer_targets_used.size() );
+        const uint32_t n_buffer_targets_used = static_cast<uint32_t>(buffer_ptr->state.buffer_targets_used.size() );
 
         *out_n_result_targets_ptr   = n_buffer_targets_used;
-        *out_result_targets_ptr_ptr = (n_buffer_targets_used != 0) ? &buffer_ptr->buffer_targets_used.at(0)
+        *out_result_targets_ptr_ptr = (n_buffer_targets_used != 0) ? &buffer_ptr->state.buffer_targets_used.at(0)
                                                                    : nullptr;
 
         result = true;
@@ -182,11 +200,11 @@ void OpenGL::GLBufferManager::on_buffer_bound_to_buffer_target(const GLuint&    
     vkgl_assert(buffer_ptr != nullptr);
     if (buffer_ptr != nullptr)
     {
-        if (std::find(buffer_ptr->buffer_targets_used.begin(),
-                      buffer_ptr->buffer_targets_used.end  (),
-                      in_target) == buffer_ptr->buffer_targets_used.end() )
+        if (std::find(buffer_ptr->state.buffer_targets_used.begin(),
+                      buffer_ptr->state.buffer_targets_used.end  (),
+                      in_target) == buffer_ptr->state.buffer_targets_used.end() )
         {
-            buffer_ptr->buffer_targets_used.push_back(in_target);
+            buffer_ptr->state.buffer_targets_used.push_back(in_target);
 
             update_last_modified_time(in_id);
         }
@@ -203,9 +221,9 @@ bool OpenGL::GLBufferManager::set_buffer_store_size(const GLuint& in_id,
     vkgl_assert(buffer_ptr != nullptr);
     if (buffer_ptr != nullptr)
     {
-        if (buffer_ptr->size != in_size)
+        if (buffer_ptr->state.size != in_size)
         {
-            buffer_ptr->size = in_size;
+            buffer_ptr->state.size = in_size;
 
             update_last_modified_time(in_id);
         }
@@ -226,9 +244,9 @@ bool OpenGL::GLBufferManager::set_buffer_usage(const GLuint&              in_id,
     vkgl_assert(buffer_ptr != nullptr);
     if (buffer_ptr != nullptr)
     {
-        if (buffer_ptr->usage != in_usage)
+        if (buffer_ptr->state.usage != in_usage)
         {
-            buffer_ptr->usage = in_usage;
+            buffer_ptr->state.usage = in_usage;
 
             update_last_modified_time(in_id);
         }

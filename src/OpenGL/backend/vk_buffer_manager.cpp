@@ -5,17 +5,18 @@
 #include "Common/macros.h"
 #include "OpenGL/backend/vk_buffer_manager.h"
 #include "OpenGL/backend/vk_reference.h"
+#include "OpenGL/backend/vk_utils.h"
+#include "OpenGL/frontend/gl_buffer_manager.h"
+#include "Anvil/include/misc/buffer_create_info.h"
+#include "Anvil/include/wrappers/buffer.h"
 
-OpenGL::VKBufferManagerUniquePtr OpenGL::VKBufferManager::create()
+OpenGL::VKBufferManager::VKBufferManager(const OpenGL::IContextObjectManagers* in_frontend_ptr,
+                                         IBackend*                             in_backend_ptr)
+    :m_backend_ptr (in_backend_ptr),
+     m_frontend_ptr(in_frontend_ptr)
 {
-    OpenGL::VKBufferManagerUniquePtr result_ptr;
-
-    result_ptr.reset(
-        new VKBufferManager()
-    );
-
-    vkgl_assert(result_ptr != nullptr);
-    return result_ptr;
+    vkgl_assert(m_backend_ptr  != nullptr);
+    vkgl_assert(m_frontend_ptr != nullptr);
 }
 
 OpenGL::VKBufferManager::~VKBufferManager()
@@ -44,7 +45,30 @@ OpenGL::VKBufferReferenceUniquePtr OpenGL::VKBufferManager::acquire_object(const
 
         if (buffer_iterator != buffer_data_ptr->buffer_map.end() )
         {
-            ref_buffer_ptr = nullptr;
+            ref_buffer_ptr = buffer_iterator->second->buffer_ptr.get();
+            vkgl_assert(ref_buffer_ptr != nullptr);
+        }
+        else
+        {
+            auto                       frontend_buffer_manager_ptr = m_frontend_ptr->get_buffer_manager_ptr();
+            const OpenGL::BufferState* frontend_buffer_state_ptr   = nullptr;
+
+            frontend_buffer_manager_ptr->get_buffer_state_ptr(in_id,
+                                                             &in_buffer_time_marker,
+                                                             &frontend_buffer_state_ptr);
+            vkgl_assert(frontend_buffer_state_ptr != nullptr);
+
+            auto new_buffer_ptr = create_vk_buffer(frontend_buffer_state_ptr);
+            vkgl_assert(new_buffer_ptr != nullptr);
+
+            ref_buffer_ptr = new_buffer_ptr.get();
+
+            buffer_data_ptr->buffer_map[in_buffer_time_marker].reset(
+                new BufferProps(std::move(new_buffer_ptr) )
+            );
+            vkgl_assert(buffer_data_ptr->buffer_map[in_buffer_time_marker] != nullptr);
+
+            buffer_data_ptr->tot_buffer_time_marker = in_buffer_time_marker;
         }
     }
 
@@ -70,6 +94,50 @@ OpenGL::VKBufferReferenceUniquePtr OpenGL::VKBufferManager::acquire_object(const
     vkgl_assert(new_reference_ptr != nullptr);
 
     return new_reference_ptr;
+}
+
+bool OpenGL::VKBufferManager::can_buffer_handle_frontend_reqs(const Anvil::Buffer*        in_buffer_ptr,
+                                                              const uint32_t&             in_n_buffer_targets,
+                                                              const OpenGL::BufferTarget* in_buffer_targets_ptr,
+                                                              const size_t&               in_size) const
+{
+    const auto buffer_create_info_ptr = in_buffer_ptr->get_create_info_ptr                   ();
+    const auto required_usage_flags   = OpenGL::VKUtils::get_buffer_usage_flags_for_gl_buffer(in_n_buffer_targets,
+                                                                                              in_buffer_targets_ptr);
+    bool       result                 = true;
+
+    if ((buffer_create_info_ptr->get_usage_flags() & required_usage_flags) != required_usage_flags)
+    {
+        /* Specified buffer's usage flags are a subset of what's required. */
+        result = false;
+
+        goto end;
+    }
+
+    if (buffer_create_info_ptr->get_size() < in_size)
+    {
+        /* Too little space available .. */
+        result = false;
+
+        goto end;
+    }
+
+end:
+    return result;
+}
+
+OpenGL::VKBufferManagerUniquePtr OpenGL::VKBufferManager::create(const OpenGL::IContextObjectManagers* in_frontend_ptr,
+                                                                 OpenGL::IBackend*                     in_backend_ptr)
+{
+    OpenGL::VKBufferManagerUniquePtr result_ptr;
+
+    result_ptr.reset(
+        new VKBufferManager(in_frontend_ptr,
+                            in_backend_ptr)
+    );
+
+    vkgl_assert(result_ptr != nullptr);
+    return result_ptr;
 }
 
 bool OpenGL::VKBufferManager::create_object(const GLuint&             in_id,
@@ -99,6 +167,31 @@ bool OpenGL::VKBufferManager::create_object(const GLuint&             in_id,
     result                    = true;
 end:
     return result;
+}
+
+Anvil::BufferUniquePtr OpenGL::VKBufferManager::create_vk_buffer(const OpenGL::BufferState* in_frontend_buffer_state_ptr) const
+{
+    Anvil::BufferCreateInfoUniquePtr create_info_ptr;
+    auto                             device_ptr            = m_backend_ptr->get_device_ptr();
+    const uint32_t                   n_buffer_targets_used = static_cast<uint32_t>(in_frontend_buffer_state_ptr->buffer_targets_used.size() );
+    Anvil::BufferUniquePtr           result_ptr;
+    const Anvil::BufferUsageFlags    usage_flags           = OpenGL::VKUtils::get_buffer_usage_flags_for_gl_buffer(n_buffer_targets_used,
+                                                                                                             (n_buffer_targets_used > 0) ? &in_frontend_buffer_state_ptr->buffer_targets_used.at(0) : nullptr);
+
+    vkgl_assert(in_frontend_buffer_state_ptr->buffer_targets_used.size() > 0);
+
+    create_info_ptr = Anvil::BufferCreateInfo::create_no_alloc(device_ptr,
+                                                               in_frontend_buffer_state_ptr->size,
+                                                               Anvil::QueueFamilyFlagBits::COMPUTE_BIT | Anvil::QueueFamilyFlagBits::DMA_BIT | Anvil::QueueFamilyFlagBits::GRAPHICS_BIT,
+                                                               Anvil::SharingMode::EXCLUSIVE,
+                                                               Anvil::BufferCreateFlagBits::NONE,
+                                                               usage_flags);
+    vkgl_assert(create_info_ptr != nullptr);
+
+    result_ptr = Anvil::Buffer::create(std::move(create_info_ptr) );
+    vkgl_assert(result_ptr != nullptr);
+
+    return result_ptr;
 }
 
 bool OpenGL::VKBufferManager::destroy_object(const GLuint&             in_id,
@@ -210,27 +303,3 @@ void OpenGL::VKBufferManager::on_reference_destroyed(BufferData*                
     }
 }
 
-OpenGL::TimeMarker OpenGL::VKBufferManager::set_tot_buffer_object(const GLuint&             in_id,
-                                                                  const OpenGL::TimeMarker& in_frontend_object_creation_time,
-                                                                  Anvil::BufferUniquePtr    in_buffer_ptr)
-{
-    std::lock_guard<std::mutex> lock                (m_mutex);
-    const auto                  buffer_map_key      (BufferMapKey(in_id, in_frontend_object_creation_time) );
-    auto                        buffer_data_iterator(m_buffers.find(buffer_map_key) );
-    OpenGL::TimeMarker          result              (std::chrono::high_resolution_clock::now() );
-
-    vkgl_assert(buffer_data_iterator != m_buffers.end() );
-    vkgl_assert(buffer_data_iterator->second->buffer_map.find(result) == buffer_data_iterator->second->buffer_map.end() );
-
-    {
-        BufferPropsUniquePtr new_props_ptr(new BufferProps(std::move(in_buffer_ptr) ));
-
-        vkgl_assert(new_props_ptr != nullptr);
-
-        buffer_data_iterator->second->buffer_map[result] = std::move(new_props_ptr);
-    }
-
-    buffer_data_iterator->second->tot_buffer_time_marker = result;
-
-    return result;
-}

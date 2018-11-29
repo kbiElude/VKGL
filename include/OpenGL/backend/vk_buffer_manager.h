@@ -18,7 +18,8 @@ namespace OpenGL
     public:
         /* Public functions */
 
-        static VKBufferManagerUniquePtr create();
+        static VKBufferManagerUniquePtr create(const OpenGL::IContextObjectManagers* in_frontend_ptr,
+                                               IBackend*                             in_backend_ptr);
 
         ~VKBufferManager();
 
@@ -32,10 +33,6 @@ namespace OpenGL
 
         OpenGL::TimeMarker get_tot_buffer_time_marker(const GLuint&             in_id,
                                                       const OpenGL::TimeMarker& in_frontend_object_creation_time) const;
-
-        OpenGL::TimeMarker set_tot_buffer_object(const GLuint&             in_id,
-                                                 const OpenGL::TimeMarker& in_frontend_object_creation_time,
-                                                 Anvil::BufferUniquePtr    in_buffer_ptr);
 
     private:
         /* Private type definitions */
@@ -74,6 +71,15 @@ namespace OpenGL
         typedef std::pair<GLuint, OpenGL::TimeMarker> BufferMapKey;
 
         /* Private functions */
+        VKBufferManager(const OpenGL::IContextObjectManagers* in_frontend_ptr,
+                        IBackend*                             in_backend_ptr);
+
+        bool                   can_buffer_handle_frontend_reqs(const Anvil::Buffer*        in_buffer_ptr,
+                                                               const uint32_t&             in_n_buffer_targets,
+                                                               const OpenGL::BufferTarget* in_buffer_targets_ptr,
+                                                               const size_t&               in_size) const;
+        Anvil::BufferUniquePtr create_vk_buffer               (const OpenGL::BufferState*  in_frontend_buffer_state_ptr) const;
+
         uint32_t get_n_references      (const BufferData*          in_buffer_data_ptr) const;
         void     on_reference_created  (BufferData*                in_buffer_data_ptr,
                                         OpenGL::VKBufferReference* in_reference_ptr);
@@ -83,6 +89,9 @@ namespace OpenGL
         /* Private variables */
         std::map<BufferMapKey, BufferDataUniquePtr> m_buffers;
         mutable std::mutex                          m_mutex;
+
+        OpenGL::IBackend* const                     m_backend_ptr;
+        const OpenGL::IContextObjectManagers* const m_frontend_ptr;
     };
 };
 

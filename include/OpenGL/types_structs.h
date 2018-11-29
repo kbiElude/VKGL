@@ -23,12 +23,14 @@ namespace OpenGL
 
     typedef struct BufferState
     {
-        OpenGL::BufferAccess access;
-        uint64_t             map_size;
-        uint64_t             map_start_offset;
-        bool                 mapped;
-        uint64_t             size;
-        OpenGL::BufferUsage  usage;
+        OpenGL::BufferAccess              access;
+        std::vector<OpenGL::BufferTarget> buffer_targets_used;
+        void*                             map_pointer;
+        uint64_t                          map_size;
+        uint64_t                          map_start_offset;
+        bool                              mapped;
+        uint64_t                          size;
+        OpenGL::BufferUsage               usage;
 
         BufferState();
     } BufferState;

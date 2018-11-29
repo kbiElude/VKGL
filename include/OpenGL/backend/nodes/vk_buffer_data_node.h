@@ -98,17 +98,9 @@ namespace OpenGL
                        OpenGL::GLBufferReferenceUniquePtr in_frontend_buffer_reference_ptr,
                        OpenGL::DataUniquePtr              in_opt_data_ptr);
 
-            bool can_buffer_handle_frontend_reqs      (const Anvil::Buffer*        in_buffer_ptr,
-                                                       const uint32_t&             in_n_buffer_targets,
-                                                       const OpenGL::BufferTarget* in_buffer_targets_ptr,
-                                                       const size_t&               in_size) const;
             bool can_memory_block_handle_frontend_reqs(const Anvil::MemoryBlock*   in_mem_block_ptr,
                                                        const size_t&               in_size,
                                                        const OpenGL::BufferUsage&  in_buffer_usage) const;
-
-            Anvil::BufferCreateInfoUniquePtr get_buffer_create_info_for_gl_buffer (const uint32_t&             in_n_buffer_targets,
-                                                                                   const OpenGL::BufferTarget* in_buffer_targets_ptr,
-                                                                                   const size_t&               in_size) const;
 
             /* Private variables */
             IBackend*                          m_backend_ptr;
