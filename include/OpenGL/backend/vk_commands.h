@@ -569,20 +569,23 @@ namespace OpenGL
 
     struct DrawArraysCommand : public CommandBase
     {
-        GLsizei                                  count;
-        GLint                                    first;
-        OpenGL::DrawCallMode                     mode;
-        OpenGL::GLContextStateReferenceUniquePtr state_reference_ptr;
+        GLsizei                                          count;
+        GLint                                            first;
+        OpenGL::DrawCallMode                             mode;
+        OpenGL::GLContextStateBindingReferencesUniquePtr state_binding_references_ptr;
+        OpenGL::GLContextStateReferenceUniquePtr         state_reference_ptr;
 
-        DrawArraysCommand(const GLsizei&                           in_count,
-                          const GLint&                             in_first,
-                          const OpenGL::DrawCallMode&              in_mode,
-                          OpenGL::GLContextStateReferenceUniquePtr in_state_reference_ptr)
-            :CommandBase        (CommandType::DRAW_ARRAYS),
-             count              (in_count),
-             first              (in_first),
-             mode               (in_mode),
-             state_reference_ptr(std::move(in_state_reference_ptr) )
+        DrawArraysCommand(const GLsizei&                                   in_count,
+                          const GLint&                                     in_first,
+                          const OpenGL::DrawCallMode&                      in_mode,
+                          OpenGL::GLContextStateReferenceUniquePtr         in_state_reference_ptr,
+                          OpenGL::GLContextStateBindingReferencesUniquePtr in_state_binding_references_ptr)
+            :CommandBase                 (CommandType::DRAW_ARRAYS),
+             count                       (in_count),
+             first                       (in_first),
+             mode                        (in_mode),
+             state_binding_references_ptr(std::move(in_state_binding_references_ptr) ),
+             state_reference_ptr         (std::move(in_state_reference_ptr) )
         {
             /* Stub */
         }

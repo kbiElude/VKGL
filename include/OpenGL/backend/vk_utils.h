@@ -11,6 +11,9 @@ namespace OpenGL
 {
     namespace VKUtils
     {
+        GLContextStateBindingReferencesUniquePtr create_gl_context_state_binding_references(const OpenGL::IContextObjectManagers*  in_frontend_managers_ptr,
+                                                                                            const OpenGL::GLContextStateReference* in_context_state_reference_ptr);
+
         Anvil::BufferUsageFlags   get_buffer_usage_flags_for_gl_buffer  (const uint32_t&             in_n_buffer_targets,
                                                                          const OpenGL::BufferTarget* in_buffer_targets_ptr);
         Anvil::MemoryFeatureFlags get_memory_feature_flags_for_gl_buffer(const OpenGL::BufferUsage&  in_buffer_usage);

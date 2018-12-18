@@ -42,15 +42,24 @@ namespace OpenGL
         }
     } GLPayload;
 
+    struct GLContextStatePayload;
+
+    typedef ReferenceBase<GLPayload>             GLBufferReference;
+    typedef ReferenceBase<GLContextStatePayload> GLContextStateReference;
+    typedef ReferenceBase<GLPayload>             GLFramebufferReference;
+    typedef ReferenceBase<GLPayload>             GLProgramReference;
+    typedef ReferenceBase<GLPayload>             GLRenderbufferReference;
+    typedef ReferenceBase<GLPayload>             GLShaderReference;
+    typedef ReferenceBase<GLPayload>             GLTextureReference;
+    typedef ReferenceBase<GLPayload>             GLVAOReference;
+
+    typedef std::unique_ptr<GLProgramReference, std::function<void(GLProgramReference*)> > GLProgramReferenceUniquePtr;
+
     typedef struct GLContextStatePayload
     {
         OpenGL::TimeMarker time_marker;
 
-        const GLContextStatePayload(const OpenGL::TimeMarker& in_time_marker)
-           :time_marker(in_time_marker)
-        {
-            /* Stub */
-        }
+        const GLContextStatePayload(const OpenGL::TimeMarker& in_time_marker);
 
         bool operator==(const GLContextStatePayload& in_ref) const
         {
@@ -62,15 +71,6 @@ namespace OpenGL
             return (time_marker != in_ref.time_marker);
         }
     } GLContextStatePayload;
-
-    typedef ReferenceBase<GLPayload>             GLBufferReference;
-    typedef ReferenceBase<GLContextStatePayload> GLContextStateReference;
-    typedef ReferenceBase<GLPayload>             GLFramebufferReference;
-    typedef ReferenceBase<GLPayload>             GLProgramReference;
-    typedef ReferenceBase<GLPayload>             GLRenderbufferReference;
-    typedef ReferenceBase<GLPayload>             GLShaderReference;
-    typedef ReferenceBase<GLPayload>             GLTextureReference;
-    typedef ReferenceBase<GLPayload>             GLVAOReference;
 }
 
 #endif /* VKGL_GL_REFERENCE_H */

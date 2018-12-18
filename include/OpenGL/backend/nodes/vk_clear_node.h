@@ -38,12 +38,11 @@ namespace OpenGL
                 vkgl_assert_fail();
             }
 
-            const OpenGL::ContextState* get_gl_context_state() const final
+            void get_gl_context_state(const OpenGL::ContextState**                    out_context_state_ptr_ptr,
+                                      const OpenGL::GLContextStateBindingReferences** out_context_state_binding_references_ptr_ptr) const final
             {
                 /* Should never be called */
                 vkgl_assert_fail();
-
-                return nullptr;
             }
 
             const VKFrameGraphNodeInfo* get_info_ptr() const final

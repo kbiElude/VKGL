@@ -12,12 +12,14 @@
 #include "OpenGL/types.h"
 #include "OpenGL/utils_enum.h"
 
-OpenGL::VKNodes::Draw::Draw(const IContextObjectManagers*            in_frontend_ptr,
-                            OpenGL::IBackend*                        in_backend_ptr,
-                            OpenGL::GLContextStateReferenceUniquePtr in_frontend_context_state_reference_ptr)
-    :m_backend_ptr                         (in_backend_ptr),
-     m_frontend_context_state_reference_ptr(std::move(in_frontend_context_state_reference_ptr) ),
-     m_frontend_ptr                        (in_frontend_ptr)
+OpenGL::VKNodes::Draw::Draw(const IContextObjectManagers*                    in_frontend_ptr,
+                            OpenGL::IBackend*                                in_backend_ptr,
+                            OpenGL::GLContextStateReferenceUniquePtr         in_frontend_context_state_reference_ptr,
+                            OpenGL::GLContextStateBindingReferencesUniquePtr in_frontend_context_state_binding_references_ptr)
+    :m_backend_ptr                                  (in_backend_ptr),
+     m_frontend_context_state_binding_references_ptr(std::move(in_frontend_context_state_binding_references_ptr) ),
+     m_frontend_context_state_reference_ptr         (std::move(in_frontend_context_state_reference_ptr) ),
+     m_frontend_ptr                                 (in_frontend_ptr)
 {
     m_info_ptr.reset(new OpenGL::VKFrameGraphNodeInfo() );
     vkgl_assert(m_info_ptr != nullptr);
@@ -31,19 +33,21 @@ OpenGL::VKNodes::Draw::~Draw()
     /* Stub */
 }
 
-OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::Draw::create_arrays(const IContextObjectManagers*            in_frontend_ptr,
-                                                                       IBackend*                                in_backend_ptr,
-                                                                       OpenGL::GLContextStateReferenceUniquePtr in_frontend_context_state_reference_ptr,
-                                                                       const GLint&                             in_first,
-                                                                       const GLsizei&                           in_count,
-                                                                       const OpenGL::DrawCallMode&              in_mode)
+OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::Draw::create_arrays(const IContextObjectManagers*                    in_frontend_ptr,
+                                                                       IBackend*                                        in_backend_ptr,
+                                                                       OpenGL::GLContextStateReferenceUniquePtr         in_frontend_context_state_reference_ptr,
+                                                                       OpenGL::GLContextStateBindingReferencesUniquePtr in_frontend_context_state_binding_references_ptr,
+                                                                       const GLint&                                     in_first,
+                                                                       const GLsizei&                                   in_count,
+                                                                       const OpenGL::DrawCallMode&                      in_mode)
 {
     OpenGL::VKFrameGraphNodeUniquePtr result_ptr(nullptr,
                                                  std::default_delete<OpenGL::IVKFrameGraphNode>() );
 
     result_ptr.reset(new OpenGL::VKNodes::Draw(in_frontend_ptr,
                                                in_backend_ptr,
-                                               std::move(in_frontend_context_state_reference_ptr)) );
+                                               std::move(in_frontend_context_state_reference_ptr),
+                                               std::move(in_frontend_context_state_binding_references_ptr) ) );
     vkgl_assert(result_ptr != nullptr);
 
     {
@@ -74,8 +78,8 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
     {
         const OpenGL::VertexArrayObjectState* vao_state_ptr = nullptr;
 
-        frontend_vao_manager_ptr->get_vao_state_ptr(m_frontend_context_state_ptr->vao_reference_ptr->get_payload().id,
-                                                   &m_frontend_context_state_ptr->vao_reference_ptr->get_payload().time_marker,
+        frontend_vao_manager_ptr->get_vao_state_ptr(m_frontend_context_state_ptr->vao_proxy_reference_ptr->get_payload().id,
+                                                   &m_frontend_context_state_ptr->vao_proxy_reference_ptr->get_payload().time_marker,
                                                    &vao_state_ptr);
         vkgl_assert(vao_state_ptr != nullptr);
 
@@ -110,8 +114,8 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
      *    if they need to be read back from prior to being modified (ie. blending is on, etc.)
      */
     {
-        auto           fb_state_ptr              = frontend_fb_manager_ptr->get_framebuffer_state(m_frontend_context_state_ptr->draw_framebuffer_reference_ptr->get_payload().id,
-                                                                                                 &m_frontend_context_state_ptr->draw_framebuffer_reference_ptr->get_payload().time_marker);
+        auto           fb_state_ptr              = frontend_fb_manager_ptr->get_framebuffer_state(m_frontend_context_state_ptr->draw_framebuffer_proxy_reference_ptr->get_payload().id,
+                                                                                                 &m_frontend_context_state_ptr->draw_framebuffer_proxy_reference_ptr->get_payload().time_marker);
         const uint32_t n_draw_buffers            = static_cast<uint32_t>(fb_state_ptr->draw_buffer_per_color_output.size() );
         uint32_t       swapchain_output_location = UINT32_MAX;
 

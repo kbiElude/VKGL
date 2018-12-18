@@ -16,12 +16,13 @@ namespace OpenGL
         {
         public:
             /* Public functions */
-            static VKFrameGraphNodeUniquePtr create_arrays(const IContextObjectManagers*            in_frontend_ptr,
-                                                           IBackend*                                in_backend_ptr,
-                                                           OpenGL::GLContextStateReferenceUniquePtr in_frontend_context_state_reference_ptr,
-                                                           const GLint&                             in_first,
-                                                           const GLsizei&                           in_count,
-                                                           const OpenGL::DrawCallMode&              in_mode);
+            static VKFrameGraphNodeUniquePtr create_arrays(const IContextObjectManagers*                    in_frontend_ptr,
+                                                           IBackend*                                        in_backend_ptr,
+                                                           OpenGL::GLContextStateReferenceUniquePtr         in_frontend_context_state_reference_ptr,
+                                                           OpenGL::GLContextStateBindingReferencesUniquePtr in_frontend_context_state_binding_references_ptr,
+                                                           const GLint&                                     in_first,
+                                                           const GLsizei&                                   in_count,
+                                                           const OpenGL::DrawCallMode&                      in_mode);
 
             ~Draw();
 
@@ -35,11 +36,14 @@ namespace OpenGL
                 vkgl_assert_fail();
             }
 
-            const OpenGL::ContextState* get_gl_context_state() const final
+            void get_gl_context_state(const OpenGL::ContextState**                    out_context_state_ptr_ptr,
+                                      const OpenGL::GLContextStateBindingReferences** out_context_state_binding_references_ptr_ptr) const final
             {
-                vkgl_assert(m_frontend_context_state_ptr != nullptr);
+                vkgl_assert(m_frontend_context_state_binding_references_ptr != nullptr);
+                vkgl_assert(m_frontend_context_state_ptr                    != nullptr);
 
-                return m_frontend_context_state_ptr;
+                *out_context_state_binding_references_ptr_ptr = m_frontend_context_state_binding_references_ptr.get();
+                *out_context_state_ptr_ptr                    = m_frontend_context_state_ptr;
             }
 
             const VKFrameGraphNodeInfo* get_info_ptr() const final
@@ -105,16 +109,18 @@ namespace OpenGL
 
             /* Private functions */
 
-            Draw(const IContextObjectManagers*            in_frontend_ptr,
-                 OpenGL::IBackend*                        in_backend_ptr,
-                 OpenGL::GLContextStateReferenceUniquePtr in_frontend_context_state_reference_ptr);
+            Draw(const IContextObjectManagers*                    in_frontend_ptr,
+                 OpenGL::IBackend*                                in_backend_ptr,
+                 OpenGL::GLContextStateReferenceUniquePtr         in_frontend_context_state_reference_ptr,
+                 OpenGL::GLContextStateBindingReferencesUniquePtr in_frontend_context_state_binding_references_ptr);
 
             /* Private variables */
-            IBackend*                                m_backend_ptr;
-            const IContextObjectManagers*            m_frontend_ptr;
-            const OpenGL::ContextState*              m_frontend_context_state_ptr;
-            OpenGL::GLContextStateReferenceUniquePtr m_frontend_context_state_reference_ptr;
-            VKFrameGraphNodeInfoUniquePtr            m_info_ptr;
+            IBackend*                                        m_backend_ptr;
+            const IContextObjectManagers*                    m_frontend_ptr;
+            OpenGL::GLContextStateBindingReferencesUniquePtr m_frontend_context_state_binding_references_ptr;
+            const OpenGL::ContextState*                      m_frontend_context_state_ptr;
+            OpenGL::GLContextStateReferenceUniquePtr         m_frontend_context_state_reference_ptr;
+            VKFrameGraphNodeInfoUniquePtr                    m_info_ptr;
 
             std::vector<OpenGL::VKBufferReferenceUniquePtr> m_owned_buffer_reference_ptrs;
             OpenGL::VKSwapchainReferenceUniquePtr           m_owned_swapchain_reference_ptr;

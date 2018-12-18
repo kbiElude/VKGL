@@ -597,9 +597,9 @@ const OpenGL::GLBufferReference* OpenGL::GLStateManager::get_bound_buffer_object
 {
     auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
 
-    vkgl_assert(state_ptr->nonindexed_buffer_binding_ptrs.find(in_target) != state_ptr->nonindexed_buffer_binding_ptrs.end() );
+    vkgl_assert(state_ptr->nonindexed_buffer_proxy_binding_ptrs.find(in_target) != state_ptr->nonindexed_buffer_proxy_binding_ptrs.end() );
 
-    return state_ptr->nonindexed_buffer_binding_ptrs.at(in_target).get();
+    return state_ptr->nonindexed_buffer_proxy_binding_ptrs.at(in_target).get();
 }
 
 const OpenGL::GLBufferReference* OpenGL::GLStateManager::get_bound_buffer_object(const OpenGL::BufferTarget& in_target,
@@ -607,9 +607,9 @@ const OpenGL::GLBufferReference* OpenGL::GLStateManager::get_bound_buffer_object
 {
     auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
 
-    vkgl_assert(state_ptr->indexed_buffer_binding_ptrs.find(IndexedBufferTarget(in_target, in_index) ) != state_ptr->indexed_buffer_binding_ptrs.end() );
+    vkgl_assert(state_ptr->indexed_buffer_proxy_binding_ptrs.find(IndexedBufferTarget(in_target, in_index) ) != state_ptr->indexed_buffer_proxy_binding_ptrs.end() );
 
-    return state_ptr->indexed_buffer_binding_ptrs.at(IndexedBufferTarget(in_target, in_index) ).reference_ptr.get();
+    return state_ptr->indexed_buffer_proxy_binding_ptrs.at(IndexedBufferTarget(in_target, in_index) ).reference_ptr.get();
 }
 
 const OpenGL::GLFramebufferReference* OpenGL::GLStateManager::get_bound_framebuffer_object(const OpenGL::FramebufferTarget& in_target) const
@@ -619,8 +619,8 @@ const OpenGL::GLFramebufferReference* OpenGL::GLStateManager::get_bound_framebuf
 
     switch (in_target)
     {
-        case OpenGL::FramebufferTarget::Draw_Framebuffer: result_ptr = state_ptr->draw_framebuffer_reference_ptr.get(); break;
-        case OpenGL::FramebufferTarget::Read_Framebuffer: result_ptr = state_ptr->read_framebuffer_reference_ptr.get(); break;
+        case OpenGL::FramebufferTarget::Draw_Framebuffer: result_ptr = state_ptr->draw_framebuffer_proxy_reference_ptr.get(); break;
+        case OpenGL::FramebufferTarget::Read_Framebuffer: result_ptr = state_ptr->read_framebuffer_proxy_reference_ptr.get(); break;
 
         default:
         {
@@ -636,9 +636,9 @@ const OpenGL::GLRenderbufferReference* OpenGL::GLStateManager::get_bound_renderb
     /* NOTE: There is ALWAYS a renderbuffer binding set up for a GL context. */
     auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
 
-    vkgl_assert(state_ptr->renderbuffer_reference_ptr != nullptr);
+    vkgl_assert(state_ptr->renderbuffer_proxy_reference_ptr != nullptr);
 
-    return state_ptr->renderbuffer_reference_ptr.get();
+    return state_ptr->renderbuffer_proxy_reference_ptr.get();
 }
 
 const OpenGL::GLVAOReference* OpenGL::GLStateManager::get_bound_vertex_array_object() const
@@ -646,9 +646,9 @@ const OpenGL::GLVAOReference* OpenGL::GLStateManager::get_bound_vertex_array_obj
     /* NOTE: There is ALWAYS a VAO binding set up for a GL context. */
     auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
 
-    vkgl_assert(state_ptr->vao_reference_ptr != nullptr);
+    vkgl_assert(state_ptr->vao_proxy_reference_ptr != nullptr);
 
-    return state_ptr->vao_reference_ptr.get();
+    return state_ptr->vao_proxy_reference_ptr.get();
 }
 
 OpenGL::ErrorCode OpenGL::GLStateManager::get_error(const bool& in_reset_error_code)
@@ -826,14 +826,14 @@ void OpenGL::GLStateManager::init_prop_maps()
         {OpenGL::ContextProperty::Color_Logic_Op,                             {OpenGL::GetSetArgumentType::Boolean,                       1, offsetof(OpenGL::ContextState, is_color_logic_op_enabled)} },
         {OpenGL::ContextProperty::Color_Writemask,                            {OpenGL::GetSetArgumentType::BooleanFromInt32_Bit0,         1, offsetof(OpenGL::ContextState, color_writemask_for_draw_buffers)} },
         {OpenGL::ContextProperty::Cull_Face,                                  {OpenGL::GetSetArgumentType::CullFaceVKGL,                  1, offsetof(OpenGL::ContextState, cull_face_mode)} },
-        {OpenGL::ContextProperty::Current_Program,                            {OpenGL::GetSetArgumentType::RereferenceObjectIDPtrVKGL,    1, offsetof(OpenGL::ContextState, program_reference_ptr)} },
+        {OpenGL::ContextProperty::Current_Program,                            {OpenGL::GetSetArgumentType::RereferenceObjectIDPtrVKGL,    1, offsetof(OpenGL::ContextState, program_proxy_reference_ptr)} },
         {OpenGL::ContextProperty::Depth_Clear_Value,                          {OpenGL::GetSetArgumentType::Double,                        1, offsetof(OpenGL::ContextState, depth_clear_value)} },
         {OpenGL::ContextProperty::Depth_Func,                                 {OpenGL::GetSetArgumentType::DepthFunctionVKGL,             1, offsetof(OpenGL::ContextState, depth_function)} },
         {OpenGL::ContextProperty::Depth_Range,                                {OpenGL::GetSetArgumentType::Double,                        2, offsetof(OpenGL::ContextState, depth_range)} },
         {OpenGL::ContextProperty::Depth_Test,                                 {OpenGL::GetSetArgumentType::Boolean,                       1, offsetof(OpenGL::ContextState, is_depth_test_enabled)} },
         {OpenGL::ContextProperty::Depth_Writemask,                            {OpenGL::GetSetArgumentType::Boolean,                       1, offsetof(OpenGL::ContextState, depth_writemask)} },
         {OpenGL::ContextProperty::Dither,                                     {OpenGL::GetSetArgumentType::Boolean,                       1, offsetof(OpenGL::ContextState, is_dither_enabled)} },
-        {OpenGL::ContextProperty::Draw_Framebuffer_Binding,                   {OpenGL::GetSetArgumentType::RereferenceObjectIDPtrVKGL,    1, offsetof(OpenGL::ContextState, draw_framebuffer_reference_ptr)} },
+        {OpenGL::ContextProperty::Draw_Framebuffer_Binding,                   {OpenGL::GetSetArgumentType::RereferenceObjectIDPtrVKGL,    1, offsetof(OpenGL::ContextState, draw_framebuffer_proxy_reference_ptr)} },
         {OpenGL::ContextProperty::Fragment_Shader_Derivative_Hint,            {OpenGL::GetSetArgumentType::HintModeVKGL,                  1, offsetof(OpenGL::ContextState, hint_fragment_shader_derivative)} },
         {OpenGL::ContextProperty::Line_Smooth,                                {OpenGL::GetSetArgumentType::Boolean,                       1, offsetof(OpenGL::ContextState, is_line_smooth_enabled)} },
         {OpenGL::ContextProperty::Line_Smooth_Hint,                           {OpenGL::GetSetArgumentType::HintModeVKGL,                  1, offsetof(OpenGL::ContextState, hint_line_smooth)} },
@@ -851,7 +851,7 @@ void OpenGL::GLStateManager::init_prop_maps()
         {OpenGL::ContextProperty::Primitive_Restart_Index,                    {OpenGL::GetSetArgumentType::Int,                           1, offsetof(OpenGL::ContextState, primitive_restart_index)} },
         {OpenGL::ContextProperty::Program_Point_Size,                         {OpenGL::GetSetArgumentType::Boolean,                       1, offsetof(OpenGL::ContextState, is_program_point_size_enabled)} },
         {OpenGL::ContextProperty::Provoking_Vertex,                           {OpenGL::GetSetArgumentType::ProvokingVertexConventionVKGL, 1, offsetof(OpenGL::ContextState, provoking_vertex)} },
-        {OpenGL::ContextProperty::Read_Framebuffer_Binding,                   {OpenGL::GetSetArgumentType::RereferenceObjectIDPtrVKGL,    1, offsetof(OpenGL::ContextState, read_framebuffer_reference_ptr)} },
+        {OpenGL::ContextProperty::Read_Framebuffer_Binding,                   {OpenGL::GetSetArgumentType::RereferenceObjectIDPtrVKGL,    1, offsetof(OpenGL::ContextState, read_framebuffer_proxy_reference_ptr)} },
         // todo {OpenGL::ContextProperty::Sampler_Binding,                            {OpenGL::GetSetArgumentType::, 1, &m_state_ptr->} },
         {OpenGL::ContextProperty::Sample_Coverage_Invert,                     {OpenGL::GetSetArgumentType::Boolean,                       1, offsetof(OpenGL::ContextState, is_sample_coverage_invert_enabled)} },
         {OpenGL::ContextProperty::Sample_Coverage_Value,                      {OpenGL::GetSetArgumentType::Float,                         1, offsetof(OpenGL::ContextState, sample_coverage_value)} },
@@ -1015,15 +1015,15 @@ void OpenGL::GLStateManager::set_bound_buffer_object(const OpenGL::BufferTarget&
                                                      OpenGL::GLBufferReferenceUniquePtr in_buffer_reference_ptr)
 {
     auto state_ptr    = reinterpret_cast<OpenGL::ContextState*>(m_snapshot_manager_ptr->get_rw_tot_snapshot() );
-    auto map_iterator = state_ptr->nonindexed_buffer_binding_ptrs.find(in_target);
+    auto map_iterator = state_ptr->nonindexed_buffer_proxy_binding_ptrs.find(in_target);
 
-    vkgl_assert(map_iterator != state_ptr->nonindexed_buffer_binding_ptrs.end() );
+    vkgl_assert(map_iterator != state_ptr->nonindexed_buffer_proxy_binding_ptrs.end() );
 
     if ((in_buffer_reference_ptr == nullptr && map_iterator->second != nullptr)                                                      ||
         (in_buffer_reference_ptr != nullptr && map_iterator->second == nullptr)                                                      ||
         (in_buffer_reference_ptr != nullptr && map_iterator->second != nullptr && *in_buffer_reference_ptr != *map_iterator->second) )
     {
-        state_ptr->nonindexed_buffer_binding_ptrs[in_target] = std::move(in_buffer_reference_ptr);
+        state_ptr->nonindexed_buffer_proxy_binding_ptrs[in_target] = std::move(in_buffer_reference_ptr);
 
         m_snapshot_manager_ptr->update_last_modified_time();
     }
@@ -1036,17 +1036,17 @@ void OpenGL::GLStateManager::set_bound_buffer_object(const OpenGL::BufferTarget&
                                                      const size_t&                      in_size)
 {
     auto state_ptr    = reinterpret_cast<OpenGL::ContextState*>(m_snapshot_manager_ptr->get_rw_tot_snapshot() );
-    auto map_iterator = state_ptr->indexed_buffer_binding_ptrs.find(IndexedBufferTarget(in_target, in_index) );
+    auto map_iterator = state_ptr->indexed_buffer_proxy_binding_ptrs.find(IndexedBufferTarget(in_target, in_index) );
 
-    vkgl_assert(map_iterator != state_ptr->indexed_buffer_binding_ptrs.end() );
+    vkgl_assert(map_iterator != state_ptr->indexed_buffer_proxy_binding_ptrs.end() );
 
     if ((in_buffer_reference_ptr == nullptr && map_iterator->second.reference_ptr != nullptr)                                                                    ||
         (in_buffer_reference_ptr != nullptr && map_iterator->second.reference_ptr == nullptr)                                                                    ||
         (in_buffer_reference_ptr != nullptr && map_iterator->second.reference_ptr != nullptr && *in_buffer_reference_ptr != *map_iterator->second.reference_ptr) )
     {
-        state_ptr->indexed_buffer_binding_ptrs[IndexedBufferTarget(in_target, in_index)] = IndexedBufferBinding(std::move(in_buffer_reference_ptr),
-                                                                                                                in_start_offset,
-                                                                                                                in_size);
+        state_ptr->indexed_buffer_proxy_binding_ptrs[IndexedBufferTarget(in_target, in_index)] = IndexedBufferBinding(std::move(in_buffer_reference_ptr),
+                                                                                                                      in_start_offset,
+                                                                                                                      in_size);
 
         m_snapshot_manager_ptr->update_last_modified_time();
     }
@@ -1056,11 +1056,11 @@ void OpenGL::GLStateManager::set_bound_program_object(OpenGL::GLProgramReference
 {
     auto state_ptr = reinterpret_cast<OpenGL::ContextState*>(m_snapshot_manager_ptr->get_rw_tot_snapshot() );
 
-    if ((in_program_binding_ptr == nullptr && state_ptr->program_reference_ptr != nullptr)                                                                 ||
-        (in_program_binding_ptr != nullptr && state_ptr->program_reference_ptr == nullptr)                                                                 ||
-        (in_program_binding_ptr != nullptr && state_ptr->program_reference_ptr != nullptr && *in_program_binding_ptr != *state_ptr->program_reference_ptr) )
+    if ((in_program_binding_ptr == nullptr && state_ptr->program_proxy_reference_ptr != nullptr)                                                                       ||
+        (in_program_binding_ptr != nullptr && state_ptr->program_proxy_reference_ptr == nullptr)                                                                       ||
+        (in_program_binding_ptr != nullptr && state_ptr->program_proxy_reference_ptr != nullptr && *in_program_binding_ptr != *state_ptr->program_proxy_reference_ptr) )
     {
-        state_ptr->program_reference_ptr = std::move(in_program_binding_ptr);
+        state_ptr->program_proxy_reference_ptr = std::move(in_program_binding_ptr);
 
         m_snapshot_manager_ptr->update_last_modified_time();
     }
@@ -1071,11 +1071,13 @@ void OpenGL::GLStateManager::set_bound_framebuffer_object(const OpenGL::Framebuf
 {
     auto state_ptr = reinterpret_cast<OpenGL::ContextState*>(m_snapshot_manager_ptr->get_rw_tot_snapshot() );
 
-    if ((in_framebuffer_reference_ptr == nullptr && state_ptr->draw_framebuffer_reference_ptr != nullptr)                                                                 ||
-        (in_framebuffer_reference_ptr != nullptr && state_ptr->draw_framebuffer_reference_ptr == nullptr)                                                                 ||
-        (in_framebuffer_reference_ptr != nullptr && state_ptr->draw_framebuffer_reference_ptr != nullptr && *in_framebuffer_reference_ptr != *state_ptr->program_reference_ptr) )
+    vkgl_assert(in_target == OpenGL::FramebufferTarget::Draw_Framebuffer); //< todo
+
+    if ((in_framebuffer_reference_ptr == nullptr && state_ptr->draw_framebuffer_proxy_reference_ptr != nullptr)                                                                                      ||
+        (in_framebuffer_reference_ptr != nullptr && state_ptr->draw_framebuffer_proxy_reference_ptr == nullptr)                                                                                      ||
+        (in_framebuffer_reference_ptr != nullptr && state_ptr->draw_framebuffer_proxy_reference_ptr != nullptr && *in_framebuffer_reference_ptr != *state_ptr->draw_framebuffer_proxy_reference_ptr) )
     {
-        state_ptr->program_reference_ptr = std::move(in_framebuffer_reference_ptr);
+        state_ptr->draw_framebuffer_proxy_reference_ptr = std::move(in_framebuffer_reference_ptr);
 
         m_snapshot_manager_ptr->update_last_modified_time();
     }
@@ -1085,11 +1087,11 @@ void OpenGL::GLStateManager::set_bound_renderbuffer_object(OpenGL::GLRenderbuffe
 {
     auto state_ptr = reinterpret_cast<OpenGL::ContextState*>(m_snapshot_manager_ptr->get_rw_tot_snapshot() );
 
-    if ((in_renderbuffer_reference_ptr == nullptr && state_ptr->renderbuffer_reference_ptr != nullptr)                                                                             ||
-        (in_renderbuffer_reference_ptr != nullptr && state_ptr->renderbuffer_reference_ptr == nullptr)                                                                             ||
-        (in_renderbuffer_reference_ptr != nullptr && state_ptr->renderbuffer_reference_ptr != nullptr && *in_renderbuffer_reference_ptr != *state_ptr->renderbuffer_reference_ptr) )
+    if ((in_renderbuffer_reference_ptr == nullptr && state_ptr->renderbuffer_proxy_reference_ptr != nullptr)                                                                                   ||
+        (in_renderbuffer_reference_ptr != nullptr && state_ptr->renderbuffer_proxy_reference_ptr == nullptr)                                                                                   ||
+        (in_renderbuffer_reference_ptr != nullptr && state_ptr->renderbuffer_proxy_reference_ptr != nullptr && *in_renderbuffer_reference_ptr != *state_ptr->renderbuffer_proxy_reference_ptr) )
     {
-        state_ptr->program_reference_ptr = std::move(in_renderbuffer_reference_ptr);
+        state_ptr->renderbuffer_proxy_reference_ptr = std::move(in_renderbuffer_reference_ptr);
 
         m_snapshot_manager_ptr->update_last_modified_time();
     }
@@ -1099,11 +1101,11 @@ void OpenGL::GLStateManager::set_bound_vertex_array_object(OpenGL::GLVAOReferenc
 {
     auto state_ptr = reinterpret_cast<OpenGL::ContextState*>(m_snapshot_manager_ptr->get_rw_tot_snapshot() );
 
-    if ((in_vao_binding_ptr == nullptr && state_ptr->vao_reference_ptr != nullptr)                                                         ||
-        (in_vao_binding_ptr != nullptr && state_ptr->vao_reference_ptr == nullptr)                                                         ||
-        (in_vao_binding_ptr != nullptr && state_ptr->vao_reference_ptr != nullptr && *in_vao_binding_ptr != *state_ptr->vao_reference_ptr) )
+    if ((in_vao_binding_ptr == nullptr && state_ptr->vao_proxy_reference_ptr != nullptr)                                                               ||
+        (in_vao_binding_ptr != nullptr && state_ptr->vao_proxy_reference_ptr == nullptr)                                                               ||
+        (in_vao_binding_ptr != nullptr && state_ptr->vao_proxy_reference_ptr != nullptr && *in_vao_binding_ptr != *state_ptr->vao_proxy_reference_ptr) )
     {
-        state_ptr->vao_reference_ptr = std::move(in_vao_binding_ptr);
+        state_ptr->vao_proxy_reference_ptr = std::move(in_vao_binding_ptr);
 
         m_snapshot_manager_ptr->update_last_modified_time();
     }

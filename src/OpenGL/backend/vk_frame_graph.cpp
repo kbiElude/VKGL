@@ -1753,16 +1753,21 @@ uint32_t OpenGL::VKFrameGraph::get_acquired_swapchain_image_index() const
 
 Anvil::PipelineID OpenGL::VKFrameGraph::get_pipeline_id(const OpenGL::DrawCallMode& in_draw_call_mode)
 {
-    auto                        backend_gfx_pipeline_manager_ptr = m_backend_ptr->get_gfx_pipeline_manager_ptr();
-    const OpenGL::ContextState* node_context_state_ptr           = nullptr;
-    Anvil::PipelineID           result_id                        = UINT32_MAX;
+    auto                                           backend_gfx_pipeline_manager_ptr    = m_backend_ptr->get_gfx_pipeline_manager_ptr();
+    const OpenGL::GLContextStateBindingReferences* node_context_state_binding_refs_ptr = nullptr;
+    const OpenGL::ContextState*                    node_context_state_ptr              = nullptr;
+    Anvil::PipelineID                              result_id                           = UINT32_MAX;
 
     vkgl_assert(m_active_graph_node_ptr != nullptr);
 
-    node_context_state_ptr = m_active_graph_node_ptr->get_gl_context_state();
-    vkgl_assert(node_context_state_ptr != nullptr);
+    m_active_graph_node_ptr->get_gl_context_state(&node_context_state_ptr,
+                                                  &node_context_state_binding_refs_ptr);
+
+    vkgl_assert(node_context_state_binding_refs_ptr != nullptr);
+    vkgl_assert(node_context_state_ptr              != nullptr);
 
     result_id = backend_gfx_pipeline_manager_ptr->get_pipeline_id(node_context_state_ptr,
+                                                                  node_context_state_binding_refs_ptr,
                                                                   OpenGL::VKUtils::get_anvil_primitive_topology_for_draw_call_mode(in_draw_call_mode),
                                                                   m_active_group_node_ptr->renderpass_ptr,
                                                                   m_active_subpass_id);

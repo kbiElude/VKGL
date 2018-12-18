@@ -378,8 +378,6 @@ bool OpenGL::VKSPIRVManager::get_shader_module_ptr(const SPIRVBlobID&        in_
 
             result              = true;
             *out_result_ptr_ptr = iterator->second->shader_module_ptrs[static_cast<uint32_t>(in_shader_type)].get();
-
-            vkgl_assert(*out_result_ptr_ptr != nullptr);
         }
     }
     m_mutex.unlock_shared();

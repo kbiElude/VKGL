@@ -4,6 +4,39 @@
  */
 #include "Common/macros.h"
 #include "OpenGL/backend/vk_utils.h"
+#include "OpenGL/frontend/gl_program_manager.h"
+#include "OpenGL/frontend/gl_state_manager.h"
+
+OpenGL::GLContextStateBindingReferencesUniquePtr OpenGL::VKUtils::create_gl_context_state_binding_references(const OpenGL::IContextObjectManagers*  in_frontend_managers_ptr,
+                                                                                                             const OpenGL::GLContextStateReference* in_context_state_reference_ptr)
+{
+    OpenGL::GLContextStateBindingReferencesUniquePtr result_ptr        = OpenGL::GLContextStateBindingReferencesUniquePtr (nullptr,
+                                                                                                                           std::default_delete<OpenGL::GLContextStateBindingReferences>() );
+    auto                                           program_manager_ptr = in_frontend_managers_ptr->get_program_manager_ptr();
+    auto                                           state_manager_ptr   = in_frontend_managers_ptr->get_state_manager_ptr  ();
+    const auto                                     state_ptr           = state_manager_ptr->get_state                     (in_context_state_reference_ptr->get_payload().time_marker);
+
+    if (state_ptr == nullptr)
+    {
+        vkgl_assert(state_ptr != nullptr);
+
+        goto end;
+    }
+
+    {
+        auto program_reference_ptr = program_manager_ptr->acquire_current_latest_snapshot_reference(state_ptr->program_proxy_reference_ptr->get_payload().id);
+
+        vkgl_assert(program_reference_ptr != nullptr);
+
+        result_ptr.reset(
+            new OpenGL::GLContextStateBindingReferences(std::move(program_reference_ptr) )
+        );
+        vkgl_assert(result_ptr != nullptr);
+    }
+
+end:
+    return result_ptr;
+}
 
 Anvil::CompareOp OpenGL::VKUtils::get_anvil_compare_op_for_depth_function(const OpenGL::DepthFunction& in_depth_func)
 {

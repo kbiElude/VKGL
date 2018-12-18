@@ -89,9 +89,10 @@ OpenGL::VKGFXPipelineManager::GLState::GLState()
     /* Stub */
 }
 
-OpenGL::VKGFXPipelineManager::GLState::GLState(const OpenGL::ContextState* in_context_state_ptr)
-    :program_reference_payload(in_context_state_ptr->program_reference_ptr->get_payload() ),
-     vao_reference_payload    (in_context_state_ptr->vao_reference_ptr->get_payload    () ),
+OpenGL::VKGFXPipelineManager::GLState::GLState(const OpenGL::ContextState*                    in_context_state_ptr,
+                                               const OpenGL::GLContextStateBindingReferences* in_context_state_binding_refs_ptr)
+    :program_reference_payload(in_context_state_binding_refs_ptr->program_reference_ptr->get_payload() ),
+     vao_reference_payload    (in_context_state_ptr->vao_proxy_reference_ptr->get_payload           () ), // todo: move to state bindings struct
 
      is_blend_enabled                    (in_context_state_ptr->is_blend_enabled),
      is_color_logic_op_enabled           (in_context_state_ptr->is_color_logic_op_enabled),
@@ -219,9 +220,10 @@ Anvil::GraphicsPipelineCreateInfoUniquePtr OpenGL::VKGFXPipelineManager::GFXPipe
                                                                Anvil::ShaderModuleStageEntryPoint(fs_sm_entrypoint_name,
                                                                                                   fs_sm_ptr,
                                                                                                   Anvil::ShaderStage::FRAGMENT),
-                                                               Anvil::ShaderModuleStageEntryPoint(gs_sm_entrypoint_name,
-                                                                                                  gs_sm_ptr,
-                                                                                                  Anvil::ShaderStage::GEOMETRY),
+                                                               (gs_sm_ptr != nullptr) ? Anvil::ShaderModuleStageEntryPoint(gs_sm_entrypoint_name,
+                                                                                                                           gs_sm_ptr,
+                                                                                                                           Anvil::ShaderStage::GEOMETRY)
+                                                                                      : Anvil::ShaderModuleStageEntryPoint(),
                                                                Anvil::ShaderModuleStageEntryPoint(), /* in_tess_control_shader_stage_entrypoint_info    */
                                                                Anvil::ShaderModuleStageEntryPoint(), /* in_tess_evaluation_shader_stage_entrypoint_info */
                                                                Anvil::ShaderModuleStageEntryPoint(vs_sm_entrypoint_name,
@@ -571,14 +573,16 @@ OpenGL::VKGFXPipelineManager::GLStateHash OpenGL::VKGFXPipelineManager::GLState:
            hash_contributions[5];
 }
 
-OpenGL::VKGFXPipelineManager::GFXPipelineProps::GFXPipelineProps(IBackend*                       in_backend_ptr,
-                                                                 const IContextObjectManagers*   in_frontend_ptr,
-                                                                 const OpenGL::ContextState*     in_context_state_ptr,
-                                                                 const Anvil::PrimitiveTopology& in_primitive_topology,
-                                                                 const Anvil::RenderPass*        in_rp_ptr,
-                                                                 const Anvil::SubPassID&         in_subpass_id)
+OpenGL::VKGFXPipelineManager::GFXPipelineProps::GFXPipelineProps(IBackend*                                      in_backend_ptr,
+                                                                 const IContextObjectManagers*                  in_frontend_ptr,
+                                                                 const OpenGL::ContextState*                    in_context_state_ptr,
+                                                                 const OpenGL::GLContextStateBindingReferences* in_context_state_binding_refs_ptr,
+                                                                 const Anvil::PrimitiveTopology&                in_primitive_topology,
+                                                                 const Anvil::RenderPass*                       in_rp_ptr,
+                                                                 const Anvil::SubPassID&                        in_subpass_id)
     :device_ptr(in_backend_ptr->get_device_ptr() ),
-     gl_state  (in_context_state_ptr)
+     gl_state  (in_context_state_ptr,
+                in_context_state_binding_refs_ptr)
 {
     auto gfx_pipeline_create_info_ptr = create_create_info_ptr(in_frontend_ptr->get_vao_manager_ptr (),
                                                                in_backend_ptr->get_spirv_manager_ptr(),
@@ -630,12 +634,14 @@ OpenGL::VKGFXPipelineManagerUniquePtr OpenGL::VKGFXPipelineManager::create(IBack
     return result_ptr;
 }
 
-OpenGL::GFXPipelineID OpenGL::VKGFXPipelineManager::get_pipeline_id(const OpenGL::ContextState*     in_context_state_ptr,
-                                                                    const Anvil::PrimitiveTopology& in_primitive_topology,
-                                                                    const Anvil::RenderPass*        in_rp_ptr,
-                                                                    const Anvil::SubPassID&         in_subpass_id)
+OpenGL::GFXPipelineID OpenGL::VKGFXPipelineManager::get_pipeline_id(const OpenGL::ContextState*                    in_context_state_ptr,
+                                                                    const OpenGL::GLContextStateBindingReferences* in_context_state_binding_refs_ptr,
+                                                                    const Anvil::PrimitiveTopology&                in_primitive_topology,
+                                                                    const Anvil::RenderPass*                       in_rp_ptr,
+                                                                    const Anvil::SubPassID&                        in_subpass_id)
 {
-    const auto            gl_state      = GLState          (in_context_state_ptr);
+    const auto            gl_state      = GLState          (in_context_state_ptr,
+                                                            in_context_state_binding_refs_ptr);
     const auto            gl_state_hash = gl_state.get_hash();
     OpenGL::GFXPipelineID result        = UINT32_MAX;
     const auto            rp_hash       = OpenGL::VKRenderpassManager::get_rp_hash(in_rp_ptr->get_render_pass_create_info() );
@@ -683,6 +689,7 @@ OpenGL::GFXPipelineID OpenGL::VKGFXPipelineManager::get_pipeline_id(const OpenGL
                     new GFXPipelineProps(m_backend_ptr,
                                          m_frontend_ptr,
                                          in_context_state_ptr,
+                                         in_context_state_binding_refs_ptr,
                                          in_primitive_topology,
                                          in_rp_ptr,
                                          in_subpass_id)

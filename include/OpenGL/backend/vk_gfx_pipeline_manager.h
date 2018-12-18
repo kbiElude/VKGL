@@ -21,10 +21,11 @@ namespace OpenGL
         static VKGFXPipelineManagerUniquePtr create(IBackend*                     in_backend_ptr,
                                                     const IContextObjectManagers* in_frontend_ptr);
 
-        GFXPipelineID get_pipeline_id(const OpenGL::ContextState*     in_context_state_ptr,
-                                      const Anvil::PrimitiveTopology& in_primitive_topology,
-                                      const Anvil::RenderPass*        in_rp_ptr,
-                                      const Anvil::SubPassID&         in_subpass_id);
+        GFXPipelineID get_pipeline_id(const OpenGL::ContextState*                    in_context_state_ptr,
+                                      const OpenGL::GLContextStateBindingReferences* in_context_state_binding_refs_ptr,
+                                      const Anvil::PrimitiveTopology&                in_primitive_topology,
+                                      const Anvil::RenderPass*                       in_rp_ptr,
+                                      const Anvil::SubPassID&                        in_subpass_id);
 
         ~VKGFXPipelineManager();
 
@@ -115,7 +116,8 @@ namespace OpenGL
 
 
             GLState();
-            GLState(const OpenGL::ContextState* in_context_state_ptr);
+            GLState(const OpenGL::ContextState*                    in_context_state_ptr,
+                    const OpenGL::GLContextStateBindingReferences* in_context_state_binding_refs_ptr);
 
             GLStateHash get_hash() const;
 
@@ -124,12 +126,13 @@ namespace OpenGL
 
         typedef struct GFXPipelineProps
         {
-            GFXPipelineProps(IBackend*                       in_backend_ptr,
-                             const IContextObjectManagers*   in_frontend_ptr,
-                             const OpenGL::ContextState*     in_context_state_ptr,
-                             const Anvil::PrimitiveTopology& in_primitive_topology,
-                             const Anvil::RenderPass*        in_rp_ptr,
-                             const Anvil::SubPassID&         in_subpass_id);
+            GFXPipelineProps(IBackend*                                      in_backend_ptr,
+                             const IContextObjectManagers*                  in_frontend_ptr,
+                             const OpenGL::ContextState*                    in_context_state_ptr,
+                             const OpenGL::GLContextStateBindingReferences* in_context_state_binding_refs_ptr,
+                             const Anvil::PrimitiveTopology&                in_primitive_topology,
+                             const Anvil::RenderPass*                       in_rp_ptr,
+                             const Anvil::SubPassID&                        in_subpass_id);
 
            ~GFXPipelineProps();
 

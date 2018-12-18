@@ -185,22 +185,22 @@ OpenGL::ContextState::ContextState(const IGLObjectManager<OpenGL::GLBufferRefere
                       n_binding < n_max_bindings;
                     ++n_binding)
         {
-            indexed_buffer_binding_ptrs[IndexedBufferTarget(current_indexed_target, n_binding)] = IndexedBufferBinding(in_buffer_manager_ptr->get_default_object_reference(),
-                                                                                                                       0,  /* in_start_offset */
-                                                                                                                       0); /* in_size         */
+            indexed_buffer_proxy_binding_ptrs[IndexedBufferTarget(current_indexed_target, n_binding)] = IndexedBufferBinding(in_buffer_manager_ptr->get_default_object_reference(),
+                                                                                                                             0,  /* in_start_offset */
+                                                                                                                             0); /* in_size         */
         }
     }
 
     for (const auto& current_nonindexed_target : g_nonindexed_buffer_targets)
     {
-        nonindexed_buffer_binding_ptrs[current_nonindexed_target] = in_buffer_manager_ptr->get_default_object_reference();
+        nonindexed_buffer_proxy_binding_ptrs[current_nonindexed_target] = in_buffer_manager_ptr->get_default_object_reference();
     }
 
     /* Set up default bindings */
-    draw_framebuffer_reference_ptr = in_framebuffer_manager_ptr->get_default_object_reference ();
-    read_framebuffer_reference_ptr = in_framebuffer_manager_ptr->get_default_object_reference ();
-    renderbuffer_reference_ptr     = in_renderbuffer_manager_ptr->get_default_object_reference();
-    vao_reference_ptr              = in_vao_manager_ptr->get_default_object_reference         ();
+    draw_framebuffer_proxy_reference_ptr = in_framebuffer_manager_ptr->get_default_object_reference ();
+    read_framebuffer_proxy_reference_ptr = in_framebuffer_manager_ptr->get_default_object_reference ();
+    renderbuffer_proxy_reference_ptr     = in_renderbuffer_manager_ptr->get_default_object_reference();
+    vao_proxy_reference_ptr              = in_vao_manager_ptr->get_default_object_reference         ();
 }
 
 OpenGL::ContextState::ContextState(const OpenGL::ContextState& in_context_state)
@@ -210,32 +210,32 @@ OpenGL::ContextState::ContextState(const OpenGL::ContextState& in_context_state)
 
 OpenGL::ContextState::~ContextState()
 {
-    draw_framebuffer_reference_ptr.reset();
-    read_framebuffer_reference_ptr.reset();
-    renderbuffer_reference_ptr.reset    ();
-    program_reference_ptr.reset         ();
-    renderbuffer_reference_ptr.reset    ();
-    vao_reference_ptr.reset             ();
+    draw_framebuffer_proxy_reference_ptr.reset();
+    read_framebuffer_proxy_reference_ptr.reset();
+    renderbuffer_proxy_reference_ptr.reset    ();
+    program_proxy_reference_ptr.reset         ();
+    renderbuffer_proxy_reference_ptr.reset    ();
+    vao_proxy_reference_ptr.reset             ();
 
-    indexed_buffer_binding_ptrs.clear   ();
-    nonindexed_buffer_binding_ptrs.clear();
+    indexed_buffer_proxy_binding_ptrs.clear   ();
+    nonindexed_buffer_proxy_binding_ptrs.clear();
     texture_unit_to_state_ptr_map.clear ();
 }
 
 OpenGL::ContextState& OpenGL::ContextState::operator=(const OpenGL::ContextState& in_context_state)
 {
     /* GL references need extra care.. */
-    draw_framebuffer_reference_ptr = (in_context_state.draw_framebuffer_reference_ptr != nullptr) ? in_context_state.draw_framebuffer_reference_ptr->clone() : nullptr;
-    read_framebuffer_reference_ptr = (in_context_state.read_framebuffer_reference_ptr != nullptr) ? in_context_state.read_framebuffer_reference_ptr->clone() : nullptr;
-    renderbuffer_reference_ptr     = (in_context_state.renderbuffer_reference_ptr     != nullptr) ? in_context_state.renderbuffer_reference_ptr->clone    () : nullptr;
-    program_reference_ptr          = (in_context_state.program_reference_ptr          != nullptr) ? in_context_state.program_reference_ptr->clone         () : nullptr;
-    renderbuffer_reference_ptr     = (in_context_state.renderbuffer_reference_ptr     != nullptr) ? in_context_state.renderbuffer_reference_ptr->clone    () : nullptr;
-    vao_reference_ptr              = (in_context_state.vao_reference_ptr              != nullptr) ? in_context_state.vao_reference_ptr->clone             () : nullptr;
+    draw_framebuffer_proxy_reference_ptr = (in_context_state.draw_framebuffer_proxy_reference_ptr != nullptr) ? in_context_state.draw_framebuffer_proxy_reference_ptr->clone() : nullptr;
+    read_framebuffer_proxy_reference_ptr = (in_context_state.read_framebuffer_proxy_reference_ptr != nullptr) ? in_context_state.read_framebuffer_proxy_reference_ptr->clone() : nullptr;
+    renderbuffer_proxy_reference_ptr     = (in_context_state.renderbuffer_proxy_reference_ptr     != nullptr) ? in_context_state.renderbuffer_proxy_reference_ptr->clone    () : nullptr;
+    program_proxy_reference_ptr          = (in_context_state.program_proxy_reference_ptr          != nullptr) ? in_context_state.program_proxy_reference_ptr->clone         () : nullptr;
+    renderbuffer_proxy_reference_ptr     = (in_context_state.renderbuffer_proxy_reference_ptr     != nullptr) ? in_context_state.renderbuffer_proxy_reference_ptr->clone    () : nullptr;
+    vao_proxy_reference_ptr              = (in_context_state.vao_proxy_reference_ptr              != nullptr) ? in_context_state.vao_proxy_reference_ptr->clone             () : nullptr;
 
-    for (const auto& current_nonindexed_buffer_binding : in_context_state.nonindexed_buffer_binding_ptrs)
+    for (const auto& current_nonindexed_buffer_binding : in_context_state.nonindexed_buffer_proxy_binding_ptrs)
     {
-        nonindexed_buffer_binding_ptrs[current_nonindexed_buffer_binding.first] = (current_nonindexed_buffer_binding.second != nullptr) ? current_nonindexed_buffer_binding.second->clone()
-                                                                                                                                        : nullptr;
+        nonindexed_buffer_proxy_binding_ptrs[current_nonindexed_buffer_binding.first] = (current_nonindexed_buffer_binding.second != nullptr) ? current_nonindexed_buffer_binding.second->clone()
+                                                                                                                                              : nullptr;
     }
 
     for (const auto& current_texture_unit_to_state_ptr_map_item : texture_unit_to_state_ptr_map)
@@ -263,7 +263,7 @@ OpenGL::ContextState& OpenGL::ContextState::operator=(const OpenGL::ContextState
            sizeof(viewport) );
 
     /* Follow with trivial copy ops.. */
-    indexed_buffer_binding_ptrs = in_context_state.indexed_buffer_binding_ptrs;
+    indexed_buffer_proxy_binding_ptrs = in_context_state.indexed_buffer_proxy_binding_ptrs;
 
     is_primitive_restart_enabled = in_context_state.is_primitive_restart_enabled;
     primitive_restart_index      = in_context_state.primitive_restart_index;
@@ -460,6 +460,12 @@ OpenGL::FramebufferAttachmentPointState& OpenGL::FramebufferAttachmentPointState
     texture_reference_ptr      = (in_state.texture_reference_ptr      != nullptr) ? in_state.texture_reference_ptr->clone     () : nullptr;
 
     return *this;
+}
+
+OpenGL::GLContextStatePayload::GLContextStatePayload(const OpenGL::TimeMarker& in_time_marker)
+   :time_marker(in_time_marker)
+{
+    /* Stub */
 }
 
 OpenGL::IndexedBufferBinding::IndexedBufferBinding(const OpenGL::IndexedBufferBinding& in_binding)

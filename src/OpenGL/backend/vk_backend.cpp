@@ -16,6 +16,7 @@
 #include "OpenGL/backend/vk_renderpass_manager.h"
 #include "OpenGL/backend/vk_scheduler.h"
 #include "OpenGL/backend/vk_spirv_manager.h"
+#include "OpenGL/backend/vk_utils.h"
 #include "OpenGL/frontend/gl_buffer_manager.h"
 #include "OpenGL/frontend/gl_program_manager.h"
 #include "OpenGL/frontend/gl_shader_manager.h"
@@ -371,16 +372,27 @@ void OpenGL::VKBackend::draw_arrays(const OpenGL::DrawCallMode& in_mode,
                                     const GLint&                in_first,
                                     const GLsizei&              in_count)
 {
-    /* 1. Grab a snapshot of current context's state. */
-    auto state_reference_ptr = m_frontend_ptr->get_state_manager_ptr()->acquire_current_latest_snapshot_reference();
+    /* 1. Grab a snapshot of current context's state.
+     *
+     *    Context state holds so-called proxy references. Convert those we're going to need to be able to use into
+     *    actual refs.
+     **/
+    auto state_manager_ptr   = m_frontend_ptr->get_state_manager_ptr();
+    auto state_reference_ptr = state_manager_ptr->acquire_current_latest_snapshot_reference();
 
     vkgl_assert(state_reference_ptr != nullptr);
+
+    auto state_binding_references_ptr = OpenGL::VKUtils::create_gl_context_state_binding_references(m_frontend_ptr,
+                                                                                                    state_reference_ptr.get() );
+
+    vkgl_assert(state_binding_references_ptr != nullptr);
 
     /* 2. Spawn the command container .. */
     OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::DrawArraysCommand(in_count,
                                                                        in_first,
                                                                        in_mode,
-                                                                       std::move(state_reference_ptr) ),
+                                                                       std::move(state_reference_ptr),
+                                                                       std::move(state_binding_references_ptr) ),
                                          std::default_delete<OpenGL::CommandBase>() );
 
     vkgl_assert(cmd_ptr != nullptr);

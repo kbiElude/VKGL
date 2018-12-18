@@ -65,8 +65,8 @@ void OpenGL::VKNodes::Clear::init_info()
     auto       state_manager_ptr  = m_frontend_ptr->get_state_manager_ptr      ();
 
     const auto context_state_ptr  = state_manager_ptr->get_state         (m_context_state_ptr->get_payload().time_marker);
-    const auto fb_state_ptr       = fb_manager_ptr->get_framebuffer_state(context_state_ptr->draw_framebuffer_reference_ptr->get_payload().id,
-                                                                         &context_state_ptr->draw_framebuffer_reference_ptr->get_payload().time_marker);
+    const auto fb_state_ptr       = fb_manager_ptr->get_framebuffer_state(context_state_ptr->draw_framebuffer_proxy_reference_ptr->get_payload().id,
+                                                                         &context_state_ptr->draw_framebuffer_proxy_reference_ptr->get_payload().time_marker);
 
     vkgl_assert(context_state_ptr != nullptr);
     vkgl_assert(fb_state_ptr      != nullptr);

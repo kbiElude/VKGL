@@ -50,7 +50,6 @@ namespace OpenGL
     typedef std::unique_ptr<GLBufferReference,       std::function<void(GLBufferReference*)> >       GLBufferReferenceUniquePtr;
     typedef std::unique_ptr<GLContextStateReference, std::function<void(GLContextStateReference*)> > GLContextStateReferenceUniquePtr;
     typedef std::unique_ptr<GLFramebufferReference,  std::function<void(GLFramebufferReference*)> >  GLFramebufferReferenceUniquePtr;
-    typedef std::unique_ptr<GLProgramReference,      std::function<void(GLProgramReference*)> >      GLProgramReferenceUniquePtr;
     typedef std::unique_ptr<GLRenderbufferReference, std::function<void(GLRenderbufferReference*)> > GLRenderbufferReferenceUniquePtr;
     typedef std::unique_ptr<GLShaderReference,       std::function<void(GLShaderReference*)> >       GLShaderReferenceUniquePtr;
     typedef std::unique_ptr<GLTextureReference,      std::function<void(GLTextureReference*)> >      GLTextureReferenceUniquePtr;

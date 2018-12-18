@@ -617,6 +617,26 @@ namespace OpenGL
 
 
     /* Rendering context state */
+    typedef struct GLContextStateBindingReferences
+    {
+        // todo: OpenGL::GLFramebufferReferenceUniquePtr  draw_framebuffer_reference_ptr;
+        // todo: OpenGL::GLFramebufferReferenceUniquePtr  read_framebuffer_reference_ptr;
+        // todo: OpenGL::GLRenderbufferReferenceUniquePtr renderbuffer_reference_ptr;
+
+        // todo std::unordered_map<IndexedBufferTarget,  IndexedBufferBinding, IndexedBufferTargetHashFunction> indexed_buffer_binding_ptrs;
+        // todo std::unordered_map<OpenGL::BufferTarget, OpenGL::GLBufferReferenceUniquePtr>                    nonindexed_buffer_binding_ptrs;
+        OpenGL::GLProgramReferenceUniquePtr program_reference_ptr;
+        // todo: OpenGL::GLVAOReferenceUniquePtr     vao_reference_ptr;
+
+        GLContextStateBindingReferences(OpenGL::GLProgramReferenceUniquePtr in_program_reference_ptr)
+            :program_reference_ptr(std::move(in_program_reference_ptr) )
+        {
+            /* Stub */
+        }
+    } GLContextStateBindingReferences;
+
+    typedef std::unique_ptr<GLContextStateBindingReferences, std::function<void(GLContextStateBindingReferences*)> > GLContextStateBindingReferencesUniquePtr;
+
     typedef struct ContextState
     {
         bool    is_primitive_restart_enabled;
@@ -697,9 +717,9 @@ namespace OpenGL
         uint32_t stencil_writemask_back;
         uint32_t stencil_writemask_front;
 
-        OpenGL::GLFramebufferReferenceUniquePtr  draw_framebuffer_reference_ptr;
-        OpenGL::GLFramebufferReferenceUniquePtr  read_framebuffer_reference_ptr;
-        OpenGL::GLRenderbufferReferenceUniquePtr renderbuffer_reference_ptr;
+        OpenGL::GLFramebufferReferenceUniquePtr  draw_framebuffer_proxy_reference_ptr;
+        OpenGL::GLFramebufferReferenceUniquePtr  read_framebuffer_proxy_reference_ptr;
+        OpenGL::GLRenderbufferReferenceUniquePtr renderbuffer_proxy_reference_ptr;
 
         uint32_t pack_alignment;
         uint32_t pack_image_height;
@@ -718,11 +738,11 @@ namespace OpenGL
         uint32_t unpack_skip_rows;
         bool     unpack_swap_bytes;
 
-        std::unordered_map<IndexedBufferTarget,  IndexedBufferBinding, IndexedBufferTargetHashFunction> indexed_buffer_binding_ptrs;
-        std::unordered_map<OpenGL::BufferTarget, OpenGL::GLBufferReferenceUniquePtr>                    nonindexed_buffer_binding_ptrs;
-        OpenGL::GLProgramReferenceUniquePtr                                                             program_reference_ptr;
+        std::unordered_map<IndexedBufferTarget,  IndexedBufferBinding, IndexedBufferTargetHashFunction> indexed_buffer_proxy_binding_ptrs;
+        std::unordered_map<OpenGL::BufferTarget, OpenGL::GLBufferReferenceUniquePtr>                    nonindexed_buffer_proxy_binding_ptrs;
+        OpenGL::GLProgramReferenceUniquePtr                                                             program_proxy_reference_ptr;
         std::unordered_map<TextureUnit, OpenGL::TextureUnitStateUniquePtr>                              texture_unit_to_state_ptr_map;
-        OpenGL::GLVAOReferenceUniquePtr                                                                 vao_reference_ptr;
+        OpenGL::GLVAOReferenceUniquePtr                                                                 vao_proxy_reference_ptr;
 
         OpenGL::HintMode hint_fragment_shader_derivative;
         OpenGL::HintMode hint_line_smooth;

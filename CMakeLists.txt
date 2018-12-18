@@ -16,6 +16,8 @@ add_subdirectory(deps/Anvil)
 add_subdirectory(deps/Detours_VKGL)
 add_subdirectory(deps/enkiTS)
 
+unset(CMAKE_DEBUG_POSTFIX CACHE)
+
 if (MSVC)
     add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 

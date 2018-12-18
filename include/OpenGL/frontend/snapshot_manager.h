@@ -64,18 +64,21 @@ namespace OpenGL
             ObjectReferenceUniquePtrType result_ptr(nullptr,
                                                     std::default_delete<ObjectReferenceType>() );
 
+            auto on_reference_created_func   = std::bind(&OpenGL::SnapshotManager<ObjectReferenceType, ObjectReferenceUniquePtrType, PayloadType>::on_reference_created,
+                                                         this,
+                                                         std::placeholders::_1);
+            auto on_reference_destroyed_func = std::bind(&OpenGL::SnapshotManager<ObjectReferenceType, ObjectReferenceUniquePtrType, PayloadType>::on_reference_destroyed,
+                                                         this,
+                                                         std::placeholders::_1);
+            auto acquire_reference_func      = std::bind(&OpenGL::SnapshotManager<ObjectReferenceType, ObjectReferenceUniquePtrType, PayloadType>::acquire_reference,
+                                                         this,
+                                                         in_payload);
+
             result_ptr.reset(
                 new ObjectReferenceType(in_payload,
-                                        std::bind(&OpenGL::SnapshotManager<ObjectReferenceType, ObjectReferenceUniquePtrType, PayloadType>::on_reference_created,
-                                                  this,
-                                                  std::placeholders::_1),
-                                        std::bind(&OpenGL::SnapshotManager<ObjectReferenceType, ObjectReferenceUniquePtrType, PayloadType>::on_reference_destroyed,
-                                                  this,
-                                                  std::placeholders::_1),
-                                        std::bind(&OpenGL::SnapshotManager<ObjectReferenceType, ObjectReferenceUniquePtrType, PayloadType>::acquire_reference,
-                                                  this,
-                                                  in_payload)
-                )
+                                        on_reference_created_func,
+                                        on_reference_destroyed_func,
+                                        acquire_reference_func)
             );
 
             if (result_ptr == nullptr)

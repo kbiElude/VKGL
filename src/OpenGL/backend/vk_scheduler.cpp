@@ -329,6 +329,7 @@ void OpenGL::VKScheduler::process_draw_arrays_command(OpenGL::CommandBaseUniqueP
         node_ptr = OpenGL::VKNodes::Draw::create_arrays(m_frontend_ptr,
                                                         m_backend_ptr,
                                                         std::move(command_ptr->state_reference_ptr),
+                                                        std::move(command_ptr->state_binding_references_ptr),
                                                         command_ptr->first,
                                                         command_ptr->count,
                                                         command_ptr->mode);

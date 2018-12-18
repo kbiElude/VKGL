@@ -229,7 +229,8 @@ namespace OpenGL
          * This function will only be called for nodes which report renderpass support, as some of the state information
          * is required to create Vulkan-side GFX pipelines, renderpasses, etc.
          */
-        virtual const OpenGL::ContextState* get_gl_context_state() const = 0;
+        virtual void get_gl_context_state(const OpenGL::ContextState**                    out_context_state_ptr_ptr,
+                                          const OpenGL::GLContextStateBindingReferences** out_context_state_binding_references_ptr_ptr) const = 0;
 
         virtual const VKFrameGraphNodeInfo* get_info_ptr() const = 0; //< contents may be altered by do_cpu_prepass() invocations.
 
