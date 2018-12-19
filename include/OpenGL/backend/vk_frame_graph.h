@@ -73,6 +73,44 @@ namespace OpenGL
             }
         } BufferSubRangeInfo;
 
+        struct CommandBufferDynamicState
+        {
+            Anvil::PipelineID bound_gfx_pipeline_id;
+            bool              is_gfx_pipeline_id_bound;
+
+            float             bound_dynamic_blend_color_state[4];
+            bool              is_dynamic_blend_color_state_bound;
+
+            float             bound_dynamic_line_width_state;
+            bool              is_dynamic_line_width_state_bound;
+
+            VkRect2D          bound_dynamic_scissor_state;
+            bool              is_dynamic_scissor_state_bound;
+
+            int32_t           bound_dynamic_stencil_compare_mask_back_state;
+            bool              is_dynamic_stencil_compare_mask_back_state_bound;
+
+            int32_t           bound_dynamic_stencil_compare_mask_front_state;
+            bool              is_dynamic_stencil_compare_mask_front_state_bound;
+
+            int32_t           bound_dynamic_stencil_reference_back_state;
+            bool              is_dynamic_stencil_reference_back_state_bound;
+
+            int32_t           bound_dynamic_stencil_reference_front_state;
+            bool              is_dynamic_stencil_reference_front_state_bound;
+
+            int32_t           bound_dynamic_stencil_write_mask_back_state;
+            bool              is_dynamic_stencil_write_mask_back_state_bound;
+
+            int32_t           bound_dynamic_stencil_write_mask_front_state;
+            bool              is_dynamic_stencil_write_mask_front_state_bound;
+
+            VkViewport        bound_dynamic_viewport_state;
+            bool              is_dynamic_viewport_state_bound;
+
+            CommandBufferDynamicState();
+        };
+
         typedef struct SwapchainImageInfo
         {
             /* NOTE: In OpenGL, default framebuffer encapsulates up to 3 aspects at once. In Vulkan, a swapchain only holds color data.
@@ -310,6 +348,30 @@ namespace OpenGL
                            Anvil::Semaphore***               out_wait_sems_ptr_ptr_ptr,
                            const Anvil::PipelineStageFlags** out_wait_sem_stage_mask_ptr_ptr) final;
 
+        bool get_bound_dynamic_blend_color_state               (float*             out_result_vec4_ptr) const final;
+        bool get_bound_dynamic_line_width_state                (float*             out_result_ptr)      const final;
+        bool get_bound_dynamic_scissor_state                   (VkRect2D*          out_result_ptr)      const final;
+        bool get_bound_dynamic_stencil_compare_mask_back_state (int32_t*           out_result_ptr)      const final;
+        bool get_bound_dynamic_stencil_compare_mask_front_state(int32_t*           out_result_ptr)      const final;
+        bool get_bound_dynamic_stencil_reference_back_state    (int32_t*           out_result_ptr)      const final;
+        bool get_bound_dynamic_stencil_reference_front_state   (int32_t*           out_result_ptr)      const final;
+        bool get_bound_dynamic_stencil_write_mask_back_state   (int32_t*           out_result_ptr)      const final;
+        bool get_bound_dynamic_stencil_write_mask_front_state  (int32_t*           out_result_ptr)      const final;
+        bool get_bound_dynamic_viewport_state                  (VkViewport*        out_result_ptr)      const final;
+        bool get_bound_pipeline_id                             (Anvil::PipelineID* out_result_ptr)      const final;
+
+        void set_bound_dynamic_blend_color_state               (const float*             in_data_vec4_ptr) final;
+        void set_bound_dynamic_line_width_state                (const float&             in_line_width)    final;
+        void set_bound_dynamic_scissor_state                   (const VkRect2D&          in_scissor)       final;
+        void set_bound_dynamic_stencil_compare_mask_back_state (const int32_t&           in_value)         final;
+        void set_bound_dynamic_stencil_compare_mask_front_state(const int32_t&           in_value)         final;
+        void set_bound_dynamic_stencil_reference_back_state    (const int32_t&           in_value)         final;
+        void set_bound_dynamic_stencil_reference_front_state   (const int32_t&           in_value)         final;
+        void set_bound_dynamic_stencil_write_mask_back_state   (const int32_t&           in_value)         final;
+        void set_bound_dynamic_stencil_write_mask_front_state  (const int32_t&           in_value)         final;
+        void set_bound_dynamic_viewport_state                  (const VkViewport&        in_viewport)      final;
+        void set_bound_pipeline_id                             (const Anvil::PipelineID& in_pipeline_id)   final;
+
         /* Private functions */
 
         VKFrameGraph(const OpenGL::IContextObjectManagers* in_frontend_ptr,
@@ -372,6 +434,9 @@ namespace OpenGL
         //<       Other types of graveyards are also used. Same rules apply.
         std::vector<Anvil::PrimaryCommandBufferUniquePtr> m_cmd_buffer_ptr_graveyard;
         std::vector<Anvil::SemaphoreUniquePtr>            m_sem_ptr_graveyard;
+
+        //< Only used at command buffer recording time.
+        CommandBufferDynamicState m_current_cmd_buffer_dynamic_state;
 
         std::mutex m_execute_mutex;
         std::mutex m_general_mutex;

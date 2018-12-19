@@ -30,6 +30,21 @@
     #undef min
 #endif
 
+OpenGL::VKFrameGraph::CommandBufferDynamicState::CommandBufferDynamicState()
+{
+    is_gfx_pipeline_id_bound                          = false;
+    is_dynamic_blend_color_state_bound                = false;
+    is_dynamic_line_width_state_bound                 = false;
+    is_dynamic_scissor_state_bound                    = false;
+    is_dynamic_stencil_compare_mask_back_state_bound  = false;
+    is_dynamic_stencil_compare_mask_front_state_bound = false;
+    is_dynamic_stencil_reference_back_state_bound     = false;
+    is_dynamic_stencil_reference_front_state_bound    = false;
+    is_dynamic_stencil_write_mask_back_state_bound    = false;
+    is_dynamic_stencil_write_mask_front_state_bound   = false;
+    is_dynamic_viewport_state_bound                   = false;
+}
+
 OpenGL::VKFrameGraph::GroupNode::~GroupNode()
 {
     graph_node_ptrs.clear                     ();
@@ -1751,6 +1766,118 @@ uint32_t OpenGL::VKFrameGraph::get_acquired_swapchain_image_index() const
     return m_acquired_swapchain_image_index;
 }
 
+bool OpenGL::VKFrameGraph::get_bound_dynamic_blend_color_state(float* out_result_vec4_ptr) const
+{
+    if (m_current_cmd_buffer_dynamic_state.is_dynamic_blend_color_state_bound)
+    {
+        memcpy(out_result_vec4_ptr,
+               m_current_cmd_buffer_dynamic_state.bound_dynamic_blend_color_state,
+               sizeof(float) * 4 /* vec4 */);
+    }
+
+    return m_current_cmd_buffer_dynamic_state.is_dynamic_blend_color_state_bound;
+}
+
+bool OpenGL::VKFrameGraph::get_bound_dynamic_line_width_state(float* out_result_ptr) const
+{
+    if (m_current_cmd_buffer_dynamic_state.is_dynamic_line_width_state_bound)
+    {
+        *out_result_ptr = m_current_cmd_buffer_dynamic_state.bound_dynamic_line_width_state;
+    }
+
+    return m_current_cmd_buffer_dynamic_state.is_dynamic_line_width_state_bound;
+}
+
+bool OpenGL::VKFrameGraph::get_bound_dynamic_scissor_state(VkRect2D* out_result_ptr) const
+{
+    if (m_current_cmd_buffer_dynamic_state.is_dynamic_scissor_state_bound)
+    {
+        *out_result_ptr = m_current_cmd_buffer_dynamic_state.bound_dynamic_scissor_state;
+    }
+
+    return m_current_cmd_buffer_dynamic_state.is_dynamic_scissor_state_bound;
+}
+
+bool OpenGL::VKFrameGraph::get_bound_dynamic_stencil_compare_mask_back_state(int32_t* out_result_ptr) const
+{
+    if (m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_compare_mask_back_state_bound)
+    {
+        *out_result_ptr = m_current_cmd_buffer_dynamic_state.bound_dynamic_stencil_compare_mask_back_state;
+    }
+
+    return m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_compare_mask_back_state_bound;
+}
+
+bool OpenGL::VKFrameGraph::get_bound_dynamic_stencil_compare_mask_front_state(int32_t* out_result_ptr) const
+{
+    if (m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_compare_mask_front_state_bound)
+    {
+        *out_result_ptr = m_current_cmd_buffer_dynamic_state.bound_dynamic_stencil_compare_mask_front_state;
+    }
+
+    return m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_compare_mask_front_state_bound;
+}
+
+bool OpenGL::VKFrameGraph::get_bound_dynamic_stencil_reference_back_state(int32_t* out_result_ptr) const
+{
+    if (m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_reference_back_state_bound)
+    {
+        *out_result_ptr = m_current_cmd_buffer_dynamic_state.bound_dynamic_stencil_reference_back_state;
+    }
+
+    return m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_reference_back_state_bound;
+}
+
+bool OpenGL::VKFrameGraph::get_bound_dynamic_stencil_reference_front_state(int32_t* out_result_ptr) const
+{
+    if (m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_reference_front_state_bound)
+    {
+        *out_result_ptr = m_current_cmd_buffer_dynamic_state.bound_dynamic_stencil_reference_front_state;
+    }
+
+    return m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_reference_front_state_bound;
+}
+
+bool OpenGL::VKFrameGraph::get_bound_dynamic_stencil_write_mask_back_state(int32_t* out_result_ptr) const
+{
+    if (m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_write_mask_back_state_bound)
+    {
+        *out_result_ptr = m_current_cmd_buffer_dynamic_state.bound_dynamic_stencil_write_mask_back_state;
+    }
+
+    return m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_write_mask_back_state_bound;
+}
+
+bool OpenGL::VKFrameGraph::get_bound_dynamic_stencil_write_mask_front_state(int32_t* out_result_ptr) const
+{
+    if (m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_write_mask_front_state_bound)
+    {
+        *out_result_ptr = m_current_cmd_buffer_dynamic_state.bound_dynamic_stencil_write_mask_front_state;
+    }
+
+    return m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_write_mask_front_state_bound;
+}
+
+bool OpenGL::VKFrameGraph::get_bound_dynamic_viewport_state(VkViewport* out_result_ptr) const
+{
+    if (m_current_cmd_buffer_dynamic_state.is_dynamic_viewport_state_bound)
+    {
+        *out_result_ptr = m_current_cmd_buffer_dynamic_state.bound_dynamic_viewport_state;
+    }
+
+    return m_current_cmd_buffer_dynamic_state.is_dynamic_viewport_state_bound;
+}
+
+bool OpenGL::VKFrameGraph::get_bound_pipeline_id(Anvil::PipelineID* out_result_ptr) const
+{
+    if (m_current_cmd_buffer_dynamic_state.is_gfx_pipeline_id_bound)
+    {
+        *out_result_ptr = m_current_cmd_buffer_dynamic_state.bound_gfx_pipeline_id;
+    }
+
+    return m_current_cmd_buffer_dynamic_state.is_gfx_pipeline_id_bound;
+}
+
 Anvil::PipelineID OpenGL::VKFrameGraph::get_pipeline_id(const OpenGL::DrawCallMode& in_draw_call_mode)
 {
     auto                                           backend_gfx_pipeline_manager_ptr    = m_backend_ptr->get_gfx_pipeline_manager_ptr();
@@ -2091,7 +2218,8 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
         CommandBufferSubmissionUniquePtr     current_submission_ptr = CommandBufferSubmissionUniquePtr(nullptr,
                                                                                                        std::default_delete<CommandBufferSubmission>() );
 
-        m_active_group_node_ptr = current_group_node_ptr.get();
+        m_active_group_node_ptr            = current_group_node_ptr.get();
+        m_current_cmd_buffer_dynamic_state = CommandBufferDynamicState();
 
         /* 1. Create a new cmd buffer submission */
         {
@@ -2360,6 +2488,75 @@ void OpenGL::VKFrameGraph::set_acquired_swapchain_image_index(const uint32_t& in
     }
 
     m_acquired_swapchain_image_index = in_index;
+}
+
+void OpenGL::VKFrameGraph::set_bound_dynamic_blend_color_state(const float* in_data_vec4_ptr)
+{
+    memcpy(m_current_cmd_buffer_dynamic_state.bound_dynamic_blend_color_state,
+           in_data_vec4_ptr,
+           sizeof(float) * 4 /* vec4 */);
+
+    m_current_cmd_buffer_dynamic_state.is_dynamic_blend_color_state_bound = true;
+}
+
+void OpenGL::VKFrameGraph::set_bound_dynamic_line_width_state(const float& in_line_width)
+{
+    m_current_cmd_buffer_dynamic_state.bound_dynamic_line_width_state    = in_line_width;
+    m_current_cmd_buffer_dynamic_state.is_dynamic_line_width_state_bound = true;
+}
+
+void OpenGL::VKFrameGraph::set_bound_dynamic_scissor_state(const VkRect2D& in_scissor)
+{
+    m_current_cmd_buffer_dynamic_state.bound_dynamic_scissor_state    = in_scissor;
+    m_current_cmd_buffer_dynamic_state.is_dynamic_scissor_state_bound = true;
+}
+
+void OpenGL::VKFrameGraph::set_bound_dynamic_stencil_compare_mask_back_state(const int32_t& in_value)
+{
+    m_current_cmd_buffer_dynamic_state.bound_dynamic_stencil_compare_mask_back_state    = in_value;
+    m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_compare_mask_back_state_bound = true;
+}
+
+void OpenGL::VKFrameGraph::set_bound_dynamic_stencil_compare_mask_front_state(const int32_t& in_value)
+{
+    m_current_cmd_buffer_dynamic_state.bound_dynamic_stencil_compare_mask_front_state    = in_value;
+    m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_compare_mask_front_state_bound = true;
+}
+
+void OpenGL::VKFrameGraph::set_bound_dynamic_stencil_reference_back_state(const int32_t& in_value)
+{
+    m_current_cmd_buffer_dynamic_state.bound_dynamic_stencil_reference_back_state    = in_value;
+    m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_reference_back_state_bound = true;
+}
+
+void OpenGL::VKFrameGraph::set_bound_dynamic_stencil_reference_front_state(const int32_t& in_value)
+{
+    m_current_cmd_buffer_dynamic_state.bound_dynamic_stencil_reference_front_state    = in_value;
+    m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_reference_front_state_bound = true;
+}
+
+void OpenGL::VKFrameGraph::set_bound_dynamic_stencil_write_mask_back_state(const int32_t& in_value)
+{
+    m_current_cmd_buffer_dynamic_state.bound_dynamic_stencil_write_mask_back_state    = in_value;
+    m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_write_mask_back_state_bound = true;
+}
+
+void OpenGL::VKFrameGraph::set_bound_dynamic_stencil_write_mask_front_state(const int32_t& in_value)
+{
+    m_current_cmd_buffer_dynamic_state.bound_dynamic_stencil_write_mask_front_state    = in_value;
+    m_current_cmd_buffer_dynamic_state.is_dynamic_stencil_write_mask_front_state_bound = true;
+}
+
+void OpenGL::VKFrameGraph::set_bound_dynamic_viewport_state(const VkViewport& in_viewport)
+{
+    m_current_cmd_buffer_dynamic_state.bound_dynamic_viewport_state    = in_viewport;
+    m_current_cmd_buffer_dynamic_state.is_dynamic_viewport_state_bound = true;
+}
+
+void OpenGL::VKFrameGraph::set_bound_pipeline_id(const Anvil::PipelineID& in_pipeline_id)
+{
+    m_current_cmd_buffer_dynamic_state.bound_gfx_pipeline_id    = in_pipeline_id;
+    m_current_cmd_buffer_dynamic_state.is_gfx_pipeline_id_bound = true;
 }
 
 void OpenGL::VKFrameGraph::set_swapchain_image_acquired_sem(Anvil::Semaphore* in_sem_ptr)

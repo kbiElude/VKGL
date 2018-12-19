@@ -317,7 +317,8 @@ Anvil::GraphicsPipelineCreateInfoUniquePtr OpenGL::VKGFXPipelineManager::GFXPipe
     result_ptr->toggle_depth_clamp      (gl_state.is_depth_clamp_enabled);
     result_ptr->toggle_depth_test       (gl_state.is_depth_test_enabled,
                                          OpenGL::VKUtils::get_anvil_compare_op_for_depth_function(gl_state.depth_function) );
-    result_ptr->toggle_depth_writes     (gl_state.depth_writemask);
+    result_ptr->toggle_depth_writes     ((gl_state.is_depth_test_enabled) ? gl_state.depth_writemask
+                                                                          : false);
     result_ptr->toggle_dynamic_states   (true, /* in_should_enable */
                                          {Anvil::DynamicState::BLEND_CONSTANTS,
                                           Anvil::DynamicState::LINE_WIDTH,
@@ -582,7 +583,8 @@ OpenGL::VKGFXPipelineManager::GFXPipelineProps::GFXPipelineProps(IBackend*      
                                                                  const Anvil::SubPassID&                        in_subpass_id)
     :device_ptr(in_backend_ptr->get_device_ptr() ),
      gl_state  (in_context_state_ptr,
-                in_context_state_binding_refs_ptr)
+                in_context_state_binding_refs_ptr),
+     rp_ptr    (in_rp_ptr)
 {
     auto gfx_pipeline_create_info_ptr = create_create_info_ptr(in_frontend_ptr->get_vao_manager_ptr (),
                                                                in_backend_ptr->get_spirv_manager_ptr(),

@@ -476,6 +476,31 @@ namespace OpenGL
 
         virtual void set_acquired_swapchain_image_index(const uint32_t&   in_index)   = 0;
         virtual void set_swapchain_image_acquired_sem  (Anvil::Semaphore* in_sem_ptr) = 0;
+
+        //> All functions below describe state associated with the cmd buffer the commands are to be recorded for.
+        virtual bool get_bound_pipeline_id                             (Anvil::PipelineID* out_result_ptr)      const = 0;
+        virtual bool get_bound_dynamic_blend_color_state               (float*             out_result_vec4_ptr) const = 0;
+        virtual bool get_bound_dynamic_line_width_state                (float*             out_result_ptr)      const = 0;
+        virtual bool get_bound_dynamic_scissor_state                   (VkRect2D*          out_result_ptr)      const = 0;
+        virtual bool get_bound_dynamic_stencil_compare_mask_back_state (int32_t*           out_result_ptr)      const = 0;
+        virtual bool get_bound_dynamic_stencil_compare_mask_front_state(int32_t*           out_result_ptr)      const = 0;
+        virtual bool get_bound_dynamic_stencil_reference_back_state    (int32_t*           out_result_ptr)      const = 0;
+        virtual bool get_bound_dynamic_stencil_reference_front_state   (int32_t*           out_result_ptr)      const = 0;
+        virtual bool get_bound_dynamic_stencil_write_mask_back_state   (int32_t*           out_result_ptr)      const = 0;
+        virtual bool get_bound_dynamic_stencil_write_mask_front_state  (int32_t*           out_result_ptr)      const = 0;
+        virtual bool get_bound_dynamic_viewport_state                  (VkViewport*        out_result_ptr)      const = 0;
+
+        virtual void set_bound_pipeline_id                             (const Anvil::PipelineID& in_pipeline_id)   = 0;
+        virtual void set_bound_dynamic_blend_color_state               (const float*             in_data_vec4_ptr) = 0;
+        virtual void set_bound_dynamic_line_width_state                (const float&             in_line_width)    = 0;
+        virtual void set_bound_dynamic_scissor_state                   (const VkRect2D&          in_scissor)       = 0;
+        virtual void set_bound_dynamic_stencil_compare_mask_back_state (const int32_t&           in_value)         = 0;
+        virtual void set_bound_dynamic_stencil_compare_mask_front_state(const int32_t&           in_value)         = 0;
+        virtual void set_bound_dynamic_stencil_reference_back_state    (const int32_t&           in_value)         = 0;
+        virtual void set_bound_dynamic_stencil_reference_front_state   (const int32_t&           in_value)         = 0;
+        virtual void set_bound_dynamic_stencil_write_mask_back_state   (const int32_t&           in_value)         = 0;
+        virtual void set_bound_dynamic_stencil_write_mask_front_state  (const int32_t&           in_value)         = 0;
+        virtual void set_bound_dynamic_viewport_state                  (const VkViewport&        in_viewport)      = 0;
     };
 };
 

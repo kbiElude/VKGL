@@ -2,6 +2,7 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+#include "Anvil/include/wrappers/command_buffer.h"
 #include "Anvil/include/wrappers/swapchain.h"
 #include "OpenGL/backend/nodes/vk_draw_node.h"
 #include "OpenGL/backend/vk_buffer_manager.h"
@@ -236,6 +237,225 @@ void OpenGL::VKNodes::Draw::record_commands(Anvil::CommandBufferBase*  in_cmd_bu
     pipeline_id = in_graph_callback_ptr->get_pipeline_id(m_args.mode);
     vkgl_assert(pipeline_id != UINT32_MAX);
 
-    /* TODO */
-    vkgl_not_implemented();
+    /* Update pipeline states */
+    {
+        Anvil::PipelineID bound_pipeline_id = UINT32_MAX;
+
+        if (!in_graph_callback_ptr->get_bound_pipeline_id(&bound_pipeline_id)                ||
+             bound_pipeline_id                                                != pipeline_id)
+        {
+            in_cmd_buffer_ptr->record_bind_pipeline(Anvil::PipelineBindPoint::GRAPHICS,
+                                                    pipeline_id);
+
+            in_graph_callback_ptr->set_bound_pipeline_id(pipeline_id);
+        }
+    }
+
+    {
+        float      bound_dynamic_blend_color_state[4];
+        const bool needs_blend_constants              = (m_frontend_context_state_ptr->is_blend_enabled)                                                        &&
+                                                        (m_frontend_context_state_ptr->blend_func_dst_alpha == OpenGL::BlendFunction::Constant_Alpha           ||
+                                                         m_frontend_context_state_ptr->blend_func_dst_alpha == OpenGL::BlendFunction::Constant_Color           ||
+                                                         m_frontend_context_state_ptr->blend_func_dst_alpha == OpenGL::BlendFunction::One_Minus_Constant_Alpha ||
+                                                         m_frontend_context_state_ptr->blend_func_dst_alpha == OpenGL::BlendFunction::One_Minus_Constant_Color ||
+                                                         m_frontend_context_state_ptr->blend_func_dst_rgb   == OpenGL::BlendFunction::Constant_Alpha           ||
+                                                         m_frontend_context_state_ptr->blend_func_dst_rgb   == OpenGL::BlendFunction::Constant_Color           ||
+                                                         m_frontend_context_state_ptr->blend_func_dst_rgb   == OpenGL::BlendFunction::One_Minus_Constant_Alpha ||
+                                                         m_frontend_context_state_ptr->blend_func_dst_rgb   == OpenGL::BlendFunction::One_Minus_Constant_Color ||
+                                                         m_frontend_context_state_ptr->blend_func_src_alpha == OpenGL::BlendFunction::Constant_Alpha           ||
+                                                         m_frontend_context_state_ptr->blend_func_src_alpha == OpenGL::BlendFunction::Constant_Color           ||
+                                                         m_frontend_context_state_ptr->blend_func_src_alpha == OpenGL::BlendFunction::One_Minus_Constant_Alpha ||
+                                                         m_frontend_context_state_ptr->blend_func_src_alpha == OpenGL::BlendFunction::One_Minus_Constant_Color ||
+                                                         m_frontend_context_state_ptr->blend_func_src_rgb   == OpenGL::BlendFunction::Constant_Alpha           ||
+                                                         m_frontend_context_state_ptr->blend_func_src_rgb   == OpenGL::BlendFunction::Constant_Color           ||
+                                                         m_frontend_context_state_ptr->blend_func_src_rgb   == OpenGL::BlendFunction::One_Minus_Constant_Alpha ||
+                                                         m_frontend_context_state_ptr->blend_func_src_rgb   == OpenGL::BlendFunction::One_Minus_Constant_Color);
+
+        if (needs_blend_constants                                                                            &&
+            (!in_graph_callback_ptr->get_bound_dynamic_blend_color_state(bound_dynamic_blend_color_state)    ||
+              fabs(bound_dynamic_blend_color_state[0] - m_frontend_context_state_ptr->blend_color[0]) > 1e-4 ||
+              fabs(bound_dynamic_blend_color_state[1] - m_frontend_context_state_ptr->blend_color[1]) > 1e-4 ||
+              fabs(bound_dynamic_blend_color_state[2] - m_frontend_context_state_ptr->blend_color[2]) > 1e-4 ||
+              fabs(bound_dynamic_blend_color_state[3] - m_frontend_context_state_ptr->blend_color[3]) ))
+        {
+            in_cmd_buffer_ptr->record_set_blend_constants(m_frontend_context_state_ptr->blend_color);
+
+            in_graph_callback_ptr->set_bound_dynamic_blend_color_state(m_frontend_context_state_ptr->blend_color);
+        }
+    }
+
+    {
+        /* TODO: Exclude if final vertex stage does not generate one of the line primitive types. */
+        float bound_line_width_state = 0.0f;
+
+        if (!in_graph_callback_ptr->get_bound_dynamic_line_width_state(&bound_line_width_state)         ||
+             fabs(bound_line_width_state - m_frontend_context_state_ptr->line_width)            > 1e-4)
+        {
+            const float& line_width = m_frontend_context_state_ptr->line_width;
+
+            in_cmd_buffer_ptr->record_set_line_width(line_width);
+
+            in_graph_callback_ptr->set_bound_dynamic_line_width_state(m_frontend_context_state_ptr->line_width);
+        }
+    }
+
+    {
+        VkRect2D   bound_scissor_state;
+        const bool needs_scissor_state = m_frontend_context_state_ptr->is_scissor_test_enabled;
+
+        if ( needs_scissor_state                                                                                                          ||
+            !in_graph_callback_ptr->get_bound_dynamic_scissor_state(&bound_scissor_state)                                                 ||
+             bound_scissor_state.extent.height                                            != m_frontend_context_state_ptr->scissor_box[3] ||
+             bound_scissor_state.extent.width                                             != m_frontend_context_state_ptr->scissor_box[2] ||
+             bound_scissor_state.offset.x                                                 != m_frontend_context_state_ptr->scissor_box[0] ||
+             bound_scissor_state.offset.y                                                 != m_frontend_context_state_ptr->scissor_box[1])
+        {
+            VkRect2D scissor;
+
+            scissor.extent.height = m_frontend_context_state_ptr->scissor_box[3];
+            scissor.extent.width  = m_frontend_context_state_ptr->scissor_box[2];
+            scissor.offset.x      = m_frontend_context_state_ptr->scissor_box[0];
+            scissor.offset.y      = m_frontend_context_state_ptr->scissor_box[1];
+
+            in_cmd_buffer_ptr->record_set_scissor(0, /* in_first_scissor */
+                                                  1, /* in_scissor_count */
+                                                 &scissor);
+
+            in_graph_callback_ptr->set_bound_dynamic_scissor_state(scissor);
+        }
+    }
+
+    {
+        const bool needs_stencil_state = m_frontend_context_state_ptr->is_stencil_test_enabled;
+
+        if (needs_stencil_state)
+        {
+            /* Compare masks */
+            {
+                int32_t bound_stencil_compare_mask_back = 0;
+
+                if (!in_graph_callback_ptr->get_bound_dynamic_stencil_compare_mask_back_state(&bound_stencil_compare_mask_back) ||
+                     bound_stencil_compare_mask_back                                                                            != m_frontend_context_state_ptr->stencil_value_mask_back)
+                {
+                    const auto& stencil_compare_mask_back = m_frontend_context_state_ptr->stencil_value_mask_back;
+
+                    in_cmd_buffer_ptr->record_set_stencil_compare_mask(Anvil::StencilFaceFlagBits::BACK_BIT,
+                                                                       stencil_compare_mask_back);
+
+                    in_graph_callback_ptr->set_bound_dynamic_stencil_compare_mask_back_state(stencil_compare_mask_back);
+                }
+            }
+
+            {
+                int32_t bound_stencil_compare_mask_front = 0;
+
+                if (!in_graph_callback_ptr->get_bound_dynamic_stencil_compare_mask_front_state(&bound_stencil_compare_mask_front) ||
+                     bound_stencil_compare_mask_front                                                                             != m_frontend_context_state_ptr->stencil_value_mask_front)
+                {
+                    const auto& stencil_compare_mask_front = m_frontend_context_state_ptr->stencil_value_mask_front;
+
+                    in_cmd_buffer_ptr->record_set_stencil_compare_mask(Anvil::StencilFaceFlagBits::FRONT_BIT,
+                                                                       stencil_compare_mask_front);
+
+                    in_graph_callback_ptr->set_bound_dynamic_stencil_compare_mask_front_state(stencil_compare_mask_front);
+                }
+            }
+
+            /* Reference values */
+            {
+                int32_t bound_stencil_reference_back = 0;
+
+                if (!in_graph_callback_ptr->get_bound_dynamic_stencil_reference_back_state(&bound_stencil_reference_back)                                                                ||
+                     bound_stencil_reference_back                                                                         != m_frontend_context_state_ptr->stencil_reference_value_back)
+                {
+                    const auto& stencil_reference_back = m_frontend_context_state_ptr->stencil_reference_value_back;
+
+                    in_cmd_buffer_ptr->record_set_stencil_reference(Anvil::StencilFaceFlagBits::BACK_BIT,
+                                                                    stencil_reference_back);
+
+                    in_graph_callback_ptr->set_bound_dynamic_stencil_reference_back_state(stencil_reference_back);
+                }
+            }
+
+            {
+                int32_t bound_stencil_reference_front = 0;
+
+                if (!in_graph_callback_ptr->get_bound_dynamic_stencil_reference_front_state(&bound_stencil_reference_front)                                                              ||
+                     bound_stencil_reference_front                                                                        != m_frontend_context_state_ptr->stencil_reference_value_front)
+                {
+                    const auto& stencil_reference_front = m_frontend_context_state_ptr->stencil_reference_value_front;
+
+                    in_cmd_buffer_ptr->record_set_stencil_reference(Anvil::StencilFaceFlagBits::FRONT_BIT,
+                                                                    stencil_reference_front);
+
+                    in_graph_callback_ptr->set_bound_dynamic_stencil_reference_front_state(stencil_reference_front);
+                }
+            }
+
+            /* Write masks */
+            {
+                int32_t bound_stencil_write_mask_back = 0;
+
+                if (!in_graph_callback_ptr->get_bound_dynamic_stencil_write_mask_back_state(&bound_stencil_write_mask_back)                                                          ||
+                    bound_stencil_write_mask_back                                                                           != m_frontend_context_state_ptr->stencil_writemask_back)
+                {
+                    const auto& stencil_write_mask_back  = m_frontend_context_state_ptr->stencil_writemask_back;
+
+                    in_cmd_buffer_ptr->record_set_stencil_write_mask(Anvil::StencilFaceFlagBits::BACK_BIT,
+                                                                     stencil_write_mask_back);
+
+                    in_graph_callback_ptr->set_bound_dynamic_stencil_write_mask_back_state(stencil_write_mask_back);
+                }
+            }
+
+            {
+                int32_t bound_stencil_write_mask_front = 0;
+
+                if (!in_graph_callback_ptr->get_bound_dynamic_stencil_write_mask_front_state(&bound_stencil_write_mask_front)                                                          ||
+                    bound_stencil_write_mask_front                                                                            != m_frontend_context_state_ptr->stencil_writemask_front)
+                {
+                    const auto& stencil_write_mask_front = m_frontend_context_state_ptr->stencil_writemask_front;
+
+                    in_cmd_buffer_ptr->record_set_stencil_write_mask(Anvil::StencilFaceFlagBits::FRONT_BIT,
+                                                                     stencil_write_mask_front);
+
+                    in_graph_callback_ptr->set_bound_dynamic_stencil_write_mask_front_state(stencil_write_mask_front);
+                }
+            }
+        }
+    }
+
+    {
+        VkViewport bound_viewport;
+
+        if (in_graph_callback_ptr->get_bound_dynamic_viewport_state(&bound_viewport)                                                 ||
+            bound_viewport.height                                                    != m_frontend_context_state_ptr->viewport[3]    ||
+            bound_viewport.maxDepth                                                  != m_frontend_context_state_ptr->depth_range[1] ||
+            bound_viewport.minDepth                                                  != m_frontend_context_state_ptr->depth_range[0] ||
+            bound_viewport.width                                                     != m_frontend_context_state_ptr->viewport   [2] ||
+            bound_viewport.x                                                         != m_frontend_context_state_ptr->viewport   [0] ||
+            bound_viewport.y                                                         != m_frontend_context_state_ptr->viewport   [1])
+        {
+            VkViewport viewport;
+
+            viewport.height   = m_frontend_context_state_ptr->viewport   [3];
+            viewport.maxDepth = m_frontend_context_state_ptr->depth_range[1];
+            viewport.minDepth = m_frontend_context_state_ptr->depth_range[0];
+            viewport.width    = m_frontend_context_state_ptr->viewport   [2];
+            viewport.x        = m_frontend_context_state_ptr->viewport   [0];
+            viewport.y        = m_frontend_context_state_ptr->viewport   [1];
+
+            in_cmd_buffer_ptr->record_set_viewport(0, /* in_first_viewport */
+                                                   1, /* in_viewport_count */
+                                                  &viewport);
+
+            in_graph_callback_ptr->set_bound_dynamic_viewport_state(viewport);
+        }
+    }
+
+    /* Issue the draw call */
+    in_cmd_buffer_ptr->record_draw(m_args.count,
+                                   1, /* in_instance_count */
+                                   m_args.first,
+                                   0); /* in_first_instance */
 }
