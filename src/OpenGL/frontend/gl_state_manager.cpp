@@ -13,13 +13,15 @@ OpenGL::GLStateManager::GLStateManager(const IGLLimits*                         
                                        const IGLObjectManager<OpenGL::GLBufferReferenceUniquePtr>*       in_buffer_manager_ptr,
                                        const IGLObjectManager<OpenGL::GLFramebufferReferenceUniquePtr>*  in_framebuffer_manager_ptr,
                                        const IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>* in_renderbuffer_manager_ptr,
-                                       const IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*          in_vao_manager_ptr)
+                                       const IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*          in_vao_manager_ptr,
+                                       const VKGL::IWSIContext*                                          in_wsi_context_ptr)
     :m_buffer_manager_ptr      (in_buffer_manager_ptr),
      m_current_error_code      (OpenGL::ErrorCode::No_Error),
      m_framebuffer_manager_ptr (in_framebuffer_manager_ptr),
      m_limits_ptr              (in_limits_ptr),
      m_renderbuffer_manager_ptr(in_renderbuffer_manager_ptr),
-     m_vao_manager_ptr         (in_vao_manager_ptr)
+     m_vao_manager_ptr         (in_vao_manager_ptr),
+     m_wsi_context_ptr         (in_wsi_context_ptr)
 {
     /* Initialize snapshot manager.. */
     m_snapshot_manager_ptr.reset(
@@ -76,8 +78,14 @@ std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLStateManager::creat
     std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
                                                                   [](void* in_ptr){ delete reinterpret_cast<OpenGL::ContextState*>(in_ptr); });
 
-    const int32_t scissor [4] = {0, 0, 0, 0}; /* TODO */
-    const int32_t viewport[4] = {0, 0, 0, 0}; /* TODO */
+    int32_t scissor [4] = {0, 0, 0, 0};
+    int32_t viewport[4] = {0, 0, 0, 0};
+
+    m_wsi_context_ptr->get_rendering_surface_size(reinterpret_cast<uint32_t*>(viewport + 2),  /* out_width_ptr  */
+                                                  reinterpret_cast<uint32_t*>(viewport + 3)); /* out_height_ptr */
+
+    scissor[2] = viewport[2];
+    scissor[3] = viewport[3];
 
     result_ptr.reset(
         new OpenGL::ContextState(m_buffer_manager_ptr,

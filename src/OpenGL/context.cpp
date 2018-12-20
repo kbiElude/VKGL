@@ -2795,7 +2795,8 @@ bool OpenGL::Context::init()
                                    dynamic_cast<IGLObjectManager<OpenGL::GLBufferReferenceUniquePtr>*>      (m_gl_buffer_manager_ptr.get      () ),
                                    dynamic_cast<IGLObjectManager<OpenGL::GLFramebufferReferenceUniquePtr>*> (m_gl_framebuffer_manager_ptr.get () ),
                                    dynamic_cast<IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>*>(m_gl_renderbuffer_manager_ptr.get() ),
-                                   dynamic_cast<IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*>         (m_gl_vao_manager_ptr.get         () ) )
+                                   dynamic_cast<IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*>         (m_gl_vao_manager_ptr.get         () ),
+                                   m_wsi_context_ptr)
     );
 
     if (m_gl_state_manager_ptr == nullptr)

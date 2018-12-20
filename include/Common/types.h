@@ -85,13 +85,15 @@ namespace VKGL
             /* Stub */
         }
 
-        virtual const VKGL::PixelFormatRequirements& get_pixel_format_requirements() const = 0;
-        virtual const int&                           get_swap_interval            () const = 0;
-        virtual const bool&                          is_debug_context             () const = 0;
-        virtual const bool&                          is_forward_compatible_context() const = 0;
-        virtual const uint32_t&                      get_major_version            () const = 0;
-        virtual const uint32_t&                      get_minor_version            () const = 0;
-        virtual const uint32_t&                      get_n_layer_plane            () const = 0;
+        virtual const uint32_t&                      get_major_version            ()                         const = 0;
+        virtual const uint32_t&                      get_minor_version            ()                         const = 0;
+        virtual const uint32_t&                      get_n_layer_plane            ()                         const = 0;
+        virtual void                                 get_rendering_surface_size   (uint32_t* out_width_ptr,
+                                                                                   uint32_t* out_height_ptr) const = 0;
+        virtual const VKGL::PixelFormatRequirements& get_pixel_format_requirements()                         const = 0;
+        virtual const int&                           get_swap_interval            ()                         const = 0;
+        virtual const bool&                          is_debug_context             ()                         const = 0;
+        virtual const bool&                          is_forward_compatible_context()                         const = 0;
     };
 }
 

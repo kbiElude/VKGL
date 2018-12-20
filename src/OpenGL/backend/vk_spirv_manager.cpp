@@ -69,9 +69,7 @@ void OpenGL::VKSPIRVManager::compile_shader(ShaderData* in_shader_data_ptr)
     const char*                       glsl_code_ptr        = in_shader_data_ptr->glsl.c_str();
     std::unique_ptr<glslang::TShader> glslang_shader_ptr;
     const auto                        glslang_shader_stage = OpenGL::Utils::get_sh_language_for_opengl_shader_type(in_shader_data_ptr->type);
-    const char*                       sm_entrypoint_name   = (in_shader_data_ptr->type == OpenGL::ShaderType::Fragment) ? "main_fs"
-                                                           : (in_shader_data_ptr->type == OpenGL::ShaderType::Geometry) ? "main_gs"
-                                                                                                                        : "main_vs";
+    const char*                       sm_entrypoint_name   = "main";
 
     vkgl_assert(in_shader_data_ptr->type == OpenGL::ShaderType::Fragment ||
                 in_shader_data_ptr->type == OpenGL::ShaderType::Geometry ||
@@ -186,7 +184,7 @@ OpenGL::PostLinkDataUniquePtr OpenGL::VKSPIRVManager::create_post_link_data(cons
         live_attribute_props.type     = get_variable_type_for_glslang_type(*live_attribute_type_ptr);
 
         result_ptr->active_attribute_max_length = std::max(result_ptr->active_attribute_max_length,
-                                                           live_attribute_props.name.length() + 1);
+                                                           static_cast<uint32_t>(live_attribute_props.name.length() + 1) );
 
         vkgl_assert(result_ptr->active_attribute_name_to_location_map.find(live_attribute_props.name) == result_ptr->active_attribute_name_to_location_map.end() );
         result_ptr->active_attribute_name_to_location_map[live_attribute_props.name] = live_attribute_props.location;

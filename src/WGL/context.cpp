@@ -79,6 +79,25 @@ WGL::Context* WGL::Context::create(const HDC&     in_hdc,
     return result_ptr;
 }
 
+void WGL::Context::get_rendering_surface_size(uint32_t* out_width_ptr,
+                                              uint32_t* out_height_ptr) const
+{
+    vkgl_assert(m_current_hdc  != nullptr);
+    vkgl_assert(out_height_ptr != nullptr);
+    vkgl_assert(out_width_ptr  != nullptr);
+
+    HWND hwnd = ::WindowFromDC(m_current_hdc);
+    RECT rect = {0};
+
+    vkgl_assert(hwnd != nullptr);
+
+    ::GetClientRect(hwnd,
+                   &rect);
+
+    *out_width_ptr  = rect.right - rect.left;
+    *out_height_ptr = rect.bottom - rect.top;
+}
+
 bool WGL::Context::init(const HDC&     in_hdc,
                         const Context* in_share_context_ptr,
                         const int*     in_attribute_list_ptr)
@@ -250,9 +269,6 @@ bool WGL::Context::init(const HDC&     in_hdc,
 end:
     vkgl_assert(result);
 
-    result = init_gl_context();
-    vkgl_assert(result);
-
     if (result)
     {
         /* Also update the global HDC->context map */
@@ -321,6 +337,19 @@ void WGL::Context::set_current_hdc(const HDC& in_hdc)
 
         /* Update the HDC associated with the WGL context */
         m_current_hdc = in_hdc;
+
+        /* Create a GL context, if none has been associated with this WGL context yet.
+         *
+         * NOTE: GL context initialization requires a non-null DC handle which is why this step
+         *       is not performed at WGL context creation time.
+         */
+        if (m_gl_context_ptr == nullptr &&
+            in_hdc           != nullptr)
+        {
+            bool result = init_gl_context();
+
+            vkgl_assert(result);
+        }
 
         /* Inform backend of the event */
         HWND hdc_window = ::WindowFromDC(in_hdc);

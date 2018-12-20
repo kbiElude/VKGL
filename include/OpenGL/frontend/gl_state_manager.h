@@ -18,7 +18,8 @@ namespace OpenGL
                        const IGLObjectManager<GLBufferReferenceUniquePtr>*               in_buffer_manager_ptr,
                        const IGLObjectManager<OpenGL::GLFramebufferReferenceUniquePtr>*  in_framebuffer_manager_ptr,
                        const IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>* in_renderbuffer_manager_ptr,
-                       const IGLObjectManager<GLVAOReferenceUniquePtr>*                  in_vao_manager_ptr);
+                       const IGLObjectManager<GLVAOReferenceUniquePtr>*                  in_vao_manager_ptr,
+                       const VKGL::IWSIContext*                                          in_wsi_context_ptr);
        ~GLStateManager();
 
        GLContextStateReferenceUniquePtr acquire_current_latest_snapshot_reference();
@@ -158,6 +159,7 @@ namespace OpenGL
         const IGLObjectManager<GLRenderbufferReferenceUniquePtr>*                                                                           m_renderbuffer_manager_ptr;
         std::unique_ptr<OpenGL::SnapshotManager<GLContextStateReference, GLContextStateReferenceUniquePtr, OpenGL::GLContextStatePayload> > m_snapshot_manager_ptr;
         const IGLObjectManager<GLVAOReferenceUniquePtr>*                                                                                    m_vao_manager_ptr;
+        const VKGL::IWSIContext*                                                                                                            m_wsi_context_ptr;
 
         std::unordered_map<OpenGL::ContextProperty,    PropertyData> m_context_prop_map;
         std::unordered_map<OpenGL::PixelStoreProperty, PropertyData> m_pixel_store_prop_map;

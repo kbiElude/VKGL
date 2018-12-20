@@ -87,6 +87,9 @@ namespace WGL
             return m_n_layer_plane;
         }
 
+        void get_rendering_surface_size(uint32_t* out_width_ptr,
+                                        uint32_t* out_height_ptr) const;
+
         void set_current_hdc(const HDC& in_hdc);
 
         void set_swap_interval(const int& in_swap_interval)
