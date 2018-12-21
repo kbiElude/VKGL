@@ -264,6 +264,12 @@ Anvil::GraphicsPipelineCreateInfoUniquePtr OpenGL::VKGFXPipelineManager::GFXPipe
         {
             const auto& current_binding = vao_state_ptr->vertex_attribute_arrays.at(n_binding);
 
+            /* TODO: This should actually be taking program-side binding information, not VAO's! */
+            if (!current_binding.enabled)
+            {
+                continue;
+            }
+
             result_ptr->add_vertex_attribute(n_binding,
                                              get_format_for_vaa(current_binding),
                                              static_cast<uint32_t>(reinterpret_cast<uint64_t>(current_binding.pointer) ),
