@@ -6,6 +6,7 @@
 #include "OpenGL/backend/vk_utils.h"
 #include "OpenGL/frontend/gl_program_manager.h"
 #include "OpenGL/frontend/gl_state_manager.h"
+#include "OpenGL/frontend/gl_vao_manager.h"
 
 OpenGL::GLContextStateBindingReferencesUniquePtr OpenGL::VKUtils::create_gl_context_state_binding_references(const OpenGL::IContextObjectManagers*  in_frontend_managers_ptr,
                                                                                                              const OpenGL::GLContextStateReference* in_context_state_reference_ptr)
@@ -15,6 +16,7 @@ OpenGL::GLContextStateBindingReferencesUniquePtr OpenGL::VKUtils::create_gl_cont
     auto                                           program_manager_ptr = in_frontend_managers_ptr->get_program_manager_ptr();
     auto                                           state_manager_ptr   = in_frontend_managers_ptr->get_state_manager_ptr  ();
     const auto                                     state_ptr           = state_manager_ptr->get_state                     (in_context_state_reference_ptr->get_payload().time_marker);
+    auto                                           vao_manager_ptr     = in_frontend_managers_ptr->get_vao_manager_ptr    ();
 
     if (state_ptr == nullptr)
     {
@@ -25,11 +27,14 @@ OpenGL::GLContextStateBindingReferencesUniquePtr OpenGL::VKUtils::create_gl_cont
 
     {
         auto program_reference_ptr = program_manager_ptr->acquire_current_latest_snapshot_reference(state_ptr->program_proxy_reference_ptr->get_payload().id);
+        auto vao_reference_ptr     = vao_manager_ptr->acquire_current_latest_snapshot_reference    (state_ptr->vao_proxy_reference_ptr->get_payload().id);
 
         vkgl_assert(program_reference_ptr != nullptr);
+        vkgl_assert(vao_reference_ptr     != nullptr);
 
         result_ptr.reset(
-            new OpenGL::GLContextStateBindingReferences(std::move(program_reference_ptr) )
+            new OpenGL::GLContextStateBindingReferences(std::move(program_reference_ptr),
+                                                        std::move(vao_reference_ptr) )
         );
         vkgl_assert(result_ptr != nullptr);
     }

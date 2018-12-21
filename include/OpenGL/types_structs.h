@@ -626,10 +626,12 @@ namespace OpenGL
         // todo std::unordered_map<IndexedBufferTarget,  IndexedBufferBinding, IndexedBufferTargetHashFunction> indexed_buffer_binding_ptrs;
         // todo std::unordered_map<OpenGL::BufferTarget, OpenGL::GLBufferReferenceUniquePtr>                    nonindexed_buffer_binding_ptrs;
         OpenGL::GLProgramReferenceUniquePtr program_reference_ptr;
-        // todo: OpenGL::GLVAOReferenceUniquePtr     vao_reference_ptr;
+        OpenGL::GLVAOReferenceUniquePtr     vao_reference_ptr;
 
-        GLContextStateBindingReferences(OpenGL::GLProgramReferenceUniquePtr in_program_reference_ptr)
-            :program_reference_ptr(std::move(in_program_reference_ptr) )
+        GLContextStateBindingReferences(OpenGL::GLProgramReferenceUniquePtr in_program_reference_ptr,
+                                        OpenGL::GLVAOReferenceUniquePtr     in_vao_reference_ptr)
+            :program_reference_ptr(std::move(in_program_reference_ptr) ),
+             vao_reference_ptr    (std::move(in_vao_reference_ptr)     )
         {
             /* Stub */
         }
@@ -913,6 +915,7 @@ namespace OpenGL
         uint32_t active_attribute_max_length;
         uint32_t active_uniform_block_max_name_length;
         uint32_t active_uniform_max_length;
+        int32_t  max_active_attribute_location; //< INT32_MAX => no active attributes.
 
         OpenGL::GeometryInputType  gs_input_type;
         OpenGL::GeometryOutputType gs_output_type;

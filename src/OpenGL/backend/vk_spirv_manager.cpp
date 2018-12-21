@@ -190,6 +190,16 @@ OpenGL::PostLinkDataUniquePtr OpenGL::VKSPIRVManager::create_post_link_data(cons
         result_ptr->active_attribute_name_to_location_map[live_attribute_props.name] = live_attribute_props.location;
 
         result_ptr->active_attributes.push_back(live_attribute_props);
+
+        if (n_live_attribute == 0)
+        {
+            result_ptr->max_active_attribute_location = live_attribute_props.location;
+        }
+        else
+        {
+            result_ptr->max_active_attribute_location = std::max(result_ptr->max_active_attribute_location,
+                                                                 live_attribute_props.location);
+        }
     }
 
     /* Unsupported stuff: */

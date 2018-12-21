@@ -2,12 +2,14 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+#include "Anvil/include/wrappers/buffer.h"
 #include "Anvil/include/wrappers/command_buffer.h"
 #include "Anvil/include/wrappers/swapchain.h"
 #include "OpenGL/backend/nodes/vk_draw_node.h"
 #include "OpenGL/backend/vk_buffer_manager.h"
 #include "OpenGL/backend/vk_gfx_pipeline_manager.h"
 #include "OpenGL/frontend/gl_framebuffer_manager.h"
+#include "OpenGL/frontend/gl_program_manager.h"
 #include "OpenGL/frontend/gl_state_manager.h"
 #include "OpenGL/frontend/gl_vao_manager.h"
 #include "OpenGL/types.h"
@@ -229,7 +231,23 @@ void OpenGL::VKNodes::Draw::record_commands(Anvil::CommandBufferBase*  in_cmd_bu
                                             const bool&                in_inside_renderpass,
                                             IVKFrameGraphNodeCallback* in_graph_callback_ptr) const
 {
-    Anvil::PipelineID pipeline_id = UINT32_MAX;
+    auto                        backend_buffer_manager_ptr   = m_backend_ptr->get_buffer_manager_ptr                                              ();
+    Anvil::PipelineID           pipeline_id                  = UINT32_MAX;
+    auto                        frontend_program_manager_ptr = m_frontend_ptr->get_program_manager_ptr                                            ();
+    auto                        frontend_vao_manager_ptr     = m_frontend_ptr->get_vao_manager_ptr();
+    const auto&                 program_payload              = m_frontend_context_state_binding_references_ptr->program_reference_ptr->get_payload();
+    const OpenGL::PostLinkData* program_post_link_data_ptr   = nullptr;
+
+    frontend_program_manager_ptr->get_program_post_link_data_ptr(program_payload.id,
+                                                                &program_payload.time_marker,
+                                                                &program_post_link_data_ptr);
+
+    if (program_post_link_data_ptr == nullptr)
+    {
+        vkgl_assert(program_post_link_data_ptr != nullptr);
+
+        goto end;
+    }
 
     /* Fetch the GFX pipeline instance we're going to use for the draw call. */
     vkgl_assert(in_inside_renderpass);
@@ -453,9 +471,63 @@ void OpenGL::VKNodes::Draw::record_commands(Anvil::CommandBufferBase*  in_cmd_bu
         }
     }
 
+    if (program_post_link_data_ptr->active_attributes.size() > 0)
+    {
+        static constexpr uint32_t n_max_vertex_buffer_bindings = 8;
+
+        VkDeviceSize                          buffer_offsets[n_max_vertex_buffer_bindings] = {0};
+        Anvil::Buffer*                        buffer_ptrs   [n_max_vertex_buffer_bindings] = {nullptr};
+        const auto&                           vao_payload                                  = m_frontend_context_state_binding_references_ptr->vao_reference_ptr->get_payload();
+        const OpenGL::VertexArrayObjectState* vao_state_ptr                                = nullptr;
+
+        vkgl_assert(n_max_vertex_buffer_bindings > program_post_link_data_ptr->max_active_attribute_location);
+
+        if (!frontend_vao_manager_ptr->get_vao_state_ptr(vao_payload.id,
+                                                        &vao_payload.time_marker,
+                                                        &vao_state_ptr) )
+        {
+            vkgl_assert_fail();
+
+            goto end;
+        }
+
+        vkgl_assert(vao_state_ptr != nullptr);
+
+        for (const auto& current_active_attribute : program_post_link_data_ptr->active_attributes)
+        {
+            OpenGL::VKBufferReferenceUniquePtr backend_buffer_reference_ptr;
+            const auto&                        current_active_attribute_location = current_active_attribute.location;
+            const auto&                        vaa_props                        = vao_state_ptr->vertex_attribute_arrays.at(current_active_attribute_location);
+
+            if (!vaa_props.enabled                        ||
+                 vaa_props.buffer_binding_ptr == nullptr)
+            {
+                continue;
+            }
+
+
+            backend_buffer_reference_ptr = backend_buffer_manager_ptr->acquire_object(vaa_props.buffer_binding_ptr->get_payload().id,
+                                                                                      vaa_props.buffer_binding_ptr->get_payload().object_creation_time,
+                                                                                      vaa_props.buffer_binding_ptr->get_payload().time_marker);
+
+            vkgl_assert(backend_buffer_reference_ptr != nullptr);
+
+            buffer_offsets[current_active_attribute_location] = reinterpret_cast<VkDeviceSize>(vaa_props.pointer);
+            buffer_ptrs   [current_active_attribute_location] = backend_buffer_reference_ptr->get_payload().buffer_ptr;
+        }
+
+        /* TODO: Use a non-zero start binding index whenever possible */
+        in_cmd_buffer_ptr->record_bind_vertex_buffers(0, /* in_start_binding */
+                                                      program_post_link_data_ptr->max_active_attribute_location + 1, /* in_binding_count */
+                                                      buffer_ptrs,
+                                                      buffer_offsets);
+    }
+
     /* Issue the draw call */
     in_cmd_buffer_ptr->record_draw(m_args.count,
                                    1, /* in_instance_count */
                                    m_args.first,
                                    0); /* in_first_instance */
+end:
+    ;
 }

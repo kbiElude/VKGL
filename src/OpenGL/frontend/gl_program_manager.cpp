@@ -1182,6 +1182,27 @@ end:
     ;
 }
 
+void OpenGL::GLProgramManager::get_program_post_link_data_ptr(const GLuint&             in_program,
+                                                              const OpenGL::TimeMarker* in_opt_time_marker_ptr,
+                                                              const PostLinkData**      out_post_link_data_ptr_ptr) const
+{
+    auto program_ptr = const_cast<OpenGL::GLProgramManager*>(this)->get_program_ptr(in_program,
+                                                                                    in_opt_time_marker_ptr);
+
+    if (program_ptr == nullptr)
+    {
+        vkgl_assert(program_ptr != nullptr);
+
+        *out_post_link_data_ptr_ptr = nullptr;
+        goto end;
+    }
+
+    *out_post_link_data_ptr_ptr = program_ptr->get_post_link_data(m_backend_ptr);
+
+end:
+    ;
+}
+
 void OpenGL::GLProgramManager::set_program_post_link_data_ptr(const GLuint&                 in_program,
                                                               const OpenGL::TimeMarker*     in_opt_time_marker_ptr,
                                                               OpenGL::PostLinkDataUniquePtr in_post_link_data_ptr)

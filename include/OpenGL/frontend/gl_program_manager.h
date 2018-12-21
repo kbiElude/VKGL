@@ -107,6 +107,9 @@ namespace OpenGL
                                        const GLuint& in_uniform_block_index,
                                        const GLuint& in_uniform_block_binding);
 
+        void get_program_post_link_data_ptr   (const GLuint&              in_program,
+                                               const OpenGL::TimeMarker*  in_opt_time_marker_ptr,
+                                               const PostLinkData**       out_post_link_data_ptr_ptr) const;
         void set_program_backend_spirv_blob_id(const GLuint&              in_program,
                                                const OpenGL::TimeMarker*  in_opt_time_marker_ptr,
                                                const OpenGL::SPIRVBlobID& in_spirv_blob_id);
