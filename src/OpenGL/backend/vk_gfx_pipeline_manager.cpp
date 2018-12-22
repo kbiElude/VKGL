@@ -289,8 +289,9 @@ Anvil::GraphicsPipelineCreateInfoUniquePtr OpenGL::VKGFXPipelineManager::GFXPipe
     result_ptr->set_n_dynamic_scissor_boxes (1 /* in_n_dynamic_scissor_boxes */);
     result_ptr->set_n_dynamic_viewports     (1 /* in_n_dynamic_viewports     */);
     result_ptr->set_primitive_topology      (in_primitive_topology);
-    result_ptr->set_rasterization_properties(OpenGL::VKUtils::get_anvil_polygon_mode_for_polygon_mode        (gl_state.polygon_mode),
-                                             OpenGL::VKUtils::get_anvil_cull_mode_flags_for_cull_face_mode   (gl_state.cull_face_mode),
+    result_ptr->set_rasterization_properties(OpenGL::VKUtils::get_anvil_polygon_mode_for_polygon_mode(gl_state.polygon_mode),
+                                             ((gl_state.is_cull_face_enabled) ? OpenGL::VKUtils::get_anvil_cull_mode_flags_for_cull_face_mode(gl_state.cull_face_mode)
+                                                                              : Anvil::CullModeFlagBits::NONE),
                                              OpenGL::VKUtils::get_anvil_front_face_for_front_face_orientation(gl_state.front_face),
                                              0.0f /* in_line_width - irrelevant: dynamic state */);
 
@@ -333,7 +334,7 @@ Anvil::GraphicsPipelineCreateInfoUniquePtr OpenGL::VKGFXPipelineManager::GFXPipe
                                           Anvil::DynamicState::STENCIL_REFERENCE,
                                           Anvil::DynamicState::STENCIL_WRITE_MASK,
                                           Anvil::DynamicState::VIEWPORT});
-    result_ptr->toggle_logic_op         (gl_state.logic_op_mode != OpenGL::LogicOpMode::Set,
+    result_ptr->toggle_logic_op         (gl_state.logic_op_mode != OpenGL::LogicOpMode::Copy,
                                          OpenGL::VKUtils::get_anvil_logic_op_for_logic_op_mode(gl_state.logic_op_mode) );
     result_ptr->toggle_primitive_restart(gl_state.is_primitive_restart_enabled);
     result_ptr->toggle_rasterizer_discard(false);

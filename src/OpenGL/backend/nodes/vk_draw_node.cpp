@@ -446,22 +446,22 @@ void OpenGL::VKNodes::Draw::record_commands(Anvil::CommandBufferBase*  in_cmd_bu
     {
         VkViewport bound_viewport;
 
-        if (in_graph_callback_ptr->get_bound_dynamic_viewport_state(&bound_viewport)                                                 ||
-            bound_viewport.height                                                    != m_frontend_context_state_ptr->viewport[3]    ||
-            bound_viewport.maxDepth                                                  != m_frontend_context_state_ptr->depth_range[1] ||
-            bound_viewport.minDepth                                                  != m_frontend_context_state_ptr->depth_range[0] ||
-            bound_viewport.width                                                     != m_frontend_context_state_ptr->viewport   [2] ||
-            bound_viewport.x                                                         != m_frontend_context_state_ptr->viewport   [0] ||
-            bound_viewport.y                                                         != m_frontend_context_state_ptr->viewport   [1])
+        if (!in_graph_callback_ptr->get_bound_dynamic_viewport_state(&bound_viewport)                                                  ||
+            bound_viewport.height                                                     !=  m_frontend_context_state_ptr->viewport   [3] ||
+            bound_viewport.maxDepth                                                   !=  m_frontend_context_state_ptr->depth_range[1] ||
+            bound_viewport.minDepth                                                   !=  m_frontend_context_state_ptr->depth_range[0] ||
+            bound_viewport.width                                                      !=  m_frontend_context_state_ptr->viewport   [2] ||
+            bound_viewport.x                                                          !=  m_frontend_context_state_ptr->viewport   [0] ||
+            bound_viewport.y                                                          !=  m_frontend_context_state_ptr->viewport   [1])
         {
             VkViewport viewport;
 
-            viewport.height   = m_frontend_context_state_ptr->viewport   [3];
-            viewport.maxDepth = m_frontend_context_state_ptr->depth_range[1];
-            viewport.minDepth = m_frontend_context_state_ptr->depth_range[0];
-            viewport.width    = m_frontend_context_state_ptr->viewport   [2];
-            viewport.x        = m_frontend_context_state_ptr->viewport   [0];
-            viewport.y        = m_frontend_context_state_ptr->viewport   [1];
+            viewport.height   =  m_frontend_context_state_ptr->viewport   [3];
+            viewport.maxDepth =  m_frontend_context_state_ptr->depth_range[1];
+            viewport.minDepth =  m_frontend_context_state_ptr->depth_range[0];
+            viewport.width    =  m_frontend_context_state_ptr->viewport   [2];
+            viewport.x        =  m_frontend_context_state_ptr->viewport   [0];
+            viewport.y        =  m_frontend_context_state_ptr->viewport   [1];
 
             in_cmd_buffer_ptr->record_set_viewport(0, /* in_first_viewport */
                                                    1, /* in_viewport_count */
