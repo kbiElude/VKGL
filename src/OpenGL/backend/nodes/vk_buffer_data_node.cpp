@@ -67,7 +67,11 @@ OpenGL::VKNodes::BufferData::BufferData(const IContextObjectManagers*      in_fr
 
 OpenGL::VKNodes::BufferData::~BufferData()
 {
-     /* Stub */
+    m_backend_buffer_reference_ptr.reset ();
+    m_data_ptr.reset                     ();
+    m_frontend_buffer_reference_ptr.reset();
+    m_info_ptr.reset                     ();
+    m_staging_buffer_ptr.reset           ();
 }
 
 bool OpenGL::VKNodes::BufferData::can_memory_block_handle_frontend_reqs(const Anvil::MemoryBlock*   in_mem_block_ptr,
