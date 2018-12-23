@@ -195,7 +195,7 @@ bool OpenGL::VKFrameGraph::bake_barriers(const std::vector<GroupNodeUniquePtr>& 
                     break;
                 }
 
-                temp_group_node_index           --;
+                temp_group_node_index--;
                 temp_group_node_ptr   = in_group_nodes_ptr.at(temp_group_node_index).get();
 
                 current_group_node_queue_family = temp_group_node_ptr->queue_family;
@@ -227,7 +227,36 @@ bool OpenGL::VKFrameGraph::bake_barriers(const std::vector<GroupNodeUniquePtr>& 
             {
                 case OpenGL::NodeIOType::Buffer:
                 {
-                    vkgl_not_implemented();
+                    /* Source access mask is determined by:
+                    *
+                    * 1) If there are incoming connections: ORing all access flags defined for connections where outputs of group nodes touching the buffer
+                    *    are connected to the processed input.
+                    * 2) If no incoming connections are defined: Assuming no access flags are required.
+                    *
+                    * TODO: Define barriers for buffer memory ranges, instead of buffer instances.
+                    */
+                    Anvil::AccessFlags src_access_mask = Anvil::AccessFlagBits::NONE;
+
+                    for (const auto& current_incoming_connection_ptr : current_group_node_ptr->incoming_group_node_connections_ptr)
+                    {
+                        if (current_incoming_connection_ptr->n_dst_group_node_input == n_current_input)
+                        {
+                            const auto src_access = current_incoming_connection_ptr->src_group_node_io_ptr->buffer_props.access;
+
+                            vkgl_assert(current_incoming_connection_ptr->src_group_node_io_ptr->type == OpenGL::NodeIOType::Buffer);
+
+                            src_access_mask                                                     |= current_incoming_connection_ptr->src_group_node_io_ptr->buffer_props.access;
+                            current_group_node_ptr->group_node_pre_barriers.src_pipeline_stages |= current_incoming_connection_ptr->src_group_node_io_ptr->buffer_props.pipeline_stages;
+                        }
+                    }
+
+                    process_buffer_node_input(current_group_node_ptr->group_node_pre_barriers.buffer_barriers,
+                                              current_input_ptr.get(),
+                                              current_group_node_ptr->queue_ptr,
+                                              src_access_mask,
+                                              current_group_node_ptr->group_node_pre_barriers.src_pipeline_stages);
+
+                    current_group_node_ptr->group_node_pre_barriers.dst_pipeline_stages |= current_input_ptr->buffer_props.pipeline_stages;
 
                     continue;
                 }
@@ -1364,11 +1393,29 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
         auto           current_group_node_raw_ptr = out_group_nodes_ptr->at(n_current_group_node).get();
         const uint32_t n_graph_nodes              = static_cast<uint32_t>(current_group_node_raw_ptr->graph_node_ptrs.size() );
 
-        struct
+        typedef struct OutputData
         {
             uint32_t n_node;
             uint32_t n_output;
-        } last_swapchain_image_output_data = {UINT32_MAX, UINT32_MAX};
+
+            OutputData()
+                :n_node  (UINT32_MAX),
+                 n_output(UINT32_MAX)
+            {
+                /* Stub */
+            }
+
+            OutputData(const uint32_t& in_n_node,
+                       const uint32_t& in_n_output)
+                :n_node  (in_n_node),
+                 n_output(in_n_output)
+            {
+                /* Stub */
+            }
+        } OutputData;
+
+        std::unordered_map<void*, OutputData> last_buffer_output_data_map;
+        OutputData                            last_swapchain_image_output_data = {UINT32_MAX, UINT32_MAX};
 
         for (uint32_t n_current_graph_node = 0;
                       n_current_graph_node < n_graph_nodes;
@@ -1389,7 +1436,20 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
                 {
                     case OpenGL::NodeIOType::Buffer:
                     {
-                        vkgl_not_implemented();
+                        auto last_buffer_output_iterator = last_buffer_output_data_map.find(current_input.buffer_reference_ptr->get_payload().buffer_ptr);
+
+                        if (last_buffer_output_iterator == last_buffer_output_data_map.end() )
+                        {
+                            /* This input is fed with data using group node-level connection */
+                            break;
+                        }
+
+                        current_group_node_raw_ptr->intra_graph_node_connections.push_back(
+                            IntraGraphNodeConnectionInfo(last_buffer_output_iterator->second.n_node,
+                                                         last_buffer_output_iterator->second.n_output,
+                                                         n_current_graph_node,
+                                                         n_input)
+                        );
 
                         continue;
                     }
@@ -1439,7 +1499,8 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
                 {
                     case OpenGL::NodeIOType::Buffer:
                     {
-                        vkgl_not_implemented();
+                        last_buffer_output_data_map[current_output.buffer_reference_ptr->get_payload().buffer_ptr] = OutputData(n_current_graph_node,
+                                                                                                                                n_output);
 
                         continue;
                     }
@@ -2099,6 +2160,58 @@ void OpenGL::VKFrameGraph::on_image_deleted(Anvil::Image* in_image_ptr)
     vkgl_not_implemented();
 }
 
+void OpenGL::VKFrameGraph::process_buffer_node_input(std::vector<Anvil::BufferBarrier>& inout_buffer_barriers,
+                                                     const NodeIO*                      in_input_ptr,
+                                                     const Anvil::Queue*                in_opt_queue_ptr,
+                                                     const Anvil::AccessFlags&          in_access_mask,
+                                                     Anvil::PipelineStageFlags&         inout_src_pipeline_stages)
+{
+    auto buffer_ptr = in_input_ptr->buffer_reference_ptr->get_payload().buffer_ptr;
+
+    if (m_buffer_data.find(buffer_ptr) == m_buffer_data.end() )
+    {
+        m_buffer_data[buffer_ptr] = BufferInfo();
+    }
+
+    auto&      current_buffer_props = m_buffer_data.at(buffer_ptr);
+    const bool queue_fams_match     = (in_opt_queue_ptr == nullptr || current_buffer_props.owning_queue_family_index == UINT32_MAX) ? true /* first use */
+                                                                                                                                    : (in_opt_queue_ptr->get_queue_family_index() == current_buffer_props.owning_queue_family_index);
+
+    if (!queue_fams_match)
+    {
+        const auto dst_queue_family_index = in_opt_queue_ptr->get_queue_family_index();
+        const auto src_queue_family_index = (current_buffer_props.owning_queue_family_index == UINT32_MAX) ? dst_queue_family_index
+                                                                                                           : current_buffer_props.owning_queue_family_index;
+        auto       src_access_mask        = in_access_mask;
+        const auto dst_access_mask        = in_input_ptr->buffer_props.access;
+
+        if (src_access_mask == Anvil::AccessFlagBits::NONE)
+        {
+            src_access_mask            = dst_access_mask;
+            inout_src_pipeline_stages |= in_input_ptr->swapchain_image_props.pipeline_stages;
+        }
+
+        /* Cache the buffer memory barrier */
+        {
+            auto buffer_barrier = Anvil::BufferBarrier(src_access_mask,
+                                                       dst_access_mask,
+                                                       src_queue_family_index,
+                                                       dst_queue_family_index,
+                                                       buffer_ptr,
+                                                       0, /* in_offset */
+                                                       VK_WHOLE_SIZE);
+
+            inout_buffer_barriers.push_back(std::move(buffer_barrier) );
+        }
+
+        /* Update local swapchain image state */
+        if (in_opt_queue_ptr != nullptr)
+        {
+            current_buffer_props.owning_queue_family_index = in_opt_queue_ptr->get_queue_family_index();
+        }
+    }
+}
+
 void OpenGL::VKFrameGraph::process_swapchain_image_node_input(std::vector<Anvil::ImageBarrier>& inout_image_barriers,
                                                               const NodeIO*                     in_input_ptr,
                                                               const Anvil::Queue*               in_opt_queue_ptr,
@@ -2273,14 +2386,17 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
                       n_current_input < static_cast<uint32_t>(current_group_node_ptr->input_ptrs.size() );
                     ++n_current_input)
         {
-            const auto&                  current_input_ptr = current_group_node_ptr->input_ptrs.at(n_current_input);
-            Anvil::PipelineStageFlagBits wait_dst_stages   = Anvil::PipelineStageFlagBits::NONE;
+            const auto&               current_input_ptr = current_group_node_ptr->input_ptrs.at(n_current_input);
+            Anvil::PipelineStageFlags wait_dst_stages   = Anvil::PipelineStageFlagBits::NONE;
 
             switch (current_input_ptr->type)
             {
                 case OpenGL::NodeIOType::Buffer:
                 {
-                    vkgl_not_implemented();
+                    if (current_input_ptr->opt_post_sync_semaphore_ptr != nullptr)
+                    {
+                        wait_dst_stages = current_input_ptr->buffer_props.pipeline_stages;
+                    }
 
                     break;
                 }
@@ -2335,17 +2451,21 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
         /* 4a. Inject pre-barriers (acquire barriers, image layout transitions) as necessary
          *
          * TODO: Some of this stuff could be merged into renderpasses..
+         * TODO: Buffer / image memory barriers could be converted to memory barriers IF no layout transition & ownership transfer occurs.
          */
-        if (current_group_node_ptr->group_node_pre_barriers.src_pipeline_stages != Anvil::PipelineStageFlagBits::NONE ||
-            current_group_node_ptr->group_node_pre_barriers.dst_pipeline_stages != Anvil::PipelineStageFlagBits::NONE)
+        if ((current_group_node_ptr->group_node_pre_barriers.src_pipeline_stages    != Anvil::PipelineStageFlagBits::NONE  ||
+             current_group_node_ptr->group_node_pre_barriers.dst_pipeline_stages    != Anvil::PipelineStageFlagBits::NONE) &&
+            (current_group_node_ptr->group_node_pre_barriers.buffer_barriers.size() >  0                                   ||
+             current_group_node_ptr->group_node_pre_barriers.image_barriers.size () >  0) )
         {
             cmd_buffer_ptr->record_pipeline_barrier(current_group_node_ptr->group_node_pre_barriers.src_pipeline_stages,
                                                     current_group_node_ptr->group_node_pre_barriers.dst_pipeline_stages,
                                                     Anvil::DependencyFlagBits::NONE,
                                                     0,       /* in_memory_barrier_count        - TODO */
                                                     nullptr, /* in_memory_barriers_ptr         - TODO */
-                                                    0,       /* in_buffer_memory_barrier_count - TODO */
-                                                    nullptr, /* in_buffer_memory_barriers_ptr  - TODO */
+                                                    static_cast<uint32_t>(current_group_node_ptr->group_node_pre_barriers.buffer_barriers.size() ),
+                                                    (current_group_node_ptr->group_node_pre_barriers.buffer_barriers.size() > 0) ? &current_group_node_ptr->group_node_pre_barriers.buffer_barriers.at(0)
+                                                                                                                                 : nullptr,
                                                     static_cast<uint32_t>(current_group_node_ptr->group_node_pre_barriers.image_barriers.size() ),
                                                     (current_group_node_ptr->group_node_pre_barriers.image_barriers.size() > 0) ? &current_group_node_ptr->group_node_pre_barriers.image_barriers.at(0)
                                                                                                                                 : nullptr);

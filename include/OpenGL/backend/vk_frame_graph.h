@@ -37,7 +37,8 @@ namespace OpenGL
             Anvil::PipelineStageFlags dst_pipeline_stages;
             Anvil::PipelineStageFlags src_pipeline_stages;
 
-            std::vector<Anvil::ImageBarrier> image_barriers;
+            std::vector<Anvil::BufferBarrier> buffer_barriers;
+            std::vector<Anvil::ImageBarrier>  image_barriers;
 
             BarrierData()
                 :dst_pipeline_stages(Anvil::PipelineStageFlagBits::NONE),
@@ -47,31 +48,16 @@ namespace OpenGL
             }
         } BarrierData;
 
-        typedef struct BufferSubRangeInfo
+        typedef struct BufferInfo
         {
-            VkDeviceSize start_offset;
-            VkDeviceSize size;
+            uint32_t owning_queue_family_index;
 
-            Anvil::QueueFamilyType owning_family_type;
-
-            BufferSubRangeInfo()
-                :owning_family_type(Anvil::QueueFamilyType::UNDEFINED),
-                 size              (0),
-                 start_offset      (0)
+            BufferInfo()
+                :owning_queue_family_index(UINT32_MAX)
             {
                 /* Stub */
             }
-
-            BufferSubRangeInfo(const Anvil::QueueFamilyType& in_owning_family_type,
-                               const VkDeviceSize&           in_start_offset,
-                               const VkDeviceSize&           in_size)
-                :owning_family_type(in_owning_family_type),
-                 size              (in_size),
-                 start_offset      (in_start_offset)
-            {
-                /* Stub */
-            }
-        } BufferSubRangeInfo;
+        } BufferInfo;
 
         struct CommandBufferDynamicState
         {
@@ -377,16 +363,21 @@ namespace OpenGL
         VKFrameGraph(const OpenGL::IContextObjectManagers* in_frontend_ptr,
                      const OpenGL::IBackend*               in_backend_ptr);
 
-        void process_swapchain_image_node_input            (std::vector<Anvil::ImageBarrier>& inout_image_barriers,
-                                                            const NodeIO*                     in_input_ptr,
-                                                            const Anvil::Queue*               in_opt_queue_ptr,
-                                                            const Anvil::AccessFlags&         in_access_mask_for_color_aspect,
-                                                            const Anvil::AccessFlags&         in_access_mask_for_ds_aspects,
-                                                            Anvil::PipelineStageFlags&        inout_src_pipeline_stages,
-                                                            const bool&                       in_parent_group_node_uses_renderpass);
-        void split_access_mask_to_color_and_ds_access_masks(const Anvil::AccessFlags&         in_access_mask,
-                                                            Anvil::AccessFlags*               out_color_aspect_access_mask_ptr,
-                                                            Anvil::AccessFlags*               out_ds_aspects_access_mask_ptr) const;
+        void process_buffer_node_input                     (std::vector<Anvil::BufferBarrier>& inout_buffer_barriers,
+                                                            const NodeIO*                      in_input_ptr,
+                                                            const Anvil::Queue*                in_opt_queue_ptr,
+                                                            const Anvil::AccessFlags&          in_access_mask,
+                                                            Anvil::PipelineStageFlags&         inout_src_pipeline_stages);
+        void process_swapchain_image_node_input            (std::vector<Anvil::ImageBarrier>&  inout_image_barriers,
+                                                            const NodeIO*                      in_input_ptr,
+                                                            const Anvil::Queue*                in_opt_queue_ptr,
+                                                            const Anvil::AccessFlags&          in_access_mask_for_color_aspect,
+                                                            const Anvil::AccessFlags&          in_access_mask_for_ds_aspects,
+                                                            Anvil::PipelineStageFlags&         inout_src_pipeline_stages,
+                                                            const bool&                        in_parent_group_node_uses_renderpass);
+        void split_access_mask_to_color_and_ds_access_masks(const Anvil::AccessFlags&          in_access_mask,
+                                                            Anvil::AccessFlags*                out_color_aspect_access_mask_ptr,
+                                                            Anvil::AccessFlags*                out_ds_aspects_access_mask_ptr) const;
 
         bool bake_barriers                 (const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr);
         bool bake_framebuffers             (const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr);
@@ -420,8 +411,9 @@ namespace OpenGL
         const OpenGL::IContextObjectManagers*  m_frontend_ptr;
         std::vector<VKFrameGraphNodeUniquePtr> m_node_ptrs;
 
-        std::unordered_map<Anvil::Buffer*, std::vector<BufferSubRangeInfo> > m_buffer_data; //< todo: Use binary tree or a more fancy structure to speed up coalesce/split ops
-        std::vector<SwapchainImageInfo>                                      m_swapchain_image_data;
+        std::unordered_map<Anvil::Buffer*, BufferInfo> m_buffer_data; //< todo: Use binary tree or a more fancy structure to speed up coalesce/split ops
+                                                                      //< todo: Use buffer memory subregions instead of buffer instances.
+        std::vector<SwapchainImageInfo>                m_swapchain_image_data;
 
         std::vector<Anvil::PipelineStageFlags> m_wait_sem_stage_masks_for_current_cpu_node;
         std::vector<Anvil::Semaphore*>         m_wait_sem_vec_for_current_cpu_node;
