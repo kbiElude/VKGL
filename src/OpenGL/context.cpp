@@ -2384,7 +2384,7 @@ void OpenGL::Context::get_shader_info_log(const GLuint&  in_shader,
         goto end;
     }
 
-    infolog_length   = strlen(infolog_ptr);
+    infolog_length   = strlen(infolog_ptr) + 1;
     n_bytes_to_write = std::min(infolog_length, static_cast<uint32_t>(in_buf_size) );
 
     if (inout_length_ptr != nullptr)

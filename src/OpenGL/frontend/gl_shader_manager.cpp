@@ -151,8 +151,8 @@ bool OpenGL::GLShaderManager::get_shader_property(const GLuint&                 
                                                   GLint*                            out_params_ptr) const
 {
     bool                       result                = false;
-    const auto                 shader_ptr            = get_shader_ptr(in_shader,
-                                                                      in_opt_time_marker_ptr);
+    volatile const auto        shader_ptr            = const_cast<OpenGL::GLShaderManager*>(this)->get_shader_ptr(in_shader,
+                                                                                                                  in_opt_time_marker_ptr);
     const void*                src_data_ptr          = nullptr;
     OpenGL::GetSetArgumentType src_data_type         = OpenGL::GetSetArgumentType::Unknown;
 

@@ -898,6 +898,8 @@ OpenGL::SPIRVBlobID OpenGL::VKSPIRVManager::register_shader(const OpenGL::Shader
             shader_data_raw_ptr                             = shader_data_ptr.get();
             m_spirv_blob_id_to_shader_data_map[new_blob_id] = shader_data_raw_ptr;
             m_glsl_to_shader_data_map         [in_glsl]     = std::move(shader_data_ptr);
+
+            result = new_blob_id;
         }
 
         /* 2. Submit a new task to the thread pool, which we're going to use to actually perform the GLSL->SPIRV "conversion". */
