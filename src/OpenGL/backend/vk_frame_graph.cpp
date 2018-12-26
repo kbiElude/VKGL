@@ -1673,6 +1673,28 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
     decltype(m_node_ptrs)                                                                      node_ptrs;
     Anvil::FenceUniquePtr                                                                      wait_fence_ptr;
 
+    /* Go through active submissions and check if any of the already scheduled ones have already finished executing GPU-side.
+     *
+     * If so, go ahead and release all related nodes (along with the fence).
+     */
+    {
+        for (uint32_t n_submission = 0;
+                      n_submission < static_cast<uint32_t>(m_active_submissions.size() );
+                    )
+        {
+            auto& current_submission = m_active_submissions.at(n_submission);
+
+            if (current_submission.fence_ptr->is_set() )
+            {
+                m_active_submissions.erase(m_active_submissions.begin() + n_submission);
+            }
+            else
+            {
+                ++n_submission;
+            }
+        }
+    }
+
     /* Cache node data, so that apps can continue rendering subsequent frames while we do the GL->VK conversion */
     {
         std::lock_guard<std::mutex> node_lock(m_general_mutex);
@@ -1782,7 +1804,6 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
     }
 
     /* 7. Schedule command buffer submissions. */
-    if (in_block_until_finished)
     {
         auto fence_create_info_ptr = Anvil::FenceCreateInfo::create(device_ptr,
                                                                     false); /* in_create_signalled */
@@ -1800,7 +1821,7 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
     }
 
     /* 8. If this was requested, wait for the GPU-side operations to finish before leaving. */
-    if (wait_fence_ptr != nullptr)
+    if (in_block_until_finished)
     {
         VkResult result_vk = Anvil::Vulkan::vkWaitForFences(device_ptr->get_device_vk(),
                                                             1, /* fenceCount */
@@ -1809,6 +1830,17 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
                                                             UINT64_MAX);
 
         vkgl_assert(result_vk == VK_SUCCESS);
+    }
+    else
+    {
+        /* Cache group nodes along with the fence, so that - next execution happens - we can check if the nodes,
+         * along with all relevant VK objects and references, can be safely released.
+         */
+        m_active_submissions.push_back(
+            ActiveSubmission(std::move(wait_fence_ptr),
+                             group_node_ptrs,
+                             node_ptrs)
+        );
     }
 
 end:

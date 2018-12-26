@@ -323,6 +323,23 @@ namespace OpenGL
         } QueueRing;
         typedef std::unique_ptr<QueueRing> QueueRingUniquePtr;
 
+        typedef struct ActiveSubmission
+        {
+            Anvil::FenceUniquePtr                  fence_ptr;
+            std::vector<GroupNodeUniquePtr>        group_node_ptrs_vec;
+            std::vector<VKFrameGraphNodeUniquePtr> node_ptrs_vec;
+
+            ActiveSubmission(Anvil::FenceUniquePtr                   in_fence_ptr,
+                             std::vector<GroupNodeUniquePtr>&        inout_group_node_ptrs_vec,
+                             std::vector<VKFrameGraphNodeUniquePtr>& inout_node_ptrs_vec)
+                :fence_ptr          (std::move(in_fence_ptr) ),
+                 group_node_ptrs_vec(std::move(inout_group_node_ptrs_vec) ),
+                 node_ptrs_vec      (std::move(inout_node_ptrs_vec) )
+            {
+                /* Stub */
+            }
+        } ActiveSubmission;
+
         /* IVKFrameGraphNodeCallback functions */
         uint32_t          get_acquired_swapchain_image_index()                                              const final;
         Anvil::PipelineID get_pipeline_id                   (const OpenGL::DrawCallMode& in_draw_call_mode)       final;
@@ -430,6 +447,18 @@ namespace OpenGL
 
         //< Only used at command buffer recording time.
         CommandBufferDynamicState m_current_cmd_buffer_dynamic_state;
+
+        //< Vulkan objects must not be released until command buffer submissions that consume them
+        //< finish executing GPU-side. We need to take this into account:
+        //<
+        //< * Group nodes may use various staging object.
+        //< * Group nodes hold references to objects owned by the backend. These are usually accessed
+        //<   by commands recorded to command buffers.
+        //<
+        //< Each submission chain is therefore cached by storing a fence used for the last submission,
+        //< along with all nodes that contributed to the submission. Once the fence is set, it is safe
+        //< to release all objects.
+        std::vector<ActiveSubmission> m_active_submissions;
 
         std::mutex m_execute_mutex;
         std::mutex m_general_mutex;
