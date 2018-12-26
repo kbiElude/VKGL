@@ -39,7 +39,7 @@ OpenGL::VKNodes::BufferData::BufferData(const IContextObjectManagers*      in_fr
     vkgl_assert(m_info_ptr != nullptr);
 
     {
-        const Anvil::AccessFlags        input_access          = (m_data_ptr != nullptr) ? Anvil::AccessFlagBits::HOST_WRITE_BIT      : Anvil::AccessFlagBits::NONE;
+        const Anvil::AccessFlags        input_access          = (m_data_ptr != nullptr) ? Anvil::AccessFlagBits::TRANSFER_WRITE_BIT  : Anvil::AccessFlagBits::NONE;
         const Anvil::PipelineStageFlags input_pipeline_stages = (m_data_ptr != nullptr) ? Anvil::PipelineStageFlagBits::TRANSFER_BIT : Anvil::PipelineStageFlagBits::NONE;
 
         m_info_ptr->inputs.push_back(
@@ -266,6 +266,21 @@ void OpenGL::VKNodes::BufferData::record_commands(Anvil::CommandBufferBase*  in_
     {
         auto              backend_buffer_ptr = m_info_ptr->inputs.at(0).buffer_reference_ptr->get_payload().buffer_ptr;
         Anvil::BufferCopy copy_region;
+
+        {
+            auto cpu_write_to_copy_op_barrier = Anvil::MemoryBarrier(Anvil::AccessFlagBits::TRANSFER_READ_BIT, /* in_dst_access_mask */
+                                                                     Anvil::AccessFlagBits::HOST_WRITE_BIT);   /* in_src_access_mask */
+
+            in_cmd_buffer_ptr->record_pipeline_barrier(Anvil::PipelineStageFlagBits::HOST_BIT,
+                                                       Anvil::PipelineStageFlagBits::TRANSFER_BIT, /* in_dst_stage_mask */
+                                                       Anvil::DependencyFlagBits::NONE,
+                                                       1, /* in_memory_barrier_count */
+                                                      &cpu_write_to_copy_op_barrier,
+                                                       0,                             /* in_buffer_memory_barrier_count */
+                                                       nullptr,                       /* in_buffer_memory_barriers_ptr */
+                                                       0,                             /* in_image_memory_barrier_count */
+                                                       nullptr);                      /* in_image_memory_barriers_ptr */
+        }
 
         copy_region.dst_offset = 0;
         copy_region.size       = m_staging_buffer_ptr->get_create_info_ptr()->get_size();
