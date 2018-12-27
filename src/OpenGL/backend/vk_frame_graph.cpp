@@ -396,8 +396,9 @@ bool OpenGL::VKFrameGraph::bake_barriers(const std::vector<GroupNodeUniquePtr>& 
         /* Now that all barriers have been stored for the group node, check if a queue fam has actually been assigned to this group node.
          * If not, make sure to force one - otherwise we wouldn't be able to actually execute the barriers!
          */
-        if (current_group_node_ptr->group_node_pre_barriers.image_barriers.size() >  0                                 &&
-            current_group_node_ptr->queue_family                                  == Anvil::QueueFamilyType::UNDEFINED)
+        if ((current_group_node_ptr->group_node_pre_barriers.buffer_barriers.size() >  0                                 ||
+             current_group_node_ptr->group_node_pre_barriers.image_barriers.size () >  0)                                &&
+             current_group_node_ptr->queue_family                                   == Anvil::QueueFamilyType::UNDEFINED)
         {
             current_group_node_ptr->queue_family = Anvil::QueueFamilyType::UNIVERSAL;
         }
@@ -2205,11 +2206,8 @@ void OpenGL::VKFrameGraph::process_buffer_node_input(std::vector<Anvil::BufferBa
         m_buffer_data[buffer_ptr] = BufferInfo();
     }
 
-    auto&      current_buffer_props = m_buffer_data.at(buffer_ptr);
-    const bool queue_fams_match     = (in_opt_queue_ptr == nullptr || current_buffer_props.owning_queue_family_index == UINT32_MAX) ? true /* first use */
-                                                                                                                                    : (in_opt_queue_ptr->get_queue_family_index() == current_buffer_props.owning_queue_family_index);
+    auto& current_buffer_props = m_buffer_data.at(buffer_ptr);
 
-    if (!queue_fams_match)
     {
         const auto dst_queue_family_index = in_opt_queue_ptr->get_queue_family_index();
         const auto src_queue_family_index = (current_buffer_props.owning_queue_family_index == UINT32_MAX) ? dst_queue_family_index
@@ -2220,7 +2218,7 @@ void OpenGL::VKFrameGraph::process_buffer_node_input(std::vector<Anvil::BufferBa
         if (src_access_mask == Anvil::AccessFlagBits::NONE)
         {
             src_access_mask            = dst_access_mask;
-            inout_src_pipeline_stages |= in_input_ptr->swapchain_image_props.pipeline_stages;
+            inout_src_pipeline_stages |= in_input_ptr->buffer_props.pipeline_stages;
         }
 
         /* Cache the buffer memory barrier */
@@ -2534,17 +2532,18 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
                 m_active_graph_node_ptr = current_node_ptr;
                 m_active_subpass_id     = static_cast<Anvil::SubPassID>(n_current_node);
 
-                if (current_node_pre_barriers.image_barriers.size() > 0)
+                if (current_node_pre_barriers.buffer_barriers.size() > 0 ||
+                    current_node_pre_barriers.image_barriers.size () > 0)
                 {
                     cmd_buffer_ptr->record_pipeline_barrier(current_node_pre_barriers.src_pipeline_stages,
                                                             current_node_pre_barriers.dst_pipeline_stages,
                                                             Anvil::DependencyFlagBits::NONE,
                                                             0,       /* in_memory_barrier_count        - TODO */
                                                             nullptr, /* in_memory_barriers_ptr         - TODO */
-                                                            0,       /* in_buffer_memory_barrier_count - TODO */
-                                                            nullptr, /* in_buffer_memory_barriers_ptr  - TODO */
+                                                            static_cast<uint32_t>(current_node_pre_barriers.buffer_barriers.size() ),
+                                                            (current_node_pre_barriers.buffer_barriers.size() > 0) ? &current_node_pre_barriers.buffer_barriers.at(0) : nullptr,
                                                             static_cast<uint32_t>(current_node_pre_barriers.image_barriers.size() ),
-                                                            (current_node_pre_barriers.image_barriers.size() > 0) ? &current_node_pre_barriers.image_barriers.at(0) : nullptr);
+                                                            (current_node_pre_barriers.image_barriers.size() > 0)  ? &current_node_pre_barriers.image_barriers.at(0) : nullptr);
                 }
 
                 /* NOTE/TODO: 01 or 10 is fine, but 00 or 11 means bad stuff (dummy submission - wtf? not sure if cpu+gpu execution is handled correctly - need to verify?) */

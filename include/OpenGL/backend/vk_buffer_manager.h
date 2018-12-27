@@ -78,7 +78,8 @@ namespace OpenGL
                                                                const uint32_t&             in_n_buffer_targets,
                                                                const OpenGL::BufferTarget* in_buffer_targets_ptr,
                                                                const size_t&               in_size) const;
-        Anvil::BufferUniquePtr create_vk_buffer               (const OpenGL::BufferState*  in_frontend_buffer_state_ptr) const;
+        Anvil::BufferUniquePtr create_vk_buffer               (const GLuint&               in_id,
+                                                               const OpenGL::BufferState*  in_frontend_buffer_state_ptr) const;
 
         uint32_t get_n_references      (const BufferData*          in_buffer_data_ptr) const;
         void     on_reference_created  (BufferData*                in_buffer_data_ptr,

@@ -204,6 +204,14 @@ void OpenGL::VKNodes::BufferData::do_cpu_prepass(IVKFrameGraphNodeCallback*)
 
             m_staging_buffer_ptr = Anvil::Buffer::create(std::move(create_info_ptr) );
             vkgl_assert(m_staging_buffer_ptr != nullptr);
+
+            #ifdef _DEBUG
+            {
+                m_staging_buffer_ptr->set_name_formatted("Staging buffer for a staging->%p copy op (GL buffer ID: %d)",
+                                                         backend_buffer_ptr->get_buffer(),
+                                                         frontend_buffer_id);
+            }
+            #endif
         }
 
         if (!mem_allocator_ptr->add_buffer(m_staging_buffer_ptr.get(),

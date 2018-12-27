@@ -58,7 +58,8 @@ OpenGL::VKBufferReferenceUniquePtr OpenGL::VKBufferManager::acquire_object(const
                                                              &frontend_buffer_state_ptr);
             vkgl_assert(frontend_buffer_state_ptr != nullptr);
 
-            auto new_buffer_ptr = create_vk_buffer(frontend_buffer_state_ptr);
+            auto new_buffer_ptr = create_vk_buffer(in_id,
+                                                   frontend_buffer_state_ptr);
             vkgl_assert(new_buffer_ptr != nullptr);
 
             ref_buffer_ptr = new_buffer_ptr.get();
@@ -169,7 +170,8 @@ end:
     return result;
 }
 
-Anvil::BufferUniquePtr OpenGL::VKBufferManager::create_vk_buffer(const OpenGL::BufferState* in_frontend_buffer_state_ptr) const
+Anvil::BufferUniquePtr OpenGL::VKBufferManager::create_vk_buffer(const GLuint&              in_id,
+                                                                 const OpenGL::BufferState* in_frontend_buffer_state_ptr) const
 {
     Anvil::BufferCreateInfoUniquePtr create_info_ptr;
     auto                             device_ptr            = m_backend_ptr->get_device_ptr();
@@ -190,6 +192,13 @@ Anvil::BufferUniquePtr OpenGL::VKBufferManager::create_vk_buffer(const OpenGL::B
 
     result_ptr = Anvil::Buffer::create(std::move(create_info_ptr) );
     vkgl_assert(result_ptr != nullptr);
+
+    #if defined(_DEBUG)
+    {
+        result_ptr->set_name_formatted("GL buffer %d",
+                                       in_id);
+    }
+    #endif
 
     return result_ptr;
 }
