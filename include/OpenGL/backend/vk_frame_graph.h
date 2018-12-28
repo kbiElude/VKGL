@@ -135,7 +135,7 @@ namespace OpenGL
 
         typedef struct GroupNodeConnectionInfo
         {
-            const GroupNode*      src_group_node_ptr;
+            GroupNode*            src_group_node_ptr;
             const OpenGL::NodeIO* src_group_node_io_ptr; // output
 
             uint32_t n_dst_group_node;
@@ -150,7 +150,7 @@ namespace OpenGL
                 /* Stub */
             }
 
-            GroupNodeConnectionInfo(const GroupNode*      in_src_group_node_ptr,
+            GroupNodeConnectionInfo(GroupNode*            in_src_group_node_ptr,
                                     const OpenGL::NodeIO* in_src_group_node_io_ptr,
                                     const uint32_t&       in_n_dst_group_node,
                                     const uint32_t&       in_n_dst_group_node_input)
@@ -217,6 +217,7 @@ namespace OpenGL
             CommandBufferSubmission*                                   parent_submission_ptr;
             bool                                                       needs_post_submission_cpu_execution;
 
+            BarrierData              group_node_post_barriers;
             BarrierData              group_node_pre_barriers;
             std::vector<BarrierData> intra_graph_node_pre_barriers;
 
@@ -380,21 +381,22 @@ namespace OpenGL
         VKFrameGraph(const OpenGL::IContextObjectManagers* in_frontend_ptr,
                      const OpenGL::IBackend*               in_backend_ptr);
 
-        void process_buffer_node_input                     (std::vector<Anvil::BufferBarrier>& inout_buffer_barriers,
-                                                            const NodeIO*                      in_input_ptr,
-                                                            const Anvil::Queue*                in_opt_queue_ptr,
-                                                            const Anvil::AccessFlags&          in_access_mask,
-                                                            Anvil::PipelineStageFlags&         inout_src_pipeline_stages);
-        void process_swapchain_image_node_input            (std::vector<Anvil::ImageBarrier>&  inout_image_barriers,
-                                                            const NodeIO*                      in_input_ptr,
-                                                            const Anvil::Queue*                in_opt_queue_ptr,
-                                                            const Anvil::AccessFlags&          in_access_mask_for_color_aspect,
-                                                            const Anvil::AccessFlags&          in_access_mask_for_ds_aspects,
-                                                            Anvil::PipelineStageFlags&         inout_src_pipeline_stages,
-                                                            const bool&                        in_parent_group_node_uses_renderpass);
-        void split_access_mask_to_color_and_ds_access_masks(const Anvil::AccessFlags&          in_access_mask,
-                                                            Anvil::AccessFlags*                out_color_aspect_access_mask_ptr,
-                                                            Anvil::AccessFlags*                out_ds_aspects_access_mask_ptr) const;
+        void process_buffer_node_input                     (std::vector<Anvil::BufferBarrier>&                inout_pre_buffer_barriers,
+                                                            std::vector<std::vector<Anvil::BufferBarrier>* >& inout_post_buffer_barrier_ptrs,
+                                                            const NodeIO*                                     in_input_ptr,
+                                                            const Anvil::Queue*                               in_opt_queue_ptr,
+                                                            const Anvil::AccessFlags&                         in_access_mask,
+                                                            Anvil::PipelineStageFlags&                        inout_src_pipeline_stages);
+        void process_swapchain_image_node_input            (std::vector<Anvil::ImageBarrier>&                 inout_image_barriers,
+                                                            const NodeIO*                                     in_input_ptr,
+                                                            const Anvil::Queue*                               in_opt_queue_ptr,
+                                                            const Anvil::AccessFlags&                         in_access_mask_for_color_aspect,
+                                                            const Anvil::AccessFlags&                         in_access_mask_for_ds_aspects,
+                                                            Anvil::PipelineStageFlags&                        inout_src_pipeline_stages,
+                                                            const bool&                                       in_parent_group_node_uses_renderpass);
+        void split_access_mask_to_color_and_ds_access_masks(const Anvil::AccessFlags&                         in_access_mask,
+                                                            Anvil::AccessFlags*                               out_color_aspect_access_mask_ptr,
+                                                            Anvil::AccessFlags*                               out_ds_aspects_access_mask_ptr) const;
 
         bool bake_barriers                 (const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr);
         bool bake_framebuffers             (const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr);
