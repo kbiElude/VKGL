@@ -331,15 +331,18 @@ namespace OpenGL
             Anvil::FenceUniquePtr                         fence_ptr;
             std::vector<GroupNodeUniquePtr>               group_node_ptrs_vec;
             std::vector<VKFrameGraphNodeUniquePtr>        node_ptrs_vec;
+            std::vector<Anvil::SemaphoreUniquePtr>        sem_ptr_vec;
 
             ActiveSubmission(Anvil::FenceUniquePtr                          in_fence_ptr,
                              std::vector<GroupNodeUniquePtr>&               inout_group_node_ptrs_vec,
                              std::vector<VKFrameGraphNodeUniquePtr>&        inout_node_ptrs_vec,
-                             std::vector<CommandBufferSubmissionUniquePtr>& inout_cmd_buffer_submission_ptr_vec)
+                             std::vector<CommandBufferSubmissionUniquePtr>& inout_cmd_buffer_submission_ptr_vec,
+                             std::vector<Anvil::SemaphoreUniquePtr>&        inout_sem_ptr_vec)
                 :cmd_buffer_submission_ptr_vec(std::move(inout_cmd_buffer_submission_ptr_vec) ),
                  fence_ptr                    (std::move(in_fence_ptr) ),
                  group_node_ptrs_vec          (std::move(inout_group_node_ptrs_vec) ),
-                 node_ptrs_vec                (std::move(inout_node_ptrs_vec) )
+                 node_ptrs_vec                (std::move(inout_node_ptrs_vec) ),
+                 sem_ptr_vec                  (std::move(inout_sem_ptr_vec) )
             {
                 /* Stub */
             }
@@ -413,9 +416,11 @@ namespace OpenGL
         bool inject_swapchain_acquire_nodes(std::vector<VKFrameGraphNodeUniquePtr>&                                                           inout_node_ptrs);
         bool record_command_buffers        (const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr,
                                             const std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection> >& in_src_dst_group_node_connections,
-                                            std::vector<CommandBufferSubmissionUniquePtr>*                                                    out_cmd_buffer_submissions_ptr);
+                                            std::vector<CommandBufferSubmissionUniquePtr>*                                                    out_cmd_buffer_submissions_ptr,
+                                            std::vector<Anvil::SemaphoreUniquePtr>&                                                           inout_sem_ptr_vec);
         bool submit_command_buffers        (const std::vector<CommandBufferSubmissionUniquePtr>&                                              in_cmd_buffer_submissions_ptr,
-                                            Anvil::Fence*                                                                                     in_opt_wait_fence_ptr);
+                                            Anvil::Fence*                                                                                     in_opt_wait_fence_ptr,
+                                            std::vector<Anvil::SemaphoreUniquePtr>&                                                           inout_sem_ptr_vec);
 
         bool init                ();
         bool init_per_object_data();
@@ -442,13 +447,6 @@ namespace OpenGL
         std::vector<Anvil::Semaphore*>         m_wait_sem_vec_for_current_cpu_node;
 
         std::unordered_map<Anvil::QueueFamilyType, QueueRingUniquePtr> m_queue_ring_ptr_per_queue_fam;
-
-        //< todo: this holds sems which have been used for submission and no fence has been used which would let us determine
-        //<       the status of the sem.. Once we're sure they're no longer used, they should be destroyed or released back to the sem pool.
-        //<       One way of determining this would be to spawn a "cleanup" task every second which would device-idle and wipe out all
-        //<       sems from the graveyard (the list would've had to be cached before the wait op, of course).
-        //<       Other types of graveyards are also used. Same rules apply.
-        std::vector<Anvil::SemaphoreUniquePtr>            m_sem_ptr_graveyard;
 
         //< Only used at command buffer recording time.
         CommandBufferDynamicState m_current_cmd_buffer_dynamic_state;

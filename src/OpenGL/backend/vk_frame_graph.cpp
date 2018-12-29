@@ -1686,6 +1686,7 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
     std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection> > group_node_connections;
     std::vector<GroupNodeUniquePtr>                                                            group_node_ptrs;
     decltype(m_node_ptrs)                                                                      node_ptrs;
+    std::vector<Anvil::SemaphoreUniquePtr>                                                     sem_ptrs;
     Anvil::FenceUniquePtr                                                                      wait_fence_ptr;
 
     /* Go through active submissions and check if any of the already scheduled ones have already finished executing GPU-side.
@@ -1811,7 +1812,8 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
     /* 6. Record command buffers for group nodes. */
     if (!record_command_buffers(group_node_ptrs,
                                 group_node_connections,
-                               &command_buffer_submissions) )
+                               &command_buffer_submissions,
+                                sem_ptrs) )
     {
         vkgl_assert_fail();
 
@@ -1828,7 +1830,8 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
     }
 
     if (!submit_command_buffers(command_buffer_submissions,
-                                wait_fence_ptr.get() ) )
+                                wait_fence_ptr.get(),
+                                sem_ptrs) )
     {
         vkgl_assert_fail();
 
@@ -1855,7 +1858,8 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
             ActiveSubmission(std::move(wait_fence_ptr),
                              group_node_ptrs,
                              node_ptrs,
-                             std::move(command_buffer_submissions) )
+                             std::move(command_buffer_submissions),
+                             std::move(sem_ptrs) )
         );
     }
 
@@ -2388,7 +2392,8 @@ void OpenGL::VKFrameGraph::process_swapchain_image_node_input(std::vector<Anvil:
 
 bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUniquePtr>&                                                            in_group_nodes_ptr,
                                                   const std::unordered_map<const GroupNode*, std::vector<GroupNodeToGroupNodeSquashedConnection> >& in_src_dst_group_node_connections,
-                                                  std::vector<CommandBufferSubmissionUniquePtr>*                                                    out_cmd_buffer_submissions_ptr)
+                                                  std::vector<CommandBufferSubmissionUniquePtr>*                                                    out_cmd_buffer_submissions_ptr,
+                                                  std::vector<Anvil::SemaphoreUniquePtr>&                                                           inout_sem_ptr_vec)
 {
     auto const device_ptr = m_backend_ptr->get_device_ptr();
     bool       result     = false;
@@ -2670,10 +2675,7 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
                 current_connection_data.dst_node_ptr->parent_submission_ptr->wait_semaphore_ptrs.push_back (sem_ptr.get() );
                 src_group_node_ptr->parent_submission_ptr->signal_semaphore_ptrs.push_back                 (sem_ptr.get() );
 
-                /* TODO: THIS NEEDS TO BE MOVED OUT ONCE GRAVEYARD COLLECTOR ACTUALLY LANDS. We don't want it to release the sem before it's actually
-                 *       used for a submission !
-                 */
-                m_sem_ptr_graveyard.push_back(std::move(sem_ptr) );
+                inout_sem_ptr_vec.push_back(std::move(sem_ptr) );
             }
         }
     }
@@ -2815,7 +2817,8 @@ void OpenGL::VKFrameGraph::split_access_mask_to_color_and_ds_access_masks(const 
 }
 
 bool OpenGL::VKFrameGraph::submit_command_buffers(const std::vector<CommandBufferSubmissionUniquePtr>& in_cmd_buffer_submissions_ptr,
-                                                  Anvil::Fence*                                        in_opt_wait_fence_ptr)
+                                                  Anvil::Fence*                                        in_opt_wait_fence_ptr,
+                                                  std::vector<Anvil::SemaphoreUniquePtr>&              inout_sem_ptr_vec)
 {
     const uint32_t n_submissions = static_cast<uint32_t>(in_cmd_buffer_submissions_ptr.size() );
     bool           result        = false;
@@ -2941,7 +2944,7 @@ bool OpenGL::VKFrameGraph::submit_command_buffers(const std::vector<CommandBuffe
 
         if (cpu_submission_sem_ptr != nullptr)
         {
-            m_sem_ptr_graveyard.push_back(std::move(cpu_submission_sem_ptr) );
+            inout_sem_ptr_vec.push_back(std::move(cpu_submission_sem_ptr) );
         }
     }
 
