@@ -630,13 +630,20 @@ bool OpenGL::VKBackend::init_anvil()
     physical_device_ptr = m_instance_ptr->get_physical_device(0);
 
     /* Create a Vulkan device */
-    m_device_ptr = Anvil::SGPUDevice::create(physical_device_ptr,
-                                             true, /* in_enable_shader_module_cache */
-                                             Anvil::DeviceExtensionConfiguration(),
-                                             std::vector<std::string>(),
-                                             false, /* in_transient_command_buffer_allocs_only     */
-                                             true,  /* in_support_resettable_command_buffer_allocs */
-                                             true); /* in_mt_safe                                  */
+    {
+        Anvil::DeviceExtensionConfiguration dev_exts;
+
+        /* VK_KHR_maintenance1 is required for viewport origin flipping */
+        dev_exts.extension_status[VK_KHR_MAINTENANCE1_EXTENSION_NAME] = Anvil::ExtensionAvailability::REQUIRE;
+
+        m_device_ptr = Anvil::SGPUDevice::create(physical_device_ptr,
+                                                 true, /* in_enable_shader_module_cache */
+                                                 dev_exts,
+                                                 std::vector<std::string>(),
+                                                 false, /* in_transient_command_buffer_allocs_only     */
+                                                 true,  /* in_support_resettable_command_buffer_allocs */
+                                                 true); /* in_mt_safe                                  */
+    }
 
     if (m_device_ptr == nullptr)
     {
