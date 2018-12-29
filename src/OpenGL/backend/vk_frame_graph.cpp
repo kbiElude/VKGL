@@ -1854,7 +1854,8 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
         m_active_submissions.push_back(
             ActiveSubmission(std::move(wait_fence_ptr),
                              group_node_ptrs,
-                             node_ptrs)
+                             node_ptrs,
+                             std::move(command_buffer_submissions) )
         );
     }
 
@@ -2642,10 +2643,8 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
             }
         }
 
-        current_submission_ptr->command_buffers_ptr.push_back(cmd_buffer_ptr.get() );
-
-        /* TODO: ONCE GRAVEYARD COLLECTOR LANDS, ENSURE THIS COMMAND BUFFER DOES NOT GO OUT OF SCOPE BEFORE ACTUAL SUBMISSIONS ARE MADE! */
-        m_cmd_buffer_ptr_graveyard.push_back(std::move(cmd_buffer_ptr) );
+        current_submission_ptr->command_buffers_ptr.push_back      (cmd_buffer_ptr.get() );
+        current_submission_ptr->command_buffers_owned_ptr.push_back(std::move(cmd_buffer_ptr) );
 
         out_cmd_buffer_submissions_ptr->push_back(
             std::move(current_submission_ptr)

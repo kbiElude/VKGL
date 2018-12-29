@@ -120,10 +120,11 @@ namespace OpenGL
         {
             GroupNode* parent_group_node_ptr;
 
-            std::vector<Anvil::PrimaryCommandBuffer*> command_buffers_ptr;
-            std::vector<Anvil::Semaphore*>            signal_semaphore_ptrs;
-            std::vector<Anvil::PipelineStageFlags>    wait_dst_stage_masks;
-            std::vector<Anvil::Semaphore*>            wait_semaphore_ptrs;
+            std::vector<Anvil::PrimaryCommandBuffer*>         command_buffers_ptr;
+            std::vector<Anvil::PrimaryCommandBufferUniquePtr> command_buffers_owned_ptr;
+            std::vector<Anvil::Semaphore*>                    signal_semaphore_ptrs;
+            std::vector<Anvil::PipelineStageFlags>            wait_dst_stage_masks;
+            std::vector<Anvil::Semaphore*>                    wait_semaphore_ptrs;
 
             CommandBufferSubmission(GroupNode* in_parent_group_node_ptr)
                 :parent_group_node_ptr(in_parent_group_node_ptr)
@@ -326,16 +327,19 @@ namespace OpenGL
 
         typedef struct ActiveSubmission
         {
-            Anvil::FenceUniquePtr                  fence_ptr;
-            std::vector<GroupNodeUniquePtr>        group_node_ptrs_vec;
-            std::vector<VKFrameGraphNodeUniquePtr> node_ptrs_vec;
+            std::vector<CommandBufferSubmissionUniquePtr> cmd_buffer_submission_ptr_vec;
+            Anvil::FenceUniquePtr                         fence_ptr;
+            std::vector<GroupNodeUniquePtr>               group_node_ptrs_vec;
+            std::vector<VKFrameGraphNodeUniquePtr>        node_ptrs_vec;
 
-            ActiveSubmission(Anvil::FenceUniquePtr                   in_fence_ptr,
-                             std::vector<GroupNodeUniquePtr>&        inout_group_node_ptrs_vec,
-                             std::vector<VKFrameGraphNodeUniquePtr>& inout_node_ptrs_vec)
-                :fence_ptr          (std::move(in_fence_ptr) ),
-                 group_node_ptrs_vec(std::move(inout_group_node_ptrs_vec) ),
-                 node_ptrs_vec      (std::move(inout_node_ptrs_vec) )
+            ActiveSubmission(Anvil::FenceUniquePtr                          in_fence_ptr,
+                             std::vector<GroupNodeUniquePtr>&               inout_group_node_ptrs_vec,
+                             std::vector<VKFrameGraphNodeUniquePtr>&        inout_node_ptrs_vec,
+                             std::vector<CommandBufferSubmissionUniquePtr>& inout_cmd_buffer_submission_ptr_vec)
+                :cmd_buffer_submission_ptr_vec(std::move(inout_cmd_buffer_submission_ptr_vec) ),
+                 fence_ptr                    (std::move(in_fence_ptr) ),
+                 group_node_ptrs_vec          (std::move(inout_group_node_ptrs_vec) ),
+                 node_ptrs_vec                (std::move(inout_node_ptrs_vec) )
             {
                 /* Stub */
             }
@@ -444,7 +448,6 @@ namespace OpenGL
         //<       One way of determining this would be to spawn a "cleanup" task every second which would device-idle and wipe out all
         //<       sems from the graveyard (the list would've had to be cached before the wait op, of course).
         //<       Other types of graveyards are also used. Same rules apply.
-        std::vector<Anvil::PrimaryCommandBufferUniquePtr> m_cmd_buffer_ptr_graveyard;
         std::vector<Anvil::SemaphoreUniquePtr>            m_sem_ptr_graveyard;
 
         //< Only used at command buffer recording time.
