@@ -978,14 +978,16 @@ VkBool32 OpenGL::VKBackend::on_debug_callback_received(Anvil::DebugMessageSeveri
 {
     VkBool32 result = VK_SUCCESS;
 
-    if ((in_severity & Anvil::DebugMessageSeverityFlagBits::ERROR_BIT) != 0)
+    if ((in_severity & Anvil::DebugMessageSeverityFlagBits::ERROR_BIT)   != 0  ||
+        (in_severity & Anvil::DebugMessageSeverityFlagBits::WARNING_BIT) != 0)
     {
         #if defined(_WIN32)
         {
             std::stringstream error_sstream;
 
             error_sstream << "[VALIDATION ERROR]: "
-                          << in_message_ptr;
+                          << in_message_ptr
+                          << "\n";
 
             ::OutputDebugStringA(error_sstream.str().c_str() );
         }

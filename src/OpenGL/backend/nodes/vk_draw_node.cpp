@@ -4,6 +4,7 @@
  */
 #include "Anvil/include/wrappers/buffer.h"
 #include "Anvil/include/wrappers/command_buffer.h"
+#include "Anvil/include/wrappers/memory_block.h"
 #include "Anvil/include/wrappers/swapchain.h"
 #include "OpenGL/backend/nodes/vk_draw_node.h"
 #include "OpenGL/backend/vk_buffer_manager.h"
@@ -512,8 +513,8 @@ void OpenGL::VKNodes::Draw::record_commands(Anvil::CommandBufferBase*  in_cmd_bu
 
             vkgl_assert(backend_buffer_reference_ptr != nullptr);
 
-            buffer_offsets[current_active_attribute_location] = reinterpret_cast<VkDeviceSize>(vaa_props.pointer);
             buffer_ptrs   [current_active_attribute_location] = backend_buffer_reference_ptr->get_payload().buffer_ptr;
+            buffer_offsets[current_active_attribute_location] = reinterpret_cast<VkDeviceSize>(vaa_props.pointer);
         }
 
         /* TODO: Use a non-zero start binding index whenever possible */

@@ -202,6 +202,13 @@ Anvil::GraphicsPipelineCreateInfoUniquePtr OpenGL::VKGFXPipelineManager::GFXPipe
         vkgl_assert(fs_sm_ptr != nullptr &&
                     vs_sm_ptr != nullptr);
 
+        #if defined(_DEBUG)
+        {
+            const auto fs_disasm = fs_sm_ptr->get_disassembly();
+            const auto vs_disasm = vs_sm_ptr->get_disassembly();
+        }
+        #endif
+
         fs_sm_entrypoint_name = fs_sm_ptr->get_fs_entrypoint_name().c_str();
         vs_sm_entrypoint_name = vs_sm_ptr->get_vs_entrypoint_name().c_str();
 

@@ -66,7 +66,7 @@ OpenGL::VKSPIRVManager::~VKSPIRVManager()
 void OpenGL::VKSPIRVManager::compile_shader(ShaderData* in_shader_data_ptr)
 {
     /* NOTE: This function is called back from one of the backend thread pool's threads */
-    const char*                       glsl_code_ptr        = in_shader_data_ptr->glsl.c_str();
+    std::string                       glsl_code            = in_shader_data_ptr->glsl;
     std::unique_ptr<glslang::TShader> glslang_shader_ptr;
     const auto                        glslang_shader_stage = OpenGL::Utils::get_sh_language_for_opengl_shader_type(in_shader_data_ptr->type);
     const char*                       sm_entrypoint_name   = "main";
@@ -79,11 +79,18 @@ void OpenGL::VKSPIRVManager::compile_shader(ShaderData* in_shader_data_ptr)
     glslang_shader_ptr.reset(new glslang::TShader(glslang_shader_stage) );
     vkgl_assert(glslang_shader_ptr != nullptr);
 
-    glslang_shader_ptr->setStrings(&glsl_code_ptr,
-                                   1); /* in_n */
+    patch_glsl_code(in_shader_data_ptr,
+                    glsl_code);
 
-    glslang_shader_ptr->setAutoMapBindings (true); /* TODO: Need to use app-specified data here */
-    glslang_shader_ptr->setAutoMapLocations(true); /* TODO: Need to use app-specified data here */
+    {
+        const char* glsl_code_raw_ptr = glsl_code.c_str();
+
+        glslang_shader_ptr->setStrings(&glsl_code_raw_ptr,
+                                       1); /* in_n */
+    }
+
+    glslang_shader_ptr->setAutoMapBindings (true);
+    glslang_shader_ptr->setAutoMapLocations(true);
     glslang_shader_ptr->setEntryPoint      (sm_entrypoint_name);
 
     in_shader_data_ptr->compilation_status = glslang_shader_ptr->parse(m_glslang_resources_ptr.get(),
@@ -714,6 +721,11 @@ void OpenGL::VKSPIRVManager::link_program(ProgramData* in_program_data_ptr)
     in_program_data_ptr->link_status = glslang_program_ptr->link      (EShMsgDefault);
     in_program_data_ptr->link_log    = glslang_program_ptr->getInfoLog();
 
+    if (!glslang_program_ptr->mapIO() ) //< TODO: Need to use app-specified data here
+    {
+        vkgl_assert_fail();
+    }
+
     if (!glslang_program_ptr->buildReflection() )
     {
         vkgl_assert_fail();
@@ -776,6 +788,13 @@ void OpenGL::VKSPIRVManager::link_program(ProgramData* in_program_data_ptr)
 
     /* NOTE: We do NOT cache the TProgram instance. It's not going to be needed afterwards */
     in_program_data_ptr->program_reference_ptr.reset();
+}
+
+void OpenGL::VKSPIRVManager::patch_glsl_code(const ShaderData* in_shader_data_ptr,
+                                             std::string&      inout_glsl_code)
+
+{
+    /* Stub for now */
 }
 
 OpenGL::SPIRVBlobID OpenGL::VKSPIRVManager::register_program(OpenGL::GLProgramReferenceUniquePtr in_program_reference_ptr)
