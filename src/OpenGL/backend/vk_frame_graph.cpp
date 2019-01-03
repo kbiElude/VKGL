@@ -2051,7 +2051,7 @@ bool OpenGL::VKFrameGraph::init()
 {
     bool result = false;
 
-    if (!init_per_object_data() )
+    if (!init_swapchain_data() )
     {
         vkgl_assert_fail();
 
@@ -2065,22 +2065,6 @@ bool OpenGL::VKFrameGraph::init()
         goto end;
     }
 
-    result = true;
-end:
-    return result;
-}
-
-bool OpenGL::VKFrameGraph::init_per_object_data()
-{
-    bool result                = false;
-    auto swapchain_manager_ptr = m_backend_ptr->get_swapchain_manager_ptr();
-
-    vkgl_assert(swapchain_manager_ptr != nullptr);
-
-    /* Initialize per-aspect data for swapchain images */
-    m_swapchain_image_data.resize(swapchain_manager_ptr->get_n_swapchain_images() );
-
-    /* All done */
     result = true;
 end:
     return result;
@@ -2129,6 +2113,23 @@ bool OpenGL::VKFrameGraph::init_queue_rings()
         m_queue_ring_ptr_per_queue_fam[current_queue_family_type] = std::move(queue_ring_ptr);
     }
 
+    result = true;
+end:
+    return result;
+}
+
+bool OpenGL::VKFrameGraph::init_swapchain_data()
+{
+    bool result                = false;
+    auto swapchain_manager_ptr = m_backend_ptr->get_swapchain_manager_ptr();
+
+    vkgl_assert(swapchain_manager_ptr != nullptr);
+
+    /* Initialize per-aspect data for swapchain images */
+    m_swapchain_image_data.clear ();
+    m_swapchain_image_data.resize(swapchain_manager_ptr->get_n_swapchain_images() );
+
+    /* All done */
     result = true;
 end:
     return result;
@@ -2210,6 +2211,14 @@ void OpenGL::VKFrameGraph::on_buffer_deleted(Anvil::Buffer* in_buffer_ptr)
 void OpenGL::VKFrameGraph::on_image_deleted(Anvil::Image* in_image_ptr)
 {
     vkgl_not_implemented();
+}
+
+void OpenGL::VKFrameGraph::on_swapchain_recreated()
+{
+    if (!init_swapchain_data() )
+    {
+        vkgl_assert_fail();
+    }
 }
 
 void OpenGL::VKFrameGraph::process_buffer_node_input(std::vector<Anvil::BufferBarrier>&                inout_pre_buffer_barriers,

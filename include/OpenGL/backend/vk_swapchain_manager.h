@@ -36,10 +36,17 @@ namespace OpenGL
         OpenGL::TimeMarker            get_tot_time_marker             ()                                          const;
         Anvil::SemaphoreUniquePtr     pop_frame_acquisition_semaphore (const OpenGL::TimeMarker& in_time_marker); //< deleter automatically resets & pushes the sem back to cache.
 
+        /* NOTE: Schedules swapchain recreation at next swapchain acquisition time. This should be leveraged
+         *       whenever swapchain becomes suboptimal or out-of-date (which can happen if, for example, parent
+         *       window is resized.
+         */
+        void recreate_swapchain(const bool& in_defer_till_acquisition);
+
         uint32_t get_n_swapchain_images() const
         {
             return m_n_swapchain_images;
         }
+
 
         void set_swap_interval(const int32_t& in_swap_interval);
 
@@ -51,6 +58,10 @@ namespace OpenGL
 
     private:
         /* Private type definitions */
+        struct InternalSwapchainData;
+
+        typedef std::unique_ptr<InternalSwapchainData> InternalSwapchainDataUniquePtr;
+
         typedef struct InternalSwapchainData
         {
             std::vector<Anvil::ImageUniquePtr>     ds_image_ptrs;
@@ -61,6 +72,11 @@ namespace OpenGL
             Anvil::RenderingSurfaceUniquePtr       rendering_surface_ptr;
             Anvil::SwapchainUniquePtr              swapchain_ptr;
             Anvil::WindowUniquePtr                 window_ptr;
+
+            /* TODO: No mechanism exists yet, which would release outdated swapchains (along with associated image/image views/sems) once
+             *       all swapchain frames are presented.
+             */
+            std::vector<InternalSwapchainDataUniquePtr> outdated_swapchain_data_item_ptrs;
 
             InternalSwapchainData(Anvil::RenderingSurfaceUniquePtr        in_rendering_surface_ptr,
                                   Anvil::SwapchainUniquePtr               in_swapchain_ptr,
@@ -93,8 +109,6 @@ namespace OpenGL
                 window_ptr.reset           ();
             }
         } InternalSwapchainData;
-
-        typedef std::unique_ptr<InternalSwapchainData> InternalSwapchainDataUniquePtr;
 
         typedef struct SwapchainPropsSnapshot
         {
@@ -134,7 +148,8 @@ namespace OpenGL
                                                              const uint32_t&                         in_height,
                                                              std::vector<Anvil::ImageUniquePtr>&     out_ds_image_ptrs,
                                                              std::vector<Anvil::ImageViewUniquePtr>& out_ds_image_view_ptrs) const;
-        InternalSwapchainDataUniquePtr create_swapchain     (const SwapchainPropsSnapshot*           in_swapchain_props_ptr) const;
+        InternalSwapchainDataUniquePtr create_swapchain     (const SwapchainPropsSnapshot*           in_swapchain_props_ptr,
+                                                             InternalSwapchainDataUniquePtr          in_opt_former_swapchain_data_ptr) const;
         bool                           init                 ();
 
         void                           on_all_swapchain_snapshots_out_of_scope    ();
@@ -156,6 +171,7 @@ namespace OpenGL
         mutable std::mutex                  m_mutex;
         const uint32_t                      m_n_swapchain_images;
         const VKGL::PixelFormatRequirements m_pixel_format_reqs;
+        bool                                m_should_recreate_swapchain;
     };
 }
 

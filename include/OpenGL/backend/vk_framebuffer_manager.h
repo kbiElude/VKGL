@@ -42,11 +42,11 @@ namespace OpenGL
         /* Private functions */
         VKFramebufferManager(IBackend* in_backend_ptr);
 
-        uint64_t get_framebuffer_hash(const uint32_t&          in_n_attachments,
-                                      const uint32_t&          in_width,
-                                      const uint32_t&          in_height,
-                                      const uint32_t&          in_n_layers,
-                                      const Anvil::RenderPass* in_rp_ptr) const;
+        uint64_t get_framebuffer_hash(const std::vector<Anvil::ImageView*>& in_attachment_ptrs,
+                                      const uint32_t&                       in_width,
+                                      const uint32_t&                       in_height,
+                                      const uint32_t&                       in_n_layers,
+                                      const Anvil::RenderPass*              in_rp_ptr) const;
 
         /* Private variables */
         IBackend* const m_backend_ptr;

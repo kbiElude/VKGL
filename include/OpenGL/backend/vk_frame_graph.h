@@ -25,8 +25,9 @@ namespace OpenGL
         void add_node(OpenGL::VKFrameGraphNodeUniquePtr in_node_ptr);
         void execute (const bool&                       in_block_until_finished);
 
-        void on_buffer_deleted(Anvil::Buffer* in_buffer_ptr);
-        void on_image_deleted (Anvil::Image*  in_image_ptr);
+        void on_buffer_deleted     (Anvil::Buffer* in_buffer_ptr);
+        void on_image_deleted      (Anvil::Image*  in_image_ptr);
+        void on_swapchain_recreated();
 
     private:
         /* Private type definitions */
@@ -422,9 +423,9 @@ namespace OpenGL
                                             Anvil::Fence*                                                                                     in_opt_wait_fence_ptr,
                                             std::vector<Anvil::SemaphoreUniquePtr>&                                                           inout_sem_ptr_vec);
 
-        bool init                ();
-        bool init_per_object_data();
-        bool init_queue_rings    ();
+        bool init               ();
+        bool init_queue_rings   ();
+        bool init_swapchain_data();
 
         bool do_group_nodes_encapsulate_swapchain_acquire_present_command_stream(const std::vector<GroupNodeUniquePtr>& in_group_nodes_ptr) const;
 

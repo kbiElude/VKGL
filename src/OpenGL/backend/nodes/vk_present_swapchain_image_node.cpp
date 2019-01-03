@@ -61,14 +61,14 @@ OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::PresentSwapchainImage::create
 
 void OpenGL::VKNodes::PresentSwapchainImage::execute_cpu_side(IVKFrameGraphNodeCallback* in_callback_ptr)
 {
-    auto                             device_ptr               = m_backend_ptr->get_device_ptr();
-    uint32_t                         n_wait_sems              = 0;
-    auto                             swapchain_manager_ptr    = m_backend_ptr->get_swapchain_manager_ptr();
-    auto                             swapchain_ptr            = m_swapchain_reference_ptr->get_payload().swapchain_ptr;
-    VkResult                         present_result;
-    auto                             queue_ptr                = swapchain_manager_ptr->get_presentable_queue(m_swapchain_reference_ptr->get_payload().time_marker);
-    Anvil::Semaphore**               wait_sem_ptr_ptr         = nullptr;
-    const Anvil::PipelineStageFlags* wait_sem_stage_masks_ptr = nullptr;
+    auto                               device_ptr               = m_backend_ptr->get_device_ptr();
+    uint32_t                           n_wait_sems              = 0;
+    Anvil::SwapchainOperationErrorCode present_result           = Anvil::SwapchainOperationErrorCode::DEVICE_LOST;
+    auto                               swapchain_manager_ptr    = m_backend_ptr->get_swapchain_manager_ptr();
+    auto                               swapchain_ptr            = m_swapchain_reference_ptr->get_payload().swapchain_ptr;
+    auto                               queue_ptr                = swapchain_manager_ptr->get_presentable_queue(m_swapchain_reference_ptr->get_payload().time_marker);
+    Anvil::Semaphore**                 wait_sem_ptr_ptr         = nullptr;
+    const Anvil::PipelineStageFlags*   wait_sem_stage_masks_ptr = nullptr;
 
     vkgl_assert(queue_ptr != nullptr);
 
@@ -82,13 +82,16 @@ void OpenGL::VKNodes::PresentSwapchainImage::execute_cpu_side(IVKFrameGraphNodeC
 
     vkgl_assert(n_wait_sems > 0);
 
-    present_result = queue_ptr->present(swapchain_ptr,
-                                        in_callback_ptr->get_acquired_swapchain_image_index(),
-                                        n_wait_sems,
-                                        wait_sem_ptr_ptr);
+    if (!queue_ptr->present(swapchain_ptr,
+                            in_callback_ptr->get_acquired_swapchain_image_index(),
+                            n_wait_sems,
+                            wait_sem_ptr_ptr,
+                           &present_result) )
+    {
+        vkgl_assert(present_result != Anvil::SwapchainOperationErrorCode::SUCCESS)
 
-    /* TODO: Support for window resize events.. */
-    vkgl_assert(present_result == VK_SUCCESS);
+        swapchain_manager_ptr->recreate_swapchain(true /* in_defer_till_acquisition */);
+    }
 
     /* Mark the swapchain image as presented */
     in_callback_ptr->set_acquired_swapchain_image_index(UINT32_MAX);

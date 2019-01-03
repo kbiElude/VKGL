@@ -53,12 +53,13 @@ OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::AcquireSwapchainImage::create
 
 void OpenGL::VKNodes::AcquireSwapchainImage::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callback_ptr)
 {
-    auto              frame_acquire_sem_ptr    = Anvil::SemaphoreUniquePtr(nullptr,
-                                                                           std::default_delete<Anvil::Semaphore>() );
-    uint32_t          swapchain_frame_index    = UINT32_MAX;
-    Anvil::ImageView* swapchain_image_view_ptr = nullptr;
-    auto              swapchain_manager_ptr    = m_backend_ptr->get_swapchain_manager_ptr();
-    Anvil::Swapchain* swapchain_ptr            = m_swapchain_reference_ptr->get_payload().swapchain_ptr;
+    Anvil::SwapchainOperationErrorCode frame_acquire_result;
+    auto                               frame_acquire_sem_ptr    = Anvil::SemaphoreUniquePtr(nullptr,
+                                                                                            std::default_delete<Anvil::Semaphore>() );
+    uint32_t                           swapchain_frame_index    = UINT32_MAX;
+    Anvil::ImageView*                  swapchain_image_view_ptr = nullptr;
+    auto                               swapchain_manager_ptr    = m_backend_ptr->get_swapchain_manager_ptr();
+    Anvil::Swapchain*                  swapchain_ptr            = m_swapchain_reference_ptr->get_payload().swapchain_ptr;
 
     vkgl_assert(swapchain_ptr != nullptr);
 
@@ -66,7 +67,19 @@ void OpenGL::VKNodes::AcquireSwapchainImage::do_cpu_prepass(IVKFrameGraphNodeCal
     frame_acquire_sem_ptr = swapchain_manager_ptr->pop_frame_acquisition_semaphore(m_swapchain_reference_ptr->get_payload().time_marker);
     vkgl_assert(frame_acquire_sem_ptr != nullptr);
 
-    swapchain_frame_index = swapchain_ptr->acquire_image(frame_acquire_sem_ptr.get() );
+    frame_acquire_result = swapchain_ptr->acquire_image(frame_acquire_sem_ptr.get(),
+                                                       &swapchain_frame_index);
+
+    if (frame_acquire_result != Anvil::SwapchainOperationErrorCode::SUCCESS)
+    {
+        swapchain_manager_ptr->recreate_swapchain(false /* in_defer_till_acquisition */ );
+
+        frame_acquire_result = swapchain_ptr->acquire_image(frame_acquire_sem_ptr.get(),
+                                                           &swapchain_frame_index);
+
+        vkgl_assert(frame_acquire_result == Anvil::SwapchainOperationErrorCode::SUCCESS);
+    }
+
     vkgl_assert(swapchain_frame_index != UINT32_MAX);
 
     swapchain_image_view_ptr = swapchain_ptr->get_image_view(swapchain_frame_index);

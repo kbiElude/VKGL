@@ -33,9 +33,9 @@ Anvil::Framebuffer* OpenGL::VKFramebufferManager::get_framebuffer(const std::vec
                                                                   const uint32_t&                       in_width,
                                                                   const uint32_t&                       in_height,
                                                                   const uint32_t&                       in_n_layers,
-                                                                  Anvil::RenderPass*                     in_rp_ptr)
+                                                                  Anvil::RenderPass*                    in_rp_ptr)
 {
-    const auto          fb_hash    = get_framebuffer_hash(static_cast<uint32_t>(in_attachments_ptr.size() ),
+    const auto          fb_hash    = get_framebuffer_hash(in_attachments_ptr,
                                                           in_width,
                                                           in_height,
                                                           in_n_layers,
@@ -123,18 +123,23 @@ Anvil::Framebuffer* OpenGL::VKFramebufferManager::get_framebuffer(const std::vec
     return result_ptr;
 }
 
-uint64_t OpenGL::VKFramebufferManager::get_framebuffer_hash(const uint32_t&          in_n_attachments,
-                                                            const uint32_t&          in_width,
-                                                            const uint32_t&          in_height,
-                                                            const uint32_t&          in_n_layers,
-                                                            const Anvil::RenderPass* in_rp_ptr) const
+uint64_t OpenGL::VKFramebufferManager::get_framebuffer_hash(const std::vector<Anvil::ImageView*>& in_attachment_ptrs,
+                                                            const uint32_t&                       in_width,
+                                                            const uint32_t&                       in_height,
+                                                            const uint32_t&                       in_n_layers,
+                                                            const Anvil::RenderPass*              in_rp_ptr) const
 {
     uint64_t hash = 0;
 
     hash |= static_cast<uint64_t>(in_width);
-    hash |= static_cast<uint64_t>(in_height)        << 14;
-    hash |= static_cast<uint64_t>(in_n_layers)      << 28;
-    hash |= static_cast<uint64_t>(in_n_attachments) << 42;
+    hash |= static_cast<uint64_t>(in_height)                  << 14;
+    hash |= static_cast<uint64_t>(in_n_layers)                << 28;
+    hash |= static_cast<uint64_t>(in_attachment_ptrs.size() ) << 42;
+
+    for (const auto& current_attachment_ptr : in_attachment_ptrs)
+    {
+        hash ^= reinterpret_cast<uint64_t>(current_attachment_ptr);
+    }
 
     hash ^= OpenGL::VKRenderpassManager::get_rp_hash(in_rp_ptr->get_render_pass_create_info() );
 

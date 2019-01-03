@@ -25,9 +25,10 @@
 OpenGL::VKSwapchainManager::VKSwapchainManager(OpenGL::IBackend*                    in_backend_ptr,
                                                const uint32_t&                      in_n_swapchain_images,
                                                const VKGL::PixelFormatRequirements& in_pixel_format_reqs)
-    :m_backend_ptr       (in_backend_ptr),
-     m_n_swapchain_images(in_n_swapchain_images),
-     m_pixel_format_reqs (in_pixel_format_reqs)
+    :m_backend_ptr              (in_backend_ptr),
+     m_n_swapchain_images       (in_n_swapchain_images),
+     m_pixel_format_reqs        (in_pixel_format_reqs),
+     m_should_recreate_swapchain(false)
 {
     vkgl_assert(m_backend_ptr        != nullptr);
     vkgl_assert(m_n_swapchain_images != 0);
@@ -52,10 +53,17 @@ OpenGL::VKSwapchainReferenceUniquePtr OpenGL::VKSwapchainManager::acquire_swapch
         goto end;
     }
 
-    if (internal_swapchain_data_iterator == m_time_marker_to_internal_swapchain_data_map.end() )
+    if (internal_swapchain_data_iterator == m_time_marker_to_internal_swapchain_data_map.end() ||
+        m_should_recreate_swapchain)
     {
-        /* Need to spawn a new swapchain instance */
-        auto internal_data_ptr = create_swapchain(snapshot_ptr);
+        if (m_should_recreate_swapchain)
+        {
+            vkgl_assert(m_time_marker_to_internal_swapchain_data_map.find(in_time_marker) != m_time_marker_to_internal_swapchain_data_map.end() );
+        }
+
+        auto internal_data_ptr = create_swapchain(snapshot_ptr,
+                                                  (m_should_recreate_swapchain) ? std::move(m_time_marker_to_internal_swapchain_data_map[in_time_marker])
+                                                                                : InternalSwapchainDataUniquePtr() );
 
         if (internal_data_ptr == nullptr)
         {
@@ -64,6 +72,9 @@ OpenGL::VKSwapchainReferenceUniquePtr OpenGL::VKSwapchainManager::acquire_swapch
             goto end;
         }
 
+        m_backend_ptr->get_frame_graph_ptr()->on_swapchain_recreated();
+
+        m_should_recreate_swapchain                                  = false;
         m_time_marker_to_internal_swapchain_data_map[in_time_marker] = std::move(internal_data_ptr);
         internal_swapchain_data_iterator                             = m_time_marker_to_internal_swapchain_data_map.find(in_time_marker);
 
@@ -220,7 +231,8 @@ std::unique_ptr<void, std::function<void(void*)> > OpenGL::VKSwapchainManager::c
     return result_ptr;
 }
 
-OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainManager::create_swapchain(const SwapchainPropsSnapshot* in_swapchain_props_ptr) const
+OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainManager::create_swapchain(const SwapchainPropsSnapshot*  in_swapchain_props_ptr,
+                                                                                                        InternalSwapchainDataUniquePtr in_opt_former_swapchain_data_ptr) const
 {
     auto                                   device_ptr                  = m_backend_ptr->get_device_ptr();
     std::vector<Anvil::ImageUniquePtr>     ds_images;
@@ -228,6 +240,7 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
     auto                                   format_manager_ptr          = m_backend_ptr->get_format_manager_ptr();
     std::vector<Anvil::SemaphoreUniquePtr> frame_acquire_sems;
     InternalSwapchainDataUniquePtr         internal_swapchain_data_ptr;
+    const bool                             is_recreate_request         = (in_opt_former_swapchain_data_ptr != nullptr);
     std::vector<Anvil::Queue*>             presentable_queue_ptrs;
     Anvil::RenderingSurfaceUniquePtr       rendering_surface_ptr;
     Anvil::SwapchainUniquePtr              swapchain_ptr;
@@ -235,7 +248,29 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
 
     vkgl_assert(device_ptr != nullptr);
 
+    if (is_recreate_request)
+    {
+        if (in_opt_former_swapchain_data_ptr->outdated_swapchain_data_item_ptrs.size() > 0)
+        {
+            /* Swapchain is only recreated (if necessary) at swapchain creation time. Any other entrypoint that returns suboptimal
+             * or out-of-date status for current swapchain will set a "reset swapchain" flag but will continue to use an already
+             * acquired swapchain until presentation time.
+             *
+             * Hence, if we reached this point, a swapchain presentation request (vkQueuePresentKHR() ) must have already been dispatched
+             * for the outdated swapchain. Therefore, it's fine to release the swapchain at this point.
+             *
+             * NOTE: There could STILL be cmd buffers in flight which refer to image views created off the deprecated swapchain. A wait-idle
+             *       call is a safeguard against these situations. It's ugly but swapchain resize events are not expected to happen at time-critical
+             *       moments of app lifetime.
+             */
+            device_ptr->wait_idle();
+
+            in_opt_former_swapchain_data_ptr->outdated_swapchain_data_item_ptrs.erase(in_opt_former_swapchain_data_ptr->outdated_swapchain_data_item_ptrs.begin() );
+        }
+    }
+
     /* 1. Create a window wrapper for the window handle specified by the app. */
+    if (!is_recreate_request)
     {
         window_ptr = Anvil::WindowFactory::create_window(Anvil::WINDOW_PLATFORM_SYSTEM,
                                                          in_swapchain_props_ptr->window_handle);
@@ -247,8 +282,16 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
             goto end;
         }
     }
+    else
+    {
+        /* Re-use the window instance we already created */
+        window_ptr = std::move(in_opt_former_swapchain_data_ptr->window_ptr);
+
+        vkgl_assert(window_ptr != nullptr);
+    }
 
     /* 2. Create a rendering surface for the window */
+    if (!is_recreate_request)
     {
         /* FIXME: Anvil interface flaw - fix Anvil-side and then get rid of the const_cast */
         rendering_surface_ptr = Anvil::RenderingSurface::create(const_cast<Anvil::Instance*>(device_ptr->get_parent_instance() ),
@@ -262,6 +305,13 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
 
             goto end;
         }
+    }
+    else
+    {
+        /* Re-use the already created instance. */
+        rendering_surface_ptr = std::move(in_opt_former_swapchain_data_ptr->rendering_surface_ptr);
+
+        vkgl_assert(rendering_surface_ptr != nullptr);
     }
 
     /* 3. Create the swapchain */
@@ -280,7 +330,10 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
                                                              Anvil::ColorSpaceKHR::SRGB_NONLINEAR_KHR, //< TODO: prettify me
                                                              present_mode,
                                                              image_usage_flags,
-                                                             m_n_swapchain_images);
+                                                             m_n_swapchain_images,
+                                                             true, /* in_clipped */
+                                                             (is_recreate_request) ? in_opt_former_swapchain_data_ptr->swapchain_ptr.get()
+                                                                                   : nullptr);
 
         if (create_info_ptr == nullptr)
         {
@@ -359,6 +412,7 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
     }
 
     /* 6. Cache all queues which can be used for presentation purposes */
+    if (!is_recreate_request)
     {
         auto                         device_sgpu_ptr                     = dynamic_cast<Anvil::SGPUDevice*>(device_ptr);
         const std::vector<uint32_t>* presentable_queue_fam_index_vec_ptr = nullptr;
@@ -391,6 +445,10 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
             }
         }
     }
+    else
+    {
+        presentable_queue_ptrs = in_opt_former_swapchain_data_ptr->presentable_queue_ptrs;
+    }
 
     /* 7. Pack all the stuff together. */
     internal_swapchain_data_ptr.reset(
@@ -408,6 +466,13 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
         vkgl_assert(internal_swapchain_data_ptr != nullptr);
 
         goto end;
+    }
+
+    if (is_recreate_request)
+    {
+        internal_swapchain_data_ptr->outdated_swapchain_data_item_ptrs = std::move(in_opt_former_swapchain_data_ptr->outdated_swapchain_data_item_ptrs);
+
+        internal_swapchain_data_ptr->outdated_swapchain_data_item_ptrs.push_back(std::move(in_opt_former_swapchain_data_ptr) );
     }
 
     /* Done */
@@ -696,6 +761,24 @@ Anvil::SemaphoreUniquePtr OpenGL::VKSwapchainManager::pop_frame_acquisition_sema
                                                this,
                                                internal_data_ptr,
                                                result_sem_ptr.get() ));
+}
+
+void OpenGL::VKSwapchainManager::recreate_swapchain(const bool& in_defer_till_acquisition)
+{
+    std::lock_guard<std::mutex> lock(m_mutex);
+
+    m_should_recreate_swapchain = true;
+
+    if (!in_defer_till_acquisition)
+    {
+        /* NOTE: Ignore the result reference. All we need here is re-creation of the swapchain. The caller
+         *       is expected to call acquire_swapchain() again to retrieve the latest swapchain payload
+         *       after this func leaves.
+         */
+        auto result_reference_ptr = acquire_swapchain(get_tot_time_marker() );
+
+        vkgl_assert(result_reference_ptr != nullptr);
+    }
 }
 
 void OpenGL::VKSwapchainManager::set_swap_interval(const int32_t& in_swap_interval)

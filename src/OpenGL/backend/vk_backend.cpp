@@ -1081,7 +1081,7 @@ void OpenGL::VKBackend::on_objects_destroyed(const OpenGL::ObjectType& in_object
     {
         case OpenGL::ObjectType::Buffer:
         {
-            vkgl_not_implemented();
+            /* This backend impl doesn't care */
 
             break;
         }
