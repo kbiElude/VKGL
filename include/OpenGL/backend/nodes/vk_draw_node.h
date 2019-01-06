@@ -123,7 +123,6 @@ namespace OpenGL
             VKFrameGraphNodeInfoUniquePtr                    m_info_ptr;
 
             std::vector<OpenGL::VKBufferReferenceUniquePtr> m_owned_buffer_reference_ptrs;
-            OpenGL::VKSwapchainReferenceUniquePtr           m_owned_swapchain_reference_ptr;
 
             struct Args
             {

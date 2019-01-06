@@ -185,13 +185,9 @@ void OpenGL::VKScheduler::process_clear_command(OpenGL::ClearCommand* in_command
 
     /* 1. Spawn the node */
     {
-        auto backend_swapchain_manager_ptr   = m_backend_ptr->get_swapchain_manager_ptr        ();
-        auto backend_swapchain_reference_ptr = backend_swapchain_manager_ptr->acquire_swapchain(backend_swapchain_manager_ptr->get_tot_time_marker() );
-
         node_ptr = OpenGL::VKNodes::Clear::create(m_frontend_ptr,
                                                   m_backend_ptr,
                                                   std::move(command_ptr->context_state_reference_ptr),
-                                                  std::move(backend_swapchain_reference_ptr),
                                                   command_ptr->buffers_to_clear);
     }
 
@@ -323,9 +319,6 @@ void OpenGL::VKScheduler::process_draw_arrays_command(OpenGL::CommandBaseUniqueP
 
     /* 1. Spawn the node */
     {
-        auto backend_swapchain_manager_ptr   = m_backend_ptr->get_swapchain_manager_ptr        ();
-        auto backend_swapchain_reference_ptr = backend_swapchain_manager_ptr->acquire_swapchain(backend_swapchain_manager_ptr->get_tot_time_marker() );
-
         node_ptr = OpenGL::VKNodes::Draw::create_arrays(m_frontend_ptr,
                                                         m_backend_ptr,
                                                         std::move(command_ptr->state_reference_ptr),
@@ -401,13 +394,11 @@ void OpenGL::VKScheduler::process_present_command(OpenGL::PresentCommand* in_com
     /* TODO: Is it 100% OK swapchain reference is initialized from a ToT marker here? */
     auto                              backend_frame_graph_ptr = m_backend_ptr->get_frame_graph_ptr();
     OpenGL::VKFrameGraphNodeUniquePtr node_ptr;
-    auto                              swapchain_reference_ptr = m_backend_ptr->get_swapchain_manager_ptr()->acquire_swapchain(m_backend_ptr->get_swapchain_manager_ptr()->get_tot_time_marker() );
 
     /* 1. Spawn the node */
     {
         node_ptr = OpenGL::VKNodes::PresentSwapchainImage::create(m_frontend_ptr,
-                                                                  m_backend_ptr,
-                                                                  std::move(swapchain_reference_ptr) );
+                                                                  m_backend_ptr);
     }
 
     /* 2. Submit the node to frame graph manager. */

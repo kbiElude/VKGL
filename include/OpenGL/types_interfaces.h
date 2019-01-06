@@ -460,8 +460,9 @@ namespace OpenGL
             /* Stub */
         }
 
-        virtual uint32_t          get_acquired_swapchain_image_index() const = 0;
-        virtual Anvil::Semaphore* get_swapchain_image_acquired_sem  () const = 0;
+        virtual uint32_t                      get_acquired_swapchain_image_index      () const = 0;
+        virtual OpenGL::VKSwapchainReference* get_acquired_swapchain_reference_raw_ptr() const = 0;
+        virtual Anvil::Semaphore*             get_swapchain_image_acquired_sem        () const = 0;
 
         /* Only callable from within Node::record_commands(), if @param inside_renderpass is true. */
         virtual Anvil::PipelineID get_pipeline_id(const OpenGL::DrawCallMode& in_draw_call_mode) = 0;
@@ -474,8 +475,9 @@ namespace OpenGL
                                    Anvil::Semaphore***               out_wait_sems_ptr_ptr_ptr,
                                    const Anvil::PipelineStageFlags** out_wait_sem_stage_mask_ptr_ptr) = 0;
 
-        virtual void set_acquired_swapchain_image_index(const uint32_t&   in_index)   = 0;
-        virtual void set_swapchain_image_acquired_sem  (Anvil::Semaphore* in_sem_ptr) = 0;
+        virtual void set_acquired_swapchain_image_index      (const uint32_t&               in_index)                   = 0;
+        virtual void set_acquired_swapchain_reference_raw_ptr(OpenGL::VKSwapchainReference* in_swapchain_reference_ptr) = 0;
+        virtual void set_swapchain_image_acquired_sem        (Anvil::Semaphore*             in_sem_ptr)                 = 0;
 
         //> All functions below describe state associated with the cmd buffer the commands are to be recorded for.
         virtual bool get_bound_pipeline_id                             (Anvil::PipelineID* out_result_ptr)      const = 0;

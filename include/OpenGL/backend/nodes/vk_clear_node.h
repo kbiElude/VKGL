@@ -19,7 +19,6 @@ namespace OpenGL
             static VKFrameGraphNodeUniquePtr create(const IContextObjectManagers*            in_frontend_ptr,
                                                     IBackend*                                in_backend_ptr,
                                                     OpenGL::GLContextStateReferenceUniquePtr in_context_state_ptr,
-                                                    OpenGL::VKSwapchainReferenceUniquePtr    in_swapchain_reference_ptr,
                                                     const OpenGL::ClearBufferBits&           in_buffers_to_clear);
 
             ~Clear();
@@ -70,7 +69,6 @@ namespace OpenGL
 
             bool requires_cpu_side_execution() const final
             {
-                /* None needed */
                 return false;
             }
 
@@ -104,7 +102,6 @@ namespace OpenGL
             Clear(const IContextObjectManagers*            in_frontend_ptr,
                   OpenGL::IBackend*                        in_backend_ptr,
                   OpenGL::GLContextStateReferenceUniquePtr in_context_state_ptr,
-                  OpenGL::VKSwapchainReferenceUniquePtr    in_swapchain_reference_ptr,
                   const OpenGL::ClearBufferBits&           in_buffers_to_clear);
 
             void init_info();
@@ -114,7 +111,6 @@ namespace OpenGL
             OpenGL::GLContextStateReferenceUniquePtr m_context_state_ptr;
             const IContextObjectManagers*            m_frontend_ptr;
             OpenGL::VKFrameGraphNodeInfoUniquePtr    m_info_ptr;
-            OpenGL::VKSwapchainReferenceUniquePtr    m_swapchain_reference_ptr;
 
             const OpenGL::ClearBufferBits& m_buffers_to_clear;
         };

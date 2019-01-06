@@ -15,32 +15,27 @@
 OpenGL::VKNodes::Clear::Clear(const IContextObjectManagers*            in_frontend_ptr,
                               IBackend*                                in_backend_ptr,
                               OpenGL::GLContextStateReferenceUniquePtr in_context_state_ptr,
-                              OpenGL::VKSwapchainReferenceUniquePtr    in_swapchain_reference_ptr,
                               const OpenGL::ClearBufferBits&           in_buffers_to_clear)
-    :m_backend_ptr              (in_backend_ptr),
-     m_buffers_to_clear         (in_buffers_to_clear),
-     m_context_state_ptr        (std::move(in_context_state_ptr) ),
-     m_frontend_ptr             (in_frontend_ptr),
-     m_swapchain_reference_ptr  (std::move(in_swapchain_reference_ptr) )
+    :m_backend_ptr      (in_backend_ptr),
+     m_buffers_to_clear (in_buffers_to_clear),
+     m_context_state_ptr(std::move(in_context_state_ptr) ),
+     m_frontend_ptr     (in_frontend_ptr)
 {
-    vkgl_assert(m_backend_ptr             != nullptr);
-    vkgl_assert(m_context_state_ptr       != nullptr);
-    vkgl_assert(m_frontend_ptr            != nullptr);
-    vkgl_assert(m_swapchain_reference_ptr != nullptr);
+    vkgl_assert(m_backend_ptr       != nullptr);
+    vkgl_assert(m_context_state_ptr != nullptr);
+    vkgl_assert(m_frontend_ptr      != nullptr);
 
     init_info();
 }
 
 OpenGL::VKNodes::Clear::~Clear()
 {
-    m_swapchain_reference_ptr.reset();
-     /* Stub */
+    /* Stub */
 }
 
 OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::Clear::create(const IContextObjectManagers*            in_frontend_ptr,
                                                                  IBackend*                                in_backend_ptr,
                                                                  OpenGL::GLContextStateReferenceUniquePtr in_context_state_ptr,
-                                                                 OpenGL::VKSwapchainReferenceUniquePtr    in_swapchain_reference_ptr,
                                                                  const OpenGL::ClearBufferBits&           in_buffers_to_clear)
 {
     OpenGL::VKFrameGraphNodeUniquePtr result_ptr(nullptr,
@@ -50,7 +45,6 @@ OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::Clear::create(const IContextO
         new OpenGL::VKNodes::Clear(in_frontend_ptr,
                                    in_backend_ptr,
                                    std::move(in_context_state_ptr),
-                                   std::move(in_swapchain_reference_ptr),
                                    in_buffers_to_clear)
     );
 
@@ -124,7 +118,7 @@ void OpenGL::VKNodes::Clear::init_info()
             {
                 case OpenGL::DrawBuffer::Back:
                 {
-                    auto new_node_io = OpenGL::NodeIO(m_swapchain_reference_ptr.get(),
+                    auto new_node_io = OpenGL::NodeIO(nullptr, /* in_alwaysnull_vk_swapchain_reference_ptr */
                                                       Anvil::ImageAspectFlagBits::COLOR_BIT,
                                                       Anvil::ImageLayout::TRANSFER_DST_OPTIMAL,
                                                       Anvil::ImageLayout::UNKNOWN,
@@ -170,7 +164,7 @@ void OpenGL::VKNodes::Clear::init_info()
         /* TODO */
         if (fb_state_ptr->depth_attachment.type == OpenGL::FramebufferAttachmentObjectType::Framebuffer_Default)
         {
-            auto new_node_io = OpenGL::NodeIO(m_swapchain_reference_ptr.get(),
+            auto new_node_io = OpenGL::NodeIO(nullptr, /* in_alwaysnull_vk_swapchain_reference_ptr */
                                               Anvil::ImageAspectFlagBits::DEPTH_BIT,
                                               Anvil::ImageLayout::UNKNOWN,
                                               Anvil::ImageLayout::TRANSFER_DST_OPTIMAL,
@@ -189,7 +183,7 @@ void OpenGL::VKNodes::Clear::init_info()
         /* TODO */
         if (fb_state_ptr->stencil_attachment.type == OpenGL::FramebufferAttachmentObjectType::Framebuffer_Default)
         {
-            auto new_node_io = OpenGL::NodeIO(m_swapchain_reference_ptr.get(),
+            auto new_node_io = OpenGL::NodeIO(nullptr, /* in_alwaysnull_vk_swapchain_reference_ptr */
                                               Anvil::ImageAspectFlagBits::STENCIL_BIT,
                                               Anvil::ImageLayout::UNKNOWN,
                                               Anvil::ImageLayout::TRANSFER_DST_OPTIMAL,
@@ -231,6 +225,9 @@ void OpenGL::VKNodes::Clear::record_commands(Anvil::CommandBufferBase*  in_cmd_b
     /* TODO */
     vkgl_assert(!in_inside_renderpass);
 
+    auto swapchain_reference_ptr = in_graph_callback_ptr->get_acquired_swapchain_reference_raw_ptr();
+    vkgl_assert(swapchain_reference_ptr != nullptr);
+
     for (auto& current_output : m_info_ptr->outputs)
     {
         switch (current_output.type)
@@ -239,8 +236,7 @@ void OpenGL::VKNodes::Clear::record_commands(Anvil::CommandBufferBase*  in_cmd_b
             {
                 Anvil::ImageSubresourceRange subresource_range;
                 const auto                   swapchain_image_index = in_graph_callback_ptr->get_acquired_swapchain_image_index();
-                auto                         swapchain_ptr         = m_swapchain_reference_ptr->get_payload().swapchain_ptr;
-                const auto                   image_ptr             = swapchain_ptr->get_image(swapchain_image_index);
+                const auto                   image_ptr             = swapchain_reference_ptr->get_payload().swapchain_ptr->get_image(swapchain_image_index);
 
                 vkgl_assert(image_ptr != nullptr);
 

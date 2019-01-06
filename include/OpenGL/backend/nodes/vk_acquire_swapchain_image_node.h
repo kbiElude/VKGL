@@ -16,9 +16,8 @@ namespace OpenGL
         {
         public:
             /* Public functions */
-            static VKFrameGraphNodeUniquePtr create(const IContextObjectManagers*         in_frontend_ptr,
-                                                    const IBackend*                       in_backend_ptr,
-                                                    OpenGL::VKSwapchainReferenceUniquePtr in_swapchain_reference_ptr);
+            static VKFrameGraphNodeUniquePtr create(const IContextObjectManagers* in_frontend_ptr,
+                                                    const IBackend*               in_backend_ptr);
 
             ~AcquireSwapchainImage();
 
@@ -113,9 +112,8 @@ namespace OpenGL
 
             /* Private functions */
 
-            AcquireSwapchainImage(const IContextObjectManagers*         in_frontend_ptr,
-                                  const OpenGL::IBackend*               in_backend_ptr,
-                                  OpenGL::VKSwapchainReferenceUniquePtr in_swapchain_reference_ptr);
+            AcquireSwapchainImage(const IContextObjectManagers* in_frontend_ptr,
+                                  const OpenGL::IBackend*       in_backend_ptr);
 
             /* Private variables */
             const IBackend*                       m_backend_ptr;

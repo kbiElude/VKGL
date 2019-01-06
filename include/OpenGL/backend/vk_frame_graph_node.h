@@ -27,7 +27,6 @@ namespace OpenGL
         {
             VKBufferReference*    buffer_reference_ptr;
             // VKImageReference*  image_reference_ptr; - todo
-            VKSwapchainReference* swapchain_reference_ptr;
         };
 
         NodeIOType type;
@@ -158,7 +157,7 @@ namespace OpenGL
             opt_post_sync_semaphore_ptr = nullptr;
         }
 #endif
-        explicit NodeIO(VKSwapchainReference*            in_vk_swapchain_reference_ptr,
+        explicit NodeIO(VKSwapchainReference*            in_alwaysnull_vk_swapchain_reference_ptr,
                         const Anvil::ImageAspectFlags&   in_aspect,
                         const Anvil::ImageLayout&        in_color_image_layout,
                         const Anvil::ImageLayout&        in_ds_image_layout,
@@ -171,9 +170,11 @@ namespace OpenGL
                                      in_pipeline_stages,
                                      in_access,
                                      in_fs_output_location),
-             swapchain_reference_ptr(in_vk_swapchain_reference_ptr),
              type                   (NodeIOType::Swapchain_Image)
         {
+            /* NOTE: Swapchain reference should be retrieved using get_acquired_swapchain_reference_raw_ptr() */
+            vkgl_assert(in_alwaysnull_vk_swapchain_reference_ptr == nullptr);
+
             opt_post_sync_event_ptr     = nullptr;
             opt_post_sync_fence_ptr     = nullptr;
             opt_post_sync_semaphore_ptr = nullptr;

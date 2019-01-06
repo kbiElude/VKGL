@@ -4,6 +4,7 @@
  */
 #include "Anvil/include/misc/framebuffer_create_info.h"
 #include "Anvil/include/wrappers/framebuffer.h"
+#include "Anvil/include/wrappers/image_view.h"
 #include "Anvil/include/wrappers/render_pass.h"
 #include "OpenGL/backend/vk_framebuffer_manager.h"
 #include "OpenGL/backend/vk_renderpass_manager.h"
@@ -138,7 +139,7 @@ uint64_t OpenGL::VKFramebufferManager::get_framebuffer_hash(const std::vector<An
 
     for (const auto& current_attachment_ptr : in_attachment_ptrs)
     {
-        hash ^= reinterpret_cast<uint64_t>(current_attachment_ptr);
+        hash ^= reinterpret_cast<uint64_t>(current_attachment_ptr->get_image_view() );
     }
 
     hash ^= OpenGL::VKRenderpassManager::get_rp_hash(in_rp_ptr->get_render_pass_create_info() );

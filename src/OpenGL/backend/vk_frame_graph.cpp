@@ -117,13 +117,14 @@ end:
 
 OpenGL::VKFrameGraph::VKFrameGraph(const OpenGL::IContextObjectManagers* in_frontend_ptr,
                                    const OpenGL::IBackend*               in_backend_ptr)
-    :m_active_graph_node_ptr         (nullptr),
-     m_active_group_node_ptr         (nullptr),
-     m_active_subpass_id             (UINT32_MAX),
-     m_acquired_swapchain_image_index(UINT32_MAX),
-     m_backend_ptr                   (in_backend_ptr),
-     m_frontend_ptr                  (in_frontend_ptr),
-     m_swapchain_acquire_sem_ptr     (nullptr)
+    :m_active_graph_node_ptr           (nullptr),
+     m_active_group_node_ptr           (nullptr),
+     m_active_subpass_id               (UINT32_MAX),
+     m_acquired_swapchain_image_index  (UINT32_MAX),
+     m_acquired_swapchain_reference_ptr(nullptr),
+     m_backend_ptr                     (in_backend_ptr),
+     m_frontend_ptr                    (in_frontend_ptr),
+     m_swapchain_acquire_sem_ptr       (nullptr)
 {
     vkgl_assert(in_backend_ptr != nullptr);
 }
@@ -297,9 +298,9 @@ bool OpenGL::VKFrameGraph::bake_barriers(const std::vector<GroupNodeUniquePtr>& 
                     Anvil::AccessFlags ds_src_access_mask    = Anvil::AccessFlagBits::NONE;
 
                     {
-                        auto               color_image_ptr               = current_input_ptr->swapchain_reference_ptr->get_payload().swapchain_ptr->get_image(m_acquired_swapchain_image_index);
+                        auto               color_image_ptr               = m_acquired_swapchain_reference_ptr->get_payload().swapchain_ptr->get_image(m_acquired_swapchain_image_index);
                         auto               color_image_subresource_range = color_image_ptr->get_subresource_range                                            ();
-                        auto               ds_image_ptr                  = swapchain_manager_ptr->get_ds_image(current_input_ptr->swapchain_reference_ptr->get_payload().time_marker,
+                        auto               ds_image_ptr                  = swapchain_manager_ptr->get_ds_image(m_acquired_swapchain_reference_ptr->get_payload().time_marker,
                                                                                                                m_acquired_swapchain_image_index);
                         auto               ds_image_subresource_range    = ds_image_ptr->get_subresource_range();
                         Anvil::AccessFlags src_access_mask               = Anvil::AccessFlagBits::NONE;
@@ -463,8 +464,7 @@ bool OpenGL::VKFrameGraph::bake_framebuffers(const std::vector<GroupNodeUniquePt
 
                 case OpenGL::NodeIOType::Swapchain_Image:
                 {
-                    const auto& swapchain_payload              = current_output_ptr->swapchain_reference_ptr->get_payload();
-                    auto        swapchain_color_image_view_ptr = swapchain_payload.swapchain_ptr->get_image_view(m_acquired_swapchain_image_index);
+                    auto        swapchain_color_image_view_ptr = m_acquired_swapchain_reference_ptr->get_payload().swapchain_ptr->get_image_view(m_acquired_swapchain_image_index);
 
                     vkgl_assert(swapchain_color_image_view_ptr != nullptr);
 
@@ -473,7 +473,7 @@ bool OpenGL::VKFrameGraph::bake_framebuffers(const std::vector<GroupNodeUniquePt
                     if ((current_output_ptr->swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::DEPTH_BIT)   != 0 ||
                         (current_output_ptr->swapchain_image_props.aspects_touched & Anvil::ImageAspectFlagBits::STENCIL_BIT) != 0)
                     {
-                        auto swapchain_ds_image_view_ptr = backend_swapchain_manager_ptr->get_ds_image_view(swapchain_payload.time_marker,
+                        auto swapchain_ds_image_view_ptr = backend_swapchain_manager_ptr->get_ds_image_view(m_acquired_swapchain_reference_ptr->get_payload().time_marker,
                                                                                                             m_acquired_swapchain_image_index);
                         vkgl_assert(swapchain_ds_image_view_ptr != nullptr);
 
@@ -626,7 +626,7 @@ bool OpenGL::VKFrameGraph::bake_renderpasses(const std::vector<GroupNodeUniquePt
 
                 case OpenGL::NodeIOType::Swapchain_Image:
                 {
-                    const auto& swapchain_payload           = current_output_ptr->swapchain_reference_ptr->get_payload();
+                    const auto& swapchain_payload           = m_acquired_swapchain_reference_ptr->get_payload();
                     auto        color_image_create_info_ptr = swapchain_payload.swapchain_ptr->get_image              (0 /* in_n_swapchain_image */)->get_create_info_ptr();
                     auto        ds_image_ptr                = swapchain_manager_ptr->get_ds_image                     (swapchain_payload.time_marker,
                                                                                                                        0 /* in_n_swapchain_image */);
@@ -1548,7 +1548,7 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
         }
     }
 
-    /* For each group node that uses renderpasses, go through image outputs and calculate intersection of their
+    /* For each group node that uses renderpasses, go through image outputs and calculate union of their
      * extents. We're going to cache this info and use it for render area later on.
      */
     for (auto& current_group_node_ptr : *out_group_nodes_ptr)
@@ -1557,6 +1557,10 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
         {
             continue;
         }
+
+        current_group_node_ptr->framebuffer_n_layers = 0;
+        current_group_node_ptr->framebuffer_size[0]  = 0;
+        current_group_node_ptr->framebuffer_size[1]  = 0;
 
         for (const auto& current_output_ptr : current_group_node_ptr->output_ptrs)
         {
@@ -1577,18 +1581,11 @@ bool OpenGL::VKFrameGraph::coalesce_to_group_nodes(const std::vector<VKFrameGrap
 
                 case OpenGL::NodeIOType::Swapchain_Image:
                 {
-                    auto image_create_info_ptr = current_output_ptr->swapchain_reference_ptr->get_payload().swapchain_ptr->get_image(0 /* in_n_swapchain_image */)->get_create_info_ptr();
+                    auto swapchain_ptr = m_acquired_swapchain_reference_ptr->get_payload().swapchain_ptr;
 
-                    if (current_group_node_ptr->framebuffer_size[0] == 0)
-                    {
-                        current_group_node_ptr->framebuffer_n_layers = UINT32_MAX;
-                        current_group_node_ptr->framebuffer_size[0]  = UINT32_MAX;
-                        current_group_node_ptr->framebuffer_size[1]  = UINT32_MAX;
-                    }
-
-                    current_group_node_ptr->framebuffer_size[0]  = std::min(current_group_node_ptr->framebuffer_size[0],  image_create_info_ptr->get_base_mip_width () );
-                    current_group_node_ptr->framebuffer_size[1]  = std::min(current_group_node_ptr->framebuffer_size[1],  image_create_info_ptr->get_base_mip_height() );
-                    current_group_node_ptr->framebuffer_n_layers = std::min(current_group_node_ptr->framebuffer_n_layers, image_create_info_ptr->get_n_layers       () );
+                    current_group_node_ptr->framebuffer_size[0]  = std::max(current_group_node_ptr->framebuffer_size[0],  swapchain_ptr->get_width () );
+                    current_group_node_ptr->framebuffer_size[1]  = std::max(current_group_node_ptr->framebuffer_size[1],  swapchain_ptr->get_height() );
+                    current_group_node_ptr->framebuffer_n_layers = std::max(current_group_node_ptr->framebuffer_n_layers, 1u);
 
                     break;
                 }
@@ -1889,6 +1886,13 @@ uint32_t OpenGL::VKFrameGraph::get_acquired_swapchain_image_index() const
     return m_acquired_swapchain_image_index;
 }
 
+OpenGL::VKSwapchainReference* OpenGL::VKFrameGraph::get_acquired_swapchain_reference_raw_ptr() const
+{
+    vkgl_assert(m_acquired_swapchain_reference_ptr != nullptr);
+
+    return m_acquired_swapchain_reference_ptr;
+}
+
 bool OpenGL::VKFrameGraph::get_bound_dynamic_blend_color_state(float* out_result_vec4_ptr) const
 {
     if (m_current_cmd_buffer_dynamic_state.is_dynamic_blend_color_state_bound)
@@ -2186,10 +2190,8 @@ bool OpenGL::VKFrameGraph::inject_swapchain_acquire_nodes(std::vector<VKFrameGra
             if ( needs_swapchain_image       &&
                 !is_swapchain_image_acquired)
             {
-                auto swapchain_manager_ptr = m_backend_ptr->get_swapchain_manager_ptr      ();
-                auto new_acquire_node_ptr  = OpenGL::VKNodes::AcquireSwapchainImage::create(m_frontend_ptr,
-                                                                                            m_backend_ptr,
-                                                                                            swapchain_manager_ptr->acquire_swapchain(swapchain_manager_ptr->get_tot_time_marker() ));
+                auto new_acquire_node_ptr = OpenGL::VKNodes::AcquireSwapchainImage::create(m_frontend_ptr,
+                                                                                           m_backend_ptr);
 
                 inout_node_ptrs.insert(inout_node_ptrs.begin() + n_current_node,
                                        std::move(new_acquire_node_ptr) );
@@ -2327,9 +2329,9 @@ void OpenGL::VKFrameGraph::process_swapchain_image_node_input(std::vector<Anvil:
                     ++n_iteration)
         {
             const bool is_color_iteration = (n_iteration == 0);
-            auto       image_ptr          = (is_color_iteration) ? in_input_ptr->swapchain_reference_ptr->get_payload().swapchain_ptr->get_image(m_acquired_swapchain_image_index)
-                                                                 : swapchain_manager_ptr->get_ds_image                                          (in_input_ptr->swapchain_reference_ptr->get_payload().time_marker,
-                                                                                                                                                 m_acquired_swapchain_image_index);
+            auto       image_ptr          = (is_color_iteration) ? m_acquired_swapchain_reference_ptr->get_payload().swapchain_ptr->get_image(m_acquired_swapchain_image_index)
+                                                                 : swapchain_manager_ptr->get_ds_image                                       (m_acquired_swapchain_reference_ptr->get_payload().time_marker,
+                                                                                                                                              m_acquired_swapchain_image_index);
             const bool layouts_match      = (is_color_iteration) ? color_image_layouts_match
                                                                  : ds_image_layouts_match;
 
@@ -2692,6 +2694,20 @@ bool OpenGL::VKFrameGraph::record_command_buffers(const std::vector<GroupNodeUni
     result = true;
 end:
     return result;
+}
+
+void OpenGL::VKFrameGraph::set_acquired_swapchain_reference_raw_ptr(OpenGL::VKSwapchainReference* in_swapchain_reference_ptr)
+{
+    if (in_swapchain_reference_ptr == nullptr)
+    {
+        anvil_assert(m_acquired_swapchain_reference_ptr != nullptr);
+    }
+    else
+    {
+        anvil_assert(m_acquired_swapchain_reference_ptr == nullptr);
+    }
+
+    m_acquired_swapchain_reference_ptr = in_swapchain_reference_ptr;
 }
 
 void OpenGL::VKFrameGraph::set_acquired_swapchain_image_index(const uint32_t& in_index)

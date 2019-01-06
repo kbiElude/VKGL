@@ -70,11 +70,13 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
     const auto acquired_swapchain_image_index   = in_callback_ptr->get_acquired_swapchain_image_index();
     auto       backend_buffer_manager_ptr       = m_backend_ptr->get_buffer_manager_ptr              ();
     auto       backend_gfx_pipeline_manager_ptr = m_backend_ptr->get_gfx_pipeline_manager_ptr        ();
-    auto       backend_swapchain_manager_ptr    = m_backend_ptr->get_swapchain_manager_ptr           ();
     auto       frontend_fb_manager_ptr          = m_frontend_ptr->get_framebuffer_manager_ptr        ();
     auto       frontend_vao_manager_ptr         = m_frontend_ptr->get_vao_manager_ptr                ();
 
     vkgl_assert(m_frontend_context_state_ptr != nullptr);
+
+    auto swapchain_reference_ptr = in_callback_ptr->get_acquired_swapchain_reference_raw_ptr();
+    vkgl_assert(swapchain_reference_ptr != nullptr);
 
     /* Initialize the info structure:
      *
@@ -142,13 +144,6 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
                 {
                     vkgl_assert(acquired_swapchain_image_index != UINT32_MAX);
 
-                    if (m_owned_swapchain_reference_ptr == nullptr)
-                    {
-                        /* TODO: We should NOT be using ToT time marker here! */
-                        m_owned_swapchain_reference_ptr = backend_swapchain_manager_ptr->acquire_swapchain(backend_swapchain_manager_ptr->get_tot_time_marker() );
-                        vkgl_assert(m_owned_swapchain_reference_ptr != nullptr);
-                    }
-
                     swapchain_output_location = n_draw_buffer;
                     break;
                 }
@@ -206,7 +201,7 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
                                                                ((uses_depth_reads   || uses_depth_writes)   ? Anvil::ImageAspectFlagBits::DEPTH_BIT                     : Anvil::ImageAspectFlagBits::NONE) |
                                                                ((uses_stencil_reads || uses_stencil_writes) ? Anvil::ImageAspectFlagBits::STENCIL_BIT                   : Anvil::ImageAspectFlagBits::NONE);
 
-            auto new_node_io = OpenGL::NodeIO(m_owned_swapchain_reference_ptr.get(),
+            auto new_node_io = OpenGL::NodeIO(nullptr, /* in_alwaysnull_vk_swapchain_reference_ptr */
                                               aspects_accessed,
                                               Anvil::ImageLayout::COLOR_ATTACHMENT_OPTIMAL, /* in_color_image_layout */
                                               ds_layout,

@@ -350,11 +350,13 @@ namespace OpenGL
         } ActiveSubmission;
 
         /* IVKFrameGraphNodeCallback functions */
-        uint32_t          get_acquired_swapchain_image_index()                                              const final;
-        Anvil::PipelineID get_pipeline_id                   (const OpenGL::DrawCallMode& in_draw_call_mode)       final;
-        Anvil::Semaphore* get_swapchain_image_acquired_sem  ()                                              const final;
-        void              set_acquired_swapchain_image_index(const uint32_t&   in_index)                          final;
-        void              set_swapchain_image_acquired_sem  (Anvil::Semaphore* in_sem_ptr)                        final;
+        uint32_t                      get_acquired_swapchain_image_index      ()                                                   const final;
+        OpenGL::VKSwapchainReference* get_acquired_swapchain_reference_raw_ptr()                                                   const final;
+        Anvil::PipelineID             get_pipeline_id                         (const OpenGL::DrawCallMode&   in_draw_call_mode)          final;
+        Anvil::Semaphore*             get_swapchain_image_acquired_sem        ()                                                   const final;
+        void                          set_acquired_swapchain_reference_raw_ptr(OpenGL::VKSwapchainReference* in_swapchain_reference_ptr) final;
+        void                          set_acquired_swapchain_image_index      (const uint32_t&               in_index)                   final;
+        void                          set_swapchain_image_acquired_sem        (Anvil::Semaphore*             in_sem_ptr)                 final;
 
         bool get_wait_sems(uint32_t*                         out_n_wait_sems_ptr,
                            Anvil::Semaphore***               out_wait_sems_ptr_ptr_ptr,
@@ -431,6 +433,7 @@ namespace OpenGL
 
         /* Private variables */
         uint32_t                               m_acquired_swapchain_image_index;
+        OpenGL::VKSwapchainReference*          m_acquired_swapchain_reference_ptr;
         OpenGL::IVKFrameGraphNode*             m_active_graph_node_ptr;
         GroupNode*                             m_active_group_node_ptr;
         Anvil::SubPassID                       m_active_subpass_id;

@@ -16,9 +16,8 @@ namespace OpenGL
         {
         public:
             /* Public functions */
-            static VKFrameGraphNodeUniquePtr create(const IContextObjectManagers*         in_frontend_ptr,
-                                                    IBackend*                             in_backend_ptr,
-                                                    OpenGL::VKSwapchainReferenceUniquePtr in_swapchain_reference_ptr);
+            static VKFrameGraphNodeUniquePtr create(const IContextObjectManagers* in_frontend_ptr,
+                                                    IBackend*                     in_backend_ptr);
 
             ~PresentSwapchainImage();
 
@@ -111,15 +110,13 @@ namespace OpenGL
 
             /* Private functions */
 
-            PresentSwapchainImage(const IContextObjectManagers*         in_frontend_ptr,
-                                  OpenGL::IBackend*                     in_backend_ptr,
-                                  OpenGL::VKSwapchainReferenceUniquePtr in_swapchain_reference_ptr);
+            PresentSwapchainImage(const IContextObjectManagers* in_frontend_ptr,
+                                  OpenGL::IBackend*             in_backend_ptr);
 
             /* Private variables */
             IBackend*                             m_backend_ptr;
             const IContextObjectManagers*         m_frontend_ptr;
             OpenGL::VKFrameGraphNodeInfoUniquePtr m_info_ptr;
-            OpenGL::VKSwapchainReferenceUniquePtr m_swapchain_reference_ptr;
         };
     };
 };
