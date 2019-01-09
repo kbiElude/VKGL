@@ -75,9 +75,6 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
 
     vkgl_assert(m_frontend_context_state_ptr != nullptr);
 
-    auto swapchain_reference_ptr = in_callback_ptr->get_acquired_swapchain_reference_raw_ptr();
-    vkgl_assert(swapchain_reference_ptr != nullptr);
-
     /* Initialize the info structure:
      *
      * 1. Expose as inputs any buffers the draw call uses for vertex array fetches. */

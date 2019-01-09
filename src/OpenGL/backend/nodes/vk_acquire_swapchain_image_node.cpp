@@ -52,7 +52,6 @@ void OpenGL::VKNodes::AcquireSwapchainImage::do_cpu_prepass(IVKFrameGraphNodeCal
     auto                               frame_acquire_sem_ptr    = Anvil::SemaphoreUniquePtr(nullptr,
                                                                                             std::default_delete<Anvil::Semaphore>() );
     uint32_t                           swapchain_frame_index    = UINT32_MAX;
-    Anvil::ImageView*                  swapchain_image_view_ptr = nullptr;
     auto                               swapchain_manager_ptr    = m_backend_ptr->get_swapchain_manager_ptr();
 
     m_swapchain_reference_ptr = swapchain_manager_ptr->acquire_swapchain(swapchain_manager_ptr->get_tot_time_marker() );
@@ -85,9 +84,6 @@ void OpenGL::VKNodes::AcquireSwapchainImage::do_cpu_prepass(IVKFrameGraphNodeCal
     }
 
     vkgl_assert(swapchain_frame_index != UINT32_MAX);
-
-    swapchain_image_view_ptr = swapchain_ptr->get_image_view(swapchain_frame_index);
-    vkgl_assert(swapchain_image_view_ptr != nullptr);
 
     /* Cache the allotted image view + acquire sem for later usage by subsequent nodes */
     {

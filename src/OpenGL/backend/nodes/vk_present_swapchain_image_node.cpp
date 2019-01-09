@@ -85,16 +85,7 @@ void OpenGL::VKNodes::PresentSwapchainImage::execute_cpu_side(IVKFrameGraphNodeC
     {
         vkgl_assert(present_result != Anvil::SwapchainOperationErrorCode::SUCCESS)
 
-        /* Swapchain manager might already have created a new swapchain. Make sure ToT marker matches our reference's before
-         * we request swapchain recreation. This helps avoid cases where swapchain manager would endlessly recreate swapchains,
-         * effectively preventing the OS from presenting anything to the user.
-         */
-        auto latest_swapchain_reference_ptr = swapchain_manager_ptr->acquire_swapchain(swapchain_manager_ptr->get_tot_time_marker() );
-
-        if (latest_swapchain_reference_ptr->get_payload().swapchain_ptr->get_swapchain_vk() == swapchain_reference_ptr->get_payload().swapchain_ptr->get_swapchain_vk() )
-        {
-            swapchain_manager_ptr->recreate_swapchain(true /* in_defer_till_acquisition */);
-        }
+        swapchain_manager_ptr->recreate_swapchain(true /* in_defer_till_acquisition */);
     }
 
     /* Mark the swapchain image as presented */
