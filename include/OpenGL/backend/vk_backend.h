@@ -6,6 +6,7 @@
 #define VKGL_VK_BACKEND_H
 
 #include "Anvil/include/misc/types.h"
+#include "Common/fence.h"
 #include "Common/types.h"
 #include "OpenGL/backend/vk_buffer_manager.h"
 #include "OpenGL/backend/vk_format_manager.h"
@@ -246,8 +247,8 @@ namespace OpenGL
                                  const void* const*               in_indices_ptr,
                                  const GLsizei&                   in_drawcount) final;
 
-        void finish() final;
-        void flush () final;
+        void finish()                              final;
+        void flush (VKGL::Fence* in_opt_fence_ptr) final;
 
         void clear                   (const OpenGL::ClearBufferBits& in_buffers_to_clear) final;
         void get_compressed_tex_image(const GLuint&                  in_id,
@@ -452,6 +453,8 @@ namespace OpenGL
         OpenGL::VKSwapchainManagerUniquePtr                           m_swapchain_manager_ptr;
         OpenGL::ThreadPoolUniquePtr                                   m_thread_pool_ptr;
         const VKGL::IWSIContext*                                      m_wsi_context_ptr;
+
+        std::vector<VKGL::FenceUniquePtr> m_enqueued_present_fence_ptrs;
     };
 };
 #endif /* VKGL_VK_BACKEND_H */

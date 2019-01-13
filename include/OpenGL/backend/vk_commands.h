@@ -659,8 +659,11 @@ namespace OpenGL
 
     struct FlushCommand : public CommandBase
     {
-        FlushCommand()
-            :CommandBase(CommandType::FLUSH)
+        VKGL::Fence* fence_ptr;
+
+        FlushCommand(VKGL::Fence* in_opt_fence_ptr)
+            :CommandBase(CommandType::FLUSH),
+             fence_ptr  (in_opt_fence_ptr)
         {
             /* Stub */
         }

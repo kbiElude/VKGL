@@ -1526,7 +1526,7 @@ void OpenGL::Context::flush()
 {
     vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
-    m_backend_gl_callbacks_ptr->flush();
+    m_backend_gl_callbacks_ptr->flush(nullptr); /* in_opt_fence_ptr */
 }
 
 void OpenGL::Context::flush_mapped_buffer_range(const OpenGL::BufferTarget& in_target,

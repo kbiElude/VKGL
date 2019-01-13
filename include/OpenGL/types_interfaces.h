@@ -111,8 +111,8 @@ namespace OpenGL
                                          const void* const*               in_indices_ptr,
                                          const GLsizei&                   in_drawcount) = 0;
 
-        virtual void finish() = 0;
-        virtual void flush () = 0;
+        virtual void finish()                              = 0;
+        virtual void flush (VKGL::Fence* in_opt_fence_ptr) = 0;
 
         virtual void clear                   (const OpenGL::ClearBufferBits& in_buffers_to_clear) = 0;
         virtual void get_compressed_tex_image(const GLuint&                  in_id,

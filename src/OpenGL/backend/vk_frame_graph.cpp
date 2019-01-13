@@ -15,6 +15,7 @@
 #include "Anvil/include/wrappers/queue.h"
 #include "Anvil/include/wrappers/semaphore.h"
 #include "Anvil/include/wrappers/swapchain.h"
+#include "Common/fence.h"
 #include "OpenGL/backend/nodes/vk_acquire_swapchain_image_node.h"
 #include "OpenGL/backend/vk_framebuffer_manager.h"
 #include "OpenGL/backend/vk_gfx_pipeline_manager.h"
@@ -1673,7 +1674,8 @@ bool OpenGL::VKFrameGraph::do_group_nodes_encapsulate_swapchain_acquire_present_
             (n_acquire_nodes == n_present_nodes) );
 }
 
-void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
+void OpenGL::VKFrameGraph::execute(const bool&  in_block_until_finished,
+                                   VKGL::Fence* in_opt_fence_ptr)
 {
     /* NOTE: This function must NEVER be called from app's rendering thread. */
     std::lock_guard<std::mutex> execute_lock(m_execute_mutex);
@@ -1699,6 +1701,11 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
 
             if (current_submission.fence_ptr->is_set() )
             {
+                if (current_submission.fence2_ptr != nullptr)
+                {
+                    current_submission.fence2_ptr->signal();
+                }
+
                 m_active_submissions.erase(m_active_submissions.begin() + n_submission);
             }
             else
@@ -1845,10 +1852,12 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
                                                             UINT64_MAX);
 
         vkgl_assert(result_vk == VK_SUCCESS);
+
+        in_opt_fence_ptr->signal();
     }
     else
     {
-        /* Cache group nodes along with the fence, so that - next execution happens - we can check if the nodes,
+        /* Cache group nodes along with the fence(s), so that - next execution happens - we can check if the nodes,
          * along with all relevant VK objects and references, can be safely released.
          */
         m_active_submissions.push_back(
@@ -1856,7 +1865,8 @@ void OpenGL::VKFrameGraph::execute(const bool& in_block_until_finished)
                              group_node_ptrs,
                              node_ptrs,
                              std::move(command_buffer_submissions),
-                             std::move(sem_ptrs) )
+                             std::move(sem_ptrs),
+                             in_opt_fence_ptr)
         );
     }
 

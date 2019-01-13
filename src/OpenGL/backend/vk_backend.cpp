@@ -5,7 +5,6 @@
 #include "Anvil/include/misc/memory_allocator.h"
 #include "Anvil/include/wrappers/device.h"
 #include "Anvil/include/wrappers/instance.h"
-#include "Common/fence.h"
 #include "Common/macros.h"
 #include "OpenGL/types.h"
 #include "OpenGL/converters.h"
@@ -52,7 +51,8 @@ OpenGL::VKBackend::~VKBackend()
 
     /* Flush the frame graph and CPU-wait till it finishes executing GPU-side before proceeding with deinitialization */
     {
-        m_frame_graph_ptr->execute(true);
+        m_frame_graph_ptr->execute(true,
+                                   nullptr); /* in_opt_fence_ptr */
     }
 
     m_frame_graph_ptr.reset();
@@ -440,10 +440,10 @@ void OpenGL::VKBackend::finish()
     fence_ptr->wait();
 }
 
-void OpenGL::VKBackend::flush()
+void OpenGL::VKBackend::flush(VKGL::Fence* in_opt_fence_ptr)
 {
     /* Spawn the command container .. */
-    OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::FlushCommand(),
+    OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::FlushCommand(in_opt_fence_ptr),
                                          std::default_delete<OpenGL::CommandBase>() );
 
     vkgl_assert(cmd_ptr != nullptr);
@@ -1137,8 +1137,31 @@ void OpenGL::VKBackend::present()
         m_scheduler_ptr->submit(std::move(cmd_ptr) );
     }
 
-    /* ALSO, make sure to flush the command stream, to ensure the frame is actually presented to the end user! */
-    flush();
+    /* ALSO, make sure to flush the command stream, to ensure the frame is actually presented to the end user!
+     *
+     * NOTE: Since backend lives in a separate thread, we need to manually ensure app's rendering thread never gets
+     *       to issue more present requests than there are swapchain images available. Doing so prevents the backend
+     *       from getting too much behind the frontend.
+     */
+    VKGL::FenceUniquePtr new_fence_ptr      = VKGL::FenceUniquePtr(nullptr,
+                                                                   std::default_delete<VKGL::Fence>() );
+    VKGL::Fence*         new_fence_raw_ptr  = nullptr;
+    const auto           n_swapchain_images = m_swapchain_manager_ptr->get_n_swapchain_images();
+
+    new_fence_ptr.reset(new VKGL::Fence() );
+    vkgl_assert(new_fence_ptr != nullptr);
+
+    while (m_enqueued_present_fence_ptrs.size() >= n_swapchain_images)
+    {
+        (*m_enqueued_present_fence_ptrs.begin() )->wait();
+
+        m_enqueued_present_fence_ptrs.erase(m_enqueued_present_fence_ptrs.begin() );
+    }
+
+    new_fence_raw_ptr = new_fence_ptr.get();
+
+    m_enqueued_present_fence_ptrs.push_back(std::move(new_fence_ptr) );
+    flush                                  (new_fence_raw_ptr);
 }
 
 void OpenGL::VKBackend::read_pixels(const int32_t&             in_x,

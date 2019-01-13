@@ -23,7 +23,8 @@ namespace OpenGL
         ~VKFrameGraph();
 
         void add_node(OpenGL::VKFrameGraphNodeUniquePtr in_node_ptr);
-        void execute (const bool&                       in_block_until_finished);
+        void execute (const bool&                       in_block_until_finished,
+                      VKGL::Fence*                      in_opt_fence_ptr);
 
         void on_buffer_deleted     (Anvil::Buffer* in_buffer_ptr);
         void on_image_deleted      (Anvil::Image*  in_image_ptr);
@@ -330,6 +331,7 @@ namespace OpenGL
         {
             std::vector<CommandBufferSubmissionUniquePtr> cmd_buffer_submission_ptr_vec;
             Anvil::FenceUniquePtr                         fence_ptr;
+            VKGL::Fence*                                  fence2_ptr;
             std::vector<GroupNodeUniquePtr>               group_node_ptrs_vec;
             std::vector<VKFrameGraphNodeUniquePtr>        node_ptrs_vec;
             std::vector<Anvil::SemaphoreUniquePtr>        sem_ptr_vec;
@@ -338,9 +340,11 @@ namespace OpenGL
                              std::vector<GroupNodeUniquePtr>&               inout_group_node_ptrs_vec,
                              std::vector<VKFrameGraphNodeUniquePtr>&        inout_node_ptrs_vec,
                              std::vector<CommandBufferSubmissionUniquePtr>& inout_cmd_buffer_submission_ptr_vec,
-                             std::vector<Anvil::SemaphoreUniquePtr>&        inout_sem_ptr_vec)
+                             std::vector<Anvil::SemaphoreUniquePtr>&        inout_sem_ptr_vec,
+                              VKGL::Fence*                                  in_fence2_ptr)
                 :cmd_buffer_submission_ptr_vec(std::move(inout_cmd_buffer_submission_ptr_vec) ),
                  fence_ptr                    (std::move(in_fence_ptr) ),
+                 fence2_ptr                   (in_fence2_ptr),
                  group_node_ptrs_vec          (std::move(inout_group_node_ptrs_vec) ),
                  node_ptrs_vec                (std::move(inout_node_ptrs_vec) ),
                  sem_ptr_vec                  (std::move(inout_sem_ptr_vec) )

@@ -344,14 +344,16 @@ void OpenGL::VKScheduler::process_draw_range_elements_command(OpenGL::DrawRangeE
 
 void OpenGL::VKScheduler::process_finish_command(OpenGL::FinishCommand* in_command_ptr)
 {
-    m_backend_ptr->get_frame_graph_ptr()->execute(true /* in_block_until_finished */);
+    m_backend_ptr->get_frame_graph_ptr()->execute(true      /* in_block_until_finished */,
+                                                  nullptr); /* in_opt_fence_ptr        */
 
     in_command_ptr->fence_ptr->signal();
 }
 
 void OpenGL::VKScheduler::process_flush_command(OpenGL::FlushCommand* in_command_ptr)
 {
-    m_backend_ptr->get_frame_graph_ptr()->execute(false /* in_block_until_finished */);
+    m_backend_ptr->get_frame_graph_ptr()->execute(false /* in_block_until_finished */,
+                                                  in_command_ptr->fence_ptr);
 }
 
 void OpenGL::VKScheduler::process_flush_mapped_buffer_range_command(OpenGL::FlushMappedBufferRangeCommand* in_command_ptr)
