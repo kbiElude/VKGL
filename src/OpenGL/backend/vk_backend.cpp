@@ -607,17 +607,21 @@ bool OpenGL::VKBackend::init_anvil()
     bool                         result              = false;
 
     /* Create a Vulkan instance. */
-    m_instance_ptr = Anvil::Instance::create("VKGL",
-                                             "VKGL",
-#if defined(_DEBUG)
-                                             std::bind(&OpenGL::VKBackend::on_debug_callback_received,
-                                                       this,
-                                                       std::placeholders::_1,
-                                                       std::placeholders::_2),
-#else
-                                             Anvil::DebugCallbackFunction(),
-#endif
-                                             true); /* in_mt_safe */
+    {
+        auto create_info_ptr = Anvil::InstanceCreateInfo::create("VKGL",
+                                                                 "VKGL",
+        #if defined(_DEBUG)
+                                                                 std::bind(&OpenGL::VKBackend::on_debug_callback_received,
+                                                                           this,
+                                                                           std::placeholders::_1,
+                                                                           std::placeholders::_2),
+        #else
+                                                                 Anvil::DebugCallbackFunction(),
+        #endif
+                                                                 true); /* in_mt_safe */
+
+        m_instance_ptr = Anvil::Instance::create(std::move(create_info_ptr) );
+    }
 
     if (m_instance_ptr == nullptr)
     {
