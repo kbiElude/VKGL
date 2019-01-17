@@ -313,20 +313,35 @@ void OpenGL::VKNodes::Draw::record_commands(Anvil::CommandBufferBase*  in_cmd_bu
     {
         VkRect2D   bound_scissor_state;
         const bool needs_scissor_state = m_frontend_context_state_ptr->is_scissor_test_enabled;
+        int32_t    ref_data[4];
 
-        if ( needs_scissor_state                                                                                                          ||
-            !in_graph_callback_ptr->get_bound_dynamic_scissor_state(&bound_scissor_state)                                                 ||
-             bound_scissor_state.extent.height                                            != m_frontend_context_state_ptr->scissor_box[3] ||
-             bound_scissor_state.extent.width                                             != m_frontend_context_state_ptr->scissor_box[2] ||
-             bound_scissor_state.offset.x                                                 != m_frontend_context_state_ptr->scissor_box[0] ||
-             bound_scissor_state.offset.y                                                 != m_frontend_context_state_ptr->scissor_box[1])
+        if (needs_scissor_state)
+        {
+            ref_data[0] = m_frontend_context_state_ptr->scissor_box[0];
+            ref_data[1] = m_frontend_context_state_ptr->scissor_box[1];
+            ref_data[2] = m_frontend_context_state_ptr->scissor_box[2];
+            ref_data[3] = m_frontend_context_state_ptr->scissor_box[3];
+        }
+        else
+        {
+            ref_data[0] = m_frontend_context_state_ptr->viewport[0];
+            ref_data[1] = m_frontend_context_state_ptr->viewport[1];
+            ref_data[2] = m_frontend_context_state_ptr->viewport[2];
+            ref_data[3] = m_frontend_context_state_ptr->viewport[3];
+        }
+
+        if (!in_graph_callback_ptr->get_bound_dynamic_scissor_state(&bound_scissor_state)                ||
+             bound_scissor_state.extent.height                                            != ref_data[3] ||
+             bound_scissor_state.extent.width                                             != ref_data[2] ||
+             bound_scissor_state.offset.x                                                 != ref_data[0] ||
+             bound_scissor_state.offset.y                                                 != ref_data[1])
         {
             VkRect2D scissor;
 
-            scissor.extent.height = m_frontend_context_state_ptr->scissor_box[3];
-            scissor.extent.width  = m_frontend_context_state_ptr->scissor_box[2];
-            scissor.offset.x      = m_frontend_context_state_ptr->scissor_box[0];
-            scissor.offset.y      = m_frontend_context_state_ptr->scissor_box[1];
+            scissor.extent.height = ref_data[3];
+            scissor.extent.width  = ref_data[2];
+            scissor.offset.x      = ref_data[0];
+            scissor.offset.y      = ref_data[1];
 
             in_cmd_buffer_ptr->record_set_scissor(0, /* in_first_scissor */
                                                   1, /* in_scissor_count */
