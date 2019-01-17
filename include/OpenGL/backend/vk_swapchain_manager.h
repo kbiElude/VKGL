@@ -104,9 +104,10 @@ namespace OpenGL
 
             ~InternalSwapchainData()
             {
-                swapchain_ptr.reset        ();
-                rendering_surface_ptr.reset();
-                window_ptr.reset           ();
+                outdated_swapchain_data_item_ptrs.clear();
+                swapchain_ptr.reset                    ();
+                rendering_surface_ptr.reset            ();
+                window_ptr.reset                       ();
             }
         } InternalSwapchainData;
 

@@ -23,6 +23,8 @@ OpenGL::VKSPIRVManager::ProgramData::ProgramData(const SPIRVBlobID&             
                                                  OpenGL::GLProgramReferenceUniquePtr in_program_reference_ptr)
     :id                   (in_id),
      link_status          (false),
+     link_task_fence_ptr  (nullptr,
+                           std::default_delete<VKGL::Fence>() ),
      program_reference_ptr(std::move(in_program_reference_ptr) ),
      shader_ptrs          (in_shader_ptrs)
 {
@@ -35,11 +37,13 @@ OpenGL::VKSPIRVManager::ProgramData::ProgramData(const SPIRVBlobID&             
 OpenGL::VKSPIRVManager::ShaderData::ShaderData(const SPIRVBlobID&        in_id,
                                                const OpenGL::ShaderType& in_shader_type,
                                                const std::string&        in_glsl)
-    :compilation_status(false),
-     glsl              (in_glsl),
-     id                (in_id),
-     sm_entrypoint_name(nullptr),
-     type              (in_shader_type)
+    :compilation_status    (false),
+     compile_task_fence_ptr(nullptr,
+                            std::default_delete<VKGL::Fence>() ),
+     glsl                  (in_glsl),
+     id                    (in_id),
+     sm_entrypoint_name    (nullptr),
+     type                  (in_shader_type)
 {
     vkgl_assert(in_shader_type != OpenGL::ShaderType::Unknown);
 
@@ -809,7 +813,8 @@ OpenGL::SPIRVBlobID OpenGL::VKSPIRVManager::register_program(OpenGL::GLProgramRe
 
     m_mutex.lock_unique();
     {
-        ProgramDataUniquePtr     program_data_ptr;
+        ProgramDataUniquePtr     program_data_ptr     = ProgramDataUniquePtr(nullptr,
+                                                                             std::default_delete<ProgramData>() );
         ProgramData*             program_data_raw_ptr = nullptr;
         std::vector<ShaderData*> shader_data_vec;
 

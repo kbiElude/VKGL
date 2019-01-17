@@ -36,6 +36,8 @@ OpenGL::VKSwapchainManager::VKSwapchainManager(OpenGL::IBackend*                
 
 OpenGL::VKSwapchainManager::~VKSwapchainManager()
 {
+    m_time_marker_to_internal_swapchain_data_map.clear();
+    m_snapshot_manager_ptr.reset                      ();
 }
 
 OpenGL::VKSwapchainReferenceUniquePtr OpenGL::VKSwapchainManager::acquire_swapchain(const OpenGL::TimeMarker& in_time_marker)
