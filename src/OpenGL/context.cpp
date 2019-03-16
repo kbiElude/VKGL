@@ -546,8 +546,19 @@ void OpenGL::Context::bind_buffer(const OpenGL::BufferTarget& in_target,
     }
     else
     {
-        m_gl_state_manager_ptr->set_bound_buffer_object(in_target,
-                                                        std::move(buffer_reference_ptr) );
+        if (in_target == OpenGL::BufferTarget::Element_Array_Buffer)
+        {
+            const auto bound_vao_reference_ptr = m_gl_state_manager_ptr->get_bound_vertex_array_object();
+            vkgl_assert(bound_vao_reference_ptr != nullptr);
+
+            m_gl_vao_manager_ptr->set_element_array_buffer_binding(bound_vao_reference_ptr->get_payload().id,
+                                                                   in_id);
+        }
+        else
+        {
+            m_gl_state_manager_ptr->set_bound_buffer_object(in_target,
+                                                            std::move(buffer_reference_ptr) );
+        }
 
         if (in_id != 0)
         {
@@ -579,6 +590,8 @@ void OpenGL::Context::bind_buffer_range(const OpenGL::BufferTarget& in_target,
 {
     vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
     vkgl_assert(m_gl_state_manager_ptr  != nullptr);
+
+    vkgl_assert_fail(); //< TODO: merge me with bind_buffer();
 
     m_gl_state_manager_ptr->set_bound_buffer_object(in_target,
                                                     in_index,
@@ -667,11 +680,25 @@ void OpenGL::Context::buffer_data(const OpenGL::BufferTarget& in_target,
                                   const void*                 in_data_ptr,
                                   const OpenGL::BufferUsage&  in_usage)
 {
+    GLuint buffer_id = 0;
+
     vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
     vkgl_assert(m_gl_buffer_manager_ptr    != nullptr);
     vkgl_assert(m_gl_state_manager_ptr     != nullptr);
 
-    const auto buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_payload().id;
+    if (in_target == OpenGL::BufferTarget::Element_Array_Buffer)
+    {
+        const auto bound_vao_reference_ptr = m_gl_state_manager_ptr->get_bound_vertex_array_object();
+
+        m_gl_vao_manager_ptr->get_element_array_buffer_binding(bound_vao_reference_ptr->get_payload().id,
+                                                              &bound_vao_reference_ptr->get_payload().time_marker,
+                                                              &buffer_id);
+    }
+    else
+    {
+        buffer_id = m_gl_state_manager_ptr->get_bound_buffer_object(in_target)->get_payload().id;
+    }
+
     vkgl_assert(buffer_id != 0);
 
     m_gl_buffer_manager_ptr->set_buffer_store_size(buffer_id,
@@ -1388,16 +1415,12 @@ void OpenGL::Context::draw_elements(const OpenGL::DrawCallMode&      in_mode,
                                     const OpenGL::DrawCallIndexType& in_type,
                                     const void*                      in_indices)
 {
-#if 0
     vkgl_assert(m_backend_gl_callbacks_ptr != nullptr);
 
     m_backend_gl_callbacks_ptr->draw_elements(in_mode,
                                               in_count,
                                               in_type,
                                               in_indices);
-#else
-    vkgl_not_implemented();
-#endif
 }
 
 void OpenGL::Context::draw_elements_base_vertex(const OpenGL::DrawCallMode&      in_mode,

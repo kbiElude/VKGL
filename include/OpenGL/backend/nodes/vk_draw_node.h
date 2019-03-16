@@ -12,17 +12,26 @@ namespace OpenGL
 {
     namespace VKNodes
     {
+        enum class DrawType
+        {
+            Indexed,
+            Regular,
+        };
+
         class Draw : public OpenGL::IVKFrameGraphNode
         {
         public:
             /* Public functions */
-            static VKFrameGraphNodeUniquePtr create_arrays(const IContextObjectManagers*                    in_frontend_ptr,
-                                                           IBackend*                                        in_backend_ptr,
-                                                           OpenGL::GLContextStateReferenceUniquePtr         in_frontend_context_state_reference_ptr,
-                                                           OpenGL::GLContextStateBindingReferencesUniquePtr in_frontend_context_state_binding_references_ptr,
-                                                           const GLint&                                     in_first,
-                                                           const GLsizei&                                   in_count,
-                                                           const OpenGL::DrawCallMode&                      in_mode);
+            static VKFrameGraphNodeUniquePtr create(const DrawType&                                  in_type,
+                                                    const IContextObjectManagers*                    in_frontend_ptr,
+                                                    IBackend*                                        in_backend_ptr,
+                                                    OpenGL::GLContextStateReferenceUniquePtr         in_frontend_context_state_reference_ptr,
+                                                    OpenGL::GLContextStateBindingReferencesUniquePtr in_frontend_context_state_binding_references_ptr,
+                                                    const GLint&                                     in_first,
+                                                    const GLsizei&                                   in_count,
+                                                    const OpenGL::DrawCallMode&                      in_mode,
+                                                    const OpenGL::DrawCallIndexType&                 in_opt_index_data_type,
+                                                    const GLuint&                                    in_opt_index_buffer_offset);
 
             ~Draw();
 
@@ -109,7 +118,8 @@ namespace OpenGL
 
             /* Private functions */
 
-            Draw(const IContextObjectManagers*                    in_frontend_ptr,
+            Draw(const DrawType&                                  in_type,
+                 const IContextObjectManagers*                    in_frontend_ptr,
                  OpenGL::IBackend*                                in_backend_ptr,
                  OpenGL::GLContextStateReferenceUniquePtr         in_frontend_context_state_reference_ptr,
                  OpenGL::GLContextStateBindingReferencesUniquePtr in_frontend_context_state_binding_references_ptr);
@@ -121,19 +131,25 @@ namespace OpenGL
             const OpenGL::ContextState*                      m_frontend_context_state_ptr;
             OpenGL::GLContextStateReferenceUniquePtr         m_frontend_context_state_reference_ptr;
             VKFrameGraphNodeInfoUniquePtr                    m_info_ptr;
+            const DrawType                                   m_type;
 
+            OpenGL::VKBufferReferenceUniquePtr              m_index_buffer_reference_ptr;
             std::vector<OpenGL::VKBufferReferenceUniquePtr> m_owned_buffer_reference_ptrs;
 
             struct Args
             {
-                GLsizei              count;
-                GLint                first;
-                OpenGL::DrawCallMode mode;
+                GLsizei                   count;
+                GLint                     first;
+                GLuint                    index_buffer_offset;
+                OpenGL::DrawCallIndexType index_data_type;
+                OpenGL::DrawCallMode      mode;
 
                 Args()
-                    :count(0),
-                     first(0),
-                     mode(OpenGL::DrawCallMode::Unknown)
+                    :count              (0),
+                     first              (0),
+                     index_buffer_offset(0),
+                     index_data_type    (OpenGL::DrawCallIndexType::Unknown),
+                     mode               (OpenGL::DrawCallMode::Unknown)
                 {
                     /* Stub */
                 }

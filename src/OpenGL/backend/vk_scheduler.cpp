@@ -151,8 +151,7 @@ void OpenGL::VKScheduler::process_buffer_data_command(OpenGL::CommandBaseUniqueP
     {
         backend_buffer_reference_ptr = backend_buffer_manager_ptr->acquire_object(frontend_buffer_id,
                                                                                   frontend_buffer_creation_time,
-                                                                                  backend_buffer_manager_ptr->get_tot_buffer_time_marker(frontend_buffer_id,
-                                                                                                                                         frontend_buffer_creation_time) );
+                                                                                  frontend_buffer_snapshot_time);
 
         vkgl_assert(backend_buffer_reference_ptr != nullptr);
     }
@@ -319,13 +318,16 @@ void OpenGL::VKScheduler::process_draw_arrays_command(OpenGL::CommandBaseUniqueP
 
     /* 1. Spawn the node */
     {
-        node_ptr = OpenGL::VKNodes::Draw::create_arrays(m_frontend_ptr,
-                                                        m_backend_ptr,
-                                                        std::move(command_ptr->state_reference_ptr),
-                                                        std::move(command_ptr->state_binding_references_ptr),
-                                                        command_ptr->first,
-                                                        command_ptr->count,
-                                                        command_ptr->mode);
+        node_ptr = OpenGL::VKNodes::Draw::create(OpenGL::VKNodes::DrawType::Regular,
+                                                 m_frontend_ptr,
+                                                 m_backend_ptr,
+                                                 std::move(command_ptr->state_reference_ptr),
+                                                 std::move(command_ptr->state_binding_references_ptr),
+                                                 command_ptr->first,
+                                                 command_ptr->count,
+                                                 command_ptr->mode,
+                                                 OpenGL::DrawCallIndexType::Unknown,
+                                                 UINT32_MAX); /* in_opt_index_buffer_offset */
     }
 
     /* 2. Submit the node to frame graph manager. */
@@ -334,7 +336,27 @@ void OpenGL::VKScheduler::process_draw_arrays_command(OpenGL::CommandBaseUniqueP
 
 void OpenGL::VKScheduler::process_draw_elements_command(OpenGL::DrawElementsCommand* in_command_ptr)
 {
-    vkgl_not_implemented();
+    auto                              backend_frame_graph_ptr = m_backend_ptr->get_frame_graph_ptr();
+    OpenGL::VKFrameGraphNodeUniquePtr node_ptr;
+
+    vkgl_assert(in_command_ptr != nullptr);
+
+    /* 1. Spawn the node */
+    {
+        node_ptr = OpenGL::VKNodes::Draw::create(OpenGL::VKNodes::DrawType::Indexed,
+                                                 m_frontend_ptr,
+                                                 m_backend_ptr,
+                                                 std::move(in_command_ptr->state_reference_ptr),
+                                                 std::move(in_command_ptr->state_binding_references_ptr),
+                                                 0, /* in_first */
+                                                 in_command_ptr->count,
+                                                 in_command_ptr->mode,
+                                                 in_command_ptr->type,
+                                                 in_command_ptr->index_buffer_offset);
+    }
+
+    /* 2. Submit the node to frame graph manager. */
+    backend_frame_graph_ptr->add_node(std::move(node_ptr) );
 }
 
 void OpenGL::VKScheduler::process_draw_range_elements_command(OpenGL::DrawRangeElementsCommand* in_command_ptr)

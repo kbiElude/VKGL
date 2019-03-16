@@ -9,6 +9,7 @@
 #include "OpenGL/backend/nodes/vk_draw_node.h"
 #include "OpenGL/backend/vk_buffer_manager.h"
 #include "OpenGL/backend/vk_gfx_pipeline_manager.h"
+#include "OpenGL/frontend/gl_buffer_manager.h"
 #include "OpenGL/frontend/gl_framebuffer_manager.h"
 #include "OpenGL/frontend/gl_program_manager.h"
 #include "OpenGL/frontend/gl_state_manager.h"
@@ -16,14 +17,16 @@
 #include "OpenGL/types.h"
 #include "OpenGL/utils_enum.h"
 
-OpenGL::VKNodes::Draw::Draw(const IContextObjectManagers*                    in_frontend_ptr,
+OpenGL::VKNodes::Draw::Draw(const DrawType&                                  in_type,
+                            const IContextObjectManagers*                    in_frontend_ptr,
                             OpenGL::IBackend*                                in_backend_ptr,
                             OpenGL::GLContextStateReferenceUniquePtr         in_frontend_context_state_reference_ptr,
                             OpenGL::GLContextStateBindingReferencesUniquePtr in_frontend_context_state_binding_references_ptr)
     :m_backend_ptr                                  (in_backend_ptr),
      m_frontend_context_state_binding_references_ptr(std::move(in_frontend_context_state_binding_references_ptr) ),
      m_frontend_context_state_reference_ptr         (std::move(in_frontend_context_state_reference_ptr) ),
-     m_frontend_ptr                                 (in_frontend_ptr)
+     m_frontend_ptr                                 (in_frontend_ptr),
+     m_type                                         (in_type)
 {
     m_info_ptr.reset(new OpenGL::VKFrameGraphNodeInfo() );
     vkgl_assert(m_info_ptr != nullptr);
@@ -37,18 +40,22 @@ OpenGL::VKNodes::Draw::~Draw()
     /* Stub */
 }
 
-OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::Draw::create_arrays(const IContextObjectManagers*                    in_frontend_ptr,
-                                                                       IBackend*                                        in_backend_ptr,
-                                                                       OpenGL::GLContextStateReferenceUniquePtr         in_frontend_context_state_reference_ptr,
-                                                                       OpenGL::GLContextStateBindingReferencesUniquePtr in_frontend_context_state_binding_references_ptr,
-                                                                       const GLint&                                     in_first,
-                                                                       const GLsizei&                                   in_count,
-                                                                       const OpenGL::DrawCallMode&                      in_mode)
+OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::Draw::create(const DrawType&                                  in_type,
+                                                                const IContextObjectManagers*                    in_frontend_ptr,
+                                                                IBackend*                                        in_backend_ptr,
+                                                                OpenGL::GLContextStateReferenceUniquePtr         in_frontend_context_state_reference_ptr,
+                                                                OpenGL::GLContextStateBindingReferencesUniquePtr in_frontend_context_state_binding_references_ptr,
+                                                                const GLint&                                     in_first,
+                                                                const GLsizei&                                   in_count,
+                                                                const OpenGL::DrawCallMode&                      in_mode,
+                                                                const OpenGL::DrawCallIndexType&                 in_opt_index_data_type,
+                                                                const GLuint&                                    in_opt_index_buffer_offset)
 {
     OpenGL::VKFrameGraphNodeUniquePtr result_ptr(nullptr,
                                                  std::default_delete<OpenGL::IVKFrameGraphNode>() );
 
-    result_ptr.reset(new OpenGL::VKNodes::Draw(in_frontend_ptr,
+    result_ptr.reset(new OpenGL::VKNodes::Draw(in_type,
+                                               in_frontend_ptr,
                                                in_backend_ptr,
                                                std::move(in_frontend_context_state_reference_ptr),
                                                std::move(in_frontend_context_state_binding_references_ptr) ) );
@@ -57,9 +64,17 @@ OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::Draw::create_arrays(const ICo
     {
         auto new_node_ptr = dynamic_cast<OpenGL::VKNodes::Draw*>(result_ptr.get() );
 
-        new_node_ptr->m_args.count = in_count;
-        new_node_ptr->m_args.first = in_first;
-        new_node_ptr->m_args.mode  = in_mode;
+        if (in_type == DrawType::Indexed)
+        {
+            vkgl_assert(in_opt_index_data_type == OpenGL::DrawCallIndexType::Unsigned_Int    || //< todo: Add support for U8 indices.
+                        in_opt_index_data_type == OpenGL::DrawCallIndexType::Unsigned_Short);
+        }
+
+        new_node_ptr->m_args.count               = in_count;
+        new_node_ptr->m_args.first               = in_first;
+        new_node_ptr->m_args.index_buffer_offset = in_opt_index_buffer_offset;
+        new_node_ptr->m_args.index_data_type     = in_opt_index_data_type;
+        new_node_ptr->m_args.mode                = in_mode;
     }
 
     return result_ptr;
@@ -67,26 +82,27 @@ OpenGL::VKFrameGraphNodeUniquePtr OpenGL::VKNodes::Draw::create_arrays(const ICo
 
 void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callback_ptr)
 {
-    const auto acquired_swapchain_image_index   = in_callback_ptr->get_acquired_swapchain_image_index();
-    auto       backend_buffer_manager_ptr       = m_backend_ptr->get_buffer_manager_ptr              ();
-    auto       backend_gfx_pipeline_manager_ptr = m_backend_ptr->get_gfx_pipeline_manager_ptr        ();
-    auto       frontend_fb_manager_ptr          = m_frontend_ptr->get_framebuffer_manager_ptr        ();
-    auto       frontend_vao_manager_ptr         = m_frontend_ptr->get_vao_manager_ptr                ();
+    const auto                            acquired_swapchain_image_index   = in_callback_ptr->get_acquired_swapchain_image_index();
+    auto                                  backend_buffer_manager_ptr       = m_backend_ptr->get_buffer_manager_ptr              ();
+    auto                                  backend_gfx_pipeline_manager_ptr = m_backend_ptr->get_gfx_pipeline_manager_ptr        ();
+    auto                                  frontend_buffer_manager_ptr      = m_frontend_ptr->get_buffer_manager_ptr             ();
+    auto                                  frontend_fb_manager_ptr          = m_frontend_ptr->get_framebuffer_manager_ptr        ();
+    auto                                  frontend_vao_manager_ptr         = m_frontend_ptr->get_vao_manager_ptr                ();
+    const OpenGL::VertexArrayObjectState* frontend_vao_state_ptr           = nullptr;
 
     vkgl_assert(m_frontend_context_state_ptr != nullptr);
 
+    frontend_vao_manager_ptr->get_vao_state_ptr(m_frontend_context_state_binding_references_ptr->vao_reference_ptr->get_payload().id,
+                                               &m_frontend_context_state_binding_references_ptr->vao_reference_ptr->get_payload().time_marker,
+                                               &frontend_vao_state_ptr);
+    vkgl_assert(frontend_vao_state_ptr != nullptr);
+
     /* Initialize the info structure:
      *
-     * 1. Expose as inputs any buffers the draw call uses for vertex array fetches. */
+     * 1a. Expose as inputs any buffers the draw call uses for vertex array fetches. */
     {
-        const OpenGL::VertexArrayObjectState* vao_state_ptr = nullptr;
 
-        frontend_vao_manager_ptr->get_vao_state_ptr(m_frontend_context_state_ptr->vao_proxy_reference_ptr->get_payload().id,
-                                                   &m_frontend_context_state_ptr->vao_proxy_reference_ptr->get_payload().time_marker,
-                                                   &vao_state_ptr);
-        vkgl_assert(vao_state_ptr != nullptr);
-
-        for (const auto& current_vaa : vao_state_ptr->vertex_attribute_arrays)
+        for (const auto& current_vaa : frontend_vao_state_ptr->vertex_attribute_arrays)
         {
             VKBufferReferenceUniquePtr backend_buffer_reference_ptr;
             const auto&                frontend_buffer_reference_ptr = current_vaa.buffer_binding_ptr;
@@ -111,6 +127,29 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
 
             m_owned_buffer_reference_ptrs.push_back(std::move(backend_buffer_reference_ptr) );
         }
+    }
+
+    /* 1b. Same goes for index buffers */
+    if (m_type == DrawType::Indexed)
+    {
+        auto        frontend_index_buffer_reference_ptr = frontend_buffer_manager_ptr->acquire_current_latest_snapshot_reference(frontend_vao_state_ptr->element_array_buffer_binding);
+        auto        backend_index_buffer_reference_ptr  = backend_buffer_manager_ptr->acquire_object                            (frontend_index_buffer_reference_ptr->get_payload().id,
+                                                                                                                                 frontend_index_buffer_reference_ptr->get_payload().object_creation_time,
+                                                                                                                                 frontend_index_buffer_reference_ptr->get_payload().time_marker);
+        const auto  index_size                         = OpenGL::Utils::get_draw_call_index_type_size_per_index                 (m_args.index_data_type);
+        const auto  index_buffer_binding_size          = m_args.count * index_size;
+
+        vkgl_assert(backend_index_buffer_reference_ptr != nullptr);
+
+        m_info_ptr->inputs.push_back(
+            OpenGL::NodeIO(backend_index_buffer_reference_ptr.get(),
+                           m_args.index_buffer_offset,
+                           index_buffer_binding_size,
+                           Anvil::PipelineStageFlagBits::VERTEX_INPUT_BIT,
+                           Anvil::AccessFlagBits::INDEX_READ_BIT)
+        );
+
+        m_index_buffer_reference_ptr = std::move(backend_index_buffer_reference_ptr);
     }
 
     /* 2. Expose any render-targets we modify with the draw call as outputs. They also need to be marked as inputs,
@@ -529,13 +568,49 @@ void OpenGL::VKNodes::Draw::record_commands(Anvil::CommandBufferBase*  in_cmd_bu
                                                       program_post_link_data_ptr->max_active_attribute_location + 1, /* in_binding_count */
                                                       buffer_ptrs,
                                                       buffer_offsets);
+
+        if (m_args.index_data_type != OpenGL::DrawCallIndexType::Unknown)
+        {
+            vkgl_assert(m_args.index_data_type == OpenGL::DrawCallIndexType::Unsigned_Int    ||
+                        m_args.index_data_type == OpenGL::DrawCallIndexType::Unsigned_Short);
+
+            in_cmd_buffer_ptr->record_bind_index_buffer(m_index_buffer_reference_ptr->get_payload().buffer_ptr,
+                                                        m_args.index_buffer_offset,
+                                                        (m_args.index_data_type == OpenGL::DrawCallIndexType::Unsigned_Int) ? Anvil::IndexType::UINT32
+                                                                                                                            : Anvil::IndexType::UINT16);
+        }
     }
 
     /* Issue the draw call */
-    in_cmd_buffer_ptr->record_draw(m_args.count,
-                                   1, /* in_instance_count */
-                                   m_args.first,
-                                   0); /* in_first_instance */
+    switch (m_type)
+    {
+        case DrawType::Indexed:
+        {
+            in_cmd_buffer_ptr->record_draw_indexed(m_args.count,
+                                                   1,  /* in_instance_count */
+                                                   0,  /* in_first_index    */
+                                                   0,  /* in_vertex_offset  */
+                                                   0); /* in_first_instance */
+
+            break;
+        }
+
+        case DrawType::Regular:
+        {
+            in_cmd_buffer_ptr->record_draw(m_args.count,
+                                           1, /* in_instance_count */
+                                           m_args.first,
+                                           0); /* in_first_instance */
+
+            break;
+        }
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
 end:
     ;
 }

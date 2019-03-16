@@ -37,6 +37,7 @@ OpenGL::VKBufferReferenceUniquePtr OpenGL::VKBufferManager::acquire_object(const
     Anvil::Buffer*                     ref_buffer_ptr       (nullptr);
 
     vkgl_assert(buffer_props_iterator != m_buffers.end() );
+    vkgl_assert(in_buffer_time_marker != OpenGL::LATEST_SNAPSHOT_AVAILABLE); /* This special value is only allowed for frontend managers ! */
 
     buffer_data_ptr = buffer_props_iterator->second.get();
 

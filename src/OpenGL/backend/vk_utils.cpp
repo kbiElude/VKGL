@@ -11,12 +11,12 @@
 OpenGL::GLContextStateBindingReferencesUniquePtr OpenGL::VKUtils::create_gl_context_state_binding_references(const OpenGL::IContextObjectManagers*  in_frontend_managers_ptr,
                                                                                                              const OpenGL::GLContextStateReference* in_context_state_reference_ptr)
 {
-    OpenGL::GLContextStateBindingReferencesUniquePtr result_ptr        = OpenGL::GLContextStateBindingReferencesUniquePtr (nullptr,
-                                                                                                                           std::default_delete<OpenGL::GLContextStateBindingReferences>() );
-    auto                                           program_manager_ptr = in_frontend_managers_ptr->get_program_manager_ptr();
-    auto                                           state_manager_ptr   = in_frontend_managers_ptr->get_state_manager_ptr  ();
-    const auto                                     state_ptr           = state_manager_ptr->get_state                     (in_context_state_reference_ptr->get_payload().time_marker);
-    auto                                           vao_manager_ptr     = in_frontend_managers_ptr->get_vao_manager_ptr    ();
+    OpenGL::GLContextStateBindingReferencesUniquePtr result_ptr          = OpenGL::GLContextStateBindingReferencesUniquePtr (nullptr,
+                                                                                                                             std::default_delete<OpenGL::GLContextStateBindingReferences>() );
+    auto                                             program_manager_ptr = in_frontend_managers_ptr->get_program_manager_ptr();
+    auto                                             state_manager_ptr   = in_frontend_managers_ptr->get_state_manager_ptr  ();
+    const auto                                       state_ptr           = state_manager_ptr->get_state                     (in_context_state_reference_ptr->get_payload().time_marker);
+    auto                                             vao_manager_ptr     = in_frontend_managers_ptr->get_vao_manager_ptr    ();
 
     if (state_ptr == nullptr)
     {

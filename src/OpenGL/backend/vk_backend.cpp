@@ -406,7 +406,37 @@ void OpenGL::VKBackend::draw_elements(const OpenGL::DrawCallMode&      in_mode,
                                       const OpenGL::DrawCallIndexType& in_type,
                                       const void*                      in_indices)
 {
-    vkgl_not_implemented();
+    /* 1. Grab a snapshot of current context's state.
+     *
+     *    Context state holds so-called proxy references. Convert those we're going to need to be able to use into
+     *    actual refs.
+     **/
+    auto state_manager_ptr   = m_frontend_ptr->get_state_manager_ptr                       ();
+    auto state_reference_ptr = state_manager_ptr->acquire_current_latest_snapshot_reference();
+
+    vkgl_assert(state_reference_ptr != nullptr);
+
+    auto state_binding_references_ptr = OpenGL::VKUtils::create_gl_context_state_binding_references(m_frontend_ptr,
+                                                                                                    state_reference_ptr.get() );
+
+    vkgl_assert(state_binding_references_ptr != nullptr);
+
+    /* 2. Spawn the command container ..
+     *
+     * NOTE: in_indices is ALWAYS an offset in GL 3.2: See chapter 2.9.7. Array Indices in Buffer Objects
+     */
+    OpenGL::CommandBaseUniquePtr cmd_ptr(new OpenGL::DrawElementsCommand(in_count,
+                                                                         static_cast<uint32_t>(reinterpret_cast<intptr_t>(in_indices) ),
+                                                                         in_mode,
+                                                                         std::move(state_reference_ptr),
+                                                                         std::move(state_binding_references_ptr),
+                                                                         in_type),
+                                         std::default_delete<OpenGL::CommandBase>() );
+
+    vkgl_assert(cmd_ptr != nullptr);
+
+    /* 2. Submit the command */
+    m_scheduler_ptr->submit(std::move(cmd_ptr) );
 }
 
 void OpenGL::VKBackend::draw_range_elements(const OpenGL::DrawCallMode&      in_mode,

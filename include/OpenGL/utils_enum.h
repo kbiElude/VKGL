@@ -76,8 +76,9 @@ namespace OpenGL
         OpenGL::DrawBuffer get_draw_buffer_for_gl_enum(const GLenum&     in_enum);
         GLenum             get_gl_enum_for_draw_buffer(const DrawBuffer& in_draw_buffer);
 
-        OpenGL::DrawCallIndexType get_draw_call_index_type_for_gl_enum(const GLenum&                    in_enum);
-        GLenum                    get_gl_enum_for_draw_call_index_type(const OpenGL::DrawCallIndexType& in_type);
+        OpenGL::DrawCallIndexType get_draw_call_index_type_for_gl_enum   (const GLenum&                    in_enum);
+        uint32_t                  get_draw_call_index_type_size_per_index(const OpenGL::DrawCallIndexType& in_type);
+        GLenum                    get_gl_enum_for_draw_call_index_type   (const OpenGL::DrawCallIndexType& in_type);
 
         OpenGL::DrawCallMode get_draw_call_mode_for_gl_enum(const GLenum&               in_enum);
         GLenum               get_gl_enum_for_draw_call_mode(const OpenGL::DrawCallMode& in_mode);

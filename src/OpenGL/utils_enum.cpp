@@ -526,6 +526,25 @@ OpenGL::DrawCallIndexType OpenGL::Utils::get_draw_call_index_type_for_gl_enum(co
     return result;
 }
 
+uint32_t OpenGL::Utils::get_draw_call_index_type_size_per_index(const OpenGL::DrawCallIndexType& in_type)
+{
+    uint32_t result = 0;
+
+    switch (in_type)
+    {
+        case OpenGL::DrawCallIndexType::Unsigned_Byte:  result = sizeof(uint8_t);  break;
+        case OpenGL::DrawCallIndexType::Unsigned_Short: result = sizeof(uint16_t); break;
+        case OpenGL::DrawCallIndexType::Unsigned_Int:   result = sizeof(uint32_t); break;
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
 OpenGL::DrawCallMode OpenGL::Utils::get_draw_call_mode_for_gl_enum(const GLenum& in_enum)
 {
     OpenGL::DrawCallMode result = OpenGL::DrawCallMode::Unknown;

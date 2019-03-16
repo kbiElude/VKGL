@@ -593,23 +593,26 @@ namespace OpenGL
 
     struct DrawElementsCommand : public CommandBase
     {
-        GLsizei                                  count;
-        OpenGL::DataUniquePtr                    index_data_ptr;
-        OpenGL::DrawCallMode                     mode;
-        OpenGL::GLContextStateReferenceUniquePtr state_reference_ptr;
-        OpenGL::DrawCallIndexType                type;
+        GLsizei                                          count;
+        uint32_t                                         index_buffer_offset;
+        OpenGL::DrawCallMode                             mode;
+        OpenGL::GLContextStateBindingReferencesUniquePtr state_binding_references_ptr;
+        OpenGL::GLContextStateReferenceUniquePtr         state_reference_ptr;
+        OpenGL::DrawCallIndexType                        type;
 
-        DrawElementsCommand(const GLsizei&                           in_count,
-                            OpenGL::DataUniquePtr                    in_index_data_ptr,
-                            const OpenGL::DrawCallMode&              in_mode,
-                            OpenGL::GLContextStateReferenceUniquePtr in_state_reference_ptr,
-                            const OpenGL::DrawCallIndexType&         in_type)
-            :CommandBase        (CommandType::DRAW_ELEMENTS),
-             count              (in_count),
-             index_data_ptr     (std::move(in_index_data_ptr) ),
-             mode               (in_mode),
-             state_reference_ptr(std::move(in_state_reference_ptr) ),
-             type               (in_type)
+        DrawElementsCommand(const GLsizei&                                   in_count,
+                            uint32_t                                         in_index_buffer_offset,
+                            const OpenGL::DrawCallMode&                      in_mode,
+                            OpenGL::GLContextStateReferenceUniquePtr         in_state_reference_ptr,
+                            OpenGL::GLContextStateBindingReferencesUniquePtr in_state_binding_references_ptr,
+                            const OpenGL::DrawCallIndexType&                 in_type)
+            :CommandBase                 (CommandType::DRAW_ELEMENTS),
+             count                       (in_count),
+             index_buffer_offset         (in_index_buffer_offset),
+             mode                        (in_mode),
+             state_binding_references_ptr(std::move(in_state_binding_references_ptr) ),
+             state_reference_ptr         (std::move(in_state_reference_ptr) ),
+             type                        (in_type)
         {
             /* Stub */
         }

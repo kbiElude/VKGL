@@ -18,7 +18,7 @@ static const OpenGL::BufferTarget g_nonindexed_buffer_targets[] =
     OpenGL::BufferTarget::Array_Buffer,
     OpenGL::BufferTarget::Copy_Read_Buffer,
     OpenGL::BufferTarget::Copy_Write_Buffer,
-    OpenGL::BufferTarget::Element_Array_Buffer,
+    // NO. This is VAO state. OpenGL::BufferTarget::Element_Array_Buffer,
     OpenGL::BufferTarget::Pixel_Pack_Buffer,
     OpenGL::BufferTarget::Pixel_Unpack_Buffer,
     OpenGL::BufferTarget::Texture_Buffer,
