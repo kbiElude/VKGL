@@ -14,12 +14,9 @@ namespace OpenGL
     class GLStateManager : public IStateSnapshotAccessors
     {
     public:
-        GLStateManager(const IGLLimits*                                                  in_limits_ptr,
-                       const IGLObjectManager<GLBufferReferenceUniquePtr>*               in_buffer_manager_ptr,
-                       const IGLObjectManager<OpenGL::GLFramebufferReferenceUniquePtr>*  in_framebuffer_manager_ptr,
-                       const IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>* in_renderbuffer_manager_ptr,
-                       const IGLObjectManager<GLVAOReferenceUniquePtr>*                  in_vao_manager_ptr,
-                       const VKGL::IWSIContext*                                          in_wsi_context_ptr);
+        GLStateManager(const IGLLimits*         in_limits_ptr,
+                       IContextObjectManagers*  in_object_managers_ptr,
+                       const VKGL::IWSIContext* in_wsi_context_ptr);
        ~GLStateManager();
 
        GLContextStateReferenceUniquePtr acquire_current_latest_snapshot_reference();
@@ -140,10 +137,11 @@ namespace OpenGL
         PropertyData;
 
         /* IStateSnapshotAccessors */
-        std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr)     final;
+        std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr,
+                                                                                       const bool& in_convert_from_proxy_to_nonproxy) final;
         void                                               copy_internal_data_object  (const void* in_src_ptr,
-                                                                                       void*       in_dst_ptr) final;
-        std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object()                       final;
+                                                                                       void*       in_dst_ptr)                        final;
+        std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object()                                              final;
 
         /* Private functions */
 
@@ -152,13 +150,10 @@ namespace OpenGL
 
         /* Private variables */
 
-        const IGLObjectManager<GLBufferReferenceUniquePtr>*                                                                                 m_buffer_manager_ptr;
         OpenGL::ErrorCode                                                                                                                   m_current_error_code;
-        const IGLObjectManager<GLFramebufferReferenceUniquePtr>*                                                                            m_framebuffer_manager_ptr;
+        IContextObjectManagers*                                                                                                             m_object_managers_ptr;
         const IGLLimits* const                                                                                                              m_limits_ptr;
-        const IGLObjectManager<GLRenderbufferReferenceUniquePtr>*                                                                           m_renderbuffer_manager_ptr;
         std::unique_ptr<OpenGL::SnapshotManager<GLContextStateReference, GLContextStateReferenceUniquePtr, OpenGL::GLContextStatePayload> > m_snapshot_manager_ptr;
-        const IGLObjectManager<GLVAOReferenceUniquePtr>*                                                                                    m_vao_manager_ptr;
         const VKGL::IWSIContext*                                                                                                            m_wsi_context_ptr;
 
         std::unordered_map<OpenGL::ContextProperty,    PropertyData> m_context_prop_map;

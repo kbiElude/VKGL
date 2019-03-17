@@ -2760,7 +2760,8 @@ bool OpenGL::Context::init()
     }
 
     /* Set up program manager */
-    m_gl_program_manager_ptr = OpenGL::GLProgramManager::create(m_backend_gl_callbacks_ptr);
+    m_gl_program_manager_ptr = OpenGL::GLProgramManager::create(this,
+                                                                m_backend_gl_callbacks_ptr);
 
     if (m_gl_program_manager_ptr == nullptr)
     {
@@ -2770,7 +2771,8 @@ bool OpenGL::Context::init()
     }
 
     /* Set up VAO manager */
-    m_gl_vao_manager_ptr = OpenGL::GLVAOManager::create(dynamic_cast<const IGLLimits*>(m_gl_limits_ptr.get() ));
+    m_gl_vao_manager_ptr = OpenGL::GLVAOManager::create(dynamic_cast<const IGLLimits*>(m_gl_limits_ptr.get() ),
+                                                        this);
 
     if (m_gl_vao_manager_ptr == nullptr)
     {
@@ -2802,7 +2804,8 @@ bool OpenGL::Context::init()
 
     /* Set up GL framebuffer manager */
     m_gl_framebuffer_manager_ptr = OpenGL::GLFramebufferManager::create(m_gl_limits_ptr.get(),
-                                                                        m_wsi_context_ptr);
+                                                                        m_wsi_context_ptr,
+                                                                        this);
 
     if (m_gl_framebuffer_manager_ptr == nullptr)
     {
@@ -2814,11 +2817,8 @@ bool OpenGL::Context::init()
 
     /* Set up GL state manager */
     m_gl_state_manager_ptr.reset(
-        new OpenGL::GLStateManager(dynamic_cast<IGLLimits*>                                                 (m_gl_limits_ptr.get              () ),
-                                   dynamic_cast<IGLObjectManager<OpenGL::GLBufferReferenceUniquePtr>*>      (m_gl_buffer_manager_ptr.get      () ),
-                                   dynamic_cast<IGLObjectManager<OpenGL::GLFramebufferReferenceUniquePtr>*> (m_gl_framebuffer_manager_ptr.get () ),
-                                   dynamic_cast<IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>*>(m_gl_renderbuffer_manager_ptr.get() ),
-                                   dynamic_cast<IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*>         (m_gl_vao_manager_ptr.get         () ),
+        new OpenGL::GLStateManager(dynamic_cast<IGLLimits*>(m_gl_limits_ptr.get() ),
+                                   this,
                                    m_wsi_context_ptr)
     );
 

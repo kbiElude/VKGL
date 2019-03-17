@@ -763,16 +763,15 @@ namespace OpenGL
         bool        is_program_point_size_enabled;
         PolygonMode polygon_mode;
 
-        explicit ContextState(const IGLObjectManager<GLBufferReferenceUniquePtr>*               in_buffer_manager_ptr,
-                              const IGLObjectManager<OpenGL::GLFramebufferReferenceUniquePtr>*  in_framebuffer_manager_ptr,
-                              const IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>* in_renderbuffer_manager_ptr,
-                              const IGLObjectManager<GLVAOReferenceUniquePtr>*                  in_vao_manager_ptr,
-                              const IGLLimits*                                                  in_limits_ptr,
-                              const int32_t*                                                    in_viewport_ivec4_ptr,
-                              const int32_t*                                                    in_scissor_box_ivec4_ptr);
+        explicit ContextState(IContextObjectManagers* in_frontend_object_managers_ptr,
+                              const IGLLimits*        in_limits_ptr,
+                              const int32_t*          in_viewport_ivec4_ptr,
+                              const int32_t*          in_scissor_box_ivec4_ptr);
 
-        ContextState           (const ContextState& in_context_state);
-        ContextState& operator=(const ContextState& in_context_state);
+        ContextState           (const ContextState&           in_context_state,
+                                const bool&                   in_convert_from_proxy_to_nonproxy,
+                                const IContextObjectManagers* in_frontend_object_managers_ptr);
+        ContextState& operator=(const ContextState&           in_context_state);
 
         ~ContextState();
     } ContextState;

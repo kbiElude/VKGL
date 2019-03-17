@@ -20,10 +20,15 @@ OpenGL::GLRenderbufferManager::~GLRenderbufferManager()
     /* Stub - everything is handled by the base class. */
 }
 
-std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLRenderbufferManager::clone_internal_data_object(const void* in_ptr)
+std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLRenderbufferManager::clone_internal_data_object(const void* in_ptr,
+                                                                                                             const bool& in_convert_from_proxy_to_nonproxy)
 {
     std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
                                                                   [](void* in_ptr){delete reinterpret_cast<Renderbuffer*>(in_ptr); });
+
+    /* NOTE: Proxy->non-proxy conversion has no meaning for GL renderbuffers, as we only cache renderbuffer state properties,
+     *       not actual object references */
+    ANVIL_REDUNDANT_ARGUMENT_CONST(in_convert_from_proxy_to_nonproxy);
 
     result_ptr.reset(
         new Renderbuffer(*reinterpret_cast<const Renderbuffer*>(in_ptr) )

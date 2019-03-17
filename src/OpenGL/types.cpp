@@ -3,8 +3,13 @@
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
 #include "Common/macros.h"
+#include "OpenGL/frontend/gl_buffer_manager.h"
+#include "OpenGL/frontend/gl_framebuffer_manager.h"
 #include "OpenGL/frontend/gl_object_manager.h"
+#include "OpenGL/frontend/gl_program_manager.h"
+#include "OpenGL/frontend/gl_renderbuffer_manager.h"
 #include "OpenGL/frontend/gl_reference.h"
+#include "OpenGL/frontend/gl_vao_manager.h"
 #include "OpenGL/types.h"
 
 static const OpenGL::BufferTarget g_indexed_buffer_targets[] =
@@ -37,13 +42,10 @@ OpenGL::BufferState::BufferState()
     usage            = OpenGL::BufferUsage::Static_Draw;
 }
 
-OpenGL::ContextState::ContextState(const IGLObjectManager<OpenGL::GLBufferReferenceUniquePtr>*       in_buffer_manager_ptr,
-                                   const IGLObjectManager<OpenGL::GLFramebufferReferenceUniquePtr>*  in_framebuffer_manager_ptr,
-                                   const IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>* in_renderbuffer_manager_ptr,
-                                   const IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*          in_vao_manager_ptr,
-                                   const IGLLimits*                                                  in_limits_ptr,
-                                   const int32_t*                                                    in_viewport_ivec4_ptr,
-                                   const int32_t*                                                    in_scissor_box_ivec4_ptr)
+OpenGL::ContextState::ContextState(IContextObjectManagers* in_frontend_object_managers_ptr,
+                                   const IGLLimits*        in_limits_ptr,
+                                   const int32_t*          in_viewport_ivec4_ptr,
+                                   const int32_t*          in_scissor_box_ivec4_ptr)
     :texture_image_units     (in_limits_ptr->get_max_texture_image_units() ),
      user_clip_planes_enabled(in_limits_ptr->get_max_clip_distances     (), false)
 {
@@ -185,7 +187,7 @@ OpenGL::ContextState::ContextState(const IGLObjectManager<OpenGL::GLBufferRefere
                       n_binding < n_max_bindings;
                     ++n_binding)
         {
-            indexed_buffer_proxy_binding_ptrs[IndexedBufferTarget(current_indexed_target, n_binding)] = IndexedBufferBinding(in_buffer_manager_ptr->get_default_object_reference(),
+            indexed_buffer_proxy_binding_ptrs[IndexedBufferTarget(current_indexed_target, n_binding)] = IndexedBufferBinding(in_frontend_object_managers_ptr->get_buffer_manager_ptr()->get_default_object_reference(),
                                                                                                                              0,  /* in_start_offset */
                                                                                                                              0); /* in_size         */
         }
@@ -193,19 +195,76 @@ OpenGL::ContextState::ContextState(const IGLObjectManager<OpenGL::GLBufferRefere
 
     for (const auto& current_nonindexed_target : g_nonindexed_buffer_targets)
     {
-        nonindexed_buffer_proxy_binding_ptrs[current_nonindexed_target] = in_buffer_manager_ptr->get_default_object_reference();
+        nonindexed_buffer_proxy_binding_ptrs[current_nonindexed_target] = in_frontend_object_managers_ptr->get_buffer_manager_ptr()->get_default_object_reference();
     }
 
     /* Set up default bindings */
-    draw_framebuffer_proxy_reference_ptr = in_framebuffer_manager_ptr->get_default_object_reference ();
-    read_framebuffer_proxy_reference_ptr = in_framebuffer_manager_ptr->get_default_object_reference ();
-    renderbuffer_proxy_reference_ptr     = in_renderbuffer_manager_ptr->get_default_object_reference();
-    vao_proxy_reference_ptr              = in_vao_manager_ptr->get_default_object_reference         ();
+    draw_framebuffer_proxy_reference_ptr = in_frontend_object_managers_ptr->get_framebuffer_manager_ptr ()->get_default_object_reference();
+    read_framebuffer_proxy_reference_ptr = in_frontend_object_managers_ptr->get_framebuffer_manager_ptr ()->get_default_object_reference();
+    renderbuffer_proxy_reference_ptr     = in_frontend_object_managers_ptr->get_renderbuffer_manager_ptr()->get_default_object_reference();
+    vao_proxy_reference_ptr              = in_frontend_object_managers_ptr->get_vao_manager_ptr         ()->get_default_object_reference();
 }
 
-OpenGL::ContextState::ContextState(const OpenGL::ContextState& in_context_state)
+OpenGL::ContextState::ContextState(const OpenGL::ContextState&   in_context_state,
+                                   const bool&                   in_convert_from_proxy_to_nonproxy,
+                                   const IContextObjectManagers* in_frontend_object_managers_ptr)
 {
     *this = in_context_state;
+
+    if (in_convert_from_proxy_to_nonproxy)
+    {
+        auto buffer_frontend_manager_ptr  = in_frontend_object_managers_ptr->get_buffer_manager_ptr      ();
+        auto fb_frontend_manager_ptr      = in_frontend_object_managers_ptr->get_framebuffer_manager_ptr ();
+        auto program_frontend_manager_ptr = in_frontend_object_managers_ptr->get_program_manager_ptr     ();
+        auto rb_frontend_manager_ptr      = in_frontend_object_managers_ptr->get_renderbuffer_manager_ptr();
+        auto vao_frontend_manager_ptr     = in_frontend_object_managers_ptr->get_vao_manager_ptr         ();
+
+        if (draw_framebuffer_proxy_reference_ptr != nullptr)
+        {
+            draw_framebuffer_proxy_reference_ptr = fb_frontend_manager_ptr->acquire_current_latest_snapshot_reference(draw_framebuffer_proxy_reference_ptr->get_payload().id);
+        }
+
+        if (read_framebuffer_proxy_reference_ptr != nullptr)
+        {
+            read_framebuffer_proxy_reference_ptr = fb_frontend_manager_ptr->acquire_current_latest_snapshot_reference(read_framebuffer_proxy_reference_ptr->get_payload().id);
+        }
+
+        if (renderbuffer_proxy_reference_ptr != nullptr)
+        {
+            renderbuffer_proxy_reference_ptr = rb_frontend_manager_ptr->acquire_current_latest_snapshot_reference(renderbuffer_proxy_reference_ptr->get_payload().id);
+        }
+
+        if (program_proxy_reference_ptr != nullptr)
+        {
+            program_proxy_reference_ptr = program_frontend_manager_ptr->acquire_current_latest_snapshot_reference(program_proxy_reference_ptr->get_payload().id);
+        }
+
+        if (renderbuffer_proxy_reference_ptr != nullptr)
+        {
+            renderbuffer_proxy_reference_ptr = rb_frontend_manager_ptr->acquire_current_latest_snapshot_reference(renderbuffer_proxy_reference_ptr->get_payload().id);
+        }
+
+        if (vao_proxy_reference_ptr != nullptr)
+        {
+            vao_proxy_reference_ptr = vao_frontend_manager_ptr->acquire_current_latest_snapshot_reference(vao_proxy_reference_ptr->get_payload().id);
+        }
+
+        for (auto& current_indexed_proxy_binding_ptr : indexed_buffer_proxy_binding_ptrs)
+        {
+            if (current_indexed_proxy_binding_ptr.second.reference_ptr != nullptr)
+            {
+                current_indexed_proxy_binding_ptr.second.reference_ptr = buffer_frontend_manager_ptr->acquire_current_latest_snapshot_reference(current_indexed_proxy_binding_ptr.second.reference_ptr->get_payload().id);
+            }
+        }
+
+        for (auto& current_nonindexed_proxy_binding_ptr : nonindexed_buffer_proxy_binding_ptrs)
+        {
+            if (current_nonindexed_proxy_binding_ptr.second != nullptr)
+            {
+                current_nonindexed_proxy_binding_ptr.second = buffer_frontend_manager_ptr->acquire_current_latest_snapshot_reference(current_nonindexed_proxy_binding_ptr.second->get_payload().id);
+            }
+        }
+    }
 }
 
 OpenGL::ContextState::~ContextState()

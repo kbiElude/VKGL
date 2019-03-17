@@ -20,10 +20,15 @@ OpenGL::GLBufferManager::~GLBufferManager()
     /* Stub - everything is handled by the base class. */
 }
 
-std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLBufferManager::clone_internal_data_object(const void* in_ptr)
+std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLBufferManager::clone_internal_data_object(const void* in_ptr,
+                                                                                                       const bool& in_convert_from_proxy_to_nonproxy)
 {
     std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
                                                                   [](void* in_ptr){delete reinterpret_cast<Buffer*>(in_ptr); });
+
+    /* NOTE: Proxy->non-proxy conversion has no meaning for GL buffers, as we only cache buffer state properties,
+     *       not actual object references */
+    ANVIL_REDUNDANT_ARGUMENT_CONST(in_convert_from_proxy_to_nonproxy);
 
     result_ptr.reset(
         new Buffer(*reinterpret_cast<const Buffer*>(in_ptr) )

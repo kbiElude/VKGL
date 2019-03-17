@@ -76,10 +76,15 @@ OpenGL::GLTextureManager::~GLTextureManager()
     /* Stub - everything is handled by the base class. */
 }
 
-std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLTextureManager::clone_internal_data_object(const void* in_ptr)
+std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLTextureManager::clone_internal_data_object(const void* in_ptr,
+                                                                                                        const bool& in_convert_from_proxy_to_nonproxy)
 {
     std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
                                                                   [](void* in_ptr){delete reinterpret_cast<Texture*>(in_ptr); });
+
+    /* NOTE: Proxy->non-proxy conversion has no meaning for GL textures, as we only cache texture state properties,
+     *       not actual object references */
+    ANVIL_REDUNDANT_ARGUMENT_CONST(in_convert_from_proxy_to_nonproxy);
 
     result_ptr.reset(
         new Texture(*reinterpret_cast<const Texture*>(in_ptr) )

@@ -52,7 +52,9 @@ namespace OpenGL
              * operations requested by inheriting buffers. Please see get_internal_object_props_ptr() (non-const version)
              * and update_last_modified_time() for more details.
              */
-            m_scratch_snapshot_ptr = m_state_snapshot_accesors_ptr->clone_internal_data_object(new_snapshot_ptr->internal_data_ptr.get() );
+            m_scratch_snapshot_ptr = m_state_snapshot_accesors_ptr->clone_internal_data_object(new_snapshot_ptr->internal_data_ptr.get(),
+                                                                                               false /* in_convert_from_proxy_to_nonproxy */);
+
             vkgl_assert(m_scratch_snapshot_ptr != nullptr);
 
             /* Stash the base snapshot. */
@@ -196,7 +198,8 @@ namespace OpenGL
                     m_snapshots[m_last_modified_time] = std::move(new_snapshot_ptr);
 
                     /* Create a new scratch state. */
-                    m_scratch_snapshot_ptr = m_state_snapshot_accesors_ptr->clone_internal_data_object(old_scratch_snapshot_ptr);
+                    m_scratch_snapshot_ptr = m_state_snapshot_accesors_ptr->clone_internal_data_object(old_scratch_snapshot_ptr,
+                                                                                                       false /* in_convert_from_proxy_to_nonproxy */);
                     vkgl_assert(m_scratch_snapshot_ptr != nullptr);
 
                     /* Check if the previous ToT snapshot is being referenced. If not, it's safe to drop it.

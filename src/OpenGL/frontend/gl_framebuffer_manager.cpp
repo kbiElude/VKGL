@@ -6,6 +6,7 @@
 #include "OpenGL/converters.h"
 #include "OpenGL/frontend/gl_framebuffer_manager.h"
 #include "OpenGL/frontend/gl_reference.h"
+#include "OpenGL/frontend/gl_renderbuffer_manager.h"
 
 
 OpenGL::GLFramebufferManager::Framebuffer& OpenGL::GLFramebufferManager::Framebuffer::operator=(const Framebuffer& in_framebuffer)
@@ -15,9 +16,50 @@ OpenGL::GLFramebufferManager::Framebuffer& OpenGL::GLFramebufferManager::Framebu
     return *this;
 }
 
-OpenGL::GLFramebufferManager::Framebuffer::Framebuffer(const OpenGL::GLFramebufferManager::Framebuffer& in_framebuffer)
+OpenGL::GLFramebufferManager::Framebuffer::Framebuffer(const OpenGL::GLFramebufferManager::Framebuffer& in_framebuffer,
+                                                       const bool&                                      in_convert_from_proxy_to_nonproxy,
+                                                       OpenGL::GLRenderbufferManager*                   in_frontend_rb_manager_ptr)
 {
     state = in_framebuffer.state;
+
+    if (in_convert_from_proxy_to_nonproxy)
+    {
+        for (auto& current_color_attachment : state.color_attachments)
+        {
+            if (current_color_attachment.renderbuffer_reference_ptr != nullptr)
+            {
+                current_color_attachment.renderbuffer_reference_ptr = in_frontend_rb_manager_ptr->acquire_current_latest_snapshot_reference(current_color_attachment.renderbuffer_reference_ptr->get_payload().id);
+            }
+
+            if (current_color_attachment.texture_reference_ptr != nullptr)
+            {
+                /* TODO: Add texture support */
+                anvil_assert_fail();
+            }
+        }
+
+        if (state.depth_attachment.renderbuffer_reference_ptr != nullptr)
+        {
+            state.depth_attachment.renderbuffer_reference_ptr = in_frontend_rb_manager_ptr->acquire_current_latest_snapshot_reference(state.depth_attachment.renderbuffer_reference_ptr->get_payload().id);
+        }
+
+        if (state.depth_attachment.texture_reference_ptr != nullptr)
+        {
+            /* TODO: Add texture support */
+            anvil_assert_fail();
+        }
+
+        if (state.stencil_attachment.renderbuffer_reference_ptr != nullptr)
+        {
+            state.stencil_attachment.renderbuffer_reference_ptr = in_frontend_rb_manager_ptr->acquire_current_latest_snapshot_reference(state.depth_attachment.renderbuffer_reference_ptr->get_payload().id);
+        }
+
+        if (state.stencil_attachment.texture_reference_ptr != nullptr)
+        {
+            /* TODO: Add texture support */
+            anvil_assert_fail();
+        }
+    }
 }
 
 OpenGL::GLFramebufferManager::Framebuffer::Framebuffer(const OpenGL::IGLLimits* in_limits_ptr)
@@ -26,12 +68,14 @@ OpenGL::GLFramebufferManager::Framebuffer::Framebuffer(const OpenGL::IGLLimits* 
     /* Stub */
 }
 
-OpenGL::GLFramebufferManager::GLFramebufferManager(const OpenGL::IGLLimits* in_limits_ptr,
-                                                   const VKGL::IWSIContext* in_wsi_context_ptr)
-    :GLObjectManager  (0,     /* in_first_valid_nondefault_id */
-                       true), /* in_expose_default_object     */
-     m_limits_ptr     (in_limits_ptr),
-     m_wsi_context_ptr(in_wsi_context_ptr)
+OpenGL::GLFramebufferManager::GLFramebufferManager(const OpenGL::IGLLimits*              in_limits_ptr,
+                                                   const VKGL::IWSIContext*              in_wsi_context_ptr,
+                                                   const OpenGL::IContextObjectManagers* in_frontend_object_managers_ptr)
+    :GLObjectManager               (0,     /* in_first_valid_nondefault_id */
+                                    true), /* in_expose_default_object     */
+     m_frontend_object_managers_ptr(in_frontend_object_managers_ptr),
+     m_limits_ptr                  (in_limits_ptr),
+     m_wsi_context_ptr             (in_wsi_context_ptr)
 {
     /*  Stub */
 }
@@ -41,13 +85,16 @@ OpenGL::GLFramebufferManager::~GLFramebufferManager()
     /* Stub - everything is handled by the base class. */
 }
 
-std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLFramebufferManager::clone_internal_data_object(const void* in_ptr)
+std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLFramebufferManager::clone_internal_data_object(const void* in_ptr,
+                                                                                                            const bool& in_convert_from_proxy_to_nonproxy)
 {
     std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
                                                                   [](void* in_ptr){delete reinterpret_cast<Framebuffer*>(in_ptr); });
 
     result_ptr.reset(
-        new Framebuffer(*reinterpret_cast<const Framebuffer*>(in_ptr) )
+        new Framebuffer(*reinterpret_cast<const Framebuffer*>(in_ptr),
+                        in_convert_from_proxy_to_nonproxy,
+                        m_frontend_object_managers_ptr->get_renderbuffer_manager_ptr() )
     );
     vkgl_assert(result_ptr != nullptr);
 
@@ -60,13 +107,15 @@ void OpenGL::GLFramebufferManager::copy_internal_data_object(const void* in_src_
     *reinterpret_cast<Framebuffer*>(in_dst_ptr) = *reinterpret_cast<const Framebuffer*>(in_src_ptr);
 }
 
-OpenGL::GLFramebufferManagerUniquePtr OpenGL::GLFramebufferManager::create(const OpenGL::IGLLimits* in_limits_ptr,
-                                                                           const VKGL::IWSIContext* in_wsi_context_ptr)
+OpenGL::GLFramebufferManagerUniquePtr OpenGL::GLFramebufferManager::create(const OpenGL::IGLLimits*              in_limits_ptr,
+                                                                           const VKGL::IWSIContext*              in_wsi_context_ptr,
+                                                                           const OpenGL::IContextObjectManagers* in_frontend_object_managers_ptr)
 {
     OpenGL::GLFramebufferManagerUniquePtr result_ptr;
 
     result_ptr.reset(new GLFramebufferManager(in_limits_ptr,
-                                              in_wsi_context_ptr) );
+                                              in_wsi_context_ptr,
+                                              in_frontend_object_managers_ptr) );
 
     if (result_ptr == nullptr)
     {

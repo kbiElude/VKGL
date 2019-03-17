@@ -9,19 +9,13 @@
 #include "OpenGL/utils_enum.h"
 #include <cmath>
 
-OpenGL::GLStateManager::GLStateManager(const IGLLimits*                                                  in_limits_ptr,
-                                       const IGLObjectManager<OpenGL::GLBufferReferenceUniquePtr>*       in_buffer_manager_ptr,
-                                       const IGLObjectManager<OpenGL::GLFramebufferReferenceUniquePtr>*  in_framebuffer_manager_ptr,
-                                       const IGLObjectManager<OpenGL::GLRenderbufferReferenceUniquePtr>* in_renderbuffer_manager_ptr,
-                                       const IGLObjectManager<OpenGL::GLVAOReferenceUniquePtr>*          in_vao_manager_ptr,
-                                       const VKGL::IWSIContext*                                          in_wsi_context_ptr)
-    :m_buffer_manager_ptr      (in_buffer_manager_ptr),
-     m_current_error_code      (OpenGL::ErrorCode::No_Error),
-     m_framebuffer_manager_ptr (in_framebuffer_manager_ptr),
-     m_limits_ptr              (in_limits_ptr),
-     m_renderbuffer_manager_ptr(in_renderbuffer_manager_ptr),
-     m_vao_manager_ptr         (in_vao_manager_ptr),
-     m_wsi_context_ptr         (in_wsi_context_ptr)
+OpenGL::GLStateManager::GLStateManager(const IGLLimits*         in_limits_ptr,
+                                       IContextObjectManagers*  in_object_managers_ptr,
+                                       const VKGL::IWSIContext* in_wsi_context_ptr)
+    :m_current_error_code (OpenGL::ErrorCode::No_Error),
+     m_limits_ptr         (in_limits_ptr),
+     m_object_managers_ptr(in_object_managers_ptr),
+     m_wsi_context_ptr    (in_wsi_context_ptr)
 {
     /* Initialize snapshot manager.. */
     m_snapshot_manager_ptr.reset(
@@ -54,13 +48,16 @@ OpenGL::GLContextStateReferenceUniquePtr OpenGL::GLStateManager::acquire_current
     return m_snapshot_manager_ptr->acquire_reference(m_snapshot_manager_ptr->get_last_modified_time() );
 }
 
-std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLStateManager::clone_internal_data_object(const void* in_ptr)
+std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLStateManager::clone_internal_data_object(const void* in_ptr,
+                                                                                                      const bool& in_convert_from_proxy_to_nonproxy)
 {
     std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
                                                                   [](void* in_ptr){ delete reinterpret_cast<OpenGL::ContextState*>(in_ptr); });
 
     result_ptr.reset(
-        new OpenGL::ContextState(*reinterpret_cast<const OpenGL::ContextState*>(in_ptr) )
+        new OpenGL::ContextState(*reinterpret_cast<const OpenGL::ContextState*>(in_ptr),
+                                 in_convert_from_proxy_to_nonproxy,
+                                 m_object_managers_ptr)
     );
 
     vkgl_assert(result_ptr != nullptr);
@@ -88,10 +85,7 @@ std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLStateManager::creat
     scissor[3] = viewport[3];
 
     result_ptr.reset(
-        new OpenGL::ContextState(m_buffer_manager_ptr,
-                                 m_framebuffer_manager_ptr,
-                                 m_renderbuffer_manager_ptr,
-                                 m_vao_manager_ptr,
+        new OpenGL::ContextState(m_object_managers_ptr,
                                  m_limits_ptr,
                                  viewport,
                                  scissor)

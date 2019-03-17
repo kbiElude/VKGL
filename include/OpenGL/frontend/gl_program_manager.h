@@ -20,7 +20,8 @@ namespace OpenGL
 
         /* Public functions */
 
-        static GLProgramManagerUniquePtr create(IBackendGLCallbacks* in_backend_ptr);
+        static GLProgramManagerUniquePtr create(OpenGL::IContextObjectManagers* in_frontend_object_managers_ptr,
+                                                IBackendGLCallbacks*            in_backend_ptr);
 
         ~GLProgramManager();
 
@@ -125,10 +126,11 @@ namespace OpenGL
 
     protected:
         /* Protected functions */
-        std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr)     final;
+        std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr,
+                                                                                       const bool& in_convert_from_proxy_to_nonproxy) final;
         void                                               copy_internal_data_object  (const void* in_src_ptr,
-                                                                                       void*       in_dst_ptr) final;
-        std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object()                       final;
+                                                                                       void*       in_dst_ptr)                        final;
+        std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object()                                              final;
 
     private:
         /* Private type definitions */
@@ -169,8 +171,10 @@ namespace OpenGL
                 /* Stub */
             }
 
-            Program           (const Program& in_program);
-            Program& operator=(const Program& in_program);
+            Program           (OpenGL::GLShaderManager* in_frontend_shader_manager_ptr,
+                               const Program&           in_program,
+                               const bool&              in_should_convert_proxy_refs_to_nonproxy);
+            Program& operator=(const Program&           in_program);
 
         private:
             PostLinkDataUniquePtr post_link_data_ptr;
@@ -179,7 +183,8 @@ namespace OpenGL
 
         /* Private functions */
 
-        GLProgramManager(IBackendGLCallbacks* in_backend_ptr);
+        GLProgramManager(OpenGL::IContextObjectManagers* in_frontend_object_managers_ptr,
+                         IBackendGLCallbacks*            in_backend_ptr);
 
         const Program* get_program_ptr(const GLuint&             in_id,
                                        const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
@@ -187,7 +192,8 @@ namespace OpenGL
                                        const OpenGL::TimeMarker* in_opt_time_marker_ptr);
 
         /* Private variables */
-        IBackendGLCallbacks* m_backend_ptr;
+        IBackendGLCallbacks*            m_backend_ptr;
+        OpenGL::IContextObjectManagers* m_frontend_object_managers_ptr;
     };
 }
 #endif /* VKGL_GL_PROGRAM_MANAGER_H */

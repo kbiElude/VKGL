@@ -7,14 +7,27 @@
 #include "OpenGL/backend/vk_spirv_manager.h"
 #include "OpenGL/frontend/gl_program_manager.h"
 #include "OpenGL/frontend/gl_reference.h"
+#include "OpenGL/frontend/gl_shader_manager.h"
 #include <algorithm>
 
-OpenGL::GLProgramManager::Program::Program(const OpenGL::GLProgramManager::Program& in_program)
+OpenGL::GLProgramManager::Program::Program(OpenGL::GLShaderManager*                 in_frontend_shader_manager_ptr,
+                                           const OpenGL::GLProgramManager::Program& in_program,
+                                           const bool&                              in_should_convert_proxy_refs_to_nonproxy)
 {
     /* The two members need extra handling .. */
+
     for (auto& current_attached_shader_reference_ptr : in_program.attached_shaders)
     {
-        auto new_reference_ptr = current_attached_shader_reference_ptr->clone();
+        OpenGL::GLProgramReferenceUniquePtr new_reference_ptr;
+
+        if (in_should_convert_proxy_refs_to_nonproxy)
+        {
+            new_reference_ptr = in_frontend_shader_manager_ptr->acquire_current_latest_snapshot_reference(current_attached_shader_reference_ptr->get_payload().id);
+        }
+        else
+        {
+            new_reference_ptr = current_attached_shader_reference_ptr->clone();
+        }
 
         vkgl_assert(new_reference_ptr != nullptr);
 
@@ -114,10 +127,12 @@ const OpenGL::PostLinkData* OpenGL::GLProgramManager::Program::get_post_link_dat
     return post_link_data_ptr.get();
 }
 
-OpenGL::GLProgramManager::GLProgramManager(IBackendGLCallbacks* in_backend_ptr)
-    :GLObjectManager(1,              /* in_first_valid_nondefault_id */
-                     true),          /* in_expose_default_object     */
-     m_backend_ptr  (in_backend_ptr)
+OpenGL::GLProgramManager::GLProgramManager(OpenGL::IContextObjectManagers* in_frontend_object_managers_ptr,
+                                           IBackendGLCallbacks*            in_backend_ptr)
+    :GLObjectManager               (1,              /* in_first_valid_nondefault_id */
+                                    true),          /* in_expose_default_object     */
+     m_backend_ptr                 (in_backend_ptr),
+     m_frontend_object_managers_ptr(in_frontend_object_managers_ptr)
 {
     /*  Stub */
 }
@@ -205,13 +220,16 @@ end:
     return result;
 }
 
-std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLProgramManager::clone_internal_data_object(const void* in_ptr)
+std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLProgramManager::clone_internal_data_object(const void* in_ptr,
+                                                                                                        const bool& in_convert_from_proxy_to_nonproxy)
 {
     std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
                                                                   [](void* in_ptr){delete reinterpret_cast<Program*>(in_ptr); });
 
     result_ptr.reset(
-        new Program(*reinterpret_cast<const Program*>(in_ptr) )
+        new Program(m_frontend_object_managers_ptr->get_shader_manager_ptr(),
+                    *reinterpret_cast<const Program*>(in_ptr),
+                    in_convert_from_proxy_to_nonproxy)
     );
     vkgl_assert(result_ptr != nullptr);
 
@@ -224,11 +242,13 @@ void OpenGL::GLProgramManager::copy_internal_data_object(const void* in_src_ptr,
     *reinterpret_cast<Program*>(in_dst_ptr) = *reinterpret_cast<const Program*>(in_src_ptr);
 }
 
-OpenGL::GLProgramManagerUniquePtr OpenGL::GLProgramManager::create(IBackendGLCallbacks* in_backend_ptr)
+OpenGL::GLProgramManagerUniquePtr OpenGL::GLProgramManager::create(OpenGL::IContextObjectManagers* in_frontend_object_managers_ptr,
+                                                                   IBackendGLCallbacks*            in_backend_ptr)
 {
     OpenGL::GLProgramManagerUniquePtr result_ptr;
 
-    result_ptr.reset(new GLProgramManager(in_backend_ptr) );
+    result_ptr.reset(new GLProgramManager(in_frontend_object_managers_ptr,
+                                          in_backend_ptr) );
 
     if (result_ptr == nullptr)
     {

@@ -20,6 +20,23 @@ namespace OpenGL
                             public IStateSnapshotAccessors
     {
     public:
+        /* IGLObjectManager interface */
+        ObjectReferenceUniquePtrType get_default_object_reference() const final
+        {
+            /* Default object NEVER goes out of scope. Hence, we wrap a raw ptr to the pre-baked reference and make
+             * sure the destructor never gets called.
+             */
+            vkgl_assert(m_expose_default_object);
+
+            return ObjectReferenceUniquePtrType(m_default_object_reference_ptr.get(),
+                                                [](ObjectReferenceType*){ /* Stub */});
+        }
+
+        bool is_object_deleted(const GLuint& in_id) const final
+        {
+            return get_object_status(in_id) == Status::Deleted_References_Pending;
+        }
+
         /* Public functions */
 
         bool delete_ids(const uint32_t& in_n_ids,
@@ -233,23 +250,6 @@ namespace OpenGL
                 );
             }
         } GeneralObjectProps;
-
-        /* IGLObjectManager interface */
-        ObjectReferenceUniquePtrType get_default_object_reference() const final
-        {
-            /* Default object NEVER goes out of scope. Hence, we wrap a raw ptr to the pre-baked reference and make
-             * sure the destructor never gets called.
-             */
-            vkgl_assert(m_expose_default_object);
-
-            return ObjectReferenceUniquePtrType(m_default_object_reference_ptr.get(),
-                                                [](ObjectReferenceType*){ /* Stub */});
-        }
-
-        bool is_object_deleted(const GLuint& in_id) const final
-        {
-            return get_object_status(in_id) == Status::Deleted_References_Pending;
-        }
 
         /* Protected functions */
 

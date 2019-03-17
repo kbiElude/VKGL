@@ -18,8 +18,9 @@ namespace OpenGL
     public:
         /* Public functions */
 
-        static GLFramebufferManagerUniquePtr create(const OpenGL::IGLLimits* in_limits_ptr,
-                                                    const VKGL::IWSIContext* in_wsi_context_ptr);
+        static GLFramebufferManagerUniquePtr create(const OpenGL::IGLLimits*              in_limits_ptr,
+                                                    const VKGL::IWSIContext*              in_wsi_context_ptr,
+                                                    const OpenGL::IContextObjectManagers* in_frontend_object_managers_ptr);
 
         ~GLFramebufferManager();
 
@@ -68,10 +69,11 @@ namespace OpenGL
 
     protected:
         /* Protected functions */
-        std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr)     final;
+        std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr,
+                                                                                       const bool& in_convert_from_proxy_to_nonproxy) final;
         void                                               copy_internal_data_object  (const void* in_src_ptr,
-                                                                                       void*       in_dst_ptr) final;
-        std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object()                       final;
+                                                                                       void*       in_dst_ptr)                        final;
+        std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object()                                              final;
 
     private:
         /* Private type definitions */
@@ -80,15 +82,18 @@ namespace OpenGL
         {
             FramebufferState state;
 
-            Framebuffer& operator=(const Framebuffer& in_framebuffer);
-            Framebuffer           (const Framebuffer& in_framebuffer);
-            Framebuffer           (const IGLLimits*   in_limits_ptr);
+            Framebuffer& operator=(const Framebuffer&             in_framebuffer);
+            Framebuffer           (const Framebuffer&             in_framebuffer,
+                                   const bool&                    in_convert_from_proxy_to_nonproxy,
+                                   OpenGL::GLRenderbufferManager* in_frontend_rb_manager_ptr);
+            Framebuffer           (const IGLLimits*               in_limits_ptr);
         } Framebuffer;
 
         /* Private functions */
 
-        GLFramebufferManager(const OpenGL::IGLLimits* in_limits_ptr,
-                             const VKGL::IWSIContext* in_wsi_context_ptr);
+        GLFramebufferManager(const OpenGL::IGLLimits*              in_limits_ptr,
+                             const VKGL::IWSIContext*              in_wsi_context_ptr,
+                             const OpenGL::IContextObjectManagers* in_frontend_object_managers_ptr);
 
         const Framebuffer* get_framebuffer_ptr(const GLuint&             in_id,
                                                const OpenGL::TimeMarker* in_opt_time_marker_ptr) const;
@@ -96,8 +101,9 @@ namespace OpenGL
                                                const OpenGL::TimeMarker* in_opt_time_marker_ptr);
 
         /* Private variables */
-        const OpenGL::IGLLimits* m_limits_ptr;
-        const VKGL::IWSIContext* m_wsi_context_ptr;
+        const OpenGL::IContextObjectManagers* m_frontend_object_managers_ptr;
+        const OpenGL::IGLLimits*              m_limits_ptr;
+        const VKGL::IWSIContext*              m_wsi_context_ptr;
     };
 }
 #endif /* VKGL_GL_FRAMEBUFFER_MANAGER_H */

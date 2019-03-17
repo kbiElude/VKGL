@@ -21,10 +21,15 @@ OpenGL::GLShaderManager::~GLShaderManager()
     /* Stub - everything is handled by the base class. */
 }
 
-std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLShaderManager::clone_internal_data_object(const void* in_ptr)
+std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLShaderManager::clone_internal_data_object(const void* in_ptr,
+                                                                                                       const bool& in_convert_from_proxy_to_nonproxy)
 {
     std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
                                                                   [](void* in_ptr){delete reinterpret_cast<Shader*>(in_ptr); });
+
+    /* NOTE: Proxy->non-proxy conversion has no meaning for GL shaders, as we only cache shader state properties,
+     *       not actual object references */
+    ANVIL_REDUNDANT_ARGUMENT_CONST(in_convert_from_proxy_to_nonproxy);
 
     result_ptr.reset(
         new Shader(*reinterpret_cast<const Shader*>(in_ptr) )

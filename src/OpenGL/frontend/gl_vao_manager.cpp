@@ -4,15 +4,33 @@
  */
 #include "Common/macros.h"
 #include "OpenGL/converters.h"
+#include "OpenGL/frontend/gl_buffer_manager.h"
 #include "OpenGL/frontend/gl_reference.h"
 #include "OpenGL/frontend/gl_vao_manager.h"
 
-OpenGL::GLVAOManager::VAO::VAO(const VAO& in_vao)
+OpenGL::GLVAOManager::VAO::VAO(const VAO&                    in_vao,
+                               const bool&                   in_convert_from_proxy_to_nonproxy,
+                               const IContextObjectManagers* in_frontend_object_managers_ptr)
 {
     vao_ptr.reset(
         new OpenGL::VertexArrayObjectState(*in_vao.vao_ptr)
     );
     vkgl_assert(vao_ptr != nullptr);
+
+    if (in_convert_from_proxy_to_nonproxy)
+    {
+        auto frontend_buffer_manager_ptr = in_frontend_object_managers_ptr->get_buffer_manager_ptr();
+
+        /* TODO: Element array buffer binding proxy->nonproxy conversion */
+
+        for (auto& current_vaa : vao_ptr->vertex_attribute_arrays)
+        {
+            if (current_vaa.buffer_binding_ptr != nullptr)
+            {
+                current_vaa.buffer_binding_ptr = frontend_buffer_manager_ptr->acquire_current_latest_snapshot_reference(current_vaa.buffer_binding_ptr->get_payload().id);
+            }
+        }
+    }
 }
 
 OpenGL::GLVAOManager::VAO::VAO(const OpenGL::IGLLimits* in_limits_ptr)
@@ -35,10 +53,12 @@ OpenGL::GLVAOManager::VAO& OpenGL::GLVAOManager::VAO::operator=(const OpenGL::GL
     return *this;
 }
 
-OpenGL::GLVAOManager::GLVAOManager(const IGLLimits* in_limits_ptr)
-    :GLObjectManager(1,   /* in_first_valid_nondefault_id */
-                     true /* in_expose_default_object     */),
-     m_limits_ptr   (in_limits_ptr)
+OpenGL::GLVAOManager::GLVAOManager(const IGLLimits*              in_limits_ptr,
+                                   const IContextObjectManagers* in_frontend_object_managers_ptr)
+    :GLObjectManager               (1,   /* in_first_valid_nondefault_id */
+                                    true /* in_expose_default_object     */),
+     m_frontend_object_managers_ptr(in_frontend_object_managers_ptr),
+     m_limits_ptr                  (in_limits_ptr)
 {
     /*  Stub */
 }
@@ -48,13 +68,16 @@ OpenGL::GLVAOManager::~GLVAOManager()
     /* Stub - everything is handled by the base class. */
 }
 
-std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLVAOManager::clone_internal_data_object(const void* in_ptr)
+std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLVAOManager::clone_internal_data_object(const void* in_ptr,
+                                                                                                    const bool& in_convert_from_proxy_to_nonproxy)
 {
     std::unique_ptr<void, std::function<void(void*)> > result_ptr(nullptr,
                                                                   [](void* in_ptr){delete reinterpret_cast<VAO*>(in_ptr); });
 
     result_ptr.reset(
-        new VAO(*reinterpret_cast<const VAO*>(in_ptr) )
+        new VAO(*reinterpret_cast<const VAO*>(in_ptr),
+                in_convert_from_proxy_to_nonproxy,
+                m_frontend_object_managers_ptr)
     );
     vkgl_assert(result_ptr != nullptr);
 
@@ -67,11 +90,13 @@ void OpenGL::GLVAOManager::copy_internal_data_object(const void* in_src_ptr,
     *reinterpret_cast<VAO*>(in_dst_ptr) = *reinterpret_cast<const VAO*>(in_src_ptr);
 }
 
-OpenGL::GLVAOManagerUniquePtr OpenGL::GLVAOManager::create(const IGLLimits* in_limits_ptr)
+OpenGL::GLVAOManagerUniquePtr OpenGL::GLVAOManager::create(const IGLLimits*              in_limits_ptr,
+                                                           const IContextObjectManagers* in_frontend_object_managers_ptr)
 {
     OpenGL::GLVAOManagerUniquePtr result_ptr;
 
-    result_ptr.reset(new GLVAOManager(in_limits_ptr) );
+    result_ptr.reset(new GLVAOManager(in_limits_ptr,
+                                      in_frontend_object_managers_ptr) );
 
     if (result_ptr == nullptr)
     {

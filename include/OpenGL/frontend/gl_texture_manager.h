@@ -48,10 +48,11 @@ namespace OpenGL
 
     protected:
         /* Protected functions */
-        std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr)     final;
+        std::unique_ptr<void, std::function<void(void*)> > clone_internal_data_object (const void* in_ptr,
+                                                                                       const bool& in_convert_from_proxy_to_nonproxy) final;
         void                                               copy_internal_data_object  (const void* in_src_ptr,
-                                                                                       void*       in_dst_ptr) final;
-        std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object()                       final;
+                                                                                       void*       in_dst_ptr)                        final;
+        std::unique_ptr<void, std::function<void(void*)> > create_internal_data_object()                                              final;
 
     private:
         /* Private type definitions */
