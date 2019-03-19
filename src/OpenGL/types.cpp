@@ -652,7 +652,24 @@ OpenGL::UniformValue::UniformValue()
 OpenGL::VertexArrayObjectState::VertexArrayObjectState(const uint32_t& in_n_vertex_attribute_arrays)
     :vertex_attribute_arrays(in_n_vertex_attribute_arrays)
 {
-    element_array_buffer_binding = 0;
+    /* Stub */
+}
+
+OpenGL::VertexArrayObjectState::VertexArrayObjectState(const VertexArrayObjectState& in_vaa)
+{
+    *this = in_vaa;
+}
+
+OpenGL::VertexArrayObjectState& OpenGL::VertexArrayObjectState::operator=(const VertexArrayObjectState& in_state)
+{
+    if (in_state.element_array_buffer_binding_ptr != nullptr)
+    {
+        element_array_buffer_binding_ptr = in_state.element_array_buffer_binding_ptr->clone();
+    }
+
+    vertex_attribute_arrays = in_state.vertex_attribute_arrays;
+
+    return *this;
 }
 
 OpenGL::VertexAttributeArrayState::VertexAttributeArrayState()

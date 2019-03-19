@@ -326,7 +326,8 @@ namespace OpenGL
                                                      : (in_opt_time_marker_ptr != nullptr && *in_opt_time_marker_ptr == OpenGL::LATEST_SNAPSHOT_AVAILABLE) ? props_ptr->snapshot_manager_ptr->get_last_modified_time()
                                                      : *in_opt_time_marker_ptr;
 
-                result_ptr = props_ptr->snapshot_manager_ptr->get_readonly_snapshot(time_marker);
+                result_ptr = props_ptr->snapshot_manager_ptr->get_readonly_snapshot(time_marker,
+                                                                                    false /* in_proxy_references_permitted */);
             }
 
             return result_ptr;

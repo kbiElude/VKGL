@@ -590,11 +590,13 @@ namespace OpenGL
 
     typedef struct VertexArrayObjectState
     {
-        GLuint                                 element_array_buffer_binding;
+        GLBufferReferenceUniquePtr             element_array_buffer_binding_ptr;
         std::vector<VertexAttributeArrayState> vertex_attribute_arrays;
 
         VertexArrayObjectState(const uint32_t&               in_n_vertex_attribute_arrays);
-        VertexArrayObjectState(const VertexArrayObjectState& in_vaa) = default;
+        VertexArrayObjectState(const VertexArrayObjectState& in_vaa);
+
+        VertexArrayObjectState& operator=(const VertexArrayObjectState&);
     } VertexArrayObjectState;
 
     typedef struct VertexAttributeArrayState

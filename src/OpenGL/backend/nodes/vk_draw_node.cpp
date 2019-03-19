@@ -2,6 +2,7 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+#include "Anvil/include/misc/buffer_create_info.h"
 #include "Anvil/include/wrappers/buffer.h"
 #include "Anvil/include/wrappers/command_buffer.h"
 #include "Anvil/include/wrappers/memory_block.h"
@@ -132,11 +133,10 @@ void OpenGL::VKNodes::Draw::do_cpu_prepass(IVKFrameGraphNodeCallback* in_callbac
     /* 1b. Same goes for index buffers */
     if (m_type == DrawType::Indexed)
     {
-        auto        frontend_index_buffer_reference_ptr = frontend_buffer_manager_ptr->acquire_current_latest_snapshot_reference(frontend_vao_state_ptr->element_array_buffer_binding);
-        auto        backend_index_buffer_reference_ptr  = backend_buffer_manager_ptr->acquire_object                            (frontend_index_buffer_reference_ptr->get_payload().id,
-                                                                                                                                 frontend_index_buffer_reference_ptr->get_payload().object_creation_time,
-                                                                                                                                 frontend_index_buffer_reference_ptr->get_payload().time_marker);
-        const auto  index_size                         = OpenGL::Utils::get_draw_call_index_type_size_per_index                 (m_args.index_data_type);
+        auto        backend_index_buffer_reference_ptr  = backend_buffer_manager_ptr->acquire_object           (frontend_vao_state_ptr->element_array_buffer_binding_ptr->get_payload().id,
+                                                                                                                frontend_vao_state_ptr->element_array_buffer_binding_ptr->get_payload().object_creation_time,
+                                                                                                                frontend_vao_state_ptr->element_array_buffer_binding_ptr->get_payload().time_marker);
+        const auto  index_size                         = OpenGL::Utils::get_draw_call_index_type_size_per_index(m_args.index_data_type);
         const auto  index_buffer_binding_size          = m_args.count * index_size;
 
         vkgl_assert(backend_index_buffer_reference_ptr != nullptr);
@@ -571,10 +571,12 @@ void OpenGL::VKNodes::Draw::record_commands(Anvil::CommandBufferBase*  in_cmd_bu
 
         if (m_args.index_data_type != OpenGL::DrawCallIndexType::Unknown)
         {
+            auto index_buffer_ptr = m_index_buffer_reference_ptr->get_payload().buffer_ptr;
+
             vkgl_assert(m_args.index_data_type == OpenGL::DrawCallIndexType::Unsigned_Int    ||
                         m_args.index_data_type == OpenGL::DrawCallIndexType::Unsigned_Short);
 
-            in_cmd_buffer_ptr->record_bind_index_buffer(m_index_buffer_reference_ptr->get_payload().buffer_ptr,
+            in_cmd_buffer_ptr->record_bind_index_buffer(index_buffer_ptr,
                                                         m_args.index_buffer_offset,
                                                         (m_args.index_data_type == OpenGL::DrawCallIndexType::Unsigned_Int) ? Anvil::IndexType::UINT32
                                                                                                                             : Anvil::IndexType::UINT16);

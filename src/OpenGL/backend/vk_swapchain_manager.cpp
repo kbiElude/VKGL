@@ -46,7 +46,8 @@ OpenGL::VKSwapchainReferenceUniquePtr OpenGL::VKSwapchainManager::acquire_swapch
 
     decltype(m_time_marker_to_internal_swapchain_data_map)::const_iterator internal_swapchain_data_iterator = m_time_marker_to_internal_swapchain_data_map.find(in_time_marker);
     OpenGL::VKSwapchainReferenceUniquePtr                                  result_ptr;
-    auto                                                                   snapshot_ptr                     = reinterpret_cast<const SwapchainPropsSnapshot*>  (m_snapshot_manager_ptr->get_readonly_snapshot(in_time_marker) );
+    auto                                                                   snapshot_ptr                     = reinterpret_cast<const SwapchainPropsSnapshot*>  (m_snapshot_manager_ptr->get_readonly_snapshot(in_time_marker,
+                                                                                                                                                                                                              true /* in_proxy_references_permitted */) );
 
     if (snapshot_ptr == nullptr)
     {

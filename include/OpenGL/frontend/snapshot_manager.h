@@ -45,14 +45,18 @@ namespace OpenGL
             vkgl_assert(new_snapshot_ptr != nullptr);
 
             /* Create a base snapshot. */
-            new_snapshot_ptr->internal_data_ptr = m_state_snapshot_accesors_ptr->create_internal_data_object();
-            vkgl_assert(new_snapshot_ptr->internal_data_ptr != nullptr);
+            new_snapshot_ptr->internal_data_proxy_ptr = m_state_snapshot_accesors_ptr->create_internal_data_object();
+            vkgl_assert(new_snapshot_ptr->internal_data_proxy_ptr != nullptr);
+
+            new_snapshot_ptr->internal_data_nonproxy_ptr = m_state_snapshot_accesors_ptr->clone_internal_data_object(new_snapshot_ptr->internal_data_proxy_ptr.get(),
+                                                                                                                     true /* in_convert_from_proxy_to_nonproxy */);
+            vkgl_assert(new_snapshot_ptr->internal_data_nonproxy_ptr != nullptr);
 
             /* Create a scratch version of the base snapshot. The scratch clone will be used for potential update
              * operations requested by inheriting buffers. Please see get_internal_object_props_ptr() (non-const version)
              * and update_last_modified_time() for more details.
              */
-            m_scratch_snapshot_ptr = m_state_snapshot_accesors_ptr->clone_internal_data_object(new_snapshot_ptr->internal_data_ptr.get(),
+            m_scratch_snapshot_ptr = m_state_snapshot_accesors_ptr->clone_internal_data_object(new_snapshot_ptr->internal_data_proxy_ptr.get(),
                                                                                                false /* in_convert_from_proxy_to_nonproxy */);
 
             vkgl_assert(m_scratch_snapshot_ptr != nullptr);
@@ -122,7 +126,8 @@ namespace OpenGL
             return static_cast<uint32_t>(m_snapshots.size() );
         }
 
-        const void* get_readonly_snapshot(const OpenGL::TimeMarker& in_time_marker) const
+        const void* get_readonly_snapshot(const OpenGL::TimeMarker& in_time_marker,
+                                         const bool&                in_proxy_references_permitted) const
         {
             auto        lock              = std::unique_lock<std::mutex>(m_mutex);
             const void* result_ptr        = nullptr;
@@ -133,7 +138,8 @@ namespace OpenGL
             vkgl_assert(snapshot_iterator != m_snapshots.end() );
             if (snapshot_iterator != m_snapshots.end() )
             {
-                result_ptr = snapshot_iterator->second->internal_data_ptr.get();
+                result_ptr = (in_proxy_references_permitted) ? snapshot_iterator->second->internal_data_proxy_ptr.get   ()
+                                                             : snapshot_iterator->second->internal_data_nonproxy_ptr.get();
             }
 
             return result_ptr;
@@ -171,8 +177,11 @@ namespace OpenGL
                     /* FAST PATH */
                     {
                         /* Copy scratch state to the snapshot.. */
-                        m_state_snapshot_accesors_ptr->copy_internal_data_object(m_scratch_snapshot_ptr.get                          (),
-                                                                                 old_snapshot_iterator->second->internal_data_ptr.get() );
+                        m_state_snapshot_accesors_ptr->copy_internal_data_object(m_scratch_snapshot_ptr.get                                (),
+                                                                                 old_snapshot_iterator->second->internal_data_proxy_ptr.get() );
+
+                        old_snapshot_iterator->second->internal_data_nonproxy_ptr = m_state_snapshot_accesors_ptr->clone_internal_data_object(old_snapshot_iterator->second->internal_data_proxy_ptr.get(),
+                                                                                                                                              true /* in_convert_from_proxy_to_nonproxy */);
 
                         /* Move snapshot descriptor under the new timestamp */
                         m_snapshots[m_last_modified_time] = std::move(old_snapshot_iterator->second);
@@ -192,8 +201,11 @@ namespace OpenGL
                     new_snapshot_ptr.reset(new StateSnapshot() );
                     vkgl_assert(new_snapshot_ptr != nullptr);
 
-                    old_scratch_snapshot_ptr            = m_scratch_snapshot_ptr.get();
-                    new_snapshot_ptr->internal_data_ptr = std::move(m_scratch_snapshot_ptr);
+                    old_scratch_snapshot_ptr                  = m_scratch_snapshot_ptr.get();
+                    new_snapshot_ptr->internal_data_proxy_ptr = std::move(m_scratch_snapshot_ptr);
+
+                    new_snapshot_ptr->internal_data_nonproxy_ptr = m_state_snapshot_accesors_ptr->clone_internal_data_object(new_snapshot_ptr->internal_data_proxy_ptr.get(),
+                                                                                                                             true /* in_convert_from_proxy_to_nonproxy */);
 
                     m_snapshots[m_last_modified_time] = std::move(new_snapshot_ptr);
 
@@ -218,7 +230,8 @@ namespace OpenGL
         /* Private type definitions */
         typedef struct
         {
-            std::unique_ptr<void, std::function<void(void*)> > internal_data_ptr;
+            std::unique_ptr<void, std::function<void(void*)> > internal_data_nonproxy_ptr; /* all object references forbidden to have ALWAYS_LATEST timestamps                */
+            std::unique_ptr<void, std::function<void(void*)> > internal_data_proxy_ptr;    /* any object reference embedded within is allowed to have ALWAYS_LATEST timestamp */
             std::vector<const ObjectReferenceType*>            references;
         } StateSnapshot;
         typedef std::unique_ptr<StateSnapshot> StateSnapshotUniquePtr;

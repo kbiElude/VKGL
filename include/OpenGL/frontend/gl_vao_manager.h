@@ -19,9 +19,9 @@ namespace OpenGL
         static GLVAOManagerUniquePtr create(const IGLLimits*              in_limits_ptr,
                                             const IContextObjectManagers* in_frontend_object_managers_ptr);
 
-        bool get_element_array_buffer_binding(const uint32_t&           in_vao_id,
-                                              const OpenGL::TimeMarker* in_opt_time_marker_ptr,
-                                              GLuint*                   out_result_ptr) const;
+        bool get_element_array_buffer_binding(const uint32_t&             in_vao_id,
+                                              const OpenGL::TimeMarker*   in_opt_time_marker_ptr,
+                                              GLBufferReferenceUniquePtr* out_result_ptr) const;
 
         bool get_vaa_state_copy(const GLuint&              in_vao_id,
                                 const OpenGL::TimeMarker*  in_opt_time_marker_ptr,
@@ -40,7 +40,7 @@ namespace OpenGL
                                const OpenGL::VertexArrayObjectState** out_vao_state_ptr_ptr) const;
 
         bool set_element_array_buffer_binding(const GLuint&                    in_vao_id,
-                                              const GLuint&                    in_new_buffer_binding);
+                                              GLBufferReferenceUniquePtr       in_new_buffer_reference_ptr);
         bool set_vaa_state                   (const GLuint&                    in_vao_id,
                                               const uint32_t&                  in_n_vao_vaa,
                                               const VertexAttributeArrayState& in_state);

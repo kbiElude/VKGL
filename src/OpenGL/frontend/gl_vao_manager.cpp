@@ -21,13 +21,22 @@ OpenGL::GLVAOManager::VAO::VAO(const VAO&                    in_vao,
     {
         auto frontend_buffer_manager_ptr = in_frontend_object_managers_ptr->get_buffer_manager_ptr();
 
-        /* TODO: Element array buffer binding proxy->nonproxy conversion */
+        if (vao_ptr->element_array_buffer_binding_ptr != nullptr)
+        {
+            auto tot_reference_ptr = frontend_buffer_manager_ptr->acquire_current_latest_snapshot_reference(vao_ptr->element_array_buffer_binding_ptr->get_payload().id);
+            vkgl_assert(tot_reference_ptr != nullptr);
+
+            vao_ptr->element_array_buffer_binding_ptr = std::move(tot_reference_ptr);
+        }
 
         for (auto& current_vaa : vao_ptr->vertex_attribute_arrays)
         {
             if (current_vaa.buffer_binding_ptr != nullptr)
             {
-                current_vaa.buffer_binding_ptr = frontend_buffer_manager_ptr->acquire_current_latest_snapshot_reference(current_vaa.buffer_binding_ptr->get_payload().id);
+                auto tot_reference_ptr = frontend_buffer_manager_ptr->acquire_current_latest_snapshot_reference(current_vaa.buffer_binding_ptr->get_payload().id);
+                vkgl_assert(tot_reference_ptr != nullptr);
+
+                current_vaa.buffer_binding_ptr = std::move(tot_reference_ptr);
             }
         }
     }
@@ -129,9 +138,9 @@ std::unique_ptr<void, std::function<void(void*)> > OpenGL::GLVAOManager::create_
     return result_ptr;
 }
 
-bool OpenGL::GLVAOManager::get_element_array_buffer_binding(const uint32_t&           in_vao_id,
-                                                            const OpenGL::TimeMarker* in_opt_time_marker_ptr,
-                                                            GLuint*                   out_result_ptr) const
+bool OpenGL::GLVAOManager::get_element_array_buffer_binding(const uint32_t&             in_vao_id,
+                                                            const OpenGL::TimeMarker*   in_opt_time_marker_ptr,
+                                                            GLBufferReferenceUniquePtr* out_result_ptr) const
 {
     bool result = false;
 
@@ -149,7 +158,7 @@ bool OpenGL::GLVAOManager::get_element_array_buffer_binding(const uint32_t&     
 
         vkgl_assert(get_general_object_props_ptr(in_vao_id)->status == Status::Alive);
 
-        *out_result_ptr = vao_props_ptr->vao_ptr->element_array_buffer_binding;
+        *out_result_ptr = vao_props_ptr->vao_ptr->element_array_buffer_binding_ptr->clone();
     }
 
     result = true;
@@ -298,8 +307,8 @@ end:
     return result;
 }
 
-bool OpenGL::GLVAOManager::set_element_array_buffer_binding(const GLuint& in_vao_id,
-                                                            const GLuint& in_new_buffer_binding)
+bool OpenGL::GLVAOManager::set_element_array_buffer_binding(const GLuint&              in_vao_id,
+                                                            GLBufferReferenceUniquePtr in_new_buffer_reference_ptr)
 {
     bool result = false;
 
@@ -317,9 +326,11 @@ bool OpenGL::GLVAOManager::set_element_array_buffer_binding(const GLuint& in_vao
 
         vkgl_assert(reinterpret_cast<const GLVAOManager*>(this)->get_general_object_props_ptr(in_vao_id)->status == Status::Alive);
 
-        if (vao_props_ptr->vao_ptr->element_array_buffer_binding != in_new_buffer_binding)
+        if (( vao_props_ptr->vao_ptr->element_array_buffer_binding_ptr == nullptr)                     ||
+            ( vao_props_ptr->vao_ptr->element_array_buffer_binding_ptr != nullptr                      &&
+             *vao_props_ptr->vao_ptr->element_array_buffer_binding_ptr != *in_new_buffer_reference_ptr))
         {
-            vao_props_ptr->vao_ptr->element_array_buffer_binding = in_new_buffer_binding;
+            vao_props_ptr->vao_ptr->element_array_buffer_binding_ptr = std::move(in_new_buffer_reference_ptr);
 
             update_last_modified_time(in_vao_id);
         }

@@ -598,7 +598,8 @@ void OpenGL::GLStateManager::enable(const OpenGL::Capability& in_capability)
 const OpenGL::GLBufferReference* OpenGL::GLStateManager::get_bound_buffer_object(const OpenGL::BufferTarget& in_target) const
 {
     const OpenGL::GLBufferReference* result_ptr = nullptr;
-    auto                             state_ptr  = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
+    auto                             state_ptr  = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE,
+                                                                                                                                              false /* in_proxy_references_permitted */) );
 
     vkgl_assert(in_target                                                       != OpenGL::BufferTarget::Element_Array_Buffer);
     vkgl_assert(state_ptr->nonindexed_buffer_proxy_binding_ptrs.find(in_target) != state_ptr->nonindexed_buffer_proxy_binding_ptrs.end() );
@@ -610,7 +611,8 @@ const OpenGL::GLBufferReference* OpenGL::GLStateManager::get_bound_buffer_object
 const OpenGL::GLBufferReference* OpenGL::GLStateManager::get_bound_buffer_object(const OpenGL::BufferTarget& in_target,
                                                                                  const uint32_t&             in_index) const
 {
-    auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
+    auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE,
+                                                                                                                 false /* in_proxy_references_permitted */) );
 
     vkgl_assert(in_target                                                                                    != OpenGL::BufferTarget::Element_Array_Buffer);
     vkgl_assert(state_ptr->indexed_buffer_proxy_binding_ptrs.find(IndexedBufferTarget(in_target, in_index) ) != state_ptr->indexed_buffer_proxy_binding_ptrs.end() );
@@ -621,7 +623,8 @@ const OpenGL::GLBufferReference* OpenGL::GLStateManager::get_bound_buffer_object
 const OpenGL::GLFramebufferReference* OpenGL::GLStateManager::get_bound_framebuffer_object(const OpenGL::FramebufferTarget& in_target) const
 {
     const OpenGL::GLFramebufferReference* result_ptr = nullptr;
-    auto                                  state_ptr  = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
+    auto                                  state_ptr  = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE,
+                                                                                                                                                   false /* in_proxy_references_permitted */) );
 
     switch (in_target)
     {
@@ -640,7 +643,8 @@ const OpenGL::GLFramebufferReference* OpenGL::GLStateManager::get_bound_framebuf
 const OpenGL::GLRenderbufferReference* OpenGL::GLStateManager::get_bound_renderbuffer_object() const
 {
     /* NOTE: There is ALWAYS a renderbuffer binding set up for a GL context. */
-    auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
+    auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE,
+                                                                                                                 false /* in_proxy_references_permitted */) );
 
     vkgl_assert(state_ptr->renderbuffer_proxy_reference_ptr != nullptr);
 
@@ -650,7 +654,8 @@ const OpenGL::GLRenderbufferReference* OpenGL::GLStateManager::get_bound_renderb
 const OpenGL::GLVAOReference* OpenGL::GLStateManager::get_bound_vertex_array_object() const
 {
     /* NOTE: There is ALWAYS a VAO binding set up for a GL context. */
-    auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
+    auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE,
+                                                                                                                 false /* in_proxy_references_permitted */) );
 
     vkgl_assert(state_ptr->vao_proxy_reference_ptr != nullptr);
 
@@ -676,7 +681,8 @@ void OpenGL::GLStateManager::get_parameter(const OpenGL::ContextProperty&    in_
                                            const OpenGL::GetSetArgumentType& in_arg_type,
                                            void*                             out_arg_value_ptr) const
 {
-    auto       state_ptr             = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
+    auto       state_ptr             = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE,
+                                                                                                                                   false /* in_proxy_references_permitted */) );
     const auto texture_binding_pname = OpenGL::Utils::get_texture_binding_property_for_context_property(in_pname);
 
     if (texture_binding_pname != OpenGL::TextureBindingProperty::Unknown)
@@ -719,7 +725,8 @@ void OpenGL::GLStateManager::get_pixel_store_parameter(const OpenGL::PixelStoreP
                                                        void*                             out_arg_value_ptr) const
 {
     const auto prop_map_iterator = m_pixel_store_prop_map.find(in_pname);
-    auto       state_ptr         = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
+    auto       state_ptr         = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE,
+                                                                                                                               false /* in_proxy_references_permitted */) );
 
     vkgl_assert(prop_map_iterator != m_pixel_store_prop_map.end() );
     if (prop_map_iterator != m_pixel_store_prop_map.end() )
@@ -742,7 +749,8 @@ const OpenGL::ContextState* OpenGL::GLStateManager::get_state(const OpenGL::Time
      *       For all other cases, the returned pointer remains valid as long as there's at least one GLReference instance pointing to the
      *       specified snapshot.
      */
-    auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(in_time_marker) );
+    auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(in_time_marker,
+                                                                                                                 false /* in_proxy_references_permitted */) );
 
     vkgl_assert(state_ptr != nullptr);
     return state_ptr;
@@ -752,7 +760,8 @@ GLuint OpenGL::GLStateManager::get_texture_binding(const uint32_t&              
                                                    const OpenGL::TextureTarget& in_texture_target) const
 {
     GLuint result                 = 0;
-    auto   state_ptr              = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
+    auto   state_ptr              = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE,
+                                                                                                                                false /* in_proxy_references_permitted */) );
     auto   texture_unit_state_ptr = state_ptr->texture_unit_to_state_ptr_map.at(in_n_texture_unit).get();
 
     vkgl_assert(texture_unit_state_ptr != nullptr);
@@ -786,7 +795,8 @@ void OpenGL::GLStateManager::get_texture_binding_parameter(const OpenGL::Texture
                                                            void*                                 out_arg_value_ptr) const
 {
     GLuint      result                = 0;
-    auto        state_ptr             = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
+    auto        state_ptr             = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE,
+                                                                                                                                    false /* in_proxy_references_permitted */) );
     const auto& texture_unit_data_ptr = state_ptr->texture_unit_to_state_ptr_map.at(state_ptr->active_texture_unit).get();;
 
     switch (in_pname)
@@ -1678,7 +1688,8 @@ void OpenGL::GLStateManager::set_viewport(const int32_t& in_x,
 bool OpenGL::GLStateManager::is_enabled(const OpenGL::Capability& in_capability) const
 {
     bool result    = false;
-    auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE) );
+    auto state_ptr = reinterpret_cast<const OpenGL::ContextState*>(m_snapshot_manager_ptr->get_readonly_snapshot(OpenGL::LATEST_SNAPSHOT_AVAILABLE,
+                                                                                                                 false /* in_proxy_references_permitted */) );
 
     switch (in_capability)
     {

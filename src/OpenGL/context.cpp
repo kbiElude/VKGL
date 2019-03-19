@@ -552,7 +552,7 @@ void OpenGL::Context::bind_buffer(const OpenGL::BufferTarget& in_target,
             vkgl_assert(bound_vao_reference_ptr != nullptr);
 
             m_gl_vao_manager_ptr->set_element_array_buffer_binding(bound_vao_reference_ptr->get_payload().id,
-                                                                   in_id);
+                                                                   std::move(buffer_reference_ptr) );
         }
         else
         {
@@ -688,11 +688,16 @@ void OpenGL::Context::buffer_data(const OpenGL::BufferTarget& in_target,
 
     if (in_target == OpenGL::BufferTarget::Element_Array_Buffer)
     {
-        const auto bound_vao_reference_ptr = m_gl_state_manager_ptr->get_bound_vertex_array_object();
+        const auto                 bound_vao_reference_ptr = m_gl_state_manager_ptr->get_bound_vertex_array_object();
+        GLBufferReferenceUniquePtr buffer_reference_ptr;
 
         m_gl_vao_manager_ptr->get_element_array_buffer_binding(bound_vao_reference_ptr->get_payload().id,
-                                                              &bound_vao_reference_ptr->get_payload().time_marker,
-                                                              &buffer_id);
+                                                               nullptr, /* in_opt_time_marker */
+                                                              &buffer_reference_ptr);
+
+        vkgl_assert(buffer_reference_ptr != nullptr);
+
+        buffer_id = buffer_reference_ptr->get_payload().id;
     }
     else
     {
@@ -2770,6 +2775,16 @@ bool OpenGL::Context::init()
         goto end;
     }
 
+    /* Set up GL buffer manager */
+    m_gl_buffer_manager_ptr = OpenGL::GLBufferManager::create();
+
+    if (m_gl_buffer_manager_ptr == nullptr)
+    {
+        vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
+
+        goto end;
+    }
+
     /* Set up VAO manager */
     m_gl_vao_manager_ptr = OpenGL::GLVAOManager::create(dynamic_cast<const IGLLimits*>(m_gl_limits_ptr.get() ),
                                                         this);
@@ -2777,16 +2792,6 @@ bool OpenGL::Context::init()
     if (m_gl_vao_manager_ptr == nullptr)
     {
         vkgl_assert(m_gl_vao_manager_ptr != nullptr);
-
-        goto end;
-    }
-
-    /* Set up GL buffer manager */
-    m_gl_buffer_manager_ptr = OpenGL::GLBufferManager::create();
-
-    if (m_gl_buffer_manager_ptr == nullptr)
-    {
-        vkgl_assert(m_gl_buffer_manager_ptr != nullptr);
 
         goto end;
     }
@@ -3945,8 +3950,7 @@ bool OpenGL::Context::set_vaa_enabled_state(const GLuint& in_index,
                                             const bool&   in_new_state)
 {
     GLuint                            bound_vao_id;
-    OpenGL::TimeMarker                bound_vao_time_marker;
-    bool                              result                = false;
+    bool                              result        = false;
     OpenGL::VertexAttributeArrayState vaa_state;
 
     vkgl_assert(m_gl_state_manager_ptr != nullptr);
@@ -3959,11 +3963,10 @@ bool OpenGL::Context::set_vaa_enabled_state(const GLuint& in_index,
      **/
     auto bound_vao_ptr = m_gl_state_manager_ptr->get_bound_vertex_array_object();
 
-    bound_vao_id          = bound_vao_ptr->get_payload().id;
-    bound_vao_time_marker = bound_vao_ptr->get_payload().time_marker;
+    bound_vao_id = bound_vao_ptr->get_payload().id;
 
     if (!m_gl_vao_manager_ptr->get_vaa_state_copy(bound_vao_id,
-                                                 &bound_vao_time_marker,
+                                                  nullptr, /* in_opt_time_marker_ptr */
                                                   in_index,
                                                  &vaa_state) )
     {
