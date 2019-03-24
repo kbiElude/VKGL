@@ -270,11 +270,11 @@ Anvil::Format OpenGL::VKFormatManager::get_best_fit_anvil_format(const OpenGL::I
             const auto current_format_type         = Anvil::Formats::get_format_type(current_format);
 
             /* Make sure per-component number of bits is sufficient */
-            Anvil::Formats::get_format_n_component_bits(current_format,
-                                                        current_format_rgba_size + 0,
-                                                        current_format_rgba_size + 1,
-                                                        current_format_rgba_size + 2,
-                                                        current_format_rgba_size + 3);
+            Anvil::Formats::get_format_n_component_bits_nonyuv(current_format,
+                                                               current_format_rgba_size + 0,
+                                                               current_format_rgba_size + 1,
+                                                               current_format_rgba_size + 2,
+                                                               current_format_rgba_size + 3);
 
             if (internal_format_size_rgba[0] > current_format_rgba_size[0] ||
                 internal_format_size_rgba[1] > current_format_rgba_size[1] ||
@@ -327,11 +327,11 @@ Anvil::Format OpenGL::VKFormatManager::get_best_fit_anvil_format(const OpenGL::I
             {
                 uint32_t current_candidate_format_size[4] = {0, 0, 0, 0};
 
-                Anvil::Formats::get_format_n_component_bits(current_candidate_format,
-                                                            current_candidate_format_size + 0,
-                                                            current_candidate_format_size + 1,
-                                                            current_candidate_format_size + 2,
-                                                            current_candidate_format_size + 3);
+                Anvil::Formats::get_format_n_component_bits_nonyuv(current_candidate_format,
+                                                                   current_candidate_format_size + 0,
+                                                                   current_candidate_format_size + 1,
+                                                                   current_candidate_format_size + 2,
+                                                                   current_candidate_format_size + 3);
 
                 current_candidate_format_size_per_texel = current_candidate_format_size[0] +
                                                           current_candidate_format_size[1] +

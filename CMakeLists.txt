@@ -9,7 +9,8 @@ option(VKGL_INCLUDE_WGL    "Intercept WGL entrypoints"                ON)
 # DO NOT MODIFY BELOW THIS LINE
 configure_file("${VK_GL_SOURCE_DIR}/include/config.h.in" "${VK_GL_BINARY_DIR}/vkgl_config.h")
 
-set(ENKITS_BUILD_EXAMPLES OFF CACHE BOOL "No need to include enkITS example application projects..")
+set(ENKITS_BUILD_EXAMPLES 				  OFF CACHE BOOL "No need to include enkITS example application projects..")
+set(ANVIL_LINK_STATICALLY_WITH_VULKAN_LIB OFF CACHE BOOL "Link with VK entrypoints at run time.")
 
 
 add_subdirectory(deps/Anvil)

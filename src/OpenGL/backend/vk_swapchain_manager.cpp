@@ -6,6 +6,7 @@
 #include "Anvil/include/misc/image_create_info.h"
 #include "Anvil/include/misc/image_view_create_info.h"
 #include "Anvil/include/misc/memory_allocator.h"
+#include "Anvil/include/misc/rendering_surface_create_info.h"
 #include "Anvil/include/misc/semaphore_create_info.h"
 #include "Anvil/include/misc/swapchain_create_info.h"
 #include "Anvil/include/misc/window_factory.h"
@@ -302,10 +303,12 @@ OpenGL::VKSwapchainManager::InternalSwapchainDataUniquePtr OpenGL::VKSwapchainMa
     if (!is_recreate_request)
     {
         /* FIXME: Anvil interface flaw - fix Anvil-side and then get rid of the const_cast */
-        rendering_surface_ptr = Anvil::RenderingSurface::create(const_cast<Anvil::Instance*>(device_ptr->get_parent_instance() ),
-                                                                device_ptr,
-                                                                window_ptr.get(),
-                                                                Anvil::MTSafety::DISABLED);
+        auto create_info_ptr = Anvil::RenderingSurfaceCreateInfo::create(const_cast<Anvil::Instance*>(device_ptr->get_parent_instance() ),
+                                                                         device_ptr,
+                                                                         window_ptr.get(),
+                                                                         Anvil::MTSafety::DISABLED);
+
+        rendering_surface_ptr = Anvil::RenderingSurface::create(std::move(create_info_ptr) );
 
         if (rendering_surface_ptr == nullptr)
         {

@@ -2,6 +2,7 @@
  *
  * This code is licensed under MIT license (see LICENSE.txt for details)
  */
+#include "Anvil/include/misc/device_create_info.h"
 #include "Anvil/include/misc/memory_allocator.h"
 #include "Anvil/include/wrappers/device.h"
 #include "Anvil/include/wrappers/instance.h"
@@ -670,13 +671,14 @@ bool OpenGL::VKBackend::init_anvil()
         /* VK_KHR_maintenance1 is required for viewport origin flipping */
         dev_exts.extension_status[VK_KHR_MAINTENANCE1_EXTENSION_NAME] = Anvil::ExtensionAvailability::REQUIRE;
 
-        m_device_ptr = Anvil::SGPUDevice::create(physical_device_ptr,
-                                                 true, /* in_enable_shader_module_cache */
-                                                 dev_exts,
-                                                 std::vector<std::string>(),
-                                                 false, /* in_transient_command_buffer_allocs_only     */
-                                                 true,  /* in_support_resettable_command_buffer_allocs */
-                                                 true); /* in_mt_safe                                  */
+        auto create_info_ptr = Anvil::DeviceCreateInfo::create_sgpu(physical_device_ptr,
+                                                                    true, /* in_enable_shader_module_cache */
+                                                                    dev_exts,
+                                                                    std::vector<std::string>(),
+                                                                    Anvil::CommandPoolCreateFlagBits::CREATE_RESET_COMMAND_BUFFER_BIT,
+                                                                    true); /* in_mt_safe */
+
+        m_device_ptr = Anvil::SGPUDevice::create(std::move(create_info_ptr) );
     }
 
     if (m_device_ptr == nullptr)
