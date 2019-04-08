@@ -174,8 +174,8 @@ namespace OpenGL
         IBackend*                     const m_backend_ptr;
         const IContextObjectManagers* const m_frontend_ptr;
 
-        std::unordered_map<GLStateHash, std::unordered_map<OpenGL::RenderPassHash, std::array<GFXPipelinePropsUniquePtr, VK_PRIMITIVE_TOPOLOGY_END_RANGE + 1> > > m_gfx_pipeline_props_map;
-        mutable VKGL::SharedMutex                                                                                                                                 m_rw_mutex;
+        std::unordered_map<GLStateHash, std::unordered_map<OpenGL::RenderPassHash, std::unordered_map<uint32_t /* subpass id */, std::array<GFXPipelinePropsUniquePtr, VK_PRIMITIVE_TOPOLOGY_END_RANGE + 1> > > > m_gfx_pipeline_props_map;
+        mutable VKGL::SharedMutex                                                                                                                                                                                 m_rw_mutex;
     };
 }
 #endif /* VKGL_VK_GFX_PIPELINE_MANAGER_H */

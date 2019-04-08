@@ -681,19 +681,24 @@ OpenGL::GFXPipelineID OpenGL::VKGFXPipelineManager::get_pipeline_id(const OpenGL
             {
                 auto rp_hash_iterator = gl_state_hash_iterator->second.find(rp_hash);
 
-                if (rp_hash_iterator                                                           != gl_state_hash_iterator->second.end() &&
-                    rp_hash_iterator->second.at(static_cast<uint32_t>(in_primitive_topology) ) != nullptr)
+                if (rp_hash_iterator                             != gl_state_hash_iterator->second.end() &&
+                    rp_hash_iterator->second.find(in_subpass_id) != rp_hash_iterator->second.end      () )
                 {
-                    const auto& pipeline_props = *rp_hash_iterator->second.at(static_cast<uint32_t>(in_primitive_topology) );
+                    auto& subpass_iterator = rp_hash_iterator->second.find(in_subpass_id);
 
-                    vkgl_assert(VKRenderpassManager::is_rp_compatible(pipeline_props.get_rp_ptr()->get_render_pass_create_info(),
-                                                                      in_rp_ptr->get_render_pass_create_info                  () ));
+                    if (subpass_iterator->second.at(static_cast<uint32_t>(in_primitive_topology) ) != nullptr)
+                    {
+                        const auto& pipeline_props = *subpass_iterator->second.at(static_cast<uint32_t>(in_primitive_topology) );
 
-                    result = rp_hash_iterator->second.at(static_cast<uint32_t>(in_primitive_topology) )->get_pipeline_id();
-                    vkgl_assert(result != UINT32_MAX);
+                        vkgl_assert(VKRenderpassManager::is_rp_compatible(pipeline_props.get_rp_ptr()->get_render_pass_create_info(),
+                                                                          in_rp_ptr->get_render_pass_create_info                  () ));
+
+                        result = subpass_iterator->second.at(static_cast<uint32_t>(in_primitive_topology) )->get_pipeline_id();
+                        vkgl_assert(result != UINT32_MAX);
+
+                        break;
+                    }
                 }
-
-                break;
             }
 
             if (result      == UINT32_MAX &&
@@ -715,7 +720,7 @@ OpenGL::GFXPipelineID OpenGL::VKGFXPipelineManager::get_pipeline_id(const OpenGL
                 result = new_pipeline_props_ptr->get_pipeline_id();
                 vkgl_assert(result != UINT32_MAX);
 
-                m_gfx_pipeline_props_map[gl_state_hash][rp_hash][static_cast<uint32_t>(in_primitive_topology)] = std::move(new_pipeline_props_ptr);
+                m_gfx_pipeline_props_map[gl_state_hash][rp_hash][in_subpass_id][static_cast<uint32_t>(in_primitive_topology)] = std::move(new_pipeline_props_ptr);
             }
         }
         if (n_iteration == 0)

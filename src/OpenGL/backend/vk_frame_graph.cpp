@@ -780,8 +780,8 @@ bool OpenGL::VKFrameGraph::bake_renderpasses(const std::vector<GroupNodeUniquePt
                 const auto&            dst_graph_node_input  = dst_graph_node_ptr->get_info_ptr()->inputs.at(current_connection.n_dst_graph_node_input);
                 const Anvil::SubPassID dst_subpass_id        = static_cast<Anvil::SubPassID>(current_connection.n_dst_graph_node);
                 DependencyData         new_dep;
-                const auto&            src_graph_node_ptr    = current_group_node_ptr->graph_node_ptrs.at   (current_connection.n_src_graph_node);
-                const auto&            src_graph_node_output = dst_graph_node_ptr->get_info_ptr()->inputs.at(current_connection.n_src_graph_node_output);
+                const auto&            src_graph_node_ptr    = current_group_node_ptr->graph_node_ptrs.at    (current_connection.n_src_graph_node);
+                const auto&            src_graph_node_output = dst_graph_node_ptr->get_info_ptr()->outputs.at(current_connection.n_src_graph_node_output);
                 const Anvil::SubPassID src_subpass_id        = static_cast<Anvil::SubPassID>(current_connection.n_src_graph_node);
 
                 vkgl_assert(src_graph_node_output.type == dst_graph_node_input.type);
