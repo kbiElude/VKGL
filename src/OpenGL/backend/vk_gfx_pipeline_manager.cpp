@@ -269,7 +269,10 @@ Anvil::GraphicsPipelineCreateInfoUniquePtr OpenGL::VKGFXPipelineManager::GFXPipe
                       n_binding < n_bindings;
                     ++n_binding)
         {
-            const auto& current_binding = vao_state_ptr->vertex_attribute_arrays.at(n_binding);
+            const auto& current_binding   = vao_state_ptr->vertex_attribute_arrays.at(n_binding);
+            const auto  current_attribute = Anvil::VertexInputAttribute              (n_binding, /* in_location */
+                                                                                      get_format_for_vaa(current_binding),
+                                                                                      static_cast<uint32_t>(reinterpret_cast<uint64_t>(current_binding.pointer) ));
 
             /* TODO: This should actually be taking program-side binding information, not VAO's! */
             if (!current_binding.enabled)
@@ -277,12 +280,11 @@ Anvil::GraphicsPipelineCreateInfoUniquePtr OpenGL::VKGFXPipelineManager::GFXPipe
                 continue;
             }
 
-            result_ptr->add_vertex_attribute(n_binding,
-                                             get_format_for_vaa(current_binding),
-                                             static_cast<uint32_t>(reinterpret_cast<uint64_t>(current_binding.pointer) ),
-                                             static_cast<uint32_t>(current_binding.stride),
-                                             Anvil::VertexInputRate::VERTEX,
-                                             n_binding); /* in_explicit_binding_index */
+            result_ptr->add_vertex_binding(n_binding,
+                                           Anvil::VertexInputRate::VERTEX,
+                                           static_cast<uint32_t>(current_binding.stride),
+                                           1, /* in_n_attributes */
+                                          &current_attribute);
         }
     }
 

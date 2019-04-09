@@ -572,6 +572,7 @@ bool OpenGL::VKFrameGraph::bake_renderpasses(const std::vector<GroupNodeUniquePt
          * 6. Any pipeline stage+access mask dependencies defined for graph node outputs may need to be translated to subpass->external dependencies.
          * 7. TODO: (Not a concern for GL 3.2) Any feedback loops require self-subpass dependencies.
          *
+         * TODO: The above algorithm implies each draw call is assigned a unique subpass which is unacceptable. NEEDS TO BE REVISITED ASAP.
          * TODO: Aliasing support. Need an actual use case to verify implementation.
          */
 
