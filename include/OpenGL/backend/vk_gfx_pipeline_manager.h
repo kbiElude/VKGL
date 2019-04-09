@@ -151,11 +151,12 @@ namespace OpenGL
             }
         private:
             /* Private functions */
-            Anvil::GraphicsPipelineCreateInfoUniquePtr create_create_info_ptr(const OpenGL::GLVAOManager*              in_vao_manager_ptr,
-                                                                              const OpenGL::VKSPIRVManager*            in_spirv_manager_ptr,
-                                                                              const Anvil::PrimitiveTopology&          in_primitive_topology,
-                                                                              const Anvil::SubPassID&                  in_subpass_id) const;
-            Anvil::Format                              get_format_for_vaa    (const OpenGL::VertexAttributeArrayState& in_vaa) const;
+            Anvil::GraphicsPipelineCreateInfoUniquePtr create_create_info_ptr           (const OpenGL::GLVAOManager*              in_vao_manager_ptr,
+                                                                                         const OpenGL::VKSPIRVManager*            in_spirv_manager_ptr,
+                                                                                         const Anvil::PrimitiveTopology&          in_primitive_topology,
+                                                                                         const Anvil::SubPassID&                  in_subpass_id) const;
+            Anvil::Format                              get_format_for_vaa               (const OpenGL::VertexAttributeArrayState& in_vaa) const;
+            uint32_t                                   get_tightly_packed_stride_for_vaa(const OpenGL::VertexAttributeArrayState& in_vaa) const;
 
             /* Private variables */
             Anvil::BaseDevice* const device_ptr;

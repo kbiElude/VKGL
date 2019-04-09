@@ -273,6 +273,7 @@ Anvil::GraphicsPipelineCreateInfoUniquePtr OpenGL::VKGFXPipelineManager::GFXPipe
             const auto  current_attribute = Anvil::VertexInputAttribute              (n_binding, /* in_location */
                                                                                       get_format_for_vaa(current_binding),
                                                                                       static_cast<uint32_t>(reinterpret_cast<uint64_t>(current_binding.pointer) ));
+            auto        current_stride    = static_cast<uint32_t>(current_binding.stride);
 
             /* TODO: This should actually be taking program-side binding information, not VAO's! */
             if (!current_binding.enabled)
@@ -280,9 +281,15 @@ Anvil::GraphicsPipelineCreateInfoUniquePtr OpenGL::VKGFXPipelineManager::GFXPipe
                 continue;
             }
 
+            if (current_stride == 0)
+            {
+                /* If zero stride was specified, assume tight packing */
+                current_stride = get_tightly_packed_stride_for_vaa(current_binding);
+            }
+
             result_ptr->add_vertex_binding(n_binding,
                                            Anvil::VertexInputRate::VERTEX,
-                                           static_cast<uint32_t>(current_binding.stride),
+                                           current_stride,
                                            1, /* in_n_attributes */
                                           &current_attribute);
         }
@@ -496,6 +503,33 @@ Anvil::Format OpenGL::VKGFXPipelineManager::GFXPipelineProps::get_format_for_vaa
 
             break;
         }
+
+        default:
+        {
+            vkgl_assert_fail();
+        }
+    }
+
+    return result;
+}
+
+uint32_t OpenGL::VKGFXPipelineManager::GFXPipelineProps::get_tightly_packed_stride_for_vaa(const OpenGL::VertexAttributeArrayState& in_vaa) const
+{
+    uint32_t result = 0;
+
+    /* TODO. Not a GL3.2 feature */
+    vkgl_assert(!in_vaa.integer);
+
+    switch (in_vaa.type)
+    {
+        case OpenGL::VertexAttributeArrayType::Byte:           result = static_cast<uint32_t>(in_vaa.size);                   break;
+        case OpenGL::VertexAttributeArrayType::Double:         result = static_cast<uint32_t>(in_vaa.size) * sizeof(double);  break;
+        case OpenGL::VertexAttributeArrayType::Float:          result = static_cast<uint32_t>(in_vaa.size) * sizeof(float);   break;
+        case OpenGL::VertexAttributeArrayType::Int:            result = static_cast<uint32_t>(in_vaa.size) * sizeof(int32_t); break;
+        case OpenGL::VertexAttributeArrayType::Short:          result = static_cast<uint32_t>(in_vaa.size) * sizeof(int16_t); break;
+        case OpenGL::VertexAttributeArrayType::Unsigned_Byte:  result = static_cast<uint32_t>(in_vaa.size);                   break;
+        case OpenGL::VertexAttributeArrayType::Unsigned_Int:   result = static_cast<uint32_t>(in_vaa.size) * sizeof(int32_t); break;
+        case OpenGL::VertexAttributeArrayType::Unsigned_Short: result = static_cast<uint32_t>(in_vaa.size) * sizeof(int16_t); break;
 
         default:
         {
